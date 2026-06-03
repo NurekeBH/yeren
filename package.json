@@ -1,0 +1,20 @@
+{
+  "name": "traderos",
+  "version": "0.1.0",
+  "private": true,
+  "description": "TraderOS Gold Edition — XAU/USD trader platform (Flutter mobile + Node.js backend + Telegram bot + admin)",
+  "scripts": {
+    "mobile:run": "cd mobile && flutter run",
+    "mobile:build:ios": "cd mobile && flutter build ios",
+    "mobile:build:apk": "cd mobile && flutter build apk",
+    "mobile:analyze": "cd mobile && flutter analyze",
+    "mobile:test": "cd mobile && flutter test",
+    "backend:dev": "pnpm --filter @traderos/backend dev",
+    "admin:dev": "pnpm --filter @traderos/admin dev",
+    "bot:dev": "pnpm --filter @traderos/bot dev"
+  },
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=20"
+  }
+}
