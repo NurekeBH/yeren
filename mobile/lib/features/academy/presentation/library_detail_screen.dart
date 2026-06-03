@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../../../core/theme/app_colors.dart';
@@ -50,16 +48,6 @@ class _LibraryDetailScreenState extends ConsumerState<LibraryDetailScreen> {
     _yt?.close();
     _review.dispose();
     super.dispose();
-  }
-
-  Future<void> _open(String url) async {
-    final ok = await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-    if (!mounted) return;
-    if (!ok) {
-      await Clipboard.setData(ClipboardData(text: url));
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(url)));
-    }
   }
 
   @override
@@ -135,17 +123,6 @@ class _LibraryDetailScreenState extends ConsumerState<LibraryDetailScreen> {
         const SizedBox(height: 8),
         Text(item.summary, style: AppTypography.bodyMedium().copyWith(height: 1.5)),
         const SizedBox(height: 26),
-
-        // Подкаст тек приложение ішінде көрінеді — сыртқы YouTube сілтемесі жоқ.
-        if (item.externalUrl != null && !item.isPodcast)
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: () => _open(item.externalUrl!),
-              icon: const Icon(Icons.open_in_new, size: 18),
-              label: Text(l.academy_open_source),
-            ),
-          ),
 
         const SizedBox(height: 24),
         const Divider(),
