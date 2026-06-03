@@ -174,6 +174,179 @@ class AppLocalizationsRu extends AppLocalizations {
       'Это только рекомендация и личное мнение, а не финансовый совет.';
 
   @override
+  String get alerts_title => 'Ценовые уведомления';
+
+  @override
+  String get alerts_empty => 'Пока нет активных уведомлений';
+
+  @override
+  String get alerts_add => 'Добавить уведомление';
+
+  @override
+  String get alerts_notify => 'Уведомить';
+
+  @override
+  String get alerts_mode_pips => 'По пунктам';
+
+  @override
+  String get alerts_mode_price => 'По цене';
+
+  @override
+  String get alerts_pips_hint => 'За сколько пунктов уведомить';
+
+  @override
+  String get alerts_price_hint => 'Целевая цена';
+
+  @override
+  String get alerts_text_hint => 'Текст уведомления';
+
+  @override
+  String get alerts_create => 'Создать';
+
+  @override
+  String get alerts_created => 'Уведомление создано';
+
+  @override
+  String alerts_default_idea(String pair) {
+    return 'Цена приблизилась к идее $pair';
+  }
+
+  @override
+  String alerts_default_manual(String pair) {
+    return 'Цена $pair достигла цели';
+  }
+
+  @override
+  String alerts_cond_pips(String pips, String price) {
+    return 'за $pips п. до $price';
+  }
+
+  @override
+  String alerts_cond_price(String price) {
+    return 'при $price';
+  }
+
+  @override
+  String get lib_save => 'Сохранить';
+
+  @override
+  String get lib_your_rating => 'Ваша оценка';
+
+  @override
+  String get lib_your_review => 'Ваш отзыв';
+
+  @override
+  String get lib_review_hint => 'Поделитесь мнением, если читали/смотрели';
+
+  @override
+  String get lib_save_review => 'Сохранить отзыв';
+
+  @override
+  String get lib_review_saved => 'Отзыв сохранён';
+
+  @override
+  String get profile_saved => 'Сохранённые';
+
+  @override
+  String get saved_empty => 'Пока ничего не сохранено';
+
+  @override
+  String get events_title => 'События';
+
+  @override
+  String get events_empty => 'Пока нет событий';
+
+  @override
+  String get event_free => 'Бесплатно';
+
+  @override
+  String get event_apply => 'Оставить заявку';
+
+  @override
+  String get event_video => 'Видео-описание';
+
+  @override
+  String get event_about => 'О событии';
+
+  @override
+  String get event_type_masterclass => 'Мастер-класс';
+
+  @override
+  String get event_type_live => 'Лайв-трейд';
+
+  @override
+  String get event_type_webinar => 'Вебинар';
+
+  @override
+  String get apply_title => 'Заявка на участие';
+
+  @override
+  String get apply_autofill_note =>
+      'Данные заполнены из профиля — можно изменить';
+
+  @override
+  String get apply_name => 'Имя';
+
+  @override
+  String get apply_phone => 'Телефон';
+
+  @override
+  String get apply_comment => 'Комментарий (необязательно)';
+
+  @override
+  String get apply_submit => 'Отправить заявку';
+
+  @override
+  String get apply_sent => 'Заявка отправлена';
+
+  @override
+  String get home_events => 'События';
+
+  @override
+  String get home_events_sub => 'Мастер-классы, лайв-трейды, вебинары';
+
+  @override
+  String get agreement_title => 'Пользовательское соглашение';
+
+  @override
+  String get agreement_accept => 'Принимаю';
+
+  @override
+  String get agreement_checkbox => 'Я прочитал(а) и принимаю:';
+
+  @override
+  String get providers_tab => 'Провайдеры';
+
+  @override
+  String get prov_subscribe => 'Подписаться';
+
+  @override
+  String get prov_unsubscribe => 'Вы подписаны';
+
+  @override
+  String get prov_subscribed_toast => 'Вы подписались';
+
+  @override
+  String prov_per_month(String price) {
+    return '$price ₸/мес';
+  }
+
+  @override
+  String get prov_winrate => 'Win Rate';
+
+  @override
+  String get prov_rr => 'Ср. RR';
+
+  @override
+  String get prov_trades => 'Сделок';
+
+  @override
+  String get prov_verified => 'Проверенный провайдер';
+
+  @override
+  String get prov_ideas => 'Идеи провайдера';
+
+  @override
   String get nav_journal => 'Журнал';
 
   @override

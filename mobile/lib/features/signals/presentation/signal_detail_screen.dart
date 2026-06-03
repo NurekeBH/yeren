@@ -6,6 +6,7 @@ import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/signal.dart';
 import '../../../shared/utils/formatters.dart';
+import '../../alerts/presentation/create_alert_sheet.dart';
 import '../data/signals_repository.dart';
 
 class SignalDetailScreen extends ConsumerWidget {
@@ -115,6 +116,29 @@ class _Body extends StatelessWidget {
               ],
             ),
           ),
+        ),
+        const SizedBox(height: 16),
+        Consumer(
+          builder: (context, ref, _) => SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () => showCreateAlertSheet(
+                context,
+                ref,
+                instrument: signal.pair,
+                refPrice: signal.entryMid,
+                ideaId: signal.id,
+                defaultText: l.alerts_default_idea(signal.pair),
+              ),
+              icon: const Icon(Icons.notifications_active, size: 18),
+              label: Text(l.alerts_notify),
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Text(
+          l.idea_disclaimer,
+          style: AppTypography.label(color: AppColors.textMuted).copyWith(fontSize: 10, fontStyle: FontStyle.italic),
         ),
       ],
     );

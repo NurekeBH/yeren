@@ -1,22 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/mock/signal_providers_fixtures.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/signal.dart';
 import '../../../shared/utils/formatters.dart';
 
-class SignalCard extends StatelessWidget {
+class SignalCard extends ConsumerWidget {
   const SignalCard({super.key, required this.signal});
 
   final Signal signal;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     final isBuy = signal.direction == SignalDirection.buy;
     final dirColor = isBuy ? AppColors.profitGreen : AppColors.lossRed;
+    final providerMatches = ref.watch(signalProvidersProvider).where((p) => p.id == signal.providerId);
+    final provider = providerMatches.isEmpty ? null : providerMatches.first;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -29,6 +33,21 @@ class SignalCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (provider != null) ...[
+                  Row(
+                    children: [
+                      Text(provider.avatar, style: const TextStyle(fontSize: 15)),
+                      const SizedBox(width: 6),
+                      Text(provider.name,
+                          style: AppTypography.label(color: AppColors.textPrimary).copyWith(fontWeight: FontWeight.w700)),
+                      if (provider.verified) ...[
+                        const SizedBox(width: 4),
+                        const Icon(Icons.verified, size: 13, color: AppColors.dxyBlue),
+                      ],
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                ],
                 Row(
                   children: [
                     Container(

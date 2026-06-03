@@ -9,6 +9,7 @@ import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/gallup.dart';
 import '../../../shared/models/library_item.dart';
+import '../application/library_saved_controller.dart';
 import '../data/lessons_repository.dart';
 import 'library_screen.dart' show RatingBadge;
 import 'widgets/library_cover.dart';
@@ -26,6 +27,7 @@ class LibraryDetailScreen extends ConsumerStatefulWidget {
 
 class _LibraryDetailScreenState extends ConsumerState<LibraryDetailScreen> {
   YoutubePlayerController? _yt;
+  final TextEditingController _review = TextEditingController();
 
   @override
   void initState() {
@@ -40,11 +42,13 @@ class _LibraryDetailScreenState extends ConsumerState<LibraryDetailScreen> {
         params: const YoutubePlayerParams(showControls: true, showFullscreenButton: true),
       );
     }
+    _review.text = ref.read(librarySavedProvider.notifier).entry(widget.itemId).review;
   }
 
   @override
   void dispose() {
     _yt?.close();
+    _review.dispose();
     super.dispose();
   }
 
@@ -63,9 +67,19 @@ class _LibraryDetailScreenState extends ConsumerState<LibraryDetailScreen> {
     final l = AppLocalizations.of(context);
     final items = ref.watch(libraryItemsProvider);
     final matches = items.where((x) => x.id == widget.itemId);
+    final saved = ref.watch(librarySavedProvider)[widget.itemId]?.saved ?? false;
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            tooltip: l.lib_save,
+            icon: Icon(saved ? Icons.bookmark : Icons.bookmark_border,
+                color: saved ? AppColors.gold : null),
+            onPressed: () => ref.read(librarySavedProvider.notifier).toggleSaved(widget.itemId),
+          ),
+        ],
+      ),
       body: matches.isEmpty
           ? Center(child: Text(l.common_error, style: AppTypography.bodyMedium()))
           : _body(context, l, matches.first),
@@ -136,6 +150,63 @@ class _LibraryDetailScreenState extends ConsumerState<LibraryDetailScreen> {
                     icon: const Icon(Icons.open_in_new, size: 18),
                     label: Text(l.academy_open_source),
                   ),
+          ),
+
+        const SizedBox(height: 24),
+        const Divider(),
+        const SizedBox(height: 12),
+        Text(l.lib_your_rating, style: AppTypography.label(color: AppColors.textSecondary)),
+        const SizedBox(height: 8),
+        _RatingStars(itemId: widget.itemId),
+        const SizedBox(height: 18),
+        Text(l.lib_your_review, style: AppTypography.label(color: AppColors.textSecondary)),
+        const SizedBox(height: 6),
+        Text(l.lib_review_hint, style: AppTypography.bodySmall(color: AppColors.textMuted)),
+        const SizedBox(height: 8),
+        TextField(
+          controller: _review,
+          maxLines: 4,
+          decoration: const InputDecoration(border: OutlineInputBorder()),
+        ),
+        const SizedBox(height: 10),
+        Align(
+          alignment: Alignment.centerRight,
+          child: ElevatedButton.icon(
+            onPressed: () {
+              ref.read(librarySavedProvider.notifier).setReview(widget.itemId, _review.text.trim());
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.lib_review_saved)));
+            },
+            icon: const Icon(Icons.save_outlined, size: 18),
+            label: Text(l.lib_save_review),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// 5 жұлдызды баға — басып таңдауға болады.
+class _RatingStars extends ConsumerWidget {
+  const _RatingStars({required this.itemId});
+  final String itemId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final rating = ref.watch(librarySavedProvider)[itemId]?.rating ?? 0;
+    return Row(
+      children: [
+        for (var i = 1; i <= 5; i++)
+          IconButton(
+            visualDensity: VisualDensity.compact,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+            icon: Icon(
+              i <= rating ? Icons.star_rounded : Icons.star_outline_rounded,
+              color: AppColors.gold,
+              size: 30,
+            ),
+            onPressed: () => ref.read(librarySavedProvider.notifier)
+                .setRating(itemId, rating == i ? 0 : i),
           ),
       ],
     );

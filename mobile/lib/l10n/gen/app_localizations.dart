@@ -424,6 +424,330 @@ abstract class AppLocalizations {
   /// **'Бұл тек ұсыныс әрі жеке пікір, қаржылық кеңес емес.'**
   String get idea_disclaimer;
 
+  /// No description provided for @alerts_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Баға ескертулері'**
+  String get alerts_title;
+
+  /// No description provided for @alerts_empty.
+  ///
+  /// In kk, this message translates to:
+  /// **'Әзірге белсенді ескерту жоқ'**
+  String get alerts_empty;
+
+  /// No description provided for @alerts_add.
+  ///
+  /// In kk, this message translates to:
+  /// **'Ескерту қосу'**
+  String get alerts_add;
+
+  /// No description provided for @alerts_notify.
+  ///
+  /// In kk, this message translates to:
+  /// **'Хабарлау'**
+  String get alerts_notify;
+
+  /// No description provided for @alerts_mode_pips.
+  ///
+  /// In kk, this message translates to:
+  /// **'Пипспен'**
+  String get alerts_mode_pips;
+
+  /// No description provided for @alerts_mode_price.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бағамен'**
+  String get alerts_mode_price;
+
+  /// No description provided for @alerts_pips_hint.
+  ///
+  /// In kk, this message translates to:
+  /// **'Неше пипс қалғанда хабарлау'**
+  String get alerts_pips_hint;
+
+  /// No description provided for @alerts_price_hint.
+  ///
+  /// In kk, this message translates to:
+  /// **'Мақсатты баға'**
+  String get alerts_price_hint;
+
+  /// No description provided for @alerts_text_hint.
+  ///
+  /// In kk, this message translates to:
+  /// **'Хабарлама мәтіні'**
+  String get alerts_text_hint;
+
+  /// No description provided for @alerts_create.
+  ///
+  /// In kk, this message translates to:
+  /// **'Жасау'**
+  String get alerts_create;
+
+  /// No description provided for @alerts_created.
+  ///
+  /// In kk, this message translates to:
+  /// **'Ескерту жасалды'**
+  String get alerts_created;
+
+  /// No description provided for @alerts_default_idea.
+  ///
+  /// In kk, this message translates to:
+  /// **'{pair} идеясына баға жақындады'**
+  String alerts_default_idea(String pair);
+
+  /// No description provided for @alerts_default_manual.
+  ///
+  /// In kk, this message translates to:
+  /// **'{pair} бағасы мақсатқа жетті'**
+  String alerts_default_manual(String pair);
+
+  /// No description provided for @alerts_cond_pips.
+  ///
+  /// In kk, this message translates to:
+  /// **'{price}-ке {pips} пипс қалғанда'**
+  String alerts_cond_pips(String pips, String price);
+
+  /// No description provided for @alerts_cond_price.
+  ///
+  /// In kk, this message translates to:
+  /// **'{price} болғанда'**
+  String alerts_cond_price(String price);
+
+  /// No description provided for @lib_save.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сақтау'**
+  String get lib_save;
+
+  /// No description provided for @lib_your_rating.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сіздің бағаңыз'**
+  String get lib_your_rating;
+
+  /// No description provided for @lib_your_review.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сіздің пікіріңіз'**
+  String get lib_your_review;
+
+  /// No description provided for @lib_review_hint.
+  ///
+  /// In kk, this message translates to:
+  /// **'Оқыған/көрген болсаңыз, ойыңызбен бөлісіңіз'**
+  String get lib_review_hint;
+
+  /// No description provided for @lib_save_review.
+  ///
+  /// In kk, this message translates to:
+  /// **'Пікірді сақтау'**
+  String get lib_save_review;
+
+  /// No description provided for @lib_review_saved.
+  ///
+  /// In kk, this message translates to:
+  /// **'Пікір сақталды'**
+  String get lib_review_saved;
+
+  /// No description provided for @profile_saved.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сақталғандар'**
+  String get profile_saved;
+
+  /// No description provided for @saved_empty.
+  ///
+  /// In kk, this message translates to:
+  /// **'Әзірге ештеңе сақталмаған'**
+  String get saved_empty;
+
+  /// No description provided for @events_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Іс-шаралар'**
+  String get events_title;
+
+  /// No description provided for @events_empty.
+  ///
+  /// In kk, this message translates to:
+  /// **'Әзірге іс-шара жоқ'**
+  String get events_empty;
+
+  /// No description provided for @event_free.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тегін'**
+  String get event_free;
+
+  /// No description provided for @event_apply.
+  ///
+  /// In kk, this message translates to:
+  /// **'Өтінім қалдыру'**
+  String get event_apply;
+
+  /// No description provided for @event_video.
+  ///
+  /// In kk, this message translates to:
+  /// **'Видео-түсіндірме'**
+  String get event_video;
+
+  /// No description provided for @event_about.
+  ///
+  /// In kk, this message translates to:
+  /// **'Іс-шара туралы'**
+  String get event_about;
+
+  /// No description provided for @event_type_masterclass.
+  ///
+  /// In kk, this message translates to:
+  /// **'Мастер-класс'**
+  String get event_type_masterclass;
+
+  /// No description provided for @event_type_live.
+  ///
+  /// In kk, this message translates to:
+  /// **'Лайв-трейд'**
+  String get event_type_live;
+
+  /// No description provided for @event_type_webinar.
+  ///
+  /// In kk, this message translates to:
+  /// **'Вебинар'**
+  String get event_type_webinar;
+
+  /// No description provided for @apply_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қатысуға өтінім'**
+  String get apply_title;
+
+  /// No description provided for @apply_autofill_note.
+  ///
+  /// In kk, this message translates to:
+  /// **'Деректер профильден алынды — өзгертуге болады'**
+  String get apply_autofill_note;
+
+  /// No description provided for @apply_name.
+  ///
+  /// In kk, this message translates to:
+  /// **'Аты-жөні'**
+  String get apply_name;
+
+  /// No description provided for @apply_phone.
+  ///
+  /// In kk, this message translates to:
+  /// **'Телефон'**
+  String get apply_phone;
+
+  /// No description provided for @apply_comment.
+  ///
+  /// In kk, this message translates to:
+  /// **'Пікір (міндетті емес)'**
+  String get apply_comment;
+
+  /// No description provided for @apply_submit.
+  ///
+  /// In kk, this message translates to:
+  /// **'Өтінім жіберу'**
+  String get apply_submit;
+
+  /// No description provided for @apply_sent.
+  ///
+  /// In kk, this message translates to:
+  /// **'Өтінім жіберілді'**
+  String get apply_sent;
+
+  /// No description provided for @home_events.
+  ///
+  /// In kk, this message translates to:
+  /// **'Іс-шаралар'**
+  String get home_events;
+
+  /// No description provided for @home_events_sub.
+  ///
+  /// In kk, this message translates to:
+  /// **'Мастер-класс, лайв-трейд, вебинар'**
+  String get home_events_sub;
+
+  /// No description provided for @agreement_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Пайдаланушы келісімі'**
+  String get agreement_title;
+
+  /// No description provided for @agreement_accept.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қабылдаймын'**
+  String get agreement_accept;
+
+  /// No description provided for @agreement_checkbox.
+  ///
+  /// In kk, this message translates to:
+  /// **'Мен оқыдым әрі қабылдаймын:'**
+  String get agreement_checkbox;
+
+  /// No description provided for @providers_tab.
+  ///
+  /// In kk, this message translates to:
+  /// **'Провайдерлер'**
+  String get providers_tab;
+
+  /// No description provided for @prov_subscribe.
+  ///
+  /// In kk, this message translates to:
+  /// **'Жазылу'**
+  String get prov_subscribe;
+
+  /// No description provided for @prov_unsubscribe.
+  ///
+  /// In kk, this message translates to:
+  /// **'Жазылдыңыз'**
+  String get prov_unsubscribe;
+
+  /// No description provided for @prov_subscribed_toast.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сіз жазылдыңыз'**
+  String get prov_subscribed_toast;
+
+  /// No description provided for @prov_per_month.
+  ///
+  /// In kk, this message translates to:
+  /// **'{price} ₸/ай'**
+  String prov_per_month(String price);
+
+  /// No description provided for @prov_winrate.
+  ///
+  /// In kk, this message translates to:
+  /// **'Win Rate'**
+  String get prov_winrate;
+
+  /// No description provided for @prov_rr.
+  ///
+  /// In kk, this message translates to:
+  /// **'Орт. RR'**
+  String get prov_rr;
+
+  /// No description provided for @prov_trades.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сделкалар'**
+  String get prov_trades;
+
+  /// No description provided for @prov_verified.
+  ///
+  /// In kk, this message translates to:
+  /// **'Расталған провайдер'**
+  String get prov_verified;
+
+  /// No description provided for @prov_ideas.
+  ///
+  /// In kk, this message translates to:
+  /// **'Провайдер идеялары'**
+  String get prov_ideas;
+
   /// No description provided for @nav_journal.
   ///
   /// In kk, this message translates to:

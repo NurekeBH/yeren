@@ -44,6 +44,7 @@ class MockFixtures {
   static List<Signal> signals(String loc) => [
         Signal(
           id: 'sig-001',
+          providerId: 'pr-1',
           pair: 'XAU/USD',
           direction: SignalDirection.buy,
           entryFrom: 2371.00, entryTo: 2374.00,
@@ -59,6 +60,7 @@ class MockFixtures {
         ),
         Signal(
           id: 'sig-002',
+          providerId: 'pr-3',
           pair: 'XAU/USD',
           direction: SignalDirection.sell,
           entryFrom: 2392.50, entryTo: 2394.00,
@@ -74,6 +76,7 @@ class MockFixtures {
         ),
         Signal(
           id: 'sig-003',
+          providerId: 'pr-2',
           pair: 'XAU/USD',
           direction: SignalDirection.buy,
           entryFrom: 2350.00, entryTo: 2352.00,
@@ -90,6 +93,7 @@ class MockFixtures {
         ),
         Signal(
           id: 'sig-004',
+          providerId: 'pr-5',
           pair: 'XAU/USD',
           direction: SignalDirection.sell,
           entryFrom: 2402.00, entryTo: 2404.00,

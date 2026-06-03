@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
@@ -31,6 +32,21 @@ class NotificationsScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
         children: [
+          Card(
+            child: ListTile(
+              leading: Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(color: AppColors.gold.withValues(alpha: 0.12), shape: BoxShape.circle),
+                child: const Icon(Icons.add_alert, size: 18, color: AppColors.gold),
+              ),
+              title: Text(l.alerts_title, style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w600)),
+              subtitle: Text(l.alerts_add, style: AppTypography.bodySmall()),
+              trailing: const Icon(Icons.chevron_right, color: AppColors.textMuted),
+              onTap: () => context.push('/alerts'),
+            ),
+          ),
+          const SizedBox(height: 12),
           for (final (cat, title, desc, icon, color) in items)
             _NotifTile(
               icon: icon,

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../application/auth_controller.dart';
+import 'user_agreement_screen.dart';
 
 class PasswordScreen extends ConsumerStatefulWidget {
   const PasswordScreen({super.key, required this.mode, required this.phone});
@@ -21,8 +23,16 @@ class _PasswordScreenState extends ConsumerState<PasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   bool _busy = false;
   bool _obscure = true;
+  bool _agreed = false;
 
   bool get _isRegister => widget.mode == 'register';
+
+  Future<void> _openAgreement() async {
+    final accepted = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(builder: (_) => const UserAgreementScreen()),
+    );
+    if (accepted == true && mounted) setState(() => _agreed = true);
+  }
 
   @override
   void dispose() {
@@ -92,10 +102,37 @@ class _PasswordScreenState extends ConsumerState<PasswordScreen> {
                       return null;
                     },
                   ),
+                  const SizedBox(height: 12),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Checkbox(
+                        value: _agreed,
+                        activeColor: AppColors.gold,
+                        onChanged: (v) => setState(() => _agreed = v ?? false),
+                      ),
+                      Expanded(
+                        child: Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            Text('${l.agreement_checkbox} ', style: AppTypography.bodySmall()),
+                            GestureDetector(
+                              onTap: _openAgreement,
+                              child: Text(
+                                l.agreement_title,
+                                style: AppTypography.bodySmall(color: AppColors.gold)
+                                    .copyWith(decoration: TextDecoration.underline),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
                 const Spacer(),
                 ElevatedButton(
-                  onPressed: _busy ? null : _submit,
+                  onPressed: (_busy || (_isRegister && !_agreed)) ? null : _submit,
                   child: _busy
                       ? const SizedBox(
                           height: 20,

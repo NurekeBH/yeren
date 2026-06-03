@@ -30,6 +30,7 @@ class Signal extends Equatable {
     required this.status,
     required this.publishedAt,
     this.resultPips,
+    this.providerId,
   });
 
   final String id;
@@ -48,6 +49,7 @@ class Signal extends Equatable {
   final SignalStatus status;
   final DateTime publishedAt;
   final int? resultPips;
+  final String? providerId;
 
   double get entryMid => (entryFrom + entryTo) / 2;
 

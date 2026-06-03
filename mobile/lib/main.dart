@@ -30,7 +30,7 @@ class TraderOSApp extends ConsumerWidget {
     final router = ref.watch(routerProvider);
 
     return MaterialApp.router(
-      title: 'TraderOS',
+      title: 'ALTYN',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
       routerConfig: router,

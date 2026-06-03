@@ -75,6 +75,22 @@ class HomeScreen extends ConsumerWidget {
             const SizedBox(height: 12),
             _PositionCalcCard(l: l),
             const SizedBox(height: 12),
+            Card(
+              child: ListTile(
+                leading: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(color: AppColors.purple.withValues(alpha: 0.12), shape: BoxShape.circle),
+                  child: const Icon(Icons.event_available, color: AppColors.purple),
+                ),
+                title: Text(l.home_events, style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w600)),
+                subtitle: Text(l.home_events_sub, style: AppTypography.bodySmall()),
+                trailing: const Icon(Icons.chevron_right, color: AppColors.textMuted),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                onTap: () => context.push('/events'),
+              ),
+            ),
+            const SizedBox(height: 12),
             const IntelModule(),
             const SizedBox(height: 12),
             lessonsAsync.maybeWhen(

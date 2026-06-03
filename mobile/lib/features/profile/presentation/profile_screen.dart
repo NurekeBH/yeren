@@ -131,6 +131,11 @@ class ProfileScreen extends ConsumerWidget {
           _SubscriptionTile(sub: sub, l: l),
           const SizedBox(height: 16),
           _MenuItem(
+            icon: Icons.bookmark_outline,
+            label: l.profile_saved,
+            onTap: () => context.push('/library/saved'),
+          ),
+          _MenuItem(
             icon: Icons.notifications_outlined,
             label: l.profile_notifications,
             onTap: () => context.push('/notifications'),
@@ -139,6 +144,11 @@ class ProfileScreen extends ConsumerWidget {
             icon: Icons.event_note,
             label: l.calendar_title,
             onTap: () => context.push('/calendar'),
+          ),
+          _MenuItem(
+            icon: Icons.description_outlined,
+            label: l.agreement_title,
+            onTap: () => context.push('/legal/agreement'),
           ),
           _MenuItem(
             icon: Icons.logout,

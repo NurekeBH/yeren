@@ -62,6 +62,16 @@ dev_dependencies:
   riverpod_generator: ^2.6.3
   custom_lint: ^0.7.0
   riverpod_lint: ^2.6.3
+  flutter_launcher_icons: ^0.14.4
+
+flutter_launcher_icons:
+  image_path: "assets/icon/altyn_icon.png"
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  min_sdk_android: 21
+  adaptive_icon_background: "#C9A227"
+  adaptive_icon_foreground: "assets/icon/altyn_icon.png"
 
 flutter:
   uses-material-design: true
@@ -70,3 +80,4 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/icon/

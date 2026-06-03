@@ -174,6 +174,179 @@ class AppLocalizationsEn extends AppLocalizations {
       'This is only a recommendation and a personal opinion, not financial advice.';
 
   @override
+  String get alerts_title => 'Price alerts';
+
+  @override
+  String get alerts_empty => 'No active alerts yet';
+
+  @override
+  String get alerts_add => 'Add alert';
+
+  @override
+  String get alerts_notify => 'Notify me';
+
+  @override
+  String get alerts_mode_pips => 'By pips';
+
+  @override
+  String get alerts_mode_price => 'By price';
+
+  @override
+  String get alerts_pips_hint => 'Notify when this many pips away';
+
+  @override
+  String get alerts_price_hint => 'Target price';
+
+  @override
+  String get alerts_text_hint => 'Notification text';
+
+  @override
+  String get alerts_create => 'Create';
+
+  @override
+  String get alerts_created => 'Alert created';
+
+  @override
+  String alerts_default_idea(String pair) {
+    return 'Price approached the $pair idea';
+  }
+
+  @override
+  String alerts_default_manual(String pair) {
+    return '$pair reached the target';
+  }
+
+  @override
+  String alerts_cond_pips(String pips, String price) {
+    return '$pips pips before $price';
+  }
+
+  @override
+  String alerts_cond_price(String price) {
+    return 'at $price';
+  }
+
+  @override
+  String get lib_save => 'Save';
+
+  @override
+  String get lib_your_rating => 'Your rating';
+
+  @override
+  String get lib_your_review => 'Your review';
+
+  @override
+  String get lib_review_hint =>
+      'Share your thoughts if you\'ve read/watched it';
+
+  @override
+  String get lib_save_review => 'Save review';
+
+  @override
+  String get lib_review_saved => 'Review saved';
+
+  @override
+  String get profile_saved => 'Saved';
+
+  @override
+  String get saved_empty => 'Nothing saved yet';
+
+  @override
+  String get events_title => 'Events';
+
+  @override
+  String get events_empty => 'No events yet';
+
+  @override
+  String get event_free => 'Free';
+
+  @override
+  String get event_apply => 'Apply';
+
+  @override
+  String get event_video => 'Video intro';
+
+  @override
+  String get event_about => 'About the event';
+
+  @override
+  String get event_type_masterclass => 'Masterclass';
+
+  @override
+  String get event_type_live => 'Live trade';
+
+  @override
+  String get event_type_webinar => 'Webinar';
+
+  @override
+  String get apply_title => 'Application';
+
+  @override
+  String get apply_autofill_note => 'Filled from your profile — you can edit';
+
+  @override
+  String get apply_name => 'Name';
+
+  @override
+  String get apply_phone => 'Phone';
+
+  @override
+  String get apply_comment => 'Comment (optional)';
+
+  @override
+  String get apply_submit => 'Submit application';
+
+  @override
+  String get apply_sent => 'Application sent';
+
+  @override
+  String get home_events => 'Events';
+
+  @override
+  String get home_events_sub => 'Masterclasses, live trades, webinars';
+
+  @override
+  String get agreement_title => 'User Agreement';
+
+  @override
+  String get agreement_accept => 'I accept';
+
+  @override
+  String get agreement_checkbox => 'I have read and accept the';
+
+  @override
+  String get providers_tab => 'Providers';
+
+  @override
+  String get prov_subscribe => 'Subscribe';
+
+  @override
+  String get prov_unsubscribe => 'Subscribed';
+
+  @override
+  String get prov_subscribed_toast => 'Subscribed';
+
+  @override
+  String prov_per_month(String price) {
+    return '$price ₸/mo';
+  }
+
+  @override
+  String get prov_winrate => 'Win Rate';
+
+  @override
+  String get prov_rr => 'Avg RR';
+
+  @override
+  String get prov_trades => 'Trades';
+
+  @override
+  String get prov_verified => 'Verified provider';
+
+  @override
+  String get prov_ideas => 'Provider\'s ideas';
+
+  @override
   String get nav_journal => 'Journal';
 
   @override

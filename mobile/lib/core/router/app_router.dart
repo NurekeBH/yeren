@@ -8,12 +8,17 @@ import '../../features/academy/presentation/gallup_test_screen.dart';
 import '../../features/academy/presentation/lesson_detail_screen.dart';
 import '../../features/academy/presentation/library_detail_screen.dart';
 import '../../features/academy/presentation/library_screen.dart';
+import '../../features/academy/presentation/saved_library_screen.dart';
+import '../../features/alerts/presentation/price_alerts_screen.dart';
 import '../../features/tools/presentation/position_calculator_screen.dart';
 import '../../features/auth/application/auth_controller.dart';
 import '../../features/auth/presentation/onboarding_screen.dart';
 import '../../features/auth/presentation/password_screen.dart';
 import '../../features/auth/presentation/phone_screen.dart';
+import '../../features/auth/presentation/user_agreement_screen.dart';
 import '../../features/calendar/presentation/calendar_screen.dart';
+import '../../features/events/presentation/event_detail_screen.dart';
+import '../../features/events/presentation/events_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/intel/presentation/intel_screen.dart';
 import '../../features/journal/presentation/accounts_screen.dart';
@@ -22,6 +27,7 @@ import '../../features/journal/presentation/link_broker_screen.dart';
 import '../../features/profile/application/profile_controller.dart';
 import '../../features/profile/presentation/notifications_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
+import '../../features/signals/presentation/provider_detail_screen.dart';
 import '../../features/signals/presentation/signal_detail_screen.dart';
 import '../../features/signals/presentation/signals_screen.dart';
 import '../../features/subscription/presentation/subscription_screen.dart';
@@ -77,15 +83,27 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/signals/:id',
         builder: (_, s) => AuthGuard(child: SignalDetailScreen(signalId: s.pathParameters['id']!)),
       ),
+      GoRoute(
+        path: '/providers/:id',
+        builder: (_, s) => AuthGuard(child: ProviderDetailScreen(providerId: s.pathParameters['id']!)),
+      ),
       GoRoute(path: '/subscription', builder: (_, _) => const AuthGuard(child: SubscriptionScreen())),
       GoRoute(path: '/intel', builder: (_, _) => const AuthGuard(child: IntelScreen())),
       GoRoute(path: '/calendar', builder: (_, _) => const AuthGuard(child: CalendarScreen())),
       GoRoute(path: '/notifications', builder: (_, _) => const AuthGuard(child: NotificationsScreen())),
+      GoRoute(path: '/alerts', builder: (_, _) => const AuthGuard(child: PriceAlertsScreen())),
+      GoRoute(path: '/legal/agreement', builder: (_, _) => const UserAgreementScreen(showAccept: false)),
+      GoRoute(path: '/events', builder: (_, _) => const AuthGuard(child: EventsScreen())),
+      GoRoute(
+        path: '/events/:id',
+        builder: (_, s) => AuthGuard(child: EventDetailScreen(eventId: s.pathParameters['id']!)),
+      ),
       GoRoute(path: '/accounts', builder: (_, _) => const AuthGuard(child: AccountsScreen())),
       GoRoute(path: '/accounts/link', builder: (_, _) => const AuthGuard(child: LinkBrokerScreen())),
       GoRoute(path: '/academy/test', builder: (_, _) => const AuthGuard(child: GallupTestScreen())),
       GoRoute(path: '/academy/test/result', builder: (_, _) => const AuthGuard(child: GallupResultScreen())),
       GoRoute(path: '/academy/library', builder: (_, _) => const AuthGuard(child: LibraryScreen())),
+      GoRoute(path: '/library/saved', builder: (_, _) => const AuthGuard(child: SavedLibraryScreen())),
       GoRoute(
         path: '/academy/library/:id',
         builder: (_, s) => AuthGuard(child: LibraryDetailScreen(itemId: s.pathParameters['id']!)),
