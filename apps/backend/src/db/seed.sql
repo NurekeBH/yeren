@@ -53,3 +53,27 @@ on conflict do nothing;
 
 -- Demo signal (admin user қажет, әуелі тіркеуден өтіңіз)
 -- insert into signals (...) values (...);
+
+-- Demo signal providers (Ideas aggregator) — кесте бос болса ғана
+insert into signal_providers (name, avatar, bio, win_rate, avg_rr, rating, subscribers, trades_count, price_per_month, verified)
+select * from (values
+  ('TraderOS Desk', '🏆', 'Официальный деск TraderOS. Сетапы по XAU/USD на overlap London/NY, строгий риск-менеджмент.', 0.72, 2.3, 4.8, 1240, 318, 0, true),
+  ('Алмас Gold', '🦅', '5 лет опыта, только XAU/USD. 1–3 качественные идеи в день со скриншотами.', 0.66, 2.1, 4.5, 860, 412, 30000, true),
+  ('SMC Pro', '📊', 'Smart Money Concepts: order block, liquidity sweep, BOS/CHoCH. Топ-даун анализ.', 0.69, 2.6, 4.6, 540, 205, 20000, true),
+  ('Asia Session', '🌏', 'Идеи range-trading в азиатскую сессию. Бесплатно, но новый провайдер.', 0.58, 1.9, 4.0, 310, 156, 0, false),
+  ('London Killzone', '🇬🇧', 'Killzone-сетапы на открытии Лондона. Подход ICT, чёткие вход/выход.', 0.63, 2.2, 4.3, 470, 289, 15000, true)
+) as v(name, avatar, bio, win_rate, avg_rr, rating, subscribers, trades_count, price_per_month, verified)
+where not exists (select 1 from signal_providers);
+
+-- Demo events — кесте бос болса ғана
+insert into events (type, title, speaker, city, is_online, starts_at, price, description, youtube_id)
+select type, title, speaker, city, is_online, now() + ((days)::text || ' days')::interval, price, description, youtube_id
+from (values
+  ('masterclass', 'Психология трейдинга: дисциплина и риск', 'Александр Герчик', 'Алматы', false, 5, 15000, 'Полный мастер-класс: контроль эмоций, дисциплина после убытка, критерий A+ сетапа и дневной лимит риска.', 'DuImQVIE82I'),
+  ('live_trade', 'Live-сессия по XAU/USD: London open', 'TraderOS', 'Онлайн', true, 2, 0, 'Прямой эфир-разбор XAU/USD на открытии Лондона: HTF bias, ликвидность, retest-сетап.', null),
+  ('webinar', 'Управление капиталом с нуля', 'MaxCapital — Максим Петров', 'Онлайн', true, 7, 5000, 'Расчёт размера позиции, risk %, дневной лимит и сохранение депозита. Практика с калькулятором.', 'PZocEdQcst0'),
+  ('masterclass', 'Smart Money: структура рынка', 'TraderOS Pro', 'Астана', false, 12, 20000, 'Order block, liquidity sweep, BOS/CHoCH на реальных графиках. Топ-даун workflow.', null),
+  ('live_trade', 'Разбор сделок недели', 'Тимофей Мартынов', 'Онлайн', true, 9, 0, 'Живой разбор сделок участников: ошибки, верные решения, ведение журнала.', 'HbsPPpeACvI'),
+  ('webinar', 'Риск-менеджмент: считаем лот', 'ProMarket — Олег Полунин', 'Онлайн', true, 4, 0, 'Формулы и примеры грамотного расчёта риска. Бесплатный вебинар для начинающих.', 'X3OMQriyHFg')
+) as v(type, title, speaker, city, is_online, days, price, description, youtube_id)
+where not exists (select 1 from events);

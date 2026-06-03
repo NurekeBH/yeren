@@ -13,6 +13,11 @@ import { brokersRoutes } from './modules/brokers/routes.js';
 import { academyRoutes } from './modules/academy/routes.js';
 import { subscriptionRoutes } from './modules/subscription/routes.js';
 import { notificationsRoutes } from './modules/notifications/routes.js';
+import { providersRoutes } from './modules/providers/routes.js';
+import { eventsRoutes } from './modules/events/routes.js';
+import { alertsRoutes } from './modules/alerts/routes.js';
+import { libraryRoutes } from './modules/library/routes.js';
+import { agreementRoutes } from './modules/agreement/routes.js';
 import { pool } from './db/client.js';
 
 const app = Fastify({
@@ -44,6 +49,11 @@ await app.register(async (api) => {
   await academyRoutes(api);
   await subscriptionRoutes(api);
   await notificationsRoutes(api);
+  await providersRoutes(api);
+  await eventsRoutes(api);
+  await alertsRoutes(api);
+  await libraryRoutes(api);
+  await agreementRoutes(api);
 }, { prefix: '/api/v1' });
 
 const shutdown = async (signal: string) => {

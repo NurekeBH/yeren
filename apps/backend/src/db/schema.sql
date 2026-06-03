@@ -225,6 +225,107 @@ create table if not exists notification_prefs (
   updated_at       timestamptz default now()
 );
 
+-- ─────────────────── SIGNAL PROVIDERS (Ideas aggregator) ───────────────────
+-- Бірнеше трейдер сигнал/идея береді. Статусты админ береді (verified).
+create table if not exists signal_providers (
+  id              uuid primary key default uuid_generate_v4(),
+  user_id         uuid references users(id) on delete set null,  -- провайдер аккаунты (қалауыңша)
+  name            text not null,
+  avatar          text default '📊',                              -- эмодзи аватар немесе url
+  bio             text default '',
+  win_rate        numeric(5,4) default 0,                         -- 0..1
+  avg_rr          numeric(6,2) default 0,
+  rating          numeric(3,2) default 0,                         -- 0..5
+  subscribers     int default 0,
+  trades_count    int default 0,
+  price_per_month numeric(10,2) default 0,                        -- 0 = тегін, ₸
+  verified        boolean default false,                          -- админ берген статус
+  created_at      timestamptz default now()
+);
+create index if not exists providers_rating_idx on signal_providers(verified, rating desc);
+
+create table if not exists provider_subscriptions (
+  user_id     uuid not null references users(id) on delete cascade,
+  provider_id uuid not null references signal_providers(id) on delete cascade,
+  created_at  timestamptz default now(),
+  primary key (user_id, provider_id)
+);
+create index if not exists prov_subs_user_idx on provider_subscriptions(user_id);
+
+-- Сигналды провайдерге байлау
+alter table signals add column if not exists provider_id uuid references signal_providers(id) on delete set null;
+create index if not exists signals_provider_idx on signals(provider_id);
+
+-- ─────────────────── EVENTS (мастер-класс / лайв-трейд / вебинар) ───────────────────
+create table if not exists events (
+  id           uuid primary key default uuid_generate_v4(),
+  type         text not null,                            -- masterclass | live_trade | webinar
+  title        text not null,
+  speaker      text not null,
+  city         text not null,
+  is_online    boolean default true,
+  starts_at    timestamptz not null,
+  price        numeric(10,2) default 0,                  -- 0 = тегін, ₸
+  description  text not null,
+  youtube_id   text,                                     -- видео-түсіндірме (қалауыңша)
+  poster_url   text,
+  created_at   timestamptz default now()
+);
+create index if not exists events_starts_idx on events(starts_at);
+
+create table if not exists event_applications (
+  id         uuid primary key default uuid_generate_v4(),
+  event_id   uuid not null references events(id) on delete cascade,
+  user_id    uuid not null references users(id) on delete cascade,
+  name       text not null,
+  phone      text not null,
+  comment    text default '',
+  status     text not null default 'new',               -- new | confirmed | cancelled
+  created_at timestamptz default now(),
+  unique (event_id, user_id)
+);
+create index if not exists event_apps_event_idx on event_applications(event_id);
+
+-- ─────────────────── PRICE ALERTS (баға ескертулері) ───────────────────
+create table if not exists price_alerts (
+  id           uuid primary key default uuid_generate_v4(),
+  user_id      uuid not null references users(id) on delete cascade,
+  instrument   text not null default 'XAU/USD',
+  target_price numeric(14,4) not null,
+  pips         numeric(8,2),                             -- null болса — «нақты баға» режимі
+  text         text not null,
+  idea_id      uuid references signals(id) on delete set null,
+  active       boolean default true,
+  triggered_at timestamptz,
+  created_at   timestamptz default now()
+);
+create index if not exists alerts_user_active_idx on price_alerts(user_id, active);
+
+-- ─────────────────── LIBRARY USER DATA (сақтау / рейтинг / отзыв) ───────────────────
+-- item_id — Flutter каталогының статик id-і (b-001, f-002, p-003...).
+create table if not exists library_user_data (
+  user_id    uuid not null references users(id) on delete cascade,
+  item_id    text not null,
+  saved      boolean default false,
+  rating     int default 0 check (rating between 0 and 5),
+  review     text default '',
+  updated_at timestamptz default now(),
+  primary key (user_id, item_id)
+);
+create index if not exists lib_user_saved_idx on library_user_data(user_id) where saved = true;
+create index if not exists lib_item_idx on library_user_data(item_id);
+
+-- ─────────────────── AGREEMENT ACCEPTANCES (заңды лог) ───────────────────
+create table if not exists agreement_acceptances (
+  id          uuid primary key default uuid_generate_v4(),
+  user_id     uuid not null references users(id) on delete cascade,
+  version     text not null default 'v1',
+  ip          text,
+  user_agent  text,
+  accepted_at timestamptz default now()
+);
+create index if not exists agreement_user_idx on agreement_acceptances(user_id, accepted_at desc);
+
 -- ─────────────────── HOUSEKEEPING ───────────────────
 -- updated_at автоматты жаңарту үшін trigger функциясы
 create or replace function set_updated_at() returns trigger as $$
