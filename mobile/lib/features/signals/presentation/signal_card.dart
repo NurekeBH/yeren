@@ -34,17 +34,26 @@ class SignalCard extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (provider != null) ...[
-                  Row(
-                    children: [
-                      Text(provider.avatar, style: const TextStyle(fontSize: 15)),
-                      const SizedBox(width: 6),
-                      Text(provider.name,
-                          style: AppTypography.label(color: AppColors.textPrimary).copyWith(fontWeight: FontWeight.w700)),
-                      if (provider.verified) ...[
-                        const SizedBox(width: 4),
-                        const Icon(Icons.verified, size: 13, color: AppColors.dxyBlue),
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => GoRouter.of(context).push('/providers/${provider.id}'),
+                    child: Row(
+                      children: [
+                        Text(provider.avatar, style: const TextStyle(fontSize: 15)),
+                        const SizedBox(width: 6),
+                        Flexible(
+                          child: Text(provider.name,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTypography.label(color: AppColors.gold).copyWith(fontWeight: FontWeight.w700)),
+                        ),
+                        if (provider.verified) ...[
+                          const SizedBox(width: 4),
+                          const Icon(Icons.verified, size: 13, color: AppColors.dxyBlue),
+                        ],
+                        const SizedBox(width: 2),
+                        const Icon(Icons.chevron_right, size: 16, color: AppColors.textMuted),
                       ],
-                    ],
+                    ),
                   ),
                   const SizedBox(height: 10),
                 ],

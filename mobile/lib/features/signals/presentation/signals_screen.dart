@@ -29,9 +29,9 @@ class SignalsScreen extends ConsumerWidget {
             isScrollable: true,
             tabAlignment: TabAlignment.center,
             tabs: [
-              Tab(text: l.providers_tab),
               Tab(text: l.signals_tab_active),
               Tab(text: l.signals_tab_closed),
+              Tab(text: l.providers_tab),
             ],
           ),
         ),
@@ -43,12 +43,12 @@ class SignalsScreen extends ConsumerWidget {
             final closed = all.where((s) => s.status != SignalStatus.active).toList();
             return TabBarView(
               children: [
+                _SignalsList(items: active, emptyLabel: l.signals_empty),
+                _SignalsList(items: closed, emptyLabel: l.signals_empty),
                 ListView(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
                   children: [for (final p in providers) ProviderCard(provider: p)],
                 ),
-                _SignalsList(items: active, emptyLabel: l.signals_empty),
-                _SignalsList(items: closed, emptyLabel: l.signals_empty),
               ],
             );
           },
