@@ -18,11 +18,13 @@ const Env = z.object({
 
   ANTHROPIC_API_KEY: z.string().optional(),
   FINNHUB_API_KEY: z.string().optional(),
-  TELEGRAM_BOT_TOKEN: z.string().optional(),
-  TELEGRAM_SIGNAL_CHANNEL_ID: z.string().optional(),
-  KASPI_ADMIN_CHAT_ID: z.string().optional(),
   SUPABASE_URL: z.string().optional(),
   SUPABASE_SERVICE_KEY: z.string().optional(),
+
+  // Push (Firebase Cloud Messaging) — urgent intel / signals / alerts
+  FCM_PROJECT_ID: z.string().optional(),
+  FCM_CLIENT_EMAIL: z.string().optional(),
+  FCM_PRIVATE_KEY: z.string().optional(),
 });
 
 export const env = Env.parse(process.env);

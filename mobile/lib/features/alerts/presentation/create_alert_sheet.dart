@@ -82,7 +82,9 @@ class _CreateAlertSheetState extends ConsumerState<_CreateAlertSheet> {
     final pips = double.tryParse(_pips.text.replaceAll(',', '.'));
     final price = double.tryParse(_price.text.replaceAll(',', '.'));
     final isPips = _mode == _Mode.pips;
-    final target = isPips ? _ref : (price ?? _ref);
+    // Екі режимде де баға өрісі бар (default — live баға). pips режимінде
+    // «осы бағаға X пипс қалғанда» дегенді білдіреді.
+    final target = price ?? _ref;
 
     final alert = PriceAlert(
       id: DateTime.now().microsecondsSinceEpoch.toString(),
@@ -144,9 +146,11 @@ class _CreateAlertSheetState extends ConsumerState<_CreateAlertSheet> {
             onSelectionChanged: (s) => setState(() => _mode = s.first),
           ),
           const SizedBox(height: 16),
-          if (_mode == _Mode.pips)
-            _NumField(c: _pips, label: l.alerts_pips_hint)
-          else
+          if (_mode == _Mode.pips) ...[
+            _NumField(c: _price, label: l.alerts_price_hint),
+            const SizedBox(height: 12),
+            _NumField(c: _pips, label: l.alerts_pips_hint),
+          ] else
             _NumField(c: _price, label: l.alerts_price_hint),
           const SizedBox(height: 12),
           TextField(

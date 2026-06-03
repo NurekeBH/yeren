@@ -1,6 +1,8 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { query } from '../../db/client.js';
+import { ingestNews } from '../../services/news.js';
+import { sendIntelPush } from '../../services/push.js';
 
 const IntelCreate = z.object({
   source: z.string().min(1),
@@ -45,10 +47,21 @@ export async function intelRoutes(app: FastifyInstance) {
           d.support ?? null, d.resistance ?? null, d.suggested_sl ?? null, d.sentiment ?? null,
           d.is_urgent ?? false, d.published_at ?? null],
       );
-      return { post: rows[0] };
+      const post = rows[0] as { id: string; text: string; impact: string; is_urgent: boolean };
+      if (post.is_urgent) {
+        void sendIntelPush({ id: post.id, text: post.text, impact: post.impact });
+      }
+      return { post };
     } catch (err) {
       app.log.error(err);
       return reply.code(500).send({ error: 'insert_failed' });
     }
+  });
+
+  // Admin: әртүрлі көздерден жаңалықтарды тарту (Finnhub forex/general).
+  // FINNHUB_API_KEY керек. Cron/worker немесе админ қолмен шақыра алады.
+  app.post('/intel/ingest', { onRequest: [app.requireAdmin] }, async () => {
+    const result = await ingestNews();
+    return { ok: true, ...result };
   });
 }

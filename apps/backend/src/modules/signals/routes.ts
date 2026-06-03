@@ -15,6 +15,7 @@ const SignalCreate = z.object({
   confidence: z.number().int().min(0).max(100),
   screenshot_url: z.string().url().optional(),
   analysis: z.string().min(1),
+  provider_id: z.string().uuid().optional(),
   source: z.enum(['admin', 'telegram_bot']).default('admin'),
   source_message_id: z.string().optional(),
 });
@@ -44,11 +45,11 @@ export async function signalsRoutes(app: FastifyInstance) {
     const s = parsed.data;
     const { rows } = await query(
       `insert into signals (pair, direction, entry_from, entry_to, tp1, tp2, tp3, sl, rr, confidence,
-                            screenshot_url, analysis, source, source_message_id)
-       values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
+                            screenshot_url, analysis, provider_id, source, source_message_id)
+       values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
        returning *`,
       [s.pair, s.direction, s.entry_from, s.entry_to, s.tp1, s.tp2 ?? null, s.tp3 ?? null, s.sl, s.rr,
-        s.confidence, s.screenshot_url ?? null, s.analysis, s.source, s.source_message_id ?? null],
+        s.confidence, s.screenshot_url ?? null, s.analysis, s.provider_id ?? null, s.source, s.source_message_id ?? null],
     );
     return { signal: rows[0] };
   });
