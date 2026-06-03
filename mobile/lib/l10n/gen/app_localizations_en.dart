@@ -347,6 +347,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get prov_ideas => 'Provider\'s ideas';
 
   @override
+  String get home_alert_sub => 'Get notified when price hits a level';
+
+  @override
   String get nav_journal => 'Journal';
 
   @override

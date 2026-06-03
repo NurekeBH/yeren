@@ -347,6 +347,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get prov_ideas => 'Идеи провайдера';
 
   @override
+  String get home_alert_sub => 'Уведомить при достижении уровня цены';
+
+  @override
   String get nav_journal => 'Журнал';
 
   @override

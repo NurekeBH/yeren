@@ -7,6 +7,7 @@ import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/widgets/language_switcher.dart';
 import '../../academy/data/lessons_repository.dart';
+import '../../alerts/presentation/create_alert_sheet.dart';
 import '../../auth/application/auth_controller.dart';
 import '../../profile/application/profile_controller.dart';
 import '../data/dashboard_repository.dart';
@@ -23,6 +24,7 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     final goldAsync = ref.watch(goldQuoteProvider);
+    final goldPrice = goldAsync.valueOrNull?.price ?? 2374.20;
     final lessonsAsync = ref.watch(allLessonsProvider);
     final profile = ref.watch(profileControllerProvider);
     final auth = ref.watch(authControllerProvider);
@@ -71,6 +73,28 @@ class HomeScreen extends ConsumerWidget {
               error: (_, _) => const SizedBox.shrink(),
             ),
             const SizedBox(height: 12),
+            Card(
+              child: ListTile(
+                leading: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(color: AppColors.gold.withValues(alpha: 0.12), shape: BoxShape.circle),
+                  child: const Icon(Icons.add_alert, color: AppColors.gold),
+                ),
+                title: Text(l.alerts_title, style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w600)),
+                subtitle: Text(l.home_alert_sub, style: AppTypography.bodySmall()),
+                trailing: const Icon(Icons.chevron_right, color: AppColors.textMuted),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                onTap: () => showCreateAlertSheet(
+                  context,
+                  ref,
+                  instrument: 'XAU/USD',
+                  refPrice: goldPrice,
+                  defaultText: l.alerts_default_manual('XAU/USD'),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
             const CalendarModule(),
             const SizedBox(height: 12),
             _PositionCalcCard(l: l),
@@ -80,8 +104,8 @@ class HomeScreen extends ConsumerWidget {
                 leading: Container(
                   width: 40,
                   height: 40,
-                  decoration: BoxDecoration(color: AppColors.purple.withValues(alpha: 0.12), shape: BoxShape.circle),
-                  child: const Icon(Icons.event_available, color: AppColors.purple),
+                  decoration: BoxDecoration(color: AppColors.gold.withValues(alpha: 0.12), shape: BoxShape.circle),
+                  child: const Icon(Icons.event_available, color: AppColors.gold),
                 ),
                 title: Text(l.home_events, style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w600)),
                 subtitle: Text(l.home_events_sub, style: AppTypography.bodySmall()),

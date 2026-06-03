@@ -136,20 +136,15 @@ class _LibraryDetailScreenState extends ConsumerState<LibraryDetailScreen> {
         Text(item.summary, style: AppTypography.bodyMedium().copyWith(height: 1.5)),
         const SizedBox(height: 26),
 
-        if (item.externalUrl != null)
+        // Подкаст тек приложение ішінде көрінеді — сыртқы YouTube сілтемесі жоқ.
+        if (item.externalUrl != null && !item.isPodcast)
           SizedBox(
             width: double.infinity,
-            child: item.isPodcast
-                ? ElevatedButton.icon(
-                    onPressed: () => _open(item.externalUrl!),
-                    icon: const Icon(Icons.open_in_new, size: 18),
-                    label: Text(l.library_open_youtube),
-                  )
-                : OutlinedButton.icon(
-                    onPressed: () => _open(item.externalUrl!),
-                    icon: const Icon(Icons.open_in_new, size: 18),
-                    label: Text(l.academy_open_source),
-                  ),
+            child: OutlinedButton.icon(
+              onPressed: () => _open(item.externalUrl!),
+              icon: const Icon(Icons.open_in_new, size: 18),
+              label: Text(l.academy_open_source),
+            ),
           ),
 
         const SizedBox(height: 24),

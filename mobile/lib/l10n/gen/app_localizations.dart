@@ -748,6 +748,12 @@ abstract class AppLocalizations {
   /// **'Провайдер идеялары'**
   String get prov_ideas;
 
+  /// No description provided for @home_alert_sub.
+  ///
+  /// In kk, this message translates to:
+  /// **'Баға деңгейіне жеткенде хабарлау'**
+  String get home_alert_sub;
+
   /// No description provided for @nav_journal.
   ///
   /// In kk, this message translates to:

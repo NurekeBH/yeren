@@ -36,7 +36,7 @@ class AcademyScreen extends ConsumerWidget {
           const SizedBox(height: 12),
           Card(
             child: ListTile(
-              leading: const Icon(Icons.local_library_outlined, color: AppColors.purple),
+              leading: const Icon(Icons.local_library_outlined, color: AppColors.gold),
               title: Text(l.academy_library, style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w600)),
               subtitle: Text(l.academy_library_subtitle, style: AppTypography.bodySmall()),
               trailing: const Icon(Icons.chevron_right, color: AppColors.textMuted),

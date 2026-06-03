@@ -347,6 +347,9 @@ class AppLocalizationsKk extends AppLocalizations {
   String get prov_ideas => 'Провайдер идеялары';
 
   @override
+  String get home_alert_sub => 'Баға деңгейіне жеткенде хабарлау';
+
+  @override
   String get nav_journal => 'Журнал';
 
   @override

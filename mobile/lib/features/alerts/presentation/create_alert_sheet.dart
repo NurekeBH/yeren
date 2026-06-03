@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/network/live_quotes_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
@@ -54,11 +55,20 @@ class _CreateAlertSheet extends ConsumerStatefulWidget {
 
 class _CreateAlertSheetState extends ConsumerState<_CreateAlertSheet> {
   _Mode _mode = _Mode.pips;
+  late final double _ref;
   late final TextEditingController _pips = TextEditingController(text: '50');
-  late final TextEditingController _price =
-      TextEditingController(text: widget.refPrice.toStringAsFixed(2));
+  late final TextEditingController _price;
   late final TextEditingController _text =
       TextEditingController(text: widget.defaultText ?? '');
+
+  @override
+  void initState() {
+    super.initState();
+    // Default баға — ағымдағы live баға (cached), болмаса refPrice.
+    final live = ref.read(cachedQuotesProvider)[widget.instrument]?.price;
+    _ref = live ?? widget.refPrice;
+    _price = TextEditingController(text: _ref.toStringAsFixed(2));
+  }
 
   @override
   void dispose() {
@@ -72,7 +82,7 @@ class _CreateAlertSheetState extends ConsumerState<_CreateAlertSheet> {
     final pips = double.tryParse(_pips.text.replaceAll(',', '.'));
     final price = double.tryParse(_price.text.replaceAll(',', '.'));
     final isPips = _mode == _Mode.pips;
-    final target = isPips ? widget.refPrice : (price ?? widget.refPrice);
+    final target = isPips ? _ref : (price ?? _ref);
 
     final alert = PriceAlert(
       id: DateTime.now().microsecondsSinceEpoch.toString(),
@@ -122,7 +132,7 @@ class _CreateAlertSheetState extends ConsumerState<_CreateAlertSheet> {
             ],
           ),
           const SizedBox(height: 4),
-          Text('${widget.instrument} · ${widget.refPrice.toStringAsFixed(2)}',
+          Text('${widget.instrument} · ${_ref.toStringAsFixed(2)}',
               style: AppTypography.bodySmall(color: AppColors.textSecondary)),
           const SizedBox(height: 16),
           SegmentedButton<_Mode>(
