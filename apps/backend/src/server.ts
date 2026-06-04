@@ -14,6 +14,7 @@ import { academyRoutes } from './modules/academy/routes.js';
 import { subscriptionRoutes } from './modules/subscription/routes.js';
 import { notificationsRoutes } from './modules/notifications/routes.js';
 import { providersRoutes } from './modules/providers/routes.js';
+import { postsRoutes } from './modules/posts/routes.js';
 import { eventsRoutes } from './modules/events/routes.js';
 import { alertsRoutes } from './modules/alerts/routes.js';
 import { libraryRoutes } from './modules/library/routes.js';
@@ -50,6 +51,7 @@ await app.register(async (api) => {
   await subscriptionRoutes(api);
   await notificationsRoutes(api);
   await providersRoutes(api);
+  await postsRoutes(api);
   await eventsRoutes(api);
   await alertsRoutes(api);
   await libraryRoutes(api);

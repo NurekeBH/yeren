@@ -1,5 +1,6 @@
 import '../../shared/models/gallup.dart';
 import '../../shared/models/library_item.dart';
+import 'library_content.dart';
 
 /// Библиотека каталогы — максималды толтырылған тізім (кітаптар/фильмдер/подкасттар),
 /// рейтингтерімен. Подкасттар = YouTube видеолары (приложение ішінде ойнайды).
@@ -69,6 +70,23 @@ class LibraryFixtures {
     String t(String kk, String ru, String en) =>
         _pick(loc, {'kk': kk, 'ru': ru, 'en': en});
 
+    // Структурированный разбор (genre / идеи / заключение) по id из library_content.dart.
+    String? genreOf(String id) {
+      final c = kLibraryContent[id];
+      return c == null ? null : _pick(loc, c.genre);
+    }
+
+    List<String> ideasOf(String id) {
+      final c = kLibraryContent[id];
+      if (c == null) return const [];
+      return c.ideas[loc] ?? c.ideas['ru'] ?? c.ideas['en'] ?? const [];
+    }
+
+    String? conclusionOf(String id) {
+      final c = kLibraryContent[id];
+      return c == null ? null : _pick(loc, c.conclusion);
+    }
+
     LibraryItem book({
       required String id,
       required String title,
@@ -95,6 +113,9 @@ class LibraryFixtures {
           isbn: isbn,
           externalUrl: url,
           summary: t(kk, ru, en),
+          genre: genreOf(id),
+          ideas: ideasOf(id),
+          conclusion: conclusionOf(id),
         );
 
     LibraryItem film({
@@ -121,6 +142,9 @@ class LibraryFixtures {
           profile: profile,
           externalUrl: imdb == null ? null : 'https://www.imdb.com/title/$imdb/',
           summary: t(kk, ru, en),
+          genre: genreOf(id),
+          ideas: ideasOf(id),
+          conclusion: conclusionOf(id),
         );
 
     LibraryItem pod({

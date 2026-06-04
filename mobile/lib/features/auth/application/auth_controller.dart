@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/config/app_config.dart';
+import '../../../core/network/api_service.dart';
 import '../../../core/storage/secure_storage.dart';
 
 enum AuthStatus { unknown, unauthenticated, authenticated }
@@ -39,19 +41,35 @@ class AuthController extends StateNotifier<AuthState> {
   }
 
   /// Тіркелу: телефон + пароль. SMS жоқ (TZ.rtf override).
-  /// Backend дайын болғанша мок: кез келген phone+password 8+ символ → success.
+  /// useRemoteApi=true болса — backend; әйтпесе мок (offline режим).
   Future<void> register({required String phone, required String password}) async {
-    await Future<void>.delayed(const Duration(milliseconds: 400));
-    final storage = _ref.read(secureStorageProvider);
-    await storage.write(key: _tokenKey, value: 'mock-token-${DateTime.now().millisecondsSinceEpoch}');
-    await storage.write(key: _phoneKey, value: phone);
-    state = AuthState(status: AuthStatus.authenticated, phone: phone);
+    final token = AppConfig.useRemoteApi
+        ? (await _ref.read(apiServiceProvider).register(phone, password))['token'] as String
+        : await _mockToken();
+    await _persistAuth(token, phone);
+    // Келісім checkbox тіркеу алдында расталады — серверге логқа жазамыз.
+    if (AppConfig.useRemoteApi) {
+      try {
+        await _ref.read(apiServiceProvider).acceptAgreement();
+      } catch (_) {/* best-effort */}
+    }
   }
 
   Future<void> login({required String phone, required String password}) async {
+    final token = AppConfig.useRemoteApi
+        ? (await _ref.read(apiServiceProvider).login(phone, password))['token'] as String
+        : await _mockToken();
+    await _persistAuth(token, phone);
+  }
+
+  Future<String> _mockToken() async {
     await Future<void>.delayed(const Duration(milliseconds: 400));
+    return 'mock-token-${DateTime.now().millisecondsSinceEpoch}';
+  }
+
+  Future<void> _persistAuth(String token, String phone) async {
     final storage = _ref.read(secureStorageProvider);
-    await storage.write(key: _tokenKey, value: 'mock-token-${DateTime.now().millisecondsSinceEpoch}');
+    await storage.write(key: _tokenKey, value: token);
     await storage.write(key: _phoneKey, value: phone);
     state = AuthState(status: AuthStatus.authenticated, phone: phone);
   }

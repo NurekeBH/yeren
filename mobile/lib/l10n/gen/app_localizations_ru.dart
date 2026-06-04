@@ -347,6 +347,37 @@ class AppLocalizationsRu extends AppLocalizations {
   String get prov_ideas => 'Идеи провайдера';
 
   @override
+  String get posts_published => 'Опубликованные идеи';
+
+  @override
+  String get posts_empty => 'Пока нет публикаций';
+
+  @override
+  String get posts_comments_title => 'Комментарии';
+
+  @override
+  String get posts_comment_hint => 'Написать комментарий…';
+
+  @override
+  String get posts_send => 'Отправить';
+
+  @override
+  String get posts_you => 'Вы';
+
+  @override
+  String posts_comments_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count комментариев',
+      few: '$count комментария',
+      one: '$count комментарий',
+      zero: 'Нет комментариев',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get home_alert_sub => 'Уведомить при достижении уровня цены';
 
   @override
@@ -989,6 +1020,15 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get library_summary => 'Краткое содержание';
+
+  @override
+  String get library_about => 'О чём это';
+
+  @override
+  String get library_key_ideas => 'Основные идеи';
+
+  @override
+  String get library_conclusion => 'Заключение';
 
   @override
   String get library_watch => 'Смотреть видео';

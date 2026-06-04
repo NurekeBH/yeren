@@ -27,6 +27,9 @@ class LibraryItem extends Equatable {
     required this.title,
     required this.author,
     required this.summary,
+    this.genre,
+    this.ideas = const [],
+    this.conclusion,
     this.profile,
     this.year,
     this.rating,
@@ -48,8 +51,17 @@ class LibraryItem extends Equatable {
   /// Автор / режиссёр / YouTube-канал.
   final String author;
 
-  /// Локализацияланған қысқаша мазмұн (ашқанда көрсетіледі).
+  /// Локализацияланған қысқаша мазмұн / «О чём это» (ашқанда көрсетіледі).
   final String summary;
+
+  /// Жанр (локализацияланған) — кітап/фильм үшін. Подкастта null.
+  final String? genre;
+
+  /// «Негізгі идеялар» — локализацияланған тармақтар (кітап/фильм).
+  final List<String> ideas;
+
+  /// «Қорытынды» — локализацияланған бір сөйлем (кітап/фильм).
+  final String? conclusion;
 
   /// Gallup профилі бойынша сүзу үшін (қалауыңызша).
   final GallupProfile? profile;

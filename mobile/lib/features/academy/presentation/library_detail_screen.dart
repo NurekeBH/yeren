@@ -102,9 +102,10 @@ class _LibraryDetailScreenState extends ConsumerState<LibraryDetailScreen> {
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             _Chip(text: '${item.category.emoji} ${_categoryLabel(item.category, l)}', color: AppColors.purple),
+            if (item.genre != null) _Chip(text: item.genre!, color: AppColors.gold),
             if (item.lang != null) LangChip(lang: item.lang!, onCover: false),
             if (item.profile != null)
-              _Chip(text: '${item.profile!.emoji} ${_profileLabel(item.profile!, l)}', color: AppColors.gold),
+              _Chip(text: '${item.profile!.emoji} ${_profileLabel(item.profile!, l)}', color: AppColors.dxyBlue),
           ],
         ),
         const SizedBox(height: 14),
@@ -119,9 +120,31 @@ class _LibraryDetailScreenState extends ConsumerState<LibraryDetailScreen> {
         RatingBadge(item: item),
         const SizedBox(height: 22),
 
-        Text(l.library_summary, style: AppTypography.label(color: AppColors.textSecondary)),
-        const SizedBox(height: 8),
-        Text(item.summary, style: AppTypography.bodyMedium().copyWith(height: 1.5)),
+        // ── Структурированный разбор: О чём / Основные идеи / Заключение ──
+        _Section(
+          title: item.ideas.isEmpty ? l.library_summary : l.library_about,
+          child: Text(item.summary, style: AppTypography.bodyMedium().copyWith(height: 1.5)),
+        ),
+        if (item.ideas.isNotEmpty) ...[
+          const SizedBox(height: 22),
+          _Section(
+            title: l.library_key_ideas,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [for (final idea in item.ideas) _Bullet(text: idea)],
+            ),
+          ),
+        ],
+        if (item.conclusion != null) ...[
+          const SizedBox(height: 22),
+          _Section(
+            title: l.library_conclusion,
+            child: Text(
+              item.conclusion!,
+              style: AppTypography.bodyMedium(color: AppColors.gold).copyWith(height: 1.5, fontStyle: FontStyle.italic),
+            ),
+          ),
+        ],
         const SizedBox(height: 26),
 
         const SizedBox(height: 24),
@@ -199,6 +222,54 @@ class _Chip extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(text, style: AppTypography.label(color: color)),
+    );
+  }
+}
+
+/// Тақырыпша + мазмұн блогы (О чём / Основные идеи / Заключение).
+class _Section extends StatelessWidget {
+  const _Section({required this.title, required this.child});
+  final String title;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: AppTypography.label(color: AppColors.textSecondary)),
+        const SizedBox(height: 8),
+        child,
+      ],
+    );
+  }
+}
+
+/// Негізгі идея тармағы (gold нүкте + мәтін).
+class _Bullet extends StatelessWidget {
+  const _Bullet({required this.text});
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 7, right: 10),
+            child: Container(
+              width: 6,
+              height: 6,
+              decoration: const BoxDecoration(color: AppColors.gold, shape: BoxShape.circle),
+            ),
+          ),
+          Expanded(
+            child: Text(text, style: AppTypography.bodyMedium().copyWith(height: 1.45)),
+          ),
+        ],
+      ),
     );
   }
 }

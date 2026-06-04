@@ -18,7 +18,7 @@ class SignalsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     final async = ref.watch(signalsListProvider);
-    final providers = ref.watch(signalProvidersProvider);
+    final providers = ref.watch(signalProvidersProvider).valueOrNull ?? const [];
 
     return DefaultTabController(
       length: 3,

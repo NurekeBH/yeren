@@ -30,14 +30,13 @@ class LiveQuote extends Equatable {
   List<Object?> get props => [symbol, price, deltaAbs, deltaPct, timestamp];
 }
 
-/// Yahoo Finance REST API (key қажет емес, rate limit практикалық тұрғыдан жоқ).
-/// Stooq бұрын күндік лимитке жетіп тоқтады — Yahoo Finance тұрақты.
-/// XAU/USD: GC=F (Comex Gold futures)
-/// DXY:     DX-Y.NYB (USD Index)
-/// XAG/USD: SI=F (Silver futures)
-/// USOIL:   CL=F (WTI Crude)
+/// Live баға көзі.
+/// XAU/USD — Binance PAXG/USDT арқылы НАҚТЫ РЕАЛTIME (PAX Gold = 1 тройя унция
+///   алтынмен 1:1 өтелетін токен, 24/7 саудаланады, key қажет емес).
+///   Yahoo GC=F (фьючерс) ~10 минут кідіріспен берілетін — сол себепті ауыстырылды.
+/// DXY/XAG/USOIL — Yahoo Finance REST (қосымша тикерлер).
 class StooqLiveQuotesService {
-  StooqLiveQuotesService({Dio? dio, this.pollInterval = const Duration(seconds: 15)})
+  StooqLiveQuotesService({Dio? dio, this.pollInterval = const Duration(seconds: 4)})
       : _dio = dio ??
             Dio(BaseOptions(
               connectTimeout: const Duration(seconds: 10),
@@ -49,15 +48,54 @@ class StooqLiveQuotesService {
   final Duration pollInterval;
 
   static const _baseUrl = 'https://query1.finance.yahoo.com/v8/finance/chart/';
+
+  /// Binance public market-data mirror (key/geo-блок жоқ).
+  static const _binanceBase = 'https://data-api.binance.vision/api/v3';
+
+  /// Қосымша тикерлер (Yahoo). XAU/USD бөлек — Binance арқылы realtime.
   static const symbols = <String, String>{
-    'XAU/USD': 'GC=F',
+    'XAU/USD': 'GC=F', // realtime Binance-тен; Yahoo тек fallback ретінде
     'DXY': 'DX-Y.NYB',
     'XAG/USD': 'SI=F',
     'USOIL': 'CL=F',
   };
 
+  /// XAU/USD — Binance PAXG/USDT (realtime, key қажет емес).
+  Future<LiveQuote?> _fetchGoldRealtime() async {
+    try {
+      final res = await _dio.get<Map<String, dynamic>>(
+        '$_binanceBase/ticker/24hr',
+        queryParameters: const {'symbol': 'PAXGUSDT'},
+      );
+      final d = res.data;
+      if (d == null) return null;
+      final price = double.tryParse('${d['lastPrice']}');
+      if (price == null || price <= 0) return null;
+      final open = double.tryParse('${d['openPrice']}');
+      final chgAbs = double.tryParse('${d['priceChange']}');
+      final chgPct = double.tryParse('${d['priceChangePercent']}');
+      final delta = chgAbs ?? (open != null ? price - open : 0.0);
+      final pct = chgPct ?? (open != null && open != 0 ? delta / open * 100 : 0.0);
+      return LiveQuote(
+        symbol: 'XAU/USD',
+        price: price,
+        deltaAbs: delta,
+        deltaPct: pct,
+        timestamp: DateTime.now(),
+      );
+    } on DioException {
+      return null;
+    } catch (_) {
+      return null;
+    }
+  }
+
   /// Бір тикер бойынша соңғы котировка.
   Future<LiveQuote?> fetchOne(String displaySymbol) async {
+    if (displaySymbol == 'XAU/USD') {
+      final gold = await _fetchGoldRealtime();
+      if (gold != null) return gold; // realtime; әйтпесе Yahoo fallback-қа түседі
+    }
     final yahooSym = symbols[displaySymbol];
     if (yahooSym == null) return null;
     try {

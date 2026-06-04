@@ -347,6 +347,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get prov_ideas => 'Provider\'s ideas';
 
   @override
+  String get posts_published => 'Published Ideas';
+
+  @override
+  String get posts_empty => 'No posts yet';
+
+  @override
+  String get posts_comments_title => 'Comments';
+
+  @override
+  String get posts_comment_hint => 'Write a comment…';
+
+  @override
+  String get posts_send => 'Send';
+
+  @override
+  String get posts_you => 'You';
+
+  @override
+  String posts_comments_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count comments',
+      one: '$count comment',
+      zero: 'No comments',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get home_alert_sub => 'Get notified when price hits a level';
 
   @override
@@ -989,6 +1019,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get library_summary => 'Summary';
+
+  @override
+  String get library_about => 'What it\'s about';
+
+  @override
+  String get library_key_ideas => 'Key ideas';
+
+  @override
+  String get library_conclusion => 'Conclusion';
 
   @override
   String get library_watch => 'Watch video';

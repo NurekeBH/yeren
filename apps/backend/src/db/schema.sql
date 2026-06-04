@@ -326,6 +326,36 @@ create table if not exists agreement_acceptances (
 );
 create index if not exists agreement_user_idx on agreement_acceptances(user_id, accepted_at desc);
 
+-- ─────────────────── TRADER POSTS (Published Ideas: фото/мәтін/лайк/коммент) ───────────────────
+-- Провайдер бетіндегі әлеуметтік лента. Әр пост — сурет + мәтін, лайк пен коммент.
+create table if not exists trader_posts (
+  id          uuid primary key default uuid_generate_v4(),
+  provider_id uuid not null references signal_providers(id) on delete cascade,
+  text        text not null,
+  image_url   text,                                          -- график скриншоты (қалауыңша)
+  likes_count int default 0,                                 -- денормализацияланған санақ (trader_post_likes-тен)
+  created_at  timestamptz default now()
+);
+create index if not exists trader_posts_provider_idx on trader_posts(provider_id, created_at desc);
+
+create table if not exists trader_post_likes (
+  post_id    uuid not null references trader_posts(id) on delete cascade,
+  user_id    uuid not null references users(id) on delete cascade,
+  created_at timestamptz default now(),
+  primary key (post_id, user_id)
+);
+create index if not exists trader_post_likes_user_idx on trader_post_likes(user_id);
+
+create table if not exists trader_post_comments (
+  id         uuid primary key default uuid_generate_v4(),
+  post_id    uuid not null references trader_posts(id) on delete cascade,
+  user_id    uuid references users(id) on delete set null,
+  author     text not null,                                  -- көрсетілетін аты (snapshot)
+  text       text not null,
+  created_at timestamptz default now()
+);
+create index if not exists trader_post_comments_post_idx on trader_post_comments(post_id, created_at);
+
 -- ─────────────────── HOUSEKEEPING ───────────────────
 -- updated_at автоматты жаңарту үшін trigger функциясы
 create or replace function set_updated_at() returns trigger as $$

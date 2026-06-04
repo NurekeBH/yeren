@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/network/api_client.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
@@ -50,6 +51,11 @@ class _PasswordScreenState extends ConsumerState<PasswordScreen> {
         await controller.register(phone: widget.phone, password: _password.text);
       } else {
         await controller.login(phone: widget.phone, password: _password.text);
+      }
+    } catch (e) {
+      if (mounted) {
+        final msg = e is ApiException ? e.message : AppLocalizations.of(context).common_error;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
       }
     } finally {
       if (mounted) setState(() => _busy = false);

@@ -5,9 +5,11 @@ import '../../../core/mock/signal_providers_fixtures.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
+import '../application/trader_posts_controller.dart';
 import '../data/signals_repository.dart';
 import 'provider_card.dart';
 import 'signal_card.dart';
+import 'trader_post_card.dart';
 
 class ProviderDetailScreen extends ConsumerWidget {
   const ProviderDetailScreen({super.key, required this.providerId});
@@ -17,7 +19,7 @@ class ProviderDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
-    final providers = ref.watch(signalProvidersProvider);
+    final providers = ref.watch(signalProvidersProvider).valueOrNull ?? const [];
     final matches = providers.where((p) => p.id == providerId);
     if (matches.isEmpty) {
       return Scaffold(appBar: AppBar(), body: Center(child: Text(l.common_error)));
@@ -42,7 +44,25 @@ class ProviderDetailScreen extends ConsumerWidget {
             ),
           const SizedBox(height: 12),
           Text(provider.bio, style: AppTypography.bodyMedium().copyWith(height: 1.5)),
-          const SizedBox(height: 20),
+          const SizedBox(height: 24),
+
+          // ── Published Ideas — трейдердің посттары (фото/мәтін/лайк/коммент) ──
+          Text(l.posts_published, style: AppTypography.h2()),
+          const SizedBox(height: 10),
+          Builder(builder: (context) {
+            final posts = ref.watch(traderPostsProvider(providerId));
+            if (posts.isEmpty) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Text(l.posts_empty, style: AppTypography.bodyMedium(color: AppColors.textSecondary)),
+              );
+            }
+            return Column(
+              children: [for (final p in posts) TraderPostCard(post: p, provider: provider)],
+            );
+          }),
+          const SizedBox(height: 24),
+
           Text(l.prov_ideas, style: AppTypography.h2()),
           const SizedBox(height: 8),
           signalsAsync.when(

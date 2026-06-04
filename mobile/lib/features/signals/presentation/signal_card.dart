@@ -19,7 +19,8 @@ class SignalCard extends ConsumerWidget {
     final l = AppLocalizations.of(context);
     final isBuy = signal.direction == SignalDirection.buy;
     final dirColor = isBuy ? AppColors.profitGreen : AppColors.lossRed;
-    final providerMatches = ref.watch(signalProvidersProvider).where((p) => p.id == signal.providerId);
+    final providers = ref.watch(signalProvidersProvider).valueOrNull ?? const [];
+    final providerMatches = providers.where((p) => p.id == signal.providerId);
     final provider = providerMatches.isEmpty ? null : providerMatches.first;
 
     return Padding(

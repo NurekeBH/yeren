@@ -748,6 +748,48 @@ abstract class AppLocalizations {
   /// **'Провайдер идеялары'**
   String get prov_ideas;
 
+  /// No description provided for @posts_published.
+  ///
+  /// In kk, this message translates to:
+  /// **'Жарияланған идеялар'**
+  String get posts_published;
+
+  /// No description provided for @posts_empty.
+  ///
+  /// In kk, this message translates to:
+  /// **'Әзірге жарияланым жоқ'**
+  String get posts_empty;
+
+  /// No description provided for @posts_comments_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Пікірлер'**
+  String get posts_comments_title;
+
+  /// No description provided for @posts_comment_hint.
+  ///
+  /// In kk, this message translates to:
+  /// **'Пікір жазу…'**
+  String get posts_comment_hint;
+
+  /// No description provided for @posts_send.
+  ///
+  /// In kk, this message translates to:
+  /// **'Жіберу'**
+  String get posts_send;
+
+  /// No description provided for @posts_you.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сіз'**
+  String get posts_you;
+
+  /// No description provided for @posts_comments_count.
+  ///
+  /// In kk, this message translates to:
+  /// **'{count, plural, =0{Пікір жоқ} other{{count} пікір}}'**
+  String posts_comments_count(int count);
+
   /// No description provided for @home_alert_sub.
   ///
   /// In kk, this message translates to:
@@ -1971,6 +2013,24 @@ abstract class AppLocalizations {
   /// In kk, this message translates to:
   /// **'Қысқаша мазмұн'**
   String get library_summary;
+
+  /// No description provided for @library_about.
+  ///
+  /// In kk, this message translates to:
+  /// **'Не туралы'**
+  String get library_about;
+
+  /// No description provided for @library_key_ideas.
+  ///
+  /// In kk, this message translates to:
+  /// **'Негізгі идеялар'**
+  String get library_key_ideas;
+
+  /// No description provided for @library_conclusion.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қорытынды'**
+  String get library_conclusion;
 
   /// No description provided for @library_watch.
   ///

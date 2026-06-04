@@ -77,3 +77,18 @@ from (values
   ('webinar', 'Риск-менеджмент: считаем лот', 'ProMarket — Олег Полунин', 'Онлайн', true, 4, 0, 'Формулы и примеры грамотного расчёта риска. Бесплатный вебинар для начинающих.', 'X3OMQriyHFg')
 ) as v(type, title, speaker, city, is_online, days, price, description, youtube_id)
 where not exists (select 1 from events);
+
+-- Demo trader posts (Published Ideas) — кесте бос болса ғана, провайдерге атымен байланады
+insert into trader_posts (provider_id, text, image_url, likes_count, created_at)
+select p.id, v.text, v.image_url, v.likes_count, now() - ((v.hours_ago)::text || ' hours')::interval
+from (values
+  ('TraderOS Desk', 'XAU/USD на overlap London/NY: жду реакцию от 4H OB. Смотрю long из зоны 4 462–4 458, SL 4 449, TP1 4 478. DXY слабеет — фон для золота позитивный.', 'https://picsum.photos/seed/xau-london-overlap/900/560', 184, 2),
+  ('TraderOS Desk', 'Правило: перед NFP новые позиции не открываю. Волатильность непредсказуема — сохранение капитала важнее. Сегодня только наблюдаем.', null, 96, 7),
+  ('Алмас Gold', 'H1 BOS подтверждён, жду ретест. Вход 4 470, SL 4 462, RR 1:2.4. Скрин приложил.', 'https://picsum.photos/seed/xau-h1-setup/900/560', 142, 3),
+  ('Алмас Gold', 'Вчера взяли TP2, +148 пипсов. Но помни: одна сделка — не статистика. Важен процесс.', null, 67, 20),
+  ('SMC Pro', 'Smart Money: за азию набралась ликвидность, жду sweep на Лондоне. После sweep — sell из H1 OB. Без плана не вхожу.', 'https://picsum.photos/seed/smc-orderblock/900/560', 210, 1),
+  ('Asia Session', 'Азиатская сессия — узкий range. Торгую отбой от границ 4 455–4 470, цель — середина range. Тренда нет, сохраняем терпение.', 'https://picsum.photos/seed/asia-range/900/560', 54, 9),
+  ('London Killzone', 'London killzone (10:00–13:00): после judas swing — чёткое направление. Сегодня доминирует buy-side ликвидность, склоняюсь к long. ICT-вход — ретест в FVG.', 'https://picsum.photos/seed/london-killzone/900/560', 173, 4)
+) as v(provider_name, text, image_url, likes_count, hours_ago)
+join signal_providers p on p.name = v.provider_name
+where not exists (select 1 from trader_posts);

@@ -1,12 +1,74 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/config/app_config.dart';
 import '../../../core/locale/locale_controller.dart';
 import '../../../core/mock/fixtures.dart';
+import '../../../core/network/api_service.dart';
 import '../../../shared/models/signal.dart';
 
 abstract class SignalsRepository {
   Future<List<Signal>> fetchAll(String loc);
   Future<Signal?> fetchById(String loc, String id);
+}
+
+// ─── Backend JSON → Signal (pg numeric-тер string болуы мүмкін) ───
+double _d(dynamic v) => v is num ? v.toDouble() : double.tryParse('$v') ?? 0;
+int? _i(dynamic v) => v == null ? null : (v is num ? v.toInt() : int.tryParse('$v'));
+
+SignalDirection _dir(String s) => s == 'sell' ? SignalDirection.sell : SignalDirection.buy;
+SignalStatus _statusOf(String s) {
+  switch (s) {
+    case 'closed_tp1':
+      return SignalStatus.closedTp1;
+    case 'closed_tp2':
+      return SignalStatus.closedTp2;
+    case 'closed_tp3':
+      return SignalStatus.closedTp3;
+    case 'closed_sl':
+      return SignalStatus.closedSl;
+    default:
+      return SignalStatus.active;
+  }
+}
+
+Signal signalFromJson(Map<String, dynamic> j) => Signal(
+      id: j['id'].toString(),
+      providerId: j['provider_id']?.toString(),
+      pair: (j['pair'] ?? 'XAU/USD').toString(),
+      direction: _dir((j['direction'] ?? 'buy').toString()),
+      entryFrom: _d(j['entry_from']),
+      entryTo: _d(j['entry_to']),
+      tp1: _d(j['tp1']),
+      tp2: _d(j['tp2']),
+      tp3: _d(j['tp3']),
+      sl: _d(j['sl']),
+      rr: _d(j['rr']),
+      confidence: _i(j['confidence']) ?? 0,
+      screenshotUrl: (j['screenshot_url'] ?? '').toString(),
+      analysis: (j['analysis'] ?? '').toString(),
+      status: _statusOf((j['status'] ?? 'active').toString()),
+      publishedAt: DateTime.tryParse('${j['published_at']}') ?? DateTime.now(),
+      resultPips: _i(j['result_pips']),
+    );
+
+class ApiSignalsRepository implements SignalsRepository {
+  ApiSignalsRepository(this._api);
+  final ApiService _api;
+
+  @override
+  Future<List<Signal>> fetchAll(String loc) async {
+    final list = await _api.signals();
+    return list.map((e) => signalFromJson((e as Map).cast<String, dynamic>())).toList();
+  }
+
+  @override
+  Future<Signal?> fetchById(String loc, String id) async {
+    try {
+      return signalFromJson(await _api.signal(id));
+    } catch (_) {
+      return null;
+    }
+  }
 }
 
 class MockSignalsRepository implements SignalsRepository {
@@ -28,7 +90,9 @@ class MockSignalsRepository implements SignalsRepository {
 }
 
 final signalsRepositoryProvider = Provider<SignalsRepository>(
-  (ref) => MockSignalsRepository(),
+  (ref) => AppConfig.useRemoteApi
+      ? ApiSignalsRepository(ref.watch(apiServiceProvider))
+      : MockSignalsRepository(),
 );
 
 final signalsListProvider = FutureProvider<List<Signal>>((ref) {

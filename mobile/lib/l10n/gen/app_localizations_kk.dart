@@ -347,6 +347,35 @@ class AppLocalizationsKk extends AppLocalizations {
   String get prov_ideas => 'Провайдер идеялары';
 
   @override
+  String get posts_published => 'Жарияланған идеялар';
+
+  @override
+  String get posts_empty => 'Әзірге жарияланым жоқ';
+
+  @override
+  String get posts_comments_title => 'Пікірлер';
+
+  @override
+  String get posts_comment_hint => 'Пікір жазу…';
+
+  @override
+  String get posts_send => 'Жіберу';
+
+  @override
+  String get posts_you => 'Сіз';
+
+  @override
+  String posts_comments_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count пікір',
+      zero: 'Пікір жоқ',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get home_alert_sub => 'Баға деңгейіне жеткенде хабарлау';
 
   @override
@@ -990,6 +1019,15 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get library_summary => 'Қысқаша мазмұн';
+
+  @override
+  String get library_about => 'Не туралы';
+
+  @override
+  String get library_key_ideas => 'Негізгі идеялар';
+
+  @override
+  String get library_conclusion => 'Қорытынды';
 
   @override
   String get library_watch => 'Видеоны көру';
