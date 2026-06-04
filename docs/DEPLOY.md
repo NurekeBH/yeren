@@ -127,7 +127,38 @@ If these are unset, push is a safe no-op (logged, not sent). iOS push additional
 
 ---
 
-## 8. Smoke test
+## 8. Release signing (Android)
+
+The release build is wired to read a **gitignored** `mobile/android/key.properties`.
+If that file is absent it falls back to debug keys (so `flutter run --release` still works locally).
+
+1. Generate an upload keystore (keep the password safe — losing it means you can’t update the app):
+   ```bash
+   cd mobile/android
+   keytool -genkey -v -keystore app/upload-keystore.jks \
+     -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+   ```
+2. Copy the template and fill it in:
+   ```bash
+   cp key.properties.example key.properties   # then edit the passwords
+   ```
+3. Build the signed release:
+   ```bash
+   cd ..
+   flutter build appbundle --release \
+     --dart-define=USE_REMOTE_API=true --dart-define=API_BASE_URL=https://<api>/api/v1
+   # → build/app/outputs/bundle/release/app-release.aab  (upload to Play Console)
+   ```
+
+> Bundle id / `applicationId` is **`com.traderos.traderos`** — the Firebase project
+> `trade-de7a3` is registered to it, and the bundle id is permanent once published.
+> Changing it would require re-registering the app in Firebase and regenerating
+> `google-services.json` / `GoogleService-Info.plist`.
+
+iOS release: `flutter build ipa --release --dart-define=...` after enabling the Push
+capability + APNs key (step 7) and setting your team/signing in Xcode.
+
+## 9. Smoke test
 
 ```bash
 curl https://<api>/health
