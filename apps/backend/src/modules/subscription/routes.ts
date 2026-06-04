@@ -19,12 +19,13 @@ export async function subscriptionRoutes(app: FastifyInstance) {
     const { rows } = await query(
       `update subscriptions
        set status = 'pending_review', receipt_url = $1, submitted_at = now()
-       where user_id = $2 and status in ('inactive', 'expired')
+       where id = (select id from subscriptions where user_id = $2 order by created_at desc limit 1)
+         and status in ('inactive', 'expired', 'pending_review')
        returning *`,
       [parsed.data.receipt_url, req.userId],
     );
     if (rows.length === 0) {
-      // Жаңа subscription жасау
+      // Белсенді/қаралудағы жазба болмаса — жаңасын жасаймыз
       const ins = await query(
         `insert into subscriptions (user_id, status, receipt_url, submitted_at)
          values ($1, 'pending_review', $2, now()) returning *`,

@@ -45,12 +45,15 @@ export async function providersRoutes(app: FastifyInstance) {
     const id = (req.params as { id: string }).id;
     const exists = await query('select 1 from signal_providers where id = $1', [id]);
     if (exists.rows.length === 0) return reply.code(404).send({ error: 'not_found' });
-    await query(
+    const ins = await query(
       `insert into provider_subscriptions (user_id, provider_id) values ($1, $2)
-       on conflict do nothing`,
+       on conflict do nothing returning user_id`,
       [req.userId, id],
     );
-    await query('update signal_providers set subscribers = subscribers + 1 where id = $1', [id]);
+    // Санақты тек ЖАҢА подписка қосылғанда ғана арттырамыз (қайталанбасын).
+    if (ins.rows.length > 0) {
+      await query('update signal_providers set subscribers = subscribers + 1 where id = $1', [id]);
+    }
     return { ok: true };
   });
 

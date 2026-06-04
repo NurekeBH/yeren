@@ -18,7 +18,7 @@ class GallupResultScreen extends ConsumerWidget {
 
     if (result == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (context.mounted) context.go('/academy');
+        if (context.mounted) context.go('/academy-tab');
       });
       return const Scaffold(body: SizedBox.shrink());
     }
@@ -43,7 +43,7 @@ class GallupResultScreen extends ConsumerWidget {
             _ScoreBar(profile: entry.key, score: entry.value, total: total == 0 ? 1 : total, l: l),
           const SizedBox(height: 24),
           ElevatedButton(
-            onPressed: () => context.go('/academy'),
+            onPressed: () => context.go('/academy-tab'),
             child: Text(l.gallup_view_lessons),
           ),
         ],

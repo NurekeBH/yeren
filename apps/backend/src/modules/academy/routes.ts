@@ -58,9 +58,9 @@ export async function academyRoutes(app: FastifyInstance) {
              when user_progress.last_completed = current_date - interval '1 day' then user_progress.streak + 1
              else 1 end,
            last_completed = current_date,
-           week_progress = user_progress.week_progress
+           week_progress[$4] = true
          returning xp, streak, week_progress`,
-        [req.userId, xp, week],
+        [req.userId, xp, week, dow + 1], // Postgres массив индексі 1-ден басталады
       );
       return upd.rows[0];
     });

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/network/api_client.dart';
 import '../../../core/theme/app_colors.dart';
@@ -52,6 +53,9 @@ class _PasswordScreenState extends ConsumerState<PasswordScreen> {
       } else {
         await controller.login(phone: widget.phone, password: _password.text);
       }
+      // Явная навигация — redirect-ке тәуелсіз (onboarding-пен бірдей үлгі).
+      // Authenticated + !onboarded болса, redirect өзі /auth/onboarding-ке бұрады.
+      if (mounted) context.go('/home');
     } catch (e) {
       if (mounted) {
         final msg = e is ApiException ? e.message : AppLocalizations.of(context).common_error;

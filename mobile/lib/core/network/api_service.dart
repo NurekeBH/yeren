@@ -16,6 +16,7 @@ class ApiService {
       _ensureOk(res);
       return (res.data as Map).cast<String, dynamic>();
     } catch (e) {
+      if (e is ApiException) rethrow; // 4xx _ensureOk-тен — статус/хабарды сақтаймыз
       throw ApiException.from(e);
     }
   }
@@ -30,6 +31,7 @@ class ApiService {
       _ensureOk(res);
       return res.data is Map ? (res.data as Map).cast<String, dynamic>() : <String, dynamic>{};
     } catch (e) {
+      if (e is ApiException) rethrow; // 4xx _ensureOk-тен — статус/хабарды сақтаймыз
       throw ApiException.from(e);
     }
   }

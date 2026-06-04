@@ -165,6 +165,8 @@ class ProfileScreen extends ConsumerWidget {
               // сол құрылғыда қайта кіргенде онбординг қажет болмайды.
               ref.read(authControllerProvider.notifier).logout();
               ref.read(subscriptionControllerProvider.notifier).reset();
+              // Явная навигация (redirect-ке тәуелсіз) — басты бетке қайтамыз.
+              if (context.mounted) context.go('/home');
             },
           ),
         ],

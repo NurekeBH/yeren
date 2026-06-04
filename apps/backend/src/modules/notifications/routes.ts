@@ -35,11 +35,11 @@ export async function notificationsRoutes(app: FastifyInstance) {
       set.push(`${k} = $${args.length}`);
     }
     if (set.length === 0) return { ok: true };
-    args.push(req.userId);
     await query(
-      `insert into notification_prefs (user_id) values ($${args.length}) on conflict do nothing`,
+      `insert into notification_prefs (user_id) values ($1) on conflict do nothing`,
       [req.userId],
     );
+    args.push(req.userId);
     await query(
       `update notification_prefs set ${set.join(', ')} where user_id = $${args.length}`,
       args,

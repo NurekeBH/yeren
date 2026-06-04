@@ -69,8 +69,16 @@ class AuthController extends StateNotifier<AuthState> {
 
   Future<void> _persistAuth(String token, String phone) async {
     final storage = _ref.read(secureStorageProvider);
-    await storage.write(key: _tokenKey, value: token);
-    await storage.write(key: _phoneKey, value: phone);
+    // Secure storage кейбір эмуляторларда баяу/қатеге ұшырауы мүмкін —
+    // ол авторизацияны бөгемеуі тиіс (timeout + try/catch).
+    try {
+      await storage
+          .write(key: _tokenKey, value: token)
+          .timeout(const Duration(seconds: 4));
+      await storage
+          .write(key: _phoneKey, value: phone)
+          .timeout(const Duration(seconds: 4));
+    } catch (_) {/* сақтау сәтсіз болса да авторизация жалғасады */}
     state = AuthState(status: AuthStatus.authenticated, phone: phone);
   }
 
