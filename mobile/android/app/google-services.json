@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "73100854003",
+    "project_id": "trade-de7a3",
+    "storage_bucket": "trade-de7a3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:73100854003:android:83419dc01db4d19a73ad86",
+        "android_client_info": {
+          "package_name": "com.traderos.traderos"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9hTFkdm8Q65OS8TsSGWNiKxnLTiAoFjM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

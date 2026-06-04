@@ -91,6 +91,11 @@ class ApiService {
   Future<List<dynamic>> itemReviews(String itemId) async =>
       (await _get('/library/$itemId/reviews'))['reviews'] as List;
 
+  // ─────────────── Push / Notifications ───────────────
+  /// FCM токенін backend-ке тіркеу (notification_prefs.expo_push_token).
+  Future<void> registerPushToken(String token) =>
+      _send('PATCH', '/notifications/prefs', body: {'expo_push_token': token});
+
   // ─────────────── Agreement ───────────────
   Future<void> acceptAgreement({String version = 'v1'}) =>
       _send('POST', '/agreement/accept', body: {'version': version});
