@@ -1066,6 +1066,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profile_avatar_pick => 'Change avatar';
 
   @override
+  String get profile_edit => 'Edit profile';
+
+  @override
+  String get profile_saved_toast => 'Profile saved';
+
+  @override
   String get profile_about_me => 'About me';
 
   @override

@@ -2104,6 +2104,18 @@ abstract class AppLocalizations {
   /// **'Аватарды өзгерту'**
   String get profile_avatar_pick;
 
+  /// No description provided for @profile_edit.
+  ///
+  /// In kk, this message translates to:
+  /// **'Профильді өңдеу'**
+  String get profile_edit;
+
+  /// No description provided for @profile_saved_toast.
+  ///
+  /// In kk, this message translates to:
+  /// **'Профиль сақталды'**
+  String get profile_saved_toast;
+
   /// No description provided for @profile_about_me.
   ///
   /// In kk, this message translates to:

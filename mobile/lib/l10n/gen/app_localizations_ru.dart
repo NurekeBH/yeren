@@ -1067,6 +1067,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get profile_avatar_pick => 'Сменить аватар';
 
   @override
+  String get profile_edit => 'Редактировать профиль';
+
+  @override
+  String get profile_saved_toast => 'Профиль сохранён';
+
+  @override
   String get profile_about_me => 'О себе';
 
   @override

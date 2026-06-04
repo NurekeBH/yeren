@@ -34,8 +34,6 @@ Future<void> showCreateAlertSheet(
   );
 }
 
-enum _Mode { pips, price }
-
 class _CreateAlertSheet extends ConsumerStatefulWidget {
   const _CreateAlertSheet({
     required this.instrument,
@@ -54,9 +52,7 @@ class _CreateAlertSheet extends ConsumerStatefulWidget {
 }
 
 class _CreateAlertSheetState extends ConsumerState<_CreateAlertSheet> {
-  _Mode _mode = _Mode.pips;
   late final double _ref;
-  late final TextEditingController _pips = TextEditingController(text: '50');
   late final TextEditingController _price;
   late final TextEditingController _text =
       TextEditingController(text: widget.defaultText ?? '');
@@ -72,25 +68,21 @@ class _CreateAlertSheetState extends ConsumerState<_CreateAlertSheet> {
 
   @override
   void dispose() {
-    _pips.dispose();
     _price.dispose();
     _text.dispose();
     super.dispose();
   }
 
   void _create(AppLocalizations l) {
-    final pips = double.tryParse(_pips.text.replaceAll(',', '.'));
     final price = double.tryParse(_price.text.replaceAll(',', '.'));
-    final isPips = _mode == _Mode.pips;
-    // Екі режимде де баға өрісі бар (default — live баға). pips режимінде
-    // «осы бағаға X пипс қалғанда» дегенді білдіреді.
+    // Тек НАҚТЫ БІР бағада хабарлайды (pips режимі алынып тасталды).
     final target = price ?? _ref;
 
     final alert = PriceAlert(
       id: DateTime.now().microsecondsSinceEpoch.toString(),
       instrument: widget.instrument,
       targetPrice: target,
-      pips: isPips ? (pips ?? 50) : null,
+      pips: null,
       ideaId: widget.ideaId,
       text: _text.text.trim().isEmpty
           ? (widget.defaultText ?? '${widget.instrument} ${target.toStringAsFixed(2)}')
@@ -137,21 +129,7 @@ class _CreateAlertSheetState extends ConsumerState<_CreateAlertSheet> {
           Text('${widget.instrument} · ${_ref.toStringAsFixed(2)}',
               style: AppTypography.bodySmall(color: AppColors.textSecondary)),
           const SizedBox(height: 16),
-          SegmentedButton<_Mode>(
-            segments: [
-              ButtonSegment(value: _Mode.pips, label: Text(l.alerts_mode_pips)),
-              ButtonSegment(value: _Mode.price, label: Text(l.alerts_mode_price)),
-            ],
-            selected: {_mode},
-            onSelectionChanged: (s) => setState(() => _mode = s.first),
-          ),
-          const SizedBox(height: 16),
-          if (_mode == _Mode.pips) ...[
-            _NumField(c: _price, label: l.alerts_price_hint),
-            const SizedBox(height: 12),
-            _NumField(c: _pips, label: l.alerts_pips_hint),
-          ] else
-            _NumField(c: _price, label: l.alerts_price_hint),
+          _NumField(c: _price, label: l.alerts_price_hint),
           const SizedBox(height: 12),
           TextField(
             controller: _text,

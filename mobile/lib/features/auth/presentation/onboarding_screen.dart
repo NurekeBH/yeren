@@ -4,8 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
-import '../../../shared/models/market_session.dart';
-import '../../../shared/utils/formatters.dart';
 import '../../profile/application/profile_controller.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
@@ -20,7 +18,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final _city = TextEditingController();
   final _bio = TextEditingController();
   final Set<TradingStyle> _styles = {TradingStyle.smc};
-  final Set<MarketSession> _sessions = {MarketSession.london, MarketSession.overlap};
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -39,7 +36,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           city: _city.text.trim(),
           styles: _styles,
           bio: _bio.text.trim(),
-          preferredSessions: _sessions,
         );
     // Явный navigation — router redirect-ке тәуелсіз UX.
     if (mounted) context.go('/home');
@@ -104,23 +100,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         selected: _styles.contains(s),
                         onSelected: (v) => setState(() {
                           v ? _styles.add(s) : _styles.remove(s);
-                        }),
-                      ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Text(l.onboarding_sessions_label, style: AppTypography.label()),
-                const SizedBox(height: 8),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    for (final s in MarketSession.values)
-                      FilterChip(
-                        label: Text(Fmt.sessionName(s, l)),
-                        selected: _sessions.contains(s),
-                        onSelected: (v) => setState(() {
-                          v ? _sessions.add(s) : _sessions.remove(s);
                         }),
                       ),
                   ],

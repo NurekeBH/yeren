@@ -9,7 +9,6 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/subscription.dart';
-import '../../../shared/utils/formatters.dart';
 import '../../../shared/widgets/language_switcher.dart';
 import '../../auth/application/auth_controller.dart';
 import '../../subscription/application/subscription_controller.dart';
@@ -36,7 +35,15 @@ class ProfileScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(l.nav_profile),
-        actions: const [LanguageSwitcher(), SizedBox(width: 8)],
+        actions: [
+          IconButton(
+            tooltip: l.profile_edit,
+            icon: const Icon(Icons.edit_outlined),
+            onPressed: () => context.push('/profile/edit'),
+          ),
+          const LanguageSwitcher(),
+          const SizedBox(width: 8),
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -97,11 +104,11 @@ class ProfileScreen extends ConsumerWidget {
                       ],
                     ),
                   ],
-                  if (profile.preferredSessions.isNotEmpty) ...[
+                  if (profile.styles.isNotEmpty) ...[
                     const SizedBox(height: 12),
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: Text(l.profile_preferred_sessions, style: AppTypography.label(color: AppColors.textSecondary)),
+                      child: Text(l.onboarding_style_label, style: AppTypography.label(color: AppColors.textSecondary)),
                     ),
                     const SizedBox(height: 6),
                     Align(
@@ -110,14 +117,14 @@ class ProfileScreen extends ConsumerWidget {
                         spacing: 6,
                         runSpacing: 6,
                         children: [
-                          for (final s in profile.preferredSessions)
+                          for (final s in profile.styles)
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                               decoration: BoxDecoration(
-                                color: Fmt.sessionColor(s).withValues(alpha: 0.12),
+                                color: AppColors.purple.withValues(alpha: 0.12),
                                 borderRadius: BorderRadius.circular(6),
                               ),
-                              child: Text(Fmt.sessionName(s, l), style: AppTypography.label(color: Fmt.sessionColor(s))),
+                              child: Text(tradingStyleLabel(s, l), style: AppTypography.label(color: AppColors.purple)),
                             ),
                         ],
                       ),

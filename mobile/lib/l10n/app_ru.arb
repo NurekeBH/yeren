@@ -364,6 +364,8 @@
   "tag_mindset": "Мышление",
 
   "profile_avatar_pick": "Сменить аватар",
+  "profile_edit": "Редактировать профиль",
+  "profile_saved_toast": "Профиль сохранён",
   "profile_about_me": "О себе",
   "profile_preferred_sessions": "Предпочитаемые сессии",
   "profile_settings": "Настройки",

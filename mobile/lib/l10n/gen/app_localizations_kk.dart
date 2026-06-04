@@ -1066,6 +1066,12 @@ class AppLocalizationsKk extends AppLocalizations {
   String get profile_avatar_pick => 'Аватарды өзгерту';
 
   @override
+  String get profile_edit => 'Профильді өңдеу';
+
+  @override
+  String get profile_saved_toast => 'Профиль сақталды';
+
+  @override
   String get profile_about_me => 'Өзім туралы';
 
   @override

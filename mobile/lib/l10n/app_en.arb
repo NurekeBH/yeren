@@ -364,6 +364,8 @@
   "tag_mindset": "Mindset",
 
   "profile_avatar_pick": "Change avatar",
+  "profile_edit": "Edit profile",
+  "profile_saved_toast": "Profile saved",
   "profile_about_me": "About me",
   "profile_preferred_sessions": "Preferred sessions",
   "profile_settings": "Settings",

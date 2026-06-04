@@ -4,9 +4,36 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/config/app_config.dart';
 import '../../../core/locale/locale_controller.dart';
+import '../../../core/network/api_service.dart';
+import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/gallup.dart';
 import '../../../shared/models/market_session.dart';
+
+/// Сауда стилінің локализацияланған атауы (профиль + өңдеу экрандарында).
+String tradingStyleLabel(TradingStyle s, AppLocalizations l) {
+  switch (s) {
+    case TradingStyle.smc:
+      return l.style_smc;
+    case TradingStyle.ict:
+      return l.style_ict;
+    case TradingStyle.snr:
+      return l.style_snr;
+    case TradingStyle.trendline:
+      return l.style_trendline;
+    case TradingStyle.priceAction:
+      return l.style_price_action;
+    case TradingStyle.breakout:
+      return l.style_breakout;
+    case TradingStyle.news:
+      return l.style_news;
+    case TradingStyle.scalping:
+      return l.style_scalping;
+    case TradingStyle.swing:
+      return l.style_swing;
+  }
+}
 
 /// TZ §12 + user 2026-05-26 өзгертуі: pro трейдерлерге арналған толық стиль тізімі.
 enum TradingStyle {
@@ -187,9 +214,21 @@ class UserProfile extends Equatable {
 const _profileKey = 'user_profile_v1';
 
 class ProfileController extends StateNotifier<UserProfile> {
-  ProfileController(this._prefs) : super(_loadInitial(_prefs));
+  ProfileController(this._ref) : super(_loadInitial(_ref.read(sharedPreferencesProvider)));
 
-  final SharedPreferences _prefs;
+  final Ref _ref;
+  SharedPreferences get _prefs => _ref.read(sharedPreferencesProvider);
+
+  /// Remote режимде профильді backend-ке (PATCH /auth/me) синхрондау.
+  void _syncRemote() {
+    if (!AppConfig.useRemoteApi) return;
+    _ref.read(apiServiceProvider).updateMe({
+      'name': state.name,
+      'city': state.city,
+      'bio': state.bio,
+      'trading_styles': state.styles.map((s) => s.name).toList(),
+    }).catchError((_) {});
+  }
 
   static UserProfile _loadInitial(SharedPreferences prefs) {
     final raw = prefs.getString(_profileKey);
@@ -220,16 +259,21 @@ class ProfileController extends StateNotifier<UserProfile> {
     required String name,
     required String city,
     required Set<TradingStyle> styles,
-    required Set<MarketSession> preferredSessions,
     String bio = '',
   }) {
-    _set(state.copyWith(
-      name: name,
-      city: city,
-      styles: styles,
-      bio: bio,
-      preferredSessions: preferredSessions,
-    ));
+    _set(state.copyWith(name: name, city: city, styles: styles, bio: bio));
+    _syncRemote();
+  }
+
+  /// Профильді өңдеу (аты, қаласы, bio, сауда стильдері).
+  void updateProfile({
+    required String name,
+    required String city,
+    required String bio,
+    required Set<TradingStyle> styles,
+  }) {
+    _set(state.copyWith(name: name, city: city, bio: bio, styles: styles));
+    _syncRemote();
   }
 
   void setAvatar(String path) => _set(state.copyWith(avatarPath: path));
@@ -281,5 +325,5 @@ class ProfileController extends StateNotifier<UserProfile> {
 
 final profileControllerProvider =
     StateNotifierProvider<ProfileController, UserProfile>(
-  (ref) => ProfileController(ref.watch(sharedPreferencesProvider)),
+  (ref) => ProfileController(ref),
 );
