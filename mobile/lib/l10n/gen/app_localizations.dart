@@ -748,6 +748,24 @@ abstract class AppLocalizations {
   /// **'Провайдер идеялары'**
   String get prov_ideas;
 
+  /// No description provided for @prov_follow.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бақылау'**
+  String get prov_follow;
+
+  /// No description provided for @prov_following.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бақылаудасыз'**
+  String get prov_following;
+
+  /// No description provided for @prov_follow_toast.
+  ///
+  /// In kk, this message translates to:
+  /// **'Трейдерді бақылайсыз (тегін)'**
+  String get prov_follow_toast;
+
   /// No description provided for @posts_published.
   ///
   /// In kk, this message translates to:

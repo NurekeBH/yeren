@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/config/app_config.dart';
+import '../../../core/network/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
@@ -34,14 +36,17 @@ class _TraderPostCardState extends ConsumerState<TraderPostCard> {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final post = widget.post;
+    final remote = AppConfig.useRemoteApi;
     final ud = ref.watch(traderPostsUserProvider)[post.id] ?? const PostUserData();
     final liked = ud.liked;
-    final likeCount = post.baseLikes + (liked ? 1 : 0);
-
-    final comments = <PostComment>[
-      ...post.seededComments,
-      ...ud.comments.map((t) => PostComment(author: l.posts_you, text: t, isMine: true)),
-    ];
+    // Remote: лайк/коммент сервермен бірге келеді. Mock: база + локал overlay.
+    final likeCount = remote ? post.baseLikes : post.baseLikes + (liked ? 1 : 0);
+    final comments = remote
+        ? post.seededComments
+        : <PostComment>[
+            ...post.seededComments,
+            ...ud.comments.map((t) => PostComment(author: l.posts_you, text: t, isMine: true)),
+          ];
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 14),
@@ -111,7 +116,7 @@ class _TraderPostCardState extends ConsumerState<TraderPostCard> {
                     icon: liked ? Icons.favorite : Icons.favorite_border,
                     color: liked ? AppColors.lossRed : AppColors.textSecondary,
                     label: '$likeCount',
-                    onTap: () => ref.read(traderPostsUserProvider.notifier).toggleLike(post.id),
+                    onTap: () => _toggleLike(post.id),
                   ),
                   _ActionButton(
                     icon: Icons.mode_comment_outlined,
@@ -171,10 +176,26 @@ class _TraderPostCardState extends ConsumerState<TraderPostCard> {
     );
   }
 
+  void _toggleLike(String postId) {
+    // Heart fill — локал; Remote режимде сервер count-ы invalidate-тен кейін жаңарады.
+    ref.read(traderPostsUserProvider.notifier).toggleLike(postId);
+    if (AppConfig.useRemoteApi) {
+      ref.read(apiServiceProvider).likePost(postId).then((_) {
+        ref.invalidate(traderPostsProvider(widget.provider.id));
+      }).catchError((_) {});
+    }
+  }
+
   void _send(String postId) {
     final text = _comment.text.trim();
     if (text.isEmpty) return;
-    ref.read(traderPostsUserProvider.notifier).addComment(postId, text);
+    if (AppConfig.useRemoteApi) {
+      ref.read(apiServiceProvider).commentPost(postId, text).then((_) {
+        ref.invalidate(traderPostsProvider(widget.provider.id));
+      }).catchError((_) {});
+    } else {
+      ref.read(traderPostsUserProvider.notifier).addComment(postId, text);
+    }
     _comment.clear();
     FocusScope.of(context).unfocus();
   }

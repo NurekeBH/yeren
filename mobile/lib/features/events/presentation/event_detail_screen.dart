@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
+import '../../../core/config/app_config.dart';
 import '../../../core/mock/events_fixtures.dart';
+import '../../../core/network/api_client.dart';
+import '../../../core/network/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
@@ -26,7 +29,8 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
   @override
   void initState() {
     super.initState();
-    final matches = ref.read(eventsProvider).where((e) => e.id == widget.eventId);
+    final events = ref.read(eventsProvider).valueOrNull ?? const [];
+    final matches = events.where((e) => e.id == widget.eventId);
     final yid = matches.isEmpty ? null : matches.first.youtubeId;
     if (yid != null) {
       _yt = YoutubePlayerController.fromVideoId(
@@ -46,7 +50,8 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    final matches = ref.watch(eventsProvider).where((e) => e.id == widget.eventId);
+    final events = ref.watch(eventsProvider).valueOrNull ?? const [];
+    final matches = events.where((e) => e.id == widget.eventId);
     if (matches.isEmpty) {
       return Scaffold(appBar: AppBar(), body: Center(child: Text(l.common_error)));
     }
@@ -149,7 +154,7 @@ class _InfoRow extends StatelessWidget {
   }
 }
 
-class _ApplySheet extends StatefulWidget {
+class _ApplySheet extends ConsumerStatefulWidget {
   const _ApplySheet({required this.event, required this.l, required this.name, required this.phone});
   final TradingEvent event;
   final AppLocalizations l;
@@ -157,13 +162,14 @@ class _ApplySheet extends StatefulWidget {
   final String phone;
 
   @override
-  State<_ApplySheet> createState() => _ApplySheetState();
+  ConsumerState<_ApplySheet> createState() => _ApplySheetState();
 }
 
-class _ApplySheetState extends State<_ApplySheet> {
+class _ApplySheetState extends ConsumerState<_ApplySheet> {
   late final TextEditingController _name = TextEditingController(text: widget.name);
   late final TextEditingController _phone = TextEditingController(text: widget.phone);
   final TextEditingController _comment = TextEditingController();
+  bool _busy = false;
 
   @override
   void dispose() {
@@ -171,6 +177,30 @@ class _ApplySheetState extends State<_ApplySheet> {
     _phone.dispose();
     _comment.dispose();
     super.dispose();
+  }
+
+  Future<void> _submit() async {
+    final l = widget.l;
+    if (AppConfig.useRemoteApi) {
+      setState(() => _busy = true);
+      try {
+        await ref.read(apiServiceProvider).applyToEvent(
+              widget.event.id,
+              name: _name.text.trim(),
+              phone: _phone.text.trim(),
+              comment: _comment.text.trim(),
+            );
+      } catch (e) {
+        if (!mounted) return;
+        setState(() => _busy = false);
+        final msg = e is ApiException ? e.message : l.common_error;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+        return;
+      }
+    }
+    if (!mounted) return;
+    Navigator.of(context).pop();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.apply_sent)));
   }
 
   @override
@@ -205,11 +235,10 @@ class _ApplySheetState extends State<_ApplySheet> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.apply_sent)));
-              },
-              child: Text(l.apply_submit),
+              onPressed: _busy ? null : _submit,
+              child: _busy
+                  ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                  : Text(l.apply_submit),
             ),
           ),
         ],

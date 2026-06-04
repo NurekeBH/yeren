@@ -47,6 +47,20 @@ class PriceAlert extends Equatable {
         ideaId: j['ideaId'] as String?,
       );
 
+  /// Backend жолы (snake_case, pg numeric-тер string болуы мүмкін).
+  factory PriceAlert.fromApi(Map<String, dynamic> j) {
+    double d(dynamic v) => v is num ? v.toDouble() : double.tryParse('$v') ?? 0;
+    return PriceAlert(
+      id: j['id'].toString(),
+      instrument: (j['instrument'] ?? 'XAU/USD').toString(),
+      targetPrice: d(j['target_price']),
+      text: (j['text'] ?? '').toString(),
+      createdAtIso: (j['created_at'] ?? '').toString(),
+      pips: j['pips'] == null ? null : d(j['pips']),
+      ideaId: j['idea_id']?.toString(),
+    );
+  }
+
   String encode() => jsonEncode(toJson());
   static PriceAlert decode(String s) => PriceAlert.fromJson(jsonDecode(s) as Map<String, dynamic>);
 

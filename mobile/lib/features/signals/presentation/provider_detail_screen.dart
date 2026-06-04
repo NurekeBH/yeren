@@ -49,18 +49,24 @@ class ProviderDetailScreen extends ConsumerWidget {
           // ── Published Ideas — трейдердің посттары (фото/мәтін/лайк/коммент) ──
           Text(l.posts_published, style: AppTypography.h2()),
           const SizedBox(height: 10),
-          Builder(builder: (context) {
-            final posts = ref.watch(traderPostsProvider(providerId));
-            if (posts.isEmpty) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                child: Text(l.posts_empty, style: AppTypography.bodyMedium(color: AppColors.textSecondary)),
-              );
-            }
-            return Column(
-              children: [for (final p in posts) TraderPostCard(post: p, provider: provider)],
-            );
-          }),
+          ref.watch(traderPostsProvider(providerId)).when(
+                loading: () => const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+                error: (e, _) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child: Text('${l.common_error}: $e', style: AppTypography.bodyMedium(color: AppColors.textSecondary)),
+                ),
+                data: (posts) => posts.isEmpty
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        child: Text(l.posts_empty, style: AppTypography.bodyMedium(color: AppColors.textSecondary)),
+                      )
+                    : Column(
+                        children: [for (final p in posts) TraderPostCard(post: p, provider: provider)],
+                      ),
+              ),
           const SizedBox(height: 24),
 
           Text(l.prov_ideas, style: AppTypography.h2()),

@@ -347,6 +347,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get prov_ideas => 'Идеи провайдера';
 
   @override
+  String get prov_follow => 'Отслеживать';
+
+  @override
+  String get prov_following => 'Вы отслеживаете';
+
+  @override
+  String get prov_follow_toast => 'Вы отслеживаете трейдера (бесплатно)';
+
+  @override
   String get posts_published => 'Опубликованные идеи';
 
   @override

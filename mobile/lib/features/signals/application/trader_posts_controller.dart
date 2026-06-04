@@ -3,9 +3,29 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/config/app_config.dart';
 import '../../../core/locale/locale_controller.dart';
 import '../../../core/mock/trader_posts_fixtures.dart';
+import '../../../core/network/api_service.dart';
 import '../../../shared/models/trader_post.dart';
+
+/// Backend JSON → TraderPost (likes_count + comments сервермен бірге келеді).
+TraderPost traderPostFromApi(Map<String, dynamic> j) {
+  final comments = (j['comments'] as List? ?? const []).map((c) {
+    final cm = (c as Map).cast<String, dynamic>();
+    return PostComment(author: (cm['author'] ?? '').toString(), text: (cm['text'] ?? '').toString());
+  }).toList();
+  final img = (j['image_url'] ?? '').toString();
+  final likes = j['likes_count'];
+  return TraderPost(
+    id: j['id'].toString(),
+    providerId: j['provider_id'].toString(),
+    text: (j['text'] ?? '').toString(),
+    imageUrl: img.isEmpty ? null : img,
+    baseLikes: likes is num ? likes.toInt() : int.tryParse('$likes') ?? 0,
+    seededComments: comments,
+  );
+}
 
 /// Бір пост бойынша пайдаланушы әрекеті: лайк басылды ма + қосқан комментарийлер.
 class PostUserData {
@@ -64,8 +84,12 @@ final traderPostsUserProvider =
   (ref) => TraderPostsController(ref.watch(sharedPreferencesProvider)),
 );
 
-/// Берілген провайдердің посттары (локаль бойынша).
-final traderPostsProvider = Provider.family<List<TraderPost>, String>((ref, providerId) {
+/// Берілген провайдердің посттары. Remote режимде backend, mock режимде фикстура.
+final traderPostsProvider = FutureProvider.family<List<TraderPost>, String>((ref, providerId) async {
+  if (AppConfig.useRemoteApi) {
+    final list = await ref.watch(apiServiceProvider).providerPosts(providerId);
+    return list.map((e) => traderPostFromApi((e as Map).cast<String, dynamic>())).toList();
+  }
   final loc = ref.watch(localeControllerProvider).languageCode;
   return TraderPostsFixtures.forProvider(providerId, loc);
 });

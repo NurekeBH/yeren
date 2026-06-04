@@ -37,17 +37,21 @@ class EventsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
-    final events = ref.watch(eventsProvider);
+    final async = ref.watch(eventsProvider);
 
     return Scaffold(
       appBar: AppBar(title: Text(l.events_title)),
-      body: events.isEmpty
-          ? Center(child: Text(l.events_empty, style: AppTypography.bodyMedium()))
-          : ListView.builder(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
-              itemCount: events.length,
-              itemBuilder: (_, i) => _EventCard(event: events[i], l: l),
-            ),
+      body: async.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (e, _) => Center(child: Text('${l.common_error}: $e')),
+        data: (events) => events.isEmpty
+            ? Center(child: Text(l.events_empty, style: AppTypography.bodyMedium()))
+            : ListView.builder(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
+                itemCount: events.length,
+                itemBuilder: (_, i) => _EventCard(event: events[i], l: l),
+              ),
+      ),
     );
   }
 }

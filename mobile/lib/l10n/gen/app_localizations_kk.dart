@@ -347,6 +347,15 @@ class AppLocalizationsKk extends AppLocalizations {
   String get prov_ideas => 'Провайдер идеялары';
 
   @override
+  String get prov_follow => 'Бақылау';
+
+  @override
+  String get prov_following => 'Бақылаудасыз';
+
+  @override
+  String get prov_follow_toast => 'Трейдерді бақылайсыз (тегін)';
+
+  @override
   String get posts_published => 'Жарияланған идеялар';
 
   @override

@@ -347,6 +347,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get prov_ideas => 'Provider\'s ideas';
 
   @override
+  String get prov_follow => 'Follow';
+
+  @override
+  String get prov_following => 'Following';
+
+  @override
+  String get prov_follow_toast => 'You follow this trader (free)';
+
+  @override
   String get posts_published => 'Published Ideas';
 
   @override

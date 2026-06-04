@@ -64,6 +64,13 @@ class ApiService {
   Future<void> subscribe(String providerId) => _send('POST', '/providers/$providerId/subscribe');
   Future<void> unsubscribe(String providerId) => _send('DELETE', '/providers/$providerId/subscribe');
 
+  // ─────────────── Trader posts (Published Ideas) ───────────────
+  Future<List<dynamic>> providerPosts(String providerId) async =>
+      (await _get('/providers/$providerId/posts'))['posts'] as List? ?? const [];
+  Future<Map<String, dynamic>> likePost(String postId) => _send('POST', '/posts/$postId/like');
+  Future<Map<String, dynamic>> commentPost(String postId, String text) =>
+      _send('POST', '/posts/$postId/comments', body: {'text': text});
+
   // ─────────────── Events ───────────────
   Future<List<dynamic>> events() async => (await _get('/events'))['events'] as List;
   Future<Map<String, dynamic>> event(String id) async =>
@@ -93,6 +100,9 @@ class ApiService {
   Future<List<dynamic>> intel() async => (await _get('/intel'))['posts'] as List? ?? const [];
   Future<List<dynamic>> calendar() async => (await _get('/calendar'))['events'] as List? ?? const [];
   Future<List<dynamic>> trades() async => (await _get('/trades'))['trades'] as List? ?? const [];
+  Future<Map<String, dynamic>> createTrade(Map<String, dynamic> body) async =>
+      (await _send('POST', '/trades', body: body))['trade'] as Map<String, dynamic>? ?? const {};
+  Future<void> deleteTrade(String id) => _send('DELETE', '/trades/$id');
   Future<Map<String, dynamic>> subscription() => _get('/subscription');
 }
 

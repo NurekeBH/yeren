@@ -78,22 +78,22 @@ class ProviderCard extends ConsumerWidget {
                   ],
                 ),
                 const SizedBox(height: 12),
+                // Трейдерді бақылау — ӘРҚАШАН ТЕГІН. Ақылы жазылым тек қолданба деңгейінде (premium).
                 SizedBox(
                   width: double.infinity,
                   child: subscribed
                       ? OutlinedButton.icon(
                           onPressed: () => ref.read(providerSubsProvider.notifier).toggle(provider.id),
                           icon: const Icon(Icons.check, size: 18),
-                          label: Text(l.prov_unsubscribe),
+                          label: Text(l.prov_following),
                         )
-                      : ElevatedButton(
+                      : ElevatedButton.icon(
                           onPressed: () {
                             ref.read(providerSubsProvider.notifier).toggle(provider.id);
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.prov_subscribed_toast)));
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.prov_follow_toast)));
                           },
-                          child: Text(provider.isFree
-                              ? l.prov_subscribe
-                              : '${l.prov_subscribe} · ${l.prov_per_month(provider.pricePerMonth.toString())}'),
+                          icon: const Icon(Icons.person_add_alt_1, size: 18),
+                          label: Text(l.prov_follow),
                         ),
                 ),
               ],

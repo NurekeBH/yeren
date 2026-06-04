@@ -1,7 +1,39 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../shared/models/trading_event.dart';
+import '../config/app_config.dart';
 import '../locale/locale_controller.dart';
+import '../network/api_service.dart';
+
+double _d(dynamic v) => v is num ? v.toDouble() : double.tryParse('$v') ?? 0;
+
+EventType _eventType(String s) {
+  switch (s) {
+    case 'live_trade':
+      return EventType.liveTrade;
+    case 'webinar':
+      return EventType.webinar;
+    default:
+      return EventType.masterclass;
+  }
+}
+
+/// Backend JSON → TradingEvent.
+TradingEvent eventFromJson(Map<String, dynamic> j) {
+  final yt = (j['youtube_id'] ?? '').toString();
+  return TradingEvent(
+    id: j['id'].toString(),
+    type: _eventType((j['type'] ?? 'masterclass').toString()),
+    title: (j['title'] ?? '').toString(),
+    speaker: (j['speaker'] ?? '').toString(),
+    city: (j['city'] ?? '').toString(),
+    dateIso: (j['starts_at'] ?? '').toString(),
+    price: _d(j['price']),
+    isOnline: j['is_online'] == true,
+    description: (j['description'] ?? '').toString(),
+    youtubeId: yt.isEmpty ? null : yt,
+  );
+}
 
 /// Іс-шаралар каталогы (мок). Мәтіндер `loc` бойынша таңдалады.
 class EventsFixtures {
@@ -126,7 +158,11 @@ class EventsFixtures {
   }
 }
 
-final eventsProvider = Provider<List<TradingEvent>>((ref) {
+final eventsProvider = FutureProvider<List<TradingEvent>>((ref) async {
+  if (AppConfig.useRemoteApi) {
+    final list = await ref.watch(apiServiceProvider).events();
+    return list.map((e) => eventFromJson((e as Map).cast<String, dynamic>())).toList();
+  }
   final loc = ref.watch(localeControllerProvider).languageCode;
   return EventsFixtures.all(loc);
 });
