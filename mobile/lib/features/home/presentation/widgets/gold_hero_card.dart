@@ -37,8 +37,15 @@ class GoldHeroCard extends ConsumerWidget {
     final sparkValues = (liveSpark != null && liveSpark.length >= 3) ? liveSpark : fallback.sparkline;
 
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
+      child: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFFFFFDF8), Color(0xFFFBF1DC)], // жылы крем → әлсіз алтын реңк
+          ),
+        ),
+        padding: const EdgeInsets.all(18),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

@@ -4,11 +4,19 @@ import 'package:flutter/material.dart';
 class AppColors {
   AppColors._();
 
-  static const Color midnight = Color(0xFF090C10);
-  static const Color obsidian = Color(0xFFFAF8F4);
+  static const Color midnight = Color(0xFF0B0E13);
 
-  static const Color gold = Color(0xFFB07D0F);
+  /// Негізгі фон — жылы «қағаз» реңк (Claude-style warm paper).
+  static const Color obsidian = Color(0xFFF6F2EA);
+
+  /// Екінші фон реңкі (секциялар, chip жолақтары).
+  static const Color surfaceMuted = Color(0xFFF0EBE1);
+
+  static const Color gold = Color(0xFFA9780E);
   static const Color goldBright = Color(0xFFD4A020);
+
+  /// Жұмсақ көлеңке — карталарға тереңдік беру үшін (жылы қара реңк).
+  static const Color shadow = Color(0x141A1206);
 
   static const Color dxyBlue = Color(0xFF2058C8);
   static const Color silverGray = Color(0xFF5A6470);
@@ -22,6 +30,6 @@ class AppColors {
   static const Color textSecondary = Color(0xFF5A6470);
   static const Color textMuted = Color(0xFF8A929C);
 
-  static const Color border = Color(0xFFE6E2DA);
+  static const Color border = Color(0xFFEBE5D9);
   static const Color cardSurface = Color(0xFFFFFFFF);
 }

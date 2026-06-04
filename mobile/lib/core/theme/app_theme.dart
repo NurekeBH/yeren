@@ -27,33 +27,37 @@ class AppTheme {
         titleTextStyle: AppTypography.h2(),
         systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
+      // Жұмсақ көлеңкелі карталар — тереңдік пен «премиум» сезім.
       cardTheme: CardThemeData(
         color: AppColors.cardSurface,
-        elevation: 0,
+        elevation: 8,
+        shadowColor: AppColors.shadow,
+        surfaceTintColor: Colors.transparent,
+        clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: const BorderSide(color: AppColors.border),
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(color: AppColors.border.withValues(alpha: 0.7)),
         ),
         margin: EdgeInsets.zero,
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.cardSurface,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(14),
           borderSide: const BorderSide(color: AppColors.border),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(14),
           borderSide: const BorderSide(color: AppColors.border),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(14),
           borderSide: const BorderSide(color: AppColors.gold, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(14),
           borderSide: const BorderSide(color: AppColors.lossRed),
         ),
         hintStyle: AppTypography.bodyMedium(color: AppColors.textMuted),
@@ -62,10 +66,20 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.gold,
           foregroundColor: Colors.white,
-          minimumSize: const Size.fromHeight(52),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          minimumSize: const Size.fromHeight(54),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           textStyle: AppTypography.button(),
-          elevation: 0,
+          elevation: 1.5,
+          shadowColor: AppColors.gold.withValues(alpha: 0.35),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.gold,
+          minimumSize: const Size.fromHeight(54),
+          side: BorderSide(color: AppColors.gold.withValues(alpha: 0.55)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          textStyle: AppTypography.button(color: AppColors.gold),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
@@ -74,15 +88,22 @@ class AppTheme {
           textStyle: AppTypography.bodyMedium(color: AppColors.gold).copyWith(fontWeight: FontWeight.w600),
         ),
       ),
+      chipTheme: ChipThemeData(
+        backgroundColor: AppColors.surfaceMuted,
+        side: BorderSide.none,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        labelStyle: AppTypography.bodySmall(color: AppColors.textPrimary),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: AppColors.cardSurface,
         selectedItemColor: AppColors.gold,
         unselectedItemColor: AppColors.textMuted,
         type: BottomNavigationBarType.fixed,
         showUnselectedLabels: true,
-        elevation: 8,
+        elevation: 12,
       ),
-      dividerTheme: const DividerThemeData(color: AppColors.border, thickness: 1, space: 1),
+      dividerTheme: DividerThemeData(color: AppColors.border.withValues(alpha: 0.8), thickness: 1, space: 1),
     );
   }
 }
