@@ -46,7 +46,10 @@ class _Body extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isBuy = signal.direction == SignalDirection.buy;
     final dirColor = isBuy ? AppColors.profitGreen : AppColors.lossRed;
-    final unlocked = signal.isFree || ref.watch(signalUnlockProvider).contains(signal.id);
+    // Paywall тек белсенді ақылы идеяларға; жабылғандар (track record) толық ашық.
+    final unlocked = signal.isFree ||
+        signal.status != SignalStatus.active ||
+        ref.watch(signalUnlockProvider).contains(signal.id);
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),

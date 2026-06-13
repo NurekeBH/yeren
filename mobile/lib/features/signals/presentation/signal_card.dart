@@ -24,8 +24,11 @@ class SignalCard extends ConsumerWidget {
     final providers = ref.watch(signalProvidersProvider).valueOrNull ?? const [];
     final providerMatches = providers.where((p) => p.id == signal.providerId);
     final provider = providerMatches.isEmpty ? null : providerMatches.first;
-    // Тегін немесе сатып алынған идеялар толық көрінеді; жабықтар тек тизер.
-    final unlocked = signal.isFree || ref.watch(signalUnlockProvider).contains(signal.id);
+    // Paywall тек БЕЛСЕНДІ ақылы идеяларға. Тегін, сатып алынған немесе ЖАБЫЛҒАН
+    // (нәтижесі белгілі — track record) идеялар толық көрінеді.
+    final isActive = signal.status == SignalStatus.active;
+    final purchased = ref.watch(signalUnlockProvider).contains(signal.id);
+    final unlocked = signal.isFree || !isActive || purchased;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -87,13 +90,16 @@ class SignalCard extends ConsumerWidget {
                     const SizedBox(width: 8),
                     Text(signal.pair, style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w600)),
                     const Spacer(),
-                    if (signal.isFree)
-                      _FreeChip(l: l)
-                    else if (unlocked)
-                      _UnlockedChip(l: l)
-                    else
-                      _PriceChip(priceTg: signal.priceTg),
-                    const SizedBox(width: 6),
+                    // Баға/құлып белгісі тек белсенді идеяларға (жабықтарда — тек статус).
+                    if (isActive) ...[
+                      if (signal.isFree)
+                        _FreeChip(l: l)
+                      else if (purchased)
+                        _UnlockedChip(l: l)
+                      else
+                        _PriceChip(priceTg: signal.priceTg),
+                      const SizedBox(width: 6),
+                    ],
                     _StatusChip(status: signal.status, l: l),
                   ],
                 ),
