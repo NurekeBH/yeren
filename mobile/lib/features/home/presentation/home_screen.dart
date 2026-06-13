@@ -72,47 +72,42 @@ class HomeScreen extends ConsumerWidget {
               error: (_, _) => const SizedBox.shrink(),
             ),
             const SizedBox(height: 12),
-            Card(
-              child: ListTile(
-                leading: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(color: AppColors.gold.withValues(alpha: 0.12), shape: BoxShape.circle),
-                  child: const Icon(Icons.add_alert, color: AppColors.gold),
+            // Жылдам әрекеттер — 3 жинақы тайл (бұрын 3 бөлек ListTile карта еді).
+            Row(
+              children: [
+                Expanded(
+                  child: _QuickAction(
+                    icon: Icons.add_alert,
+                    label: l.home_qa_alerts,
+                    onTap: () => showCreateAlertSheet(
+                      context,
+                      ref,
+                      instrument: 'XAU/USD',
+                      refPrice: goldPrice,
+                      defaultText: l.alerts_default_manual('XAU/USD'),
+                    ),
+                  ),
                 ),
-                title: Text(l.alerts_title, style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w600)),
-                subtitle: Text(l.home_alert_sub, style: AppTypography.bodySmall()),
-                trailing: const Icon(Icons.chevron_right, color: AppColors.textMuted),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                onTap: () => showCreateAlertSheet(
-                  context,
-                  ref,
-                  instrument: 'XAU/USD',
-                  refPrice: goldPrice,
-                  defaultText: l.alerts_default_manual('XAU/USD'),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _QuickAction(
+                    icon: Icons.calculate_outlined,
+                    label: l.home_qa_calc,
+                    onTap: () => context.push('/tools/calculator'),
+                  ),
                 ),
-              ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _QuickAction(
+                    icon: Icons.event_available,
+                    label: l.home_qa_events,
+                    onTap: () => context.push('/events'),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 12),
             const CalendarModule(),
-            const SizedBox(height: 12),
-            _PositionCalcCard(l: l),
-            const SizedBox(height: 12),
-            Card(
-              child: ListTile(
-                leading: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(color: AppColors.gold.withValues(alpha: 0.12), shape: BoxShape.circle),
-                  child: const Icon(Icons.event_available, color: AppColors.gold),
-                ),
-                title: Text(l.home_events, style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w600)),
-                subtitle: Text(l.home_events_sub, style: AppTypography.bodySmall()),
-                trailing: const Icon(Icons.chevron_right, color: AppColors.textMuted),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                onTap: () => context.push('/events'),
-              ),
-            ),
             const SizedBox(height: 12),
             const IntelModule(),
           ],
@@ -122,33 +117,42 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
-/// Басты беттегі «Позиция калькуляторы» жылдам сілтемесі.
-class _PositionCalcCard extends StatelessWidget {
-  const _PositionCalcCard({required this.l});
+/// Басты беттегі жинақы «жылдам әрекет» тайлы (иконка + қысқа атау).
+class _QuickAction extends StatelessWidget {
+  const _QuickAction({required this.icon, required this.label, required this.onTap});
 
-  final AppLocalizations l;
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: ListTile(
-        leading: Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: AppColors.gold.withValues(alpha: 0.12),
-            shape: BoxShape.circle,
+      margin: EdgeInsets.zero,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+          child: Column(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(color: AppColors.gold.withValues(alpha: 0.12), shape: BoxShape.circle),
+                child: Icon(icon, color: AppColors.gold, size: 22),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                label,
+                maxLines: 2,
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+                style: AppTypography.label(color: AppColors.textPrimary).copyWith(fontWeight: FontWeight.w600, height: 1.1),
+              ),
+            ],
           ),
-          child: const Icon(Icons.calculate_outlined, color: AppColors.gold),
         ),
-        title: Text(
-          l.tools_position_calc,
-          style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w600),
-        ),
-        subtitle: Text(l.tools_position_calc_subtitle, style: AppTypography.bodySmall()),
-        trailing: const Icon(Icons.chevron_right, color: AppColors.textMuted),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        onTap: () => context.push('/tools/calculator'),
       ),
     );
   }

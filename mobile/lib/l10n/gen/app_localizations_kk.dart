@@ -336,6 +336,15 @@ class AppLocalizationsKk extends AppLocalizations {
   String get home_events => 'Іс-шаралар';
 
   @override
+  String get home_qa_alerts => 'Ескертулер';
+
+  @override
+  String get home_qa_calc => 'Калькулятор';
+
+  @override
+  String get home_qa_events => 'Іс-шаралар';
+
+  @override
   String get home_events_sub => 'Мастер-класс, лайв-трейд, вебинар';
 
   @override

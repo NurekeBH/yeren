@@ -336,6 +336,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get home_events => 'Events';
 
   @override
+  String get home_qa_alerts => 'Alerts';
+
+  @override
+  String get home_qa_calc => 'Calculator';
+
+  @override
+  String get home_qa_events => 'Events';
+
+  @override
   String get home_events_sub => 'Masterclasses, live trades, webinars';
 
   @override

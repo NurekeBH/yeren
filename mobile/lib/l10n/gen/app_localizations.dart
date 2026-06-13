@@ -724,6 +724,24 @@ abstract class AppLocalizations {
   /// **'Іс-шаралар'**
   String get home_events;
 
+  /// No description provided for @home_qa_alerts.
+  ///
+  /// In kk, this message translates to:
+  /// **'Ескертулер'**
+  String get home_qa_alerts;
+
+  /// No description provided for @home_qa_calc.
+  ///
+  /// In kk, this message translates to:
+  /// **'Калькулятор'**
+  String get home_qa_calc;
+
+  /// No description provided for @home_qa_events.
+  ///
+  /// In kk, this message translates to:
+  /// **'Іс-шаралар'**
+  String get home_qa_events;
+
   /// No description provided for @home_events_sub.
   ///
   /// In kk, this message translates to:

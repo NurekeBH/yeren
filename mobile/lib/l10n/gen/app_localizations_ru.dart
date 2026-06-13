@@ -336,6 +336,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get home_events => 'События';
 
   @override
+  String get home_qa_alerts => 'Уведомления';
+
+  @override
+  String get home_qa_calc => 'Калькулятор';
+
+  @override
+  String get home_qa_events => 'События';
+
+  @override
   String get home_events_sub => 'Мастер-классы, лайв-трейды, вебинары';
 
   @override
