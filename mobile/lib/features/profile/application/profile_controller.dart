@@ -54,10 +54,8 @@ enum NotificationCategory {
   intel,
   calendar,
   ideas,
-  review,
   academy,
   broker,
-  streak,
 }
 
 class NotificationPrefs extends Equatable {

@@ -134,6 +134,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get onboarding_finish => 'Начать';
 
   @override
+  String get splash_tagline => 'Платформа для трейдинга золотом';
+
+  @override
   String get intro_skip => 'Пропустить';
 
   @override
@@ -377,6 +380,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get prov_ideas => 'Идеи провайдера';
 
   @override
+  String get prov_active_ideas => 'Активные идеи';
+
+  @override
+  String get prov_past_signals => 'История сигналов';
+
+  @override
+  String get prov_no_past_signals => 'Пока нет закрытых сигналов';
+
+  @override
   String get prov_follow => 'Отслеживать';
 
   @override
@@ -577,6 +589,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get signals_free_badge => 'Бесплатно';
+
+  @override
+  String get signals_potential => 'Потенциал';
 
   @override
   String get signals_screenshot_locked => 'Скриншот после оплаты';

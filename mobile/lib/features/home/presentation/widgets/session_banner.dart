@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../l10n/gen/app_localizations.dart';
 import '../../../../shared/models/market_session.dart';
 import '../../../../shared/utils/formatters.dart';
 
-/// Үстіңгі баннер: ағымдағы сессия + streak.
+/// Үстіңгі баннер: ағымдағы нарық сессиясы.
 /// "Сәлеметсіз бе / Trader" greeting-ы алып тасталды (user сұрауы).
+/// Streak (🔥) функциясы алынып тасталды (user сұрауы).
 class SessionBanner extends StatelessWidget {
-  const SessionBanner({super.key, required this.streak});
-
-  final int streak;
+  const SessionBanner({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -32,14 +30,6 @@ class SessionBanner extends StatelessWidget {
                 style: AppTypography.bodyMedium(color: color).copyWith(fontWeight: FontWeight.w700),
               ),
             ),
-            if (streak > 0) ...[
-              const Icon(Icons.local_fire_department, color: AppColors.gold, size: 15),
-              const SizedBox(width: 3),
-              Text(
-                '$streak',
-                style: AppTypography.price(size: 13, weight: FontWeight.w700, color: AppColors.gold),
-              ),
-            ],
           ],
         ),
       ),

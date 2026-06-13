@@ -134,6 +134,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboarding_finish => 'Get started';
 
   @override
+  String get splash_tagline => 'Gold trading platform';
+
+  @override
   String get intro_skip => 'Skip';
 
   @override
@@ -377,6 +380,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get prov_ideas => 'Provider\'s ideas';
 
   @override
+  String get prov_active_ideas => 'Active ideas';
+
+  @override
+  String get prov_past_signals => 'Past signals';
+
+  @override
+  String get prov_no_past_signals => 'No closed signals yet';
+
+  @override
   String get prov_follow => 'Follow';
 
   @override
@@ -576,6 +588,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get signals_free_badge => 'Free';
+
+  @override
+  String get signals_potential => 'Potential';
 
   @override
   String get signals_screenshot_locked => 'Screenshot after payment';

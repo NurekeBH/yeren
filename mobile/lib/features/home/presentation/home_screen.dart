@@ -6,15 +6,12 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/widgets/language_switcher.dart';
-import '../../academy/data/lessons_repository.dart';
 import '../../alerts/presentation/create_alert_sheet.dart';
 import '../../auth/application/auth_controller.dart';
-import '../../profile/application/profile_controller.dart';
 import '../data/dashboard_repository.dart';
 import 'widgets/calendar_module.dart';
 import 'widgets/gold_hero_card.dart';
 import 'widgets/intel_module.dart';
-import 'widgets/lesson_preview.dart';
 import 'widgets/session_banner.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -25,14 +22,16 @@ class HomeScreen extends ConsumerWidget {
     final l = AppLocalizations.of(context);
     final goldAsync = ref.watch(goldQuoteProvider);
     final goldPrice = goldAsync.valueOrNull?.price ?? 2374.20;
-    final lessonsAsync = ref.watch(allLessonsProvider);
-    final profile = ref.watch(profileControllerProvider);
     final auth = ref.watch(authControllerProvider);
     final isAuthed = auth.status == AuthStatus.authenticated;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l.nav_home),
+        titleSpacing: 16,
+        // «Главная» жазуы алынды (орынды көп алатын — төменгі навигацияда бар).
+        // Оның орнына шағын ALTYN сөзбелгісі.
+        title: Text('ALTYN',
+            style: AppTypography.h2(color: AppColors.gold).copyWith(letterSpacing: 1.5, fontWeight: FontWeight.w800)),
         actions: [
           if (!isAuthed) ...[
             TextButton(
@@ -65,7 +64,7 @@ class HomeScreen extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
           children: [
-            SessionBanner(streak: profile.streak),
+            const SessionBanner(),
             const SizedBox(height: 12),
             goldAsync.when(
               data: (q) => GoldHeroCard(fallback: q),
@@ -116,15 +115,6 @@ class HomeScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 12),
             const IntelModule(),
-            const SizedBox(height: 12),
-            lessonsAsync.maybeWhen(
-              data: (lessons) {
-                if (lessons.isEmpty) return const SizedBox.shrink();
-                final today = lessons[DateTime.now().day % lessons.length];
-                return LessonPreview(lesson: today);
-              },
-              orElse: () => const SizedBox.shrink(),
-            ),
           ],
         ),
       ),

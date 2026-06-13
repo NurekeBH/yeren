@@ -9,6 +9,7 @@ import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/signal.dart';
 import '../../../shared/utils/formatters.dart';
 import '../application/signal_unlock_controller.dart';
+import 'unlock_signal_sheet.dart';
 
 class SignalCard extends ConsumerWidget {
   const SignalCard({super.key, required this.signal});
@@ -54,6 +55,15 @@ class SignalCard extends ConsumerWidget {
                           const SizedBox(width: 4),
                           const Icon(Icons.verified, size: 13, color: AppColors.dxyBlue),
                         ],
+                        const Spacer(),
+                        // Win Rate + рейтинг (кіші шрифт) — трейдер атымен бір жолда.
+                        Text('${l.signals_wr_short} ${(provider.winRate * 100).round()}%',
+                            style: AppTypography.label(color: AppColors.profitGreen).copyWith(fontSize: 11, fontWeight: FontWeight.w700)),
+                        const SizedBox(width: 8),
+                        const Icon(Icons.star, size: 11, color: AppColors.gold),
+                        const SizedBox(width: 2),
+                        Text(provider.rating.toStringAsFixed(1),
+                            style: AppTypography.label(color: AppColors.gold).copyWith(fontSize: 11, fontWeight: FontWeight.w700)),
                         const SizedBox(width: 2),
                         const Icon(Icons.chevron_right, size: 16, color: AppColors.textMuted),
                       ],
@@ -88,17 +98,49 @@ class SignalCard extends ConsumerWidget {
                   ],
                 ),
                 const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: unlocked
-                          ? _MiniStat(label: l.signals_entry_zone, value: '${Fmt.price(signal.entryFrom)}–${Fmt.price(signal.entryTo)}')
-                          : _MiniStat(label: l.signals_entry_zone, value: '•••', locked: true),
-                    ),
-                    Expanded(child: _MiniStat(label: l.signals_rr, value: '1:${signal.rr.toStringAsFixed(1)}')),
-                    Expanded(child: _MiniStat(label: l.signals_confidence, value: '${signal.confidence}%')),
-                  ],
-                ),
+                if (unlocked)
+                  // Тегін немесе сатып алынған — толық тизер (кіру, RR, сенімділік).
+                  Row(
+                    children: [
+                      Expanded(child: _MiniStat(label: l.signals_entry_zone, value: '${Fmt.price(signal.entryFrom)}–${Fmt.price(signal.entryTo)}')),
+                      Expanded(child: _MiniStat(label: l.signals_rr, value: '1:${signal.rr.toStringAsFixed(1)}')),
+                      Expanded(child: _MiniStat(label: l.signals_confidence, value: '${signal.confidence}%')),
+                    ],
+                  )
+                else
+                  // Ақылы әрі құлыпталған — нақты сигнал жасырын.
+                  // Тек күтілетін мақсат (пипс) + сатып алу шақыруы (CTA).
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(l.signals_potential, style: AppTypography.label(color: AppColors.textSecondary)),
+                            const SizedBox(height: 3),
+                            Row(
+                              children: [
+                                const Icon(Icons.lock, size: 13, color: AppColors.gold),
+                                const SizedBox(width: 5),
+                                Text('≈ ${l.signals_tp_pips(signal.tpPips.round())}',
+                                    style: AppTypography.price(size: 15, weight: FontWeight.w700, color: AppColors.gold)),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton.icon(
+                        onPressed: () => showUnlockSignalSheet(context, ref, signal),
+                        icon: const Icon(Icons.lock_open, size: 16),
+                        label: Text(l.signals_unlock_for(signal.priceTg)),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                      ),
+                    ],
+                  ),
                 if (signal.resultPips != null) ...[
                   const SizedBox(height: 8),
                   Text(
@@ -107,39 +149,6 @@ class SignalCard extends ConsumerWidget {
                       size: 14,
                       weight: FontWeight.w700,
                       color: signal.resultPips! >= 0 ? AppColors.profitGreen : AppColors.lossRed,
-                    ),
-                  ),
-                ],
-                // Автор (трейдер) + Win Rate + рейтинг — кіші шрифт, идея астында.
-                if (provider != null) ...[
-                  const SizedBox(height: 10),
-                  const Divider(height: 1),
-                  const SizedBox(height: 8),
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () => GoRouter.of(context).push('/providers/${provider.id}'),
-                    child: Row(
-                      children: [
-                        Text(provider.avatar, style: const TextStyle(fontSize: 13)),
-                        const SizedBox(width: 5),
-                        Flexible(
-                          child: Text(provider.name,
-                              overflow: TextOverflow.ellipsis,
-                              style: AppTypography.label(color: AppColors.textSecondary).copyWith(fontSize: 11)),
-                        ),
-                        if (provider.verified) ...[
-                          const SizedBox(width: 3),
-                          const Icon(Icons.verified, size: 11, color: AppColors.dxyBlue),
-                        ],
-                        const SizedBox(width: 8),
-                        Text('${l.signals_wr_short} ${(provider.winRate * 100).round()}%',
-                            style: AppTypography.label(color: AppColors.profitGreen).copyWith(fontSize: 11, fontWeight: FontWeight.w700)),
-                        const SizedBox(width: 8),
-                        const Icon(Icons.star, size: 11, color: AppColors.gold),
-                        const SizedBox(width: 2),
-                        Text(provider.rating.toStringAsFixed(1),
-                            style: AppTypography.label(color: AppColors.gold).copyWith(fontSize: 11, fontWeight: FontWeight.w700)),
-                      ],
                     ),
                   ),
                 ],
@@ -158,11 +167,10 @@ class SignalCard extends ConsumerWidget {
 }
 
 class _MiniStat extends StatelessWidget {
-  const _MiniStat({required this.label, required this.value, this.locked = false});
+  const _MiniStat({required this.label, required this.value});
 
   final String label;
   final String value;
-  final bool locked;
 
   @override
   Widget build(BuildContext context) {
@@ -171,16 +179,7 @@ class _MiniStat extends StatelessWidget {
       children: [
         Text(label, style: AppTypography.label(color: AppColors.textSecondary)),
         const SizedBox(height: 2),
-        if (locked)
-          Row(
-            children: [
-              const Icon(Icons.lock, size: 12, color: AppColors.textMuted),
-              const SizedBox(width: 4),
-              Text(value, style: AppTypography.price(size: 13, weight: FontWeight.w600, color: AppColors.textMuted)),
-            ],
-          )
-        else
-          Text(value, style: AppTypography.price(size: 13, weight: FontWeight.w600)),
+        Text(value, style: AppTypography.price(size: 13, weight: FontWeight.w600)),
       ],
     );
   }

@@ -116,7 +116,6 @@ class _LessonDetailScreenState extends ConsumerState<LessonDetailScreen> {
                     onPressed: () {
                       ref.read(completedLessonsProvider.notifier).markCompleted(lesson.id);
                       ref.read(profileControllerProvider.notifier).addXp(lesson.xp);
-                      ref.read(profileControllerProvider.notifier).markTodayCompleted();
                       context.pop();
                     },
                     child: Text(l.lesson_complete),

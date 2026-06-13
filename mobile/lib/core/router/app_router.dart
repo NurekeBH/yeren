@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../features/academy/presentation/academy_screen.dart';
 import '../../features/academy/presentation/gallup_result_screen.dart';
 import '../../features/academy/presentation/gallup_test_screen.dart';
 import '../../features/academy/presentation/lesson_detail_screen.dart';
@@ -26,6 +25,7 @@ import '../../features/journal/presentation/journal_screen.dart';
 import '../../features/journal/presentation/link_broker_screen.dart';
 import '../../features/onboarding/application/intro_controller.dart';
 import '../../features/onboarding/presentation/intro_screen.dart';
+import '../../features/splash/presentation/splash_screen.dart';
 import '../../features/profile/application/profile_controller.dart';
 import '../../features/profile/presentation/edit_profile_screen.dart';
 import '../../features/profile/presentation/notifications_screen.dart';
@@ -50,13 +50,16 @@ final routerProvider = Provider<GoRouter>((ref) {
   final listenable = _AuthListenable(ref);
 
   return GoRouter(
-    initialLocation: '/home',
+    initialLocation: '/splash',
     refreshListenable: listenable,
     redirect: (context, state) {
       final auth = ref.read(authControllerProvider);
       final profile = ref.read(profileControllerProvider);
       final introSeen = ref.read(introControllerProvider);
       final path = state.matchedLocation;
+
+      // Splash өзі таймермен негізгі ағынға өтеді — redirect араласпайды.
+      if (path == '/splash') return null;
 
       // Бірінші іске қосу: таныстыру слайдтарын көрсетеміз (auth-қа дейін).
       if (!introSeen) return path == '/intro' ? null : '/intro';
@@ -73,6 +76,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       return null;
     },
     routes: [
+      // Брендтелген splash (бірінші экран)
+      GoRoute(path: '/splash', builder: (_, _) => const SplashScreen()),
+
       // Бірінші іске қосудағы таныстыру (intro)
       GoRoute(path: '/intro', builder: (_, _) => const IntroScreen()),
 
@@ -131,7 +137,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, _, shell) => MainShell(navigationShell: shell),
         branches: [
           StatefulShellBranch(routes: [GoRoute(path: '/home', builder: (_, _) => const HomeScreen())]),
-          StatefulShellBranch(routes: [GoRoute(path: '/academy-tab', builder: (_, _) => const AuthGuard(child: AcademyScreen()))]),
+          // Edge Academy табы — әдепкіде Библиотека (кітаптар/фильмдер). Сабақтар алынды (user сұрауы).
+          StatefulShellBranch(routes: [GoRoute(path: '/academy-tab', builder: (_, _) => const AuthGuard(child: LibraryScreen()))]),
           StatefulShellBranch(routes: [GoRoute(path: '/signals', builder: (_, _) => const AuthGuard(child: SignalsScreen()))]),
           StatefulShellBranch(routes: [GoRoute(path: '/journal', builder: (_, _) => const AuthGuard(child: JournalScreen()))]),
           StatefulShellBranch(routes: [GoRoute(path: '/profile', builder: (_, _) => const AuthGuard(child: ProfileScreen()))]),

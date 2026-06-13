@@ -346,6 +346,12 @@ abstract class AppLocalizations {
   /// **'Бастау'**
   String get onboarding_finish;
 
+  /// No description provided for @splash_tagline.
+  ///
+  /// In kk, this message translates to:
+  /// **'Алтын трейдинг платформасы'**
+  String get splash_tagline;
+
   /// No description provided for @intro_skip.
   ///
   /// In kk, this message translates to:
@@ -802,6 +808,24 @@ abstract class AppLocalizations {
   /// **'Провайдер идеялары'**
   String get prov_ideas;
 
+  /// No description provided for @prov_active_ideas.
+  ///
+  /// In kk, this message translates to:
+  /// **'Белсенді идеялар'**
+  String get prov_active_ideas;
+
+  /// No description provided for @prov_past_signals.
+  ///
+  /// In kk, this message translates to:
+  /// **'Өткен сигналдар'**
+  String get prov_past_signals;
+
+  /// No description provided for @prov_no_past_signals.
+  ///
+  /// In kk, this message translates to:
+  /// **'Жабылған сигналдар әзірге жоқ'**
+  String get prov_no_past_signals;
+
   /// No description provided for @prov_follow.
   ///
   /// In kk, this message translates to:
@@ -1173,6 +1197,12 @@ abstract class AppLocalizations {
   /// In kk, this message translates to:
   /// **'Тегін'**
   String get signals_free_badge;
+
+  /// No description provided for @signals_potential.
+  ///
+  /// In kk, this message translates to:
+  /// **'Әлеует'**
+  String get signals_potential;
 
   /// No description provided for @signals_screenshot_locked.
   ///

@@ -134,6 +134,9 @@ class AppLocalizationsKk extends AppLocalizations {
   String get onboarding_finish => 'Бастау';
 
   @override
+  String get splash_tagline => 'Алтын трейдинг платформасы';
+
+  @override
   String get intro_skip => 'Өткізу';
 
   @override
@@ -377,6 +380,15 @@ class AppLocalizationsKk extends AppLocalizations {
   String get prov_ideas => 'Провайдер идеялары';
 
   @override
+  String get prov_active_ideas => 'Белсенді идеялар';
+
+  @override
+  String get prov_past_signals => 'Өткен сигналдар';
+
+  @override
+  String get prov_no_past_signals => 'Жабылған сигналдар әзірге жоқ';
+
+  @override
   String get prov_follow => 'Бақылау';
 
   @override
@@ -575,6 +587,9 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get signals_free_badge => 'Тегін';
+
+  @override
+  String get signals_potential => 'Әлеует';
 
   @override
   String get signals_screenshot_locked => 'Скриншот төлемнен кейін';

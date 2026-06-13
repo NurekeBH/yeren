@@ -261,7 +261,6 @@ class _AddTradeSheetState extends ConsumerState<_AddTradeSheet> {
   final _lot = TextEditingController(text: '0.10');
   final _openPrice = TextEditingController();
   final _closePrice = TextEditingController();
-  final _pnl = TextEditingController();
   final _rrPlanned = TextEditingController();
   final _rrActual = TextEditingController();
   final _notes = TextEditingController();
@@ -277,11 +276,24 @@ class _AddTradeSheetState extends ConsumerState<_AddTradeSheet> {
     _lot.dispose();
     _openPrice.dispose();
     _closePrice.dispose();
-    _pnl.dispose();
     _rrPlanned.dispose();
     _rrActual.dispose();
     _notes.dispose();
     super.dispose();
+  }
+
+  double _d(TextEditingController c) => double.tryParse(c.text.replaceAll(',', '.')) ?? 0;
+
+  /// XAU/USD: 1 лот = 100 унция → бағаның $1 қозғалысы = лот×$100.
+  /// Нәтиже бағыт + кіру/шығу бағасынан автоматты есептеледі (қолмен P&L жоқ).
+  ({double pnl, double pips})? _result() {
+    final o = double.tryParse(_openPrice.text.replaceAll(',', '.'));
+    final c = double.tryParse(_closePrice.text.replaceAll(',', '.'));
+    final lot = double.tryParse(_lot.text.replaceAll(',', '.'));
+    if (o == null || c == null || lot == null || lot <= 0) return null;
+    final sign = _direction == SignalDirection.buy ? 1 : -1;
+    final diff = (c - o) * sign;
+    return (pnl: diff * lot * 100, pips: diff / 0.10);
   }
 
   Future<void> _submit() async {
@@ -289,14 +301,15 @@ class _AddTradeSheetState extends ConsumerState<_AddTradeSheet> {
     setState(() => _busy = true);
     try {
       final now = DateTime.now();
+      final res = _result();
       final trade = Trade(
         id: 'tr-${now.millisecondsSinceEpoch}',
         instrument: _instrument.text.trim(),
         direction: _direction,
-        openPrice: double.parse(_openPrice.text.replaceAll(',', '.')),
-        closePrice: double.parse(_closePrice.text.replaceAll(',', '.')),
-        lot: double.parse(_lot.text.replaceAll(',', '.')),
-        pnl: double.parse(_pnl.text.replaceAll(',', '.')),
+        openPrice: _d(_openPrice),
+        closePrice: _d(_closePrice),
+        lot: _d(_lot),
+        pnl: res?.pnl ?? 0,
         setup: _setup,
         session: _session,
         openedAt: now.subtract(const Duration(hours: 1)),
@@ -370,31 +383,7 @@ class _AddTradeSheetState extends ConsumerState<_AddTradeSheet> {
               ),
               const SizedBox(height: 12),
 
-              // Lot + PnL
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _lot,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      decoration: InputDecoration(labelText: l.journal_lot),
-                      validator: (v) => _number(v, l),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _pnl,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: true),
-                      decoration: InputDecoration(labelText: l.journal_pnl),
-                      validator: (v) => _number(v, l),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-
-              // Open + Close price
+              // Open + Close price (нәтиже тірі есептеледі)
               Row(
                 children: [
                   Expanded(
@@ -403,6 +392,7 @@ class _AddTradeSheetState extends ConsumerState<_AddTradeSheet> {
                       keyboardType: const TextInputType.numberWithOptions(decimal: true),
                       decoration: InputDecoration(labelText: l.journal_open_price),
                       validator: (v) => _number(v, l),
+                      onChanged: (_) => setState(() {}),
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -412,10 +402,25 @@ class _AddTradeSheetState extends ConsumerState<_AddTradeSheet> {
                       keyboardType: const TextInputType.numberWithOptions(decimal: true),
                       decoration: InputDecoration(labelText: l.journal_close_price),
                       validator: (v) => _number(v, l),
+                      onChanged: (_) => setState(() {}),
                     ),
                   ),
                 ],
               ),
+              const SizedBox(height: 12),
+
+              // Lot
+              TextFormField(
+                controller: _lot,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(labelText: l.journal_lot),
+                validator: (v) => _number(v, l),
+                onChanged: (_) => setState(() {}),
+              ),
+              const SizedBox(height: 12),
+
+              // Есептелген нәтиже (P&L + пипс) — қолмен енгізілмейді
+              _ResultBox(result: _result(), l: l),
               const SizedBox(height: 12),
 
               // RR planned + actual
@@ -536,5 +541,48 @@ class _AddTradeSheetState extends ConsumerState<_AddTradeSheet> {
       case TradeSetup.fvg:
         return l.setup_fvg;
     }
+  }
+}
+
+/// Кіру/шығу бағасы мен лоттан автоматты есептелген нәтиже (P&L + пипс).
+class _ResultBox extends StatelessWidget {
+  const _ResultBox({required this.result, required this.l});
+
+  final ({double pnl, double pips})? result;
+  final AppLocalizations l;
+
+  @override
+  Widget build(BuildContext context) {
+    final r = result;
+    final hasResult = r != null;
+    final win = hasResult && r.pnl >= 0;
+    final color = !hasResult
+        ? AppColors.textMuted
+        : (win ? AppColors.profitGreen : AppColors.lossRed);
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withValues(alpha: 0.30)),
+      ),
+      child: Row(
+        children: [
+          Icon(hasResult ? (win ? Icons.trending_up : Icons.trending_down) : Icons.calculate_outlined, color: color, size: 20),
+          const SizedBox(width: 10),
+          Text(l.journal_pnl, style: AppTypography.label(color: AppColors.textSecondary)),
+          const Spacer(),
+          if (hasResult) ...[
+            Text('${Fmt.pipsSigned(r.pips.round())} pips',
+                style: AppTypography.label(color: color).copyWith(fontWeight: FontWeight.w600)),
+            const SizedBox(width: 10),
+            Text(Fmt.money(r.pnl),
+                style: AppTypography.price(size: 16, weight: FontWeight.w800, color: color)),
+          ] else
+            Text('—', style: AppTypography.price(size: 16, weight: FontWeight.w700, color: AppColors.textMuted)),
+        ],
+      ),
+    );
   }
 }
