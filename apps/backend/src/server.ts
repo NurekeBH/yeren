@@ -11,7 +11,6 @@ import { calendarRoutes } from './modules/calendar/routes.js';
 import { tradesRoutes } from './modules/trades/routes.js';
 import { brokersRoutes } from './modules/brokers/routes.js';
 import { academyRoutes } from './modules/academy/routes.js';
-import { subscriptionRoutes } from './modules/subscription/routes.js';
 import { notificationsRoutes } from './modules/notifications/routes.js';
 import { providersRoutes } from './modules/providers/routes.js';
 import { postsRoutes } from './modules/posts/routes.js';
@@ -19,6 +18,7 @@ import { eventsRoutes } from './modules/events/routes.js';
 import { alertsRoutes } from './modules/alerts/routes.js';
 import { libraryRoutes } from './modules/library/routes.js';
 import { agreementRoutes } from './modules/agreement/routes.js';
+import { ingestNews } from './services/news.js';
 import { pool } from './db/client.js';
 
 const app = Fastify({
@@ -48,7 +48,6 @@ await app.register(async (api) => {
   await tradesRoutes(api);
   await brokersRoutes(api);
   await academyRoutes(api);
-  await subscriptionRoutes(api);
   await notificationsRoutes(api);
   await providersRoutes(api);
   await postsRoutes(api);
@@ -74,8 +73,35 @@ process.on('SIGTERM', () => void shutdown('SIGTERM'));
 
 try {
   await app.listen({ port: env.PORT, host: env.HOST });
-  app.log.info(`TraderOS API listening at http://${env.HOST}:${env.PORT}`);
+  app.log.info(`ALTYN API listening at http://${env.HOST}:${env.PORT}`);
 } catch (err) {
   app.log.error(err, 'failed_to_start');
   process.exit(1);
+}
+
+// ─────────────── Market Intel real-time poller ───────────────
+// FINNHUB_API_KEY болса — жаңалықтарды әр 60 секунд сайын автоматты тартып,
+// intel_posts-қа жазады әрі жаңа urgent жаңалықтарға бірден FCM push жібереді
+// (ingestNews ішінде sendIntelPush шақырылады). Кілт болмаса — поллинг қосылмайды.
+if (env.FINNHUB_API_KEY) {
+  const POLL_MS = 60_000;
+  let polling = false;
+  const poll = async () => {
+    if (polling) return; // алдыңғысы аяқталмаса — өткіземіз
+    polling = true;
+    try {
+      const r = await ingestNews();
+      if (r.inserted > 0) app.log.info({ inserted: r.inserted, sources: r.sources }, 'intel_ingested');
+    } catch (err) {
+      app.log.warn(err, 'intel_poll_failed');
+    } finally {
+      polling = false;
+    }
+  };
+  void poll(); // бірден бір рет
+  const timer = setInterval(() => void poll(), POLL_MS);
+  timer.unref?.();
+  app.log.info(`Market Intel poller started (every ${POLL_MS / 1000}s)`);
+} else {
+  app.log.info('Market Intel poller disabled (no FINNHUB_API_KEY)');
 }

@@ -33,7 +33,6 @@ import '../../features/profile/presentation/profile_screen.dart';
 import '../../features/signals/presentation/provider_detail_screen.dart';
 import '../../features/signals/presentation/signal_detail_screen.dart';
 import '../../features/signals/presentation/signals_screen.dart';
-import '../../features/subscription/presentation/subscription_screen.dart';
 import '../../shared/widgets/auth_guard.dart';
 import 'main_shell.dart';
 
@@ -105,7 +104,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/providers/:id',
         builder: (_, s) => AuthGuard(child: ProviderDetailScreen(providerId: s.pathParameters['id']!)),
       ),
-      GoRoute(path: '/subscription', builder: (_, _) => const AuthGuard(child: SubscriptionScreen())),
       GoRoute(path: '/intel', builder: (_, _) => const AuthGuard(child: IntelScreen())),
       GoRoute(path: '/calendar', builder: (_, _) => const AuthGuard(child: CalendarScreen())),
       GoRoute(path: '/notifications', builder: (_, _) => const AuthGuard(child: NotificationsScreen())),

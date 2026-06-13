@@ -110,33 +110,26 @@ class SignalCard extends ConsumerWidget {
                 else
                   // Ақылы әрі құлыпталған — нақты сигнал жасырын.
                   // Тек күтілетін мақсат (пипс) + сатып алу шақыруы (CTA).
-                  Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(l.signals_potential, style: AppTypography.label(color: AppColors.textSecondary)),
-                            const SizedBox(height: 3),
-                            Row(
-                              children: [
-                                const Icon(Icons.lock, size: 13, color: AppColors.gold),
-                                const SizedBox(width: 5),
-                                Text('≈ ${l.signals_tp_pips(signal.tpPips.round())}',
-                                    style: AppTypography.price(size: 15, weight: FontWeight.w700, color: AppColors.gold)),
-                              ],
-                            ),
-                          ],
-                        ),
+                      Row(
+                        children: [
+                          const Icon(Icons.lock, size: 14, color: AppColors.gold),
+                          const SizedBox(width: 6),
+                          Text(l.signals_potential, style: AppTypography.label(color: AppColors.textSecondary)),
+                          const Spacer(),
+                          Text('≈ ${l.signals_tp_pips(signal.tpPips.round())}',
+                              style: AppTypography.price(size: 15, weight: FontWeight.w700, color: AppColors.gold)),
+                        ],
                       ),
-                      const SizedBox(width: 8),
-                      ElevatedButton.icon(
-                        onPressed: () => showUnlockSignalSheet(context, ref, signal),
-                        icon: const Icon(Icons.lock_open, size: 16),
-                        label: Text(l.signals_unlock_for(signal.priceTg)),
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: () => showUnlockSignalSheet(context, ref, signal),
+                          icon: const Icon(Icons.lock_open, size: 16),
+                          label: Text(l.signals_unlock_for(signal.priceTg)),
                         ),
                       ),
                     ],
@@ -152,11 +145,7 @@ class SignalCard extends ConsumerWidget {
                     ),
                   ),
                 ],
-                const SizedBox(height: 10),
-                Text(
-                  l.idea_disclaimer,
-                  style: AppTypography.label(color: AppColors.textMuted).copyWith(fontSize: 10, fontStyle: FontStyle.italic),
-                ),
+                // Дисклеймер әр картадан алынды — тізімде бір рет көрсетіледі (деклаттер).
               ],
             ),
           ),

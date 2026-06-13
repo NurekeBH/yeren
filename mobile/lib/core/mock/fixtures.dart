@@ -112,6 +112,24 @@ class MockFixtures {
           publishedAt: _now.subtract(const Duration(days: 2, hours: 8)),
           resultPips: -60,
         ),
+        // Ақылы әрі ЖАБЫҚ белсенді идея (paywall көрінісін көрсету үшін) — 500 ₸.
+        Signal(
+          id: 'sig-005',
+          providerId: 'pr-2',
+          pair: 'XAU/USD',
+          direction: SignalDirection.buy,
+          entryFrom: 2408.00, entryTo: 2410.00,
+          tp1: 2415.00, tp2: 2420.00, tp3: 2424.00, sl: 2402.00,
+          rr: 2.2, confidence: 71,
+          screenshotUrl: 'https://picsum.photos/seed/altyn-sig005/800/450',
+          analysis: _pick(loc, {
+            'kk': 'NY ашылуында 2408 demand зонасынан bullish reaction. Targets: 2415 / 2420 / 2424.',
+            'ru': 'На открытии NY bullish-реакция от зоны спроса 2408. Цели: 2415 / 2420 / 2424.',
+            'en': 'NY-open bullish reaction from the 2408 demand zone. Targets: 2415 / 2420 / 2424.',
+          }),
+          status: SignalStatus.active,
+          publishedAt: _now.subtract(const Duration(minutes: 18)),
+        ),
       ];
 
   // ─────────────────────── Intel posts ───────────────────────
