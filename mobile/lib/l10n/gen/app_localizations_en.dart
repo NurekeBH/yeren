@@ -654,6 +654,57 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signals_unlock_success => 'Idea unlocked!';
 
   @override
+  String get signals_publish => 'Publish idea';
+
+  @override
+  String get signals_publish_title => 'New trade idea';
+
+  @override
+  String get signals_published => 'Idea published!';
+
+  @override
+  String get signals_entry_from => 'Entry (from)';
+
+  @override
+  String get signals_entry_to => 'Entry (to)';
+
+  @override
+  String get signals_free_idea => 'Free idea';
+
+  @override
+  String get signals_free_idea_desc => 'If on — no paywall, open to everyone';
+
+  @override
+  String get signals_set_result => 'Set result';
+
+  @override
+  String get signals_set_result_desc => 'Mark which level the idea closed at';
+
+  @override
+  String get signals_result_set => 'Result saved, idea closed';
+
+  @override
+  String get signals_vote_title => 'Vote on the outcome';
+
+  @override
+  String get signals_vote_desc => 'Your prediction: which level will it reach?';
+
+  @override
+  String get prov_tab_active => 'Active';
+
+  @override
+  String get prov_tab_past => 'Past';
+
+  @override
+  String get prov_tab_posts => 'Posts';
+
+  @override
+  String get profile_trader_mode => 'Trader mode';
+
+  @override
+  String get profile_trader_mode_desc => 'Publish and manage ideas';
+
+  @override
   String get signals_provider_stats => 'Provider stats';
 
   @override

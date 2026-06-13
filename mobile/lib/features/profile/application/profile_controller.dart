@@ -53,7 +53,6 @@ enum NotificationCategory {
   signals,
   intel,
   calendar,
-  ideas,
   academy,
   broker,
 }
@@ -111,6 +110,7 @@ class UserProfile extends Equatable {
     this.streak = 0,
     this.weekProgress = const [false, false, false, false, false, false, false],
     this.onboardedFlag = false,
+    this.isVerifiedTrader = false,
   });
 
   final String name;
@@ -129,6 +129,9 @@ class UserProfile extends Equatable {
   /// Профиль сұрақнамасын қайталап сұрамас үшін.
   final bool onboardedFlag;
 
+  /// Расталған трейдер режимі — идея жариялау/басқару мүмкіндігін ашады.
+  final bool isVerifiedTrader;
+
   bool get isOnboarded => onboardedFlag || (name.isNotEmpty && styles.isNotEmpty);
 
   UserProfile copyWith({
@@ -144,6 +147,7 @@ class UserProfile extends Equatable {
     int? streak,
     List<bool>? weekProgress,
     bool? onboardedFlag,
+    bool? isVerifiedTrader,
   }) =>
       UserProfile(
         name: name ?? this.name,
@@ -158,6 +162,7 @@ class UserProfile extends Equatable {
         streak: streak ?? this.streak,
         weekProgress: weekProgress ?? this.weekProgress,
         onboardedFlag: onboardedFlag ?? this.onboardedFlag,
+        isVerifiedTrader: isVerifiedTrader ?? this.isVerifiedTrader,
       );
 
   Map<String, dynamic> toJson() => {
@@ -174,6 +179,7 @@ class UserProfile extends Equatable {
         'streak': streak,
         'weekProgress': weekProgress,
         'onboarded': onboardedFlag,
+        'isVerifiedTrader': isVerifiedTrader,
       };
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
@@ -211,11 +217,12 @@ class UserProfile extends Equatable {
       weekProgress: ((json['weekProgress'] as List?)?.cast<bool>()) ??
           const [false, false, false, false, false, false, false],
       onboardedFlag: (json['onboarded'] as bool?) ?? false,
+      isVerifiedTrader: (json['isVerifiedTrader'] as bool?) ?? false,
     );
   }
 
   @override
-  List<Object?> get props => [name, city, styles, bio, avatarPath, preferredSessions, notifications, gallup, xp, streak, weekProgress, onboardedFlag];
+  List<Object?> get props => [name, city, styles, bio, avatarPath, preferredSessions, notifications, gallup, xp, streak, weekProgress, onboardedFlag, isVerifiedTrader];
 }
 
 const _profileKey = 'user_profile_v1';
@@ -313,6 +320,8 @@ class ProfileController extends StateNotifier<UserProfile> {
     _set(state.copyWith(name: name, city: city, bio: bio, styles: styles));
     _syncRemote();
   }
+
+  void toggleVerifiedTrader() => _set(state.copyWith(isVerifiedTrader: !state.isVerifiedTrader));
 
   void setAvatar(String path) => _set(state.copyWith(avatarPath: path));
   void setBio(String value) => _set(state.copyWith(bio: value));

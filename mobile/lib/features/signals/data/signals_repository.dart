@@ -5,6 +5,7 @@ import '../../../core/locale/locale_controller.dart';
 import '../../../core/mock/fixtures.dart';
 import '../../../core/network/api_service.dart';
 import '../../../shared/models/signal.dart';
+import '../application/my_signals_controller.dart';
 
 abstract class SignalsRepository {
   Future<List<Signal>> fetchAll(String loc);
@@ -96,12 +97,18 @@ final signalsRepositoryProvider = Provider<SignalsRepository>(
       : MockSignalsRepository(),
 );
 
-final signalsListProvider = FutureProvider<List<Signal>>((ref) {
+final signalsListProvider = FutureProvider<List<Signal>>((ref) async {
   final loc = ref.watch(localeControllerProvider).languageCode;
-  return ref.watch(signalsRepositoryProvider).fetchAll(loc);
+  final base = await ref.watch(signalsRepositoryProvider).fetchAll(loc);
+  // Трейдер жариялаған сигналдар (жергілікті) тізімнің басына қосылады.
+  final mine = ref.watch(mySignalsProvider);
+  final mineIds = mine.map((s) => s.id).toSet();
+  return [...mine, ...base.where((s) => !mineIds.contains(s.id))];
 });
 
-final signalByIdProvider = FutureProvider.family<Signal?, String>((ref, id) {
+final signalByIdProvider = FutureProvider.family<Signal?, String>((ref, id) async {
+  final mine = ref.watch(mySignalsProvider).where((s) => s.id == id);
+  if (mine.isNotEmpty) return mine.first;
   final loc = ref.watch(localeControllerProvider).languageCode;
   return ref.watch(signalsRepositoryProvider).fetchById(loc, id);
 });

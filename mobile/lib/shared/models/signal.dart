@@ -32,6 +32,8 @@ class Signal extends Equatable {
     this.resultPips,
     this.providerId,
     this.isFree = false,
+    this.isMine = false,
+    this.authorName,
   });
 
   final String id;
@@ -55,6 +57,12 @@ class Signal extends Equatable {
   /// Тегін идея — paywall жоқ, толық көрінеді (баға 0).
   final bool isFree;
 
+  /// Осы пайдаланушы (расталған трейдер) жариялаған идея — оны басқара алады.
+  final bool isMine;
+
+  /// Авторы көрсетілетін аты (isMine идеялар үшін; provider жоқ болғанда).
+  final String? authorName;
+
   double get entryMid => (entryFrom + entryTo) / 2;
 
   /// XAU/USD: 1 пипс = 0.10 баға қозғалысы (позиция калькуляторымен сәйкес).
@@ -75,6 +83,73 @@ class Signal extends Equatable {
   /// Ақылы идея ма (тегін емес).
   bool get isPaid => !isFree;
 
+  Signal copyWith({SignalStatus? status, int? resultPips}) => Signal(
+        id: id,
+        pair: pair,
+        direction: direction,
+        entryFrom: entryFrom,
+        entryTo: entryTo,
+        tp1: tp1,
+        tp2: tp2,
+        tp3: tp3,
+        sl: sl,
+        rr: rr,
+        confidence: confidence,
+        screenshotUrl: screenshotUrl,
+        analysis: analysis,
+        status: status ?? this.status,
+        publishedAt: publishedAt,
+        resultPips: resultPips ?? this.resultPips,
+        providerId: providerId,
+        isFree: isFree,
+        isMine: isMine,
+        authorName: authorName,
+      );
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'pair': pair,
+        'direction': direction.name,
+        'entryFrom': entryFrom,
+        'entryTo': entryTo,
+        'tp1': tp1,
+        'tp2': tp2,
+        'tp3': tp3,
+        'sl': sl,
+        'rr': rr,
+        'confidence': confidence,
+        'screenshotUrl': screenshotUrl,
+        'analysis': analysis,
+        'status': status.name,
+        'publishedAt': publishedAt.toIso8601String(),
+        'resultPips': resultPips,
+        'isFree': isFree,
+        'isMine': isMine,
+        'authorName': authorName,
+      };
+
+  factory Signal.fromJsonLocal(Map<String, dynamic> j) => Signal(
+        id: j['id'].toString(),
+        pair: (j['pair'] ?? 'XAU/USD').toString(),
+        direction: SignalDirection.values.firstWhere((d) => d.name == j['direction'], orElse: () => SignalDirection.buy),
+        entryFrom: (j['entryFrom'] as num).toDouble(),
+        entryTo: (j['entryTo'] as num).toDouble(),
+        tp1: (j['tp1'] as num).toDouble(),
+        tp2: (j['tp2'] as num).toDouble(),
+        tp3: (j['tp3'] as num).toDouble(),
+        sl: (j['sl'] as num).toDouble(),
+        rr: (j['rr'] as num).toDouble(),
+        confidence: (j['confidence'] as num).toInt(),
+        screenshotUrl: (j['screenshotUrl'] ?? '').toString(),
+        analysis: (j['analysis'] ?? '').toString(),
+        status: SignalStatus.values.firstWhere((s) => s.name == j['status'], orElse: () => SignalStatus.active),
+        publishedAt: DateTime.tryParse('${j['publishedAt']}') ?? DateTime.now(),
+        resultPips: (j['resultPips'] as num?)?.toInt(),
+        isFree: j['isFree'] == true,
+        isMine: j['isMine'] == true,
+        authorName: j['authorName'] as String?,
+      );
+
   @override
-  List<Object?> get props => [id, pair, direction, status, publishedAt];
+  List<Object?> get props => [id, pair, direction, status, publishedAt, resultPips];
 }

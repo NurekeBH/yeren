@@ -132,6 +132,24 @@ class ProfileScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
+          // Расталған трейдер режимі — идея жариялау/басқару.
+          Card(
+            child: SwitchListTile(
+              secondary: Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(color: AppColors.gold.withValues(alpha: 0.12), shape: BoxShape.circle),
+                child: const Icon(Icons.verified_user_outlined, size: 18, color: AppColors.gold),
+              ),
+              title: Text(l.profile_trader_mode, style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w600)),
+              subtitle: Text(l.profile_trader_mode_desc, style: AppTypography.bodySmall()),
+              value: profile.isVerifiedTrader,
+              activeThumbColor: AppColors.gold,
+              onChanged: (_) => ref.read(profileControllerProvider.notifier).toggleVerifiedTrader(),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            ),
+          ),
+          const SizedBox(height: 8),
           _MenuItem(
             icon: Icons.bookmark_outline,
             label: l.profile_saved,

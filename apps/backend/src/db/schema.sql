@@ -371,6 +371,18 @@ create table if not exists signal_purchases (
 );
 create index if not exists signal_purchases_user_idx on signal_purchases(user_id, created_at desc);
 
+-- ─────────────────── SIGNAL VOTES (нәтижеге дауыс) ───────────────────
+-- Ашқан (төлеген/тегін) қолданушылар идея нәтижесіне дауыс береді: tp1|tp2|tp3|sl.
+-- Бір қолданушы — бір дауыс (PK), қайта дауыс берсе on conflict жаңартылады.
+create table if not exists signal_votes (
+  user_id    uuid not null references users(id) on delete cascade,
+  signal_id  uuid not null references signals(id) on delete cascade,
+  outcome    text not null check (outcome in ('tp1','tp2','tp3','sl')),
+  created_at timestamptz default now(),
+  primary key (user_id, signal_id)
+);
+create index if not exists signal_votes_signal_idx on signal_votes(signal_id);
+
 -- ─────────────────── HOUSEKEEPING ───────────────────
 -- updated_at автоматты жаңарту үшін trigger функциясы
 create or replace function set_updated_at() returns trigger as $$

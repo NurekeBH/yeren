@@ -68,6 +68,21 @@ class ApiService {
   /// Идеяны сатып алу (Kaspi төлемінен кейін backend-ке тіркеу).
   Future<void> purchaseSignal(String id) => _send('POST', '/signals/$id/purchase');
 
+  /// Сигнал жариялау (расталған трейдер/админ).
+  Future<Map<String, dynamic>> publishSignal(Map<String, dynamic> body) async =>
+      (await _send('POST', '/signals', body: body))['signal'] as Map<String, dynamic>? ?? const {};
+
+  /// Сигнал статусын өзгерту/жабу (TP1/TP2/TP3/SL).
+  Future<void> closeSignal(String id, String status, int resultPips) =>
+      _send('POST', '/signals/$id/close', body: {'status': status, 'result_pips': resultPips});
+
+  /// Нәтижеге дауыс беру (төлеген қолданушылар): sl | tp1 | tp2 | tp3.
+  Future<Map<String, dynamic>> voteSignal(String id, String outcome) =>
+      _send('POST', '/signals/$id/vote', body: {'outcome': outcome});
+
+  /// Сигнал бойынша дауыс қорытындысы.
+  Future<Map<String, dynamic>> signalVotes(String id) => _get('/signals/$id/votes');
+
   // ─────────────── Providers (aggregator) ───────────────
   Future<List<dynamic>> providers() async => (await _get('/providers'))['providers'] as List;
   Future<Map<String, dynamic>> provider(String id) => _get('/providers/$id');

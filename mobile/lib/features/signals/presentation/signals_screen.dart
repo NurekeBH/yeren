@@ -6,8 +6,10 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/signal.dart';
+import '../../profile/application/profile_controller.dart';
 import '../data/signals_repository.dart';
 import 'provider_card.dart';
+import 'publish_signal_sheet.dart';
 import 'signal_card.dart';
 
 /// Ideas — сигнал провайдерлерінің агрегаторы.
@@ -20,10 +22,18 @@ class SignalsScreen extends ConsumerWidget {
     final l = AppLocalizations.of(context);
     final async = ref.watch(signalsListProvider);
     final providers = ref.watch(signalProvidersProvider).valueOrNull ?? const [];
+    final isTrader = ref.watch(profileControllerProvider).isVerifiedTrader;
 
     return DefaultTabController(
       length: 3,
       child: Scaffold(
+        floatingActionButton: isTrader
+            ? FloatingActionButton.extended(
+                onPressed: () => showPublishSignalSheet(context),
+                icon: const Icon(Icons.add),
+                label: Text(l.signals_publish),
+              )
+            : null,
         appBar: AppBar(
           title: Text(l.nav_signals),
           bottom: TabBar(

@@ -20,7 +20,6 @@ class NotificationsScreen extends ConsumerWidget {
       (NotificationCategory.signals, l.notif_signals, l.notif_signals_desc, Icons.notifications_active, AppColors.gold),
       (NotificationCategory.intel, l.notif_intel, l.notif_intel_desc, Icons.bolt, AppColors.gold),
       (NotificationCategory.calendar, l.notif_calendar, l.notif_calendar_desc, Icons.event, AppColors.gold),
-      (NotificationCategory.ideas, l.notif_ideas, l.notif_ideas_desc, Icons.lightbulb_outline, AppColors.gold),
       (NotificationCategory.academy, l.notif_academy, l.notif_academy_desc, Icons.school_outlined, AppColors.gold),
       (NotificationCategory.broker, l.notif_broker, l.notif_broker_desc, Icons.account_balance_wallet_outlined, AppColors.gold),
     ];

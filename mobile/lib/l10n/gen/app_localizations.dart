@@ -1306,6 +1306,108 @@ abstract class AppLocalizations {
   /// **'Идея ашылды!'**
   String get signals_unlock_success;
 
+  /// No description provided for @signals_publish.
+  ///
+  /// In kk, this message translates to:
+  /// **'Идея жариялау'**
+  String get signals_publish;
+
+  /// No description provided for @signals_publish_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Жаңа идея жариялау'**
+  String get signals_publish_title;
+
+  /// No description provided for @signals_published.
+  ///
+  /// In kk, this message translates to:
+  /// **'Идея жарияланды!'**
+  String get signals_published;
+
+  /// No description provided for @signals_entry_from.
+  ///
+  /// In kk, this message translates to:
+  /// **'Кіру (бастап)'**
+  String get signals_entry_from;
+
+  /// No description provided for @signals_entry_to.
+  ///
+  /// In kk, this message translates to:
+  /// **'Кіру (дейін)'**
+  String get signals_entry_to;
+
+  /// No description provided for @signals_free_idea.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тегін идея'**
+  String get signals_free_idea;
+
+  /// No description provided for @signals_free_idea_desc.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қосылса — paywall жоқ, бәріне ашық'**
+  String get signals_free_idea_desc;
+
+  /// No description provided for @signals_set_result.
+  ///
+  /// In kk, this message translates to:
+  /// **'Нәтижені қою'**
+  String get signals_set_result;
+
+  /// No description provided for @signals_set_result_desc.
+  ///
+  /// In kk, this message translates to:
+  /// **'Идея қай деңгейде жабылғанын белгілеңіз'**
+  String get signals_set_result_desc;
+
+  /// No description provided for @signals_result_set.
+  ///
+  /// In kk, this message translates to:
+  /// **'Нәтиже сақталды, идея жабылды'**
+  String get signals_result_set;
+
+  /// No description provided for @signals_vote_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Нәтижеге дауыс беру'**
+  String get signals_vote_title;
+
+  /// No description provided for @signals_vote_desc.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сіздің болжамыңыз: қай деңгейге жетеді?'**
+  String get signals_vote_desc;
+
+  /// No description provided for @prov_tab_active.
+  ///
+  /// In kk, this message translates to:
+  /// **'Белсенді'**
+  String get prov_tab_active;
+
+  /// No description provided for @prov_tab_past.
+  ///
+  /// In kk, this message translates to:
+  /// **'Өткен'**
+  String get prov_tab_past;
+
+  /// No description provided for @prov_tab_posts.
+  ///
+  /// In kk, this message translates to:
+  /// **'Посттар'**
+  String get prov_tab_posts;
+
+  /// No description provided for @profile_trader_mode.
+  ///
+  /// In kk, this message translates to:
+  /// **'Трейдер режимі'**
+  String get profile_trader_mode;
+
+  /// No description provided for @profile_trader_mode_desc.
+  ///
+  /// In kk, this message translates to:
+  /// **'Идея жариялау және басқару'**
+  String get profile_trader_mode_desc;
+
   /// No description provided for @signals_provider_stats.
   ///
   /// In kk, this message translates to:

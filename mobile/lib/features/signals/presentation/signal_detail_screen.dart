@@ -8,7 +8,9 @@ import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/signal.dart';
 import '../../../shared/utils/formatters.dart';
 import '../../alerts/presentation/create_alert_sheet.dart';
+import '../application/my_signals_controller.dart';
 import '../application/signal_unlock_controller.dart';
+import '../application/signal_votes_controller.dart';
 import '../data/signals_repository.dart';
 import 'unlock_signal_sheet.dart';
 
@@ -46,8 +48,10 @@ class _Body extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isBuy = signal.direction == SignalDirection.buy;
     final dirColor = isBuy ? AppColors.profitGreen : AppColors.lossRed;
-    // Paywall тек белсенді ақылы идеяларға; жабылғандар (track record) толық ашық.
+    // Paywall тек белсенді ақылы идеяларға; жабылғандар (track record), тегін және
+    // өз идеяларым толық ашық.
     final unlocked = signal.isFree ||
+        signal.isMine ||
         signal.status != SignalStatus.active ||
         ref.watch(signalUnlockProvider).contains(signal.id);
 
@@ -94,6 +98,16 @@ class _Body extends ConsumerWidget {
               label: Text(l.alerts_notify),
             ),
           ),
+          // Трейдер өз белсенді идеясының нәтижесін қояды (жабады).
+          if (signal.isMine && signal.status == SignalStatus.active) ...[
+            const SizedBox(height: 16),
+            _SetResultCard(signal: signal, l: l),
+          ],
+          // Ашқан (төлеген/тегін) қолданушылар нәтижеге дауыс береді.
+          if (!signal.isMine) ...[
+            const SizedBox(height: 16),
+            _VotingCard(signal: signal, l: l),
+          ],
         ] else
           _Paywall(signal: signal, l: l),
         const SizedBox(height: 12),
@@ -171,6 +185,173 @@ class _ChartPlaceholder extends StatelessWidget {
             Text('Chart screenshot', style: TextStyle(color: Colors.white54)),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Трейдер өз идеясының нәтижесін қояды: TP1/TP2/TP3 немесе SL → идея жабылады.
+class _SetResultCard extends ConsumerWidget {
+  const _SetResultCard({required this.signal, required this.l});
+  final Signal signal;
+  final AppLocalizations l;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    Future<void> set(SignalStatus s) async {
+      await ref.read(mySignalsProvider.notifier).setStatus(signal.id, s);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.signals_result_set)));
+      }
+    }
+
+    Widget btn(String label, SignalStatus s, Color c) => OutlinedButton(
+          onPressed: () => set(s),
+          style: OutlinedButton.styleFrom(
+            foregroundColor: c,
+            side: BorderSide(color: c.withValues(alpha: 0.5)),
+            padding: const EdgeInsets.symmetric(vertical: 10),
+          ),
+          child: Text(label),
+        );
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(children: [
+              const Icon(Icons.flag_outlined, size: 18, color: AppColors.gold),
+              const SizedBox(width: 8),
+              Text(l.signals_set_result, style: AppTypography.h2()),
+            ]),
+            const SizedBox(height: 4),
+            Text(l.signals_set_result_desc, style: AppTypography.bodySmall(color: AppColors.textSecondary)),
+            const SizedBox(height: 12),
+            Row(children: [
+              Expanded(child: btn(l.signals_status_tp1, SignalStatus.closedTp1, AppColors.profitGreen)),
+              const SizedBox(width: 8),
+              Expanded(child: btn(l.signals_status_tp2, SignalStatus.closedTp2, AppColors.profitGreen)),
+            ]),
+            const SizedBox(height: 8),
+            Row(children: [
+              Expanded(child: btn(l.signals_status_tp3, SignalStatus.closedTp3, AppColors.profitGreen)),
+              const SizedBox(width: 8),
+              Expanded(child: btn(l.signals_status_sl, SignalStatus.closedSl, AppColors.lossRed)),
+            ]),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Ашқан қолданушылар нәтижеге дауыс береді (SL/TP1/TP2/TP3) — қоғам пікірі.
+class _VotingCard extends ConsumerWidget {
+  const _VotingCard({required this.signal, required this.l});
+  final Signal signal;
+  final AppLocalizations l;
+
+  String _label(String o) => switch (o) {
+        'tp1' => l.signals_status_tp1,
+        'tp2' => l.signals_status_tp2,
+        'tp3' => l.signals_status_tp3,
+        _ => l.signals_status_sl,
+      };
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final vote = ref.watch(signalVotesProvider)[signal.id] ?? ref.read(signalVotesProvider.notifier).of(signal.id);
+    final total = vote.total == 0 ? 1 : vote.total;
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(children: [
+              const Icon(Icons.how_to_vote_outlined, size: 18, color: AppColors.gold),
+              const SizedBox(width: 8),
+              Expanded(child: Text(l.signals_vote_title, style: AppTypography.h2())),
+              Text('${vote.total}', style: AppTypography.label(color: AppColors.textSecondary)),
+            ]),
+            const SizedBox(height: 4),
+            Text(l.signals_vote_desc, style: AppTypography.bodySmall(color: AppColors.textSecondary)),
+            const SizedBox(height: 12),
+            for (final o in kVoteOutcomes) ...[
+              _VoteRow(
+                label: _label(o),
+                count: vote.countOf(o),
+                pct: vote.countOf(o) / total,
+                selected: vote.myVote == o,
+                isSl: o == 'sl',
+                onTap: () => ref.read(signalVotesProvider.notifier).vote(signal.id, o),
+              ),
+              const SizedBox(height: 8),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _VoteRow extends StatelessWidget {
+  const _VoteRow({
+    required this.label,
+    required this.count,
+    required this.pct,
+    required this.selected,
+    required this.isSl,
+    required this.onTap,
+  });
+  final String label;
+  final int count;
+  final double pct;
+  final bool selected;
+  final bool isSl;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = isSl ? AppColors.lossRed : AppColors.profitGreen;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(10),
+      child: Stack(
+        children: [
+          // Прогресс-фон
+          Positioned.fill(
+            child: FractionallySizedBox(
+              widthFactor: pct.clamp(0.0, 1.0),
+              alignment: Alignment.centerLeft,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: selected ? 0.22 : 0.10),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: selected ? color : AppColors.border),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            child: Row(
+              children: [
+                Icon(selected ? Icons.check_circle : Icons.circle_outlined, size: 16, color: selected ? color : AppColors.textMuted),
+                const SizedBox(width: 8),
+                Text(label, style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w600)),
+                const Spacer(),
+                Text('${(pct * 100).round()}% · $count', style: AppTypography.label(color: AppColors.textSecondary)),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -109,6 +109,42 @@ export async function signalsRoutes(app: FastifyInstance) {
     return { ok: true, price_tg: price };
   });
 
+  // ─────────────── Нәтижеге дауыс беру (ашқан/төлеген қолданушылар) ───────────────
+  // Дауыс тек идеяны ашқандарға рұқсат: тегін идея, сатып алған немесе жабылған.
+  app.post('/signals/:id/vote', { onRequest: [app.authenticate] }, async (req, reply) => {
+    const id = (req.params as { id: string }).id;
+    const body = z.object({ outcome: z.enum(['tp1', 'tp2', 'tp3', 'sl']) }).safeParse(req.body);
+    if (!body.success) return reply.code(400).send({ error: 'bad_request' });
+    const sig = await query<{ is_free: boolean; status: string }>('select is_free, status from signals where id = $1', [id]);
+    if (sig.rows.length === 0) return reply.code(404).send({ error: 'not_found' });
+    const s = sig.rows[0]!;
+    const purchased = await query('select 1 from signal_purchases where user_id = $1 and signal_id = $2', [req.userId, id]);
+    const allowed = s.is_free || s.status !== 'active' || purchased.rows.length > 0;
+    if (!allowed) return reply.code(403).send({ error: 'locked' });
+    await query(
+      `insert into signal_votes (user_id, signal_id, outcome) values ($1,$2,$3)
+       on conflict (user_id, signal_id) do update set outcome = excluded.outcome, created_at = now()`,
+      [req.userId, id, body.data.outcome],
+    );
+    return { ok: true };
+  });
+
+  // Дауыс қорытындысы (барлық нәтиже бойынша санақ) + пайдаланушының өз дауысы.
+  app.get('/signals/:id/votes', { onRequest: [app.authenticate] }, async (req) => {
+    const id = (req.params as { id: string }).id;
+    const tally = await query<{ outcome: string; n: string }>(
+      'select outcome, count(*)::text as n from signal_votes where signal_id = $1 group by outcome',
+      [id],
+    );
+    const mine = await query<{ outcome: string }>(
+      'select outcome from signal_votes where signal_id = $1 and user_id = $2',
+      [id, req.userId],
+    );
+    const counts: Record<string, number> = { tp1: 0, tp2: 0, tp3: 0, sl: 0 };
+    for (const r of tally.rows) counts[r.outcome] = Number(r.n);
+    return { counts, my_vote: mine.rows[0]?.outcome ?? null };
+  });
+
   // Provider stats (TZ §10.4)
   app.get('/signals/stats', async () => {
     const { rows } = await query<{

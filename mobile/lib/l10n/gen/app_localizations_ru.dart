@@ -655,6 +655,59 @@ class AppLocalizationsRu extends AppLocalizations {
   String get signals_unlock_success => 'Идея разблокирована!';
 
   @override
+  String get signals_publish => 'Опубликовать идею';
+
+  @override
+  String get signals_publish_title => 'Новая торговая идея';
+
+  @override
+  String get signals_published => 'Идея опубликована!';
+
+  @override
+  String get signals_entry_from => 'Вход (от)';
+
+  @override
+  String get signals_entry_to => 'Вход (до)';
+
+  @override
+  String get signals_free_idea => 'Бесплатная идея';
+
+  @override
+  String get signals_free_idea_desc =>
+      'Если включено — без paywall, доступна всем';
+
+  @override
+  String get signals_set_result => 'Указать результат';
+
+  @override
+  String get signals_set_result_desc =>
+      'Отметьте, на каком уровне закрылась идея';
+
+  @override
+  String get signals_result_set => 'Результат сохранён, идея закрыта';
+
+  @override
+  String get signals_vote_title => 'Голосование за результат';
+
+  @override
+  String get signals_vote_desc => 'Ваш прогноз: какого уровня достигнет?';
+
+  @override
+  String get prov_tab_active => 'Активные';
+
+  @override
+  String get prov_tab_past => 'Прошлые';
+
+  @override
+  String get prov_tab_posts => 'Посты';
+
+  @override
+  String get profile_trader_mode => 'Режим трейдера';
+
+  @override
+  String get profile_trader_mode_desc => 'Публикация и управление идеями';
+
+  @override
   String get signals_provider_stats => 'Статистика провайдера';
 
   @override

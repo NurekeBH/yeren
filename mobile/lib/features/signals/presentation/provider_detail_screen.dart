@@ -27,102 +27,112 @@ class ProviderDetailScreen extends ConsumerWidget {
     }
     final provider = matches.first;
     final signalsAsync = ref.watch(signalsListProvider);
+    final mine = signalsAsync.valueOrNull?.where((s) => s.providerId == providerId).toList() ?? const [];
+    final active = mine.where((s) => s.status == SignalStatus.active).toList();
+    final past = mine.where((s) => s.status != SignalStatus.active).toList()
+      ..sort((a, b) => b.publishedAt.compareTo(a.publishedAt));
+    final loading = signalsAsync.isLoading;
 
-    return Scaffold(
-      appBar: AppBar(title: Text(provider.name)),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
-        children: [
-          ProviderCard(provider: provider, tappable: false),
-          const SizedBox(height: 8),
-          if (provider.verified)
-            Row(
-              children: [
-                const Icon(Icons.verified, size: 16, color: AppColors.dxyBlue),
-                const SizedBox(width: 6),
-                Text(l.prov_verified, style: AppTypography.label(color: AppColors.dxyBlue)),
-              ],
-            ),
-          const SizedBox(height: 12),
-          Text(provider.bio, style: AppTypography.bodyMedium().copyWith(height: 1.5)),
-          const SizedBox(height: 24),
-
-          // ── Published Ideas — трейдердің посттары (фото/мәтін/лайк/коммент) ──
-          Text(l.posts_published, style: AppTypography.h2()),
-          const SizedBox(height: 10),
-          ref.watch(traderPostsProvider(providerId)).when(
-                loading: () => const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Center(child: CircularProgressIndicator()),
-                ),
-                error: (e, _) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  child: Text('${l.common_error}: $e', style: AppTypography.bodyMedium(color: AppColors.textSecondary)),
-                ),
-                data: (posts) => posts.isEmpty
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        child: Text(l.posts_empty, style: AppTypography.bodyMedium(color: AppColors.textSecondary)),
-                      )
-                    : Column(
-                        children: [for (final p in posts) TraderPostCard(post: p, provider: provider)],
-                      ),
-              ),
-          const SizedBox(height: 24),
-
-          signalsAsync.when(
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (e, _) => Text('${l.common_error}: $e'),
-            data: (all) {
-              final mine = all.where((s) => s.providerId == providerId).toList();
-              final active = mine.where((s) => s.status == SignalStatus.active).toList();
-              final past = mine.where((s) => s.status != SignalStatus.active).toList()
-                ..sort((a, b) => b.publishedAt.compareTo(a.publishedAt));
-
-              return Column(
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(title: Text(provider.name)),
+        body: Column(
+          children: [
+            // ── Тұрақты тақырып: провайдер картасы + bio ──
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // ── Белсенді идеялар (ашық/ақылы — SignalCard paywall логикасымен) ──
-                  Text(l.prov_active_ideas, style: AppTypography.h2()),
-                  const SizedBox(height: 8),
-                  if (active.isEmpty)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      child: Text(l.signals_empty, style: AppTypography.bodyMedium(color: AppColors.textSecondary)),
-                    )
-                  else
-                    for (final s in active) SignalCard(signal: s),
-                  const SizedBox(height: 24),
-
-                  // ── Өткен сигналдар (track record) — нәтижесі ашық көрсетіледі ──
-                  Text(l.prov_past_signals, style: AppTypography.h2()),
-                  const SizedBox(height: 8),
-                  if (past.isEmpty)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      child: Text(l.prov_no_past_signals, style: AppTypography.bodyMedium(color: AppColors.textSecondary)),
-                    )
-                  else
-                    Card(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
-                        child: Column(
-                          children: [
-                            for (var i = 0; i < past.length; i++) ...[
-                              if (i > 0) const Divider(height: 1),
-                              _PastSignalRow(signal: past[i], l: l),
-                            ],
-                          ],
-                        ),
-                      ),
-                    ),
+                  ProviderCard(provider: provider, tappable: false),
+                  if (provider.bio.isNotEmpty) ...[
+                    const SizedBox(height: 10),
+                    Text(provider.bio, style: AppTypography.bodySmall(color: AppColors.textSecondary).copyWith(height: 1.4)),
+                  ],
                 ],
-              );
-            },
-          ),
-        ],
+              ),
+            ),
+            TabBar(
+              tabs: [
+                Tab(text: l.prov_tab_active),
+                Tab(text: l.prov_tab_past),
+                Tab(text: l.prov_tab_posts),
+              ],
+            ),
+            Expanded(
+              child: loading
+                  ? const Center(child: CircularProgressIndicator())
+                  : TabBarView(
+                      children: [
+                        // 1) Белсенді идеялар
+                        _TabList(
+                          empty: active.isEmpty,
+                          emptyLabel: l.signals_empty,
+                          child: ListView(
+                            padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
+                            children: [for (final s in active) SignalCard(signal: s)],
+                          ),
+                        ),
+                        // 2) Өткен сигналдар (track record)
+                        _TabList(
+                          empty: past.isEmpty,
+                          emptyLabel: l.prov_no_past_signals,
+                          child: ListView(
+                            padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
+                            children: [
+                              Card(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+                                  child: Column(
+                                    children: [
+                                      for (var i = 0; i < past.length; i++) ...[
+                                        if (i > 0) const Divider(height: 1),
+                                        _PastSignalRow(signal: past[i], l: l),
+                                      ],
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // 3) Посттар (Published Ideas)
+                        ref.watch(traderPostsProvider(providerId)).when(
+                              loading: () => const Center(child: CircularProgressIndicator()),
+                              error: (e, _) => Center(child: Text('${l.common_error}: $e', style: AppTypography.bodyMedium(color: AppColors.textSecondary))),
+                              data: (posts) => _TabList(
+                                empty: posts.isEmpty,
+                                emptyLabel: l.posts_empty,
+                                child: ListView(
+                                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
+                                  children: [for (final p in posts) TraderPostCard(post: p, provider: provider)],
+                                ),
+                              ),
+                            ),
+                      ],
+                    ),
+            ),
+          ],
+        ),
       ),
     );
+  }
+}
+
+/// Қойынды мазмұны — бос болса орталықтанған хабар, болмаса берілген тізім.
+class _TabList extends StatelessWidget {
+  const _TabList({required this.empty, required this.emptyLabel, required this.child});
+  final bool empty;
+  final String emptyLabel;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    if (empty) {
+      return Center(child: Text(emptyLabel, style: AppTypography.bodyMedium(color: AppColors.textSecondary)));
+    }
+    return child;
   }
 }
 

@@ -653,6 +653,58 @@ class AppLocalizationsKk extends AppLocalizations {
   String get signals_unlock_success => 'Идея ашылды!';
 
   @override
+  String get signals_publish => 'Идея жариялау';
+
+  @override
+  String get signals_publish_title => 'Жаңа идея жариялау';
+
+  @override
+  String get signals_published => 'Идея жарияланды!';
+
+  @override
+  String get signals_entry_from => 'Кіру (бастап)';
+
+  @override
+  String get signals_entry_to => 'Кіру (дейін)';
+
+  @override
+  String get signals_free_idea => 'Тегін идея';
+
+  @override
+  String get signals_free_idea_desc => 'Қосылса — paywall жоқ, бәріне ашық';
+
+  @override
+  String get signals_set_result => 'Нәтижені қою';
+
+  @override
+  String get signals_set_result_desc =>
+      'Идея қай деңгейде жабылғанын белгілеңіз';
+
+  @override
+  String get signals_result_set => 'Нәтиже сақталды, идея жабылды';
+
+  @override
+  String get signals_vote_title => 'Нәтижеге дауыс беру';
+
+  @override
+  String get signals_vote_desc => 'Сіздің болжамыңыз: қай деңгейге жетеді?';
+
+  @override
+  String get prov_tab_active => 'Белсенді';
+
+  @override
+  String get prov_tab_past => 'Өткен';
+
+  @override
+  String get prov_tab_posts => 'Посттар';
+
+  @override
+  String get profile_trader_mode => 'Трейдер режимі';
+
+  @override
+  String get profile_trader_mode_desc => 'Идея жариялау және басқару';
+
+  @override
   String get signals_provider_stats => 'Провайдер статистикасы';
 
   @override
