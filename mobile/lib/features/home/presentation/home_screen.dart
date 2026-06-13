@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
+import '../../../shared/models/market_session.dart';
+import '../../../shared/utils/formatters.dart';
 import '../../../shared/widgets/language_switcher.dart';
 import '../../alerts/presentation/create_alert_sheet.dart';
 import '../../auth/application/auth_controller.dart';
@@ -12,7 +14,6 @@ import '../data/dashboard_repository.dart';
 import 'widgets/calendar_module.dart';
 import 'widgets/gold_hero_card.dart';
 import 'widgets/intel_module.dart';
-import 'widgets/session_banner.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -24,14 +25,27 @@ class HomeScreen extends ConsumerWidget {
     final goldPrice = goldAsync.valueOrNull?.price ?? 2374.20;
     final auth = ref.watch(authControllerProvider);
     final isAuthed = auth.status == AuthStatus.authenticated;
+    final session = MarketSession.current();
+    final sessionColor = Fmt.sessionColor(session);
 
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 16,
-        // «Главная» жазуы алынды (орынды көп алатын — төменгі навигацияда бар).
-        // Оның орнына шағын ALTYN сөзбелгісі.
-        title: Text('ALTYN',
-            style: AppTypography.h2(color: AppColors.gold).copyWith(letterSpacing: 1.5, fontWeight: FontWeight.w800)),
+        // Қолданба атауы алынды. Сессия аты (сол жақ) + тіл иконкасы (оң жақ) — бір жолда.
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.access_time, size: 18, color: sessionColor),
+            const SizedBox(width: 8),
+            Flexible(
+              child: Text(
+                Fmt.sessionName(session, l),
+                overflow: TextOverflow.ellipsis,
+                style: AppTypography.bodyMedium(color: sessionColor).copyWith(fontWeight: FontWeight.w700),
+              ),
+            ),
+          ],
+        ),
         actions: [
           if (!isAuthed) ...[
             TextButton(
@@ -64,8 +78,6 @@ class HomeScreen extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
           children: [
-            const SessionBanner(),
-            const SizedBox(height: 12),
             goldAsync.when(
               data: (q) => GoldHeroCard(fallback: q),
               loading: () => const _CardSkeleton(height: 180),
