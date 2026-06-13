@@ -105,14 +105,17 @@ class SignalCard extends ConsumerWidget {
                 ),
                 const SizedBox(height: 12),
                 if (unlocked)
-                  // Тегін немесе сатып алынған — толық тизер (кіру, RR, сенімділік).
-                  Row(
-                    children: [
-                      Expanded(child: _MiniStat(label: l.signals_entry_zone, value: '${Fmt.price(signal.entryFrom)}–${Fmt.price(signal.entryTo)}')),
-                      Expanded(child: _MiniStat(label: l.signals_rr, value: '1:${signal.rr.toStringAsFixed(1)}')),
-                      Expanded(child: _MiniStat(label: l.signals_confidence, value: '${signal.confidence}%')),
-                    ],
-                  )
+                  // Ашық: сандық деңгейлер болса — тизер; әйтпесе (жылдам идея) мәтін.
+                  if (signal.hasLevels)
+                    Row(
+                      children: [
+                        Expanded(child: _MiniStat(label: l.signals_entry_zone, value: '${Fmt.price(signal.entryFrom)}–${Fmt.price(signal.entryTo)}')),
+                        Expanded(child: _MiniStat(label: l.signals_rr, value: '1:${signal.rr.toStringAsFixed(1)}')),
+                        Expanded(child: _MiniStat(label: l.signals_confidence, value: '${signal.confidence}%')),
+                      ],
+                    )
+                  else
+                    Text(signal.analysis, maxLines: 2, overflow: TextOverflow.ellipsis, style: AppTypography.bodySmall())
                 else
                   // Ақылы әрі құлыпталған — нақты сигнал жасырын.
                   // Тек күтілетін мақсат (пипс) + сатып алу шақыруы (CTA).
@@ -123,10 +126,12 @@ class SignalCard extends ConsumerWidget {
                         children: [
                           const Icon(Icons.lock, size: 14, color: AppColors.gold),
                           const SizedBox(width: 6),
-                          Text(l.signals_potential, style: AppTypography.label(color: AppColors.textSecondary)),
+                          Text(signal.hasLevels ? l.signals_potential : l.signals_paid_idea,
+                              style: AppTypography.label(color: AppColors.textSecondary)),
                           const Spacer(),
-                          Text('≈ ${l.signals_tp_pips(signal.tpPips.round())}',
-                              style: AppTypography.price(size: 15, weight: FontWeight.w700, color: AppColors.gold)),
+                          if (signal.hasLevels)
+                            Text('≈ ${l.signals_tp_pips(signal.tpPips.round())}',
+                                style: AppTypography.price(size: 15, weight: FontWeight.w700, color: AppColors.gold)),
                         ],
                       ),
                       const SizedBox(height: 10),

@@ -603,6 +603,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get signals_potential => 'Потенциал';
 
   @override
+  String get signals_paid_idea => 'Платная идея';
+
+  @override
   String get signals_screenshot_locked => 'Скриншот после оплаты';
 
   @override
@@ -664,6 +667,19 @@ class AppLocalizationsRu extends AppLocalizations {
   String get signals_published => 'Идея опубликована!';
 
   @override
+  String get signals_publish_add_photo => 'Добавить фото графика';
+
+  @override
+  String get signals_publish_text => 'Текст идеи';
+
+  @override
+  String get signals_publish_text_hint =>
+      'Напр.: BUY 2400, TP 2410/2420, SL 2390 — кратко обоснование';
+
+  @override
+  String get signals_publish_need_text => 'Напишите текст идеи';
+
+  @override
   String get signals_entry_from => 'Вход (от)';
 
   @override
@@ -706,6 +722,59 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get profile_trader_mode_desc => 'Публикация и управление идеями';
+
+  @override
+  String get profile_become_trader => 'Стать верифицированным трейдером';
+
+  @override
+  String get profile_verified_trader => 'Верифицированный трейдер ✓';
+
+  @override
+  String get profile_verified_trader_desc =>
+      'Публикуйте идеи на странице Ideas';
+
+  @override
+  String get profile_support => 'Поддержка / Администрация';
+
+  @override
+  String get support_title => 'Служба поддержки';
+
+  @override
+  String get support_desc =>
+      'По вопросам, верификации или сотрудничеству свяжитесь с нами:\n\nTelegram: @altyn_support\nEmail: support@altyn.app';
+
+  @override
+  String get trader_apply_title => 'Заявка на верификацию трейдера';
+
+  @override
+  String get trader_apply_desc =>
+      'Отправьте информацию о себе, чтобы команда могла проверить вас.';
+
+  @override
+  String get trader_apply_years => 'Опыт в трейдинге (лет)';
+
+  @override
+  String get trader_apply_about => 'О себе / ваша стратегия';
+
+  @override
+  String get trader_apply_about_hint => 'Стиль, рынки, результаты…';
+
+  @override
+  String get trader_apply_proof => 'Ссылка-доказательство (необязательно)';
+
+  @override
+  String get trader_apply_proof_hint => 'MyFxBook, отчёт, Telegram/Instagram…';
+
+  @override
+  String get trader_apply_tip =>
+      'Лучший способ заслужить доверие — сначала опубликовать 3 БЕСПЛАТНЫЕ идеи. Так команда и пользователи увидят ваш edge.';
+
+  @override
+  String get trader_apply_send => 'Отправить заявку';
+
+  @override
+  String get trader_apply_sent =>
+      'Заявка отправлена! (демо: режим трейдера включён)';
 
   @override
   String get signals_provider_stats => 'Статистика провайдера';
@@ -805,6 +874,15 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get journal_lot => 'Лот';
+
+  @override
+  String get journal_sl_opt => 'SL (необяз.)';
+
+  @override
+  String get journal_fees_opt => 'Комиссия (\$)';
+
+  @override
+  String get journal_grade => 'Оценка сделки';
 
   @override
   String get journal_open_price => 'Цена входа';

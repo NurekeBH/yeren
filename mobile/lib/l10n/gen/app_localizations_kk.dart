@@ -601,6 +601,9 @@ class AppLocalizationsKk extends AppLocalizations {
   String get signals_potential => 'Әлеует';
 
   @override
+  String get signals_paid_idea => 'Ақылы идея';
+
+  @override
   String get signals_screenshot_locked => 'Скриншот төлемнен кейін';
 
   @override
@@ -662,6 +665,19 @@ class AppLocalizationsKk extends AppLocalizations {
   String get signals_published => 'Идея жарияланды!';
 
   @override
+  String get signals_publish_add_photo => 'График фотосын қосу';
+
+  @override
+  String get signals_publish_text => 'Идея мәтіні';
+
+  @override
+  String get signals_publish_text_hint =>
+      'Мыс: BUY 2400, TP 2410/2420, SL 2390 — қысқа негіздеме';
+
+  @override
+  String get signals_publish_need_text => 'Идея мәтінін жазыңыз';
+
+  @override
   String get signals_entry_from => 'Кіру (бастап)';
 
   @override
@@ -703,6 +719,59 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get profile_trader_mode_desc => 'Идея жариялау және басқару';
+
+  @override
+  String get profile_become_trader => 'Расталған трейдер болу';
+
+  @override
+  String get profile_verified_trader => 'Расталған трейдер ✓';
+
+  @override
+  String get profile_verified_trader_desc =>
+      'Идеяларды Ideas бетінен жариялайсыз';
+
+  @override
+  String get profile_support => 'Қолдау / Әкімшілік';
+
+  @override
+  String get support_title => 'Қолдау қызметі';
+
+  @override
+  String get support_desc =>
+      'Сұрақтар, верификация немесе серіктестік бойынша хабарласыңыз:\n\nTelegram: @altyn_support\nEmail: support@altyn.app';
+
+  @override
+  String get trader_apply_title => 'Расталған трейдерге өтінім';
+
+  @override
+  String get trader_apply_desc =>
+      'Команда тексеруі үшін өзіңіз туралы ақпарат жіберіңіз.';
+
+  @override
+  String get trader_apply_years => 'Трейдинг тәжірибесі (жыл)';
+
+  @override
+  String get trader_apply_about => 'Өзіңіз туралы / стратегияңыз';
+
+  @override
+  String get trader_apply_about_hint => 'Стиль, нарықтар, нәтижелер…';
+
+  @override
+  String get trader_apply_proof => 'Дәлел сілтемесі (қалауыңша)';
+
+  @override
+  String get trader_apply_proof_hint => 'MyFxBook, есеп, Telegram/Instagram…';
+
+  @override
+  String get trader_apply_tip =>
+      'Сенімге ие болудың ең жақсы жолы — алдымен 3 ТЕГІН сигнал жариялау. Сонда команда мен қолданушылар сіздің edge-іңізді көреді.';
+
+  @override
+  String get trader_apply_send => 'Өтінім жіберу';
+
+  @override
+  String get trader_apply_sent =>
+      'Өтінім жіберілді! (демо: трейдер режимі қосылды)';
 
   @override
   String get signals_provider_stats => 'Провайдер статистикасы';
@@ -802,6 +871,15 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get journal_lot => 'Лот';
+
+  @override
+  String get journal_sl_opt => 'SL (қалауыңша)';
+
+  @override
+  String get journal_fees_opt => 'Комиссия (\$)';
+
+  @override
+  String get journal_grade => 'Сделка бағасы';
 
   @override
   String get journal_open_price => 'Кіру бағасы';

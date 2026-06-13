@@ -11,6 +11,7 @@ import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/widgets/language_switcher.dart';
 import '../../auth/application/auth_controller.dart';
 import '../application/profile_controller.dart';
+import 'trader_application_sheet.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -132,24 +133,27 @@ class ProfileScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
-          // Расталған трейдер режимі — идея жариялау/басқару.
-          Card(
-            child: SwitchListTile(
-              secondary: Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(color: AppColors.gold.withValues(alpha: 0.12), shape: BoxShape.circle),
-                child: const Icon(Icons.verified_user_outlined, size: 18, color: AppColors.gold),
+          // Расталған трейдер: расталса — мәртебе; әйтпесе — өтінім беру.
+          if (profile.isVerifiedTrader)
+            Card(
+              child: ListTile(
+                leading: Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(color: AppColors.profitGreen.withValues(alpha: 0.12), shape: BoxShape.circle),
+                  child: const Icon(Icons.verified, size: 18, color: AppColors.profitGreen),
+                ),
+                title: Text(l.profile_verified_trader, style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w600)),
+                subtitle: Text(l.profile_verified_trader_desc, style: AppTypography.bodySmall()),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
               ),
-              title: Text(l.profile_trader_mode, style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w600)),
-              subtitle: Text(l.profile_trader_mode_desc, style: AppTypography.bodySmall()),
-              value: profile.isVerifiedTrader,
-              activeThumbColor: AppColors.gold,
-              onChanged: (_) => ref.read(profileControllerProvider.notifier).toggleVerifiedTrader(),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            )
+          else
+            _MenuItem(
+              icon: Icons.verified_user_outlined,
+              label: l.profile_become_trader,
+              onTap: () => showTraderApplicationSheet(context),
             ),
-          ),
-          const SizedBox(height: 8),
           _MenuItem(
             icon: Icons.bookmark_outline,
             label: l.profile_saved,
@@ -169,6 +173,20 @@ class ProfileScreen extends ConsumerWidget {
             icon: Icons.description_outlined,
             label: l.agreement_title,
             onTap: () => context.push('/legal/agreement'),
+          ),
+          _MenuItem(
+            icon: Icons.support_agent_outlined,
+            label: l.profile_support,
+            onTap: () => showDialog<void>(
+              context: context,
+              builder: (_) => AlertDialog(
+                title: Text(l.support_title),
+                content: Text(l.support_desc),
+                actions: [
+                  TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l.common_continue)),
+                ],
+              ),
+            ),
           ),
           _MenuItem(
             icon: Icons.logout,

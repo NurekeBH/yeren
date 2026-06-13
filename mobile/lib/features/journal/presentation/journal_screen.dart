@@ -261,13 +261,14 @@ class _AddTradeSheetState extends ConsumerState<_AddTradeSheet> {
   final _lot = TextEditingController(text: '0.10');
   final _openPrice = TextEditingController();
   final _closePrice = TextEditingController();
-  final _rrPlanned = TextEditingController();
-  final _rrActual = TextEditingController();
+  final _sl = TextEditingController();
+  final _fees = TextEditingController();
   final _notes = TextEditingController();
   SignalDirection _direction = SignalDirection.buy;
   String _emotion = '😐';
   TradeSetup _setup = TradeSetup.retest;
   MarketSession _session = MarketSession.london;
+  String _grade = 'B'; // сделка бағасы (A/B/C) — өзін-өзі бағалау
   bool _busy = false;
 
   @override
@@ -276,24 +277,31 @@ class _AddTradeSheetState extends ConsumerState<_AddTradeSheet> {
     _lot.dispose();
     _openPrice.dispose();
     _closePrice.dispose();
-    _rrPlanned.dispose();
-    _rrActual.dispose();
+    _sl.dispose();
+    _fees.dispose();
     _notes.dispose();
     super.dispose();
   }
 
   double _d(TextEditingController c) => double.tryParse(c.text.replaceAll(',', '.')) ?? 0;
 
+  /// Best practices (Edgewonk/TraderSync үлгісінде): нәтиже автоматты есептеледі.
   /// XAU/USD: 1 лот = 100 унция → бағаның $1 қозғалысы = лот×$100.
-  /// Нәтиже бағыт + кіру/шығу бағасынан автоматты есептеледі (қолмен P&L жоқ).
-  ({double pnl, double pips})? _result() {
+  /// P&L (комиссия алынған таза), пипс және R-multiple (журналдың басты метрикасы).
+  ({double pnl, double pips, double? r})? _result() {
     final o = double.tryParse(_openPrice.text.replaceAll(',', '.'));
     final c = double.tryParse(_closePrice.text.replaceAll(',', '.'));
     final lot = double.tryParse(_lot.text.replaceAll(',', '.'));
     if (o == null || c == null || lot == null || lot <= 0) return null;
     final sign = _direction == SignalDirection.buy ? 1 : -1;
     final diff = (c - o) * sign;
-    return (pnl: diff * lot * 100, pips: diff / 0.10);
+    final fees = double.tryParse(_fees.text.replaceAll(',', '.')) ?? 0;
+    final pnl = diff * lot * 100 - fees;
+    // R-multiple = пайда (баға) / тәуекел (кіру→SL қашықтығы).
+    final sl = double.tryParse(_sl.text.replaceAll(',', '.'));
+    final risk = sl == null ? 0.0 : (o - sl).abs();
+    final r = risk <= 0 ? null : diff / risk;
+    return (pnl: pnl, pips: diff / 0.10, r: r);
   }
 
   Future<void> _submit() async {
@@ -302,6 +310,7 @@ class _AddTradeSheetState extends ConsumerState<_AddTradeSheet> {
     try {
       final now = DateTime.now();
       final res = _result();
+      final note = _notes.text.trim();
       final trade = Trade(
         id: 'tr-${now.millisecondsSinceEpoch}',
         instrument: _instrument.text.trim(),
@@ -315,10 +324,11 @@ class _AddTradeSheetState extends ConsumerState<_AddTradeSheet> {
         openedAt: now.subtract(const Duration(hours: 1)),
         closedAt: now,
         broker: 'Manual',
-        rrPlanned: double.tryParse(_rrPlanned.text.replaceAll(',', '.')),
-        rrActual: double.tryParse(_rrActual.text.replaceAll(',', '.')),
+        rrPlanned: null,
+        rrActual: res?.r == null ? null : double.parse(res!.r!.toStringAsFixed(2)),
         emotion: _emotion,
-        notes: _notes.text.trim().isEmpty ? null : _notes.text.trim(),
+        // Сделка бағасы (A/B/C) ескертпеге қосылады.
+        notes: '[$_grade] ${note.isEmpty ? '' : note}'.trim(),
       );
       await ref.read(journalRepositoryProvider).addTrade(trade);
       ref.invalidate(tradesProvider);
@@ -409,38 +419,60 @@ class _AddTradeSheetState extends ConsumerState<_AddTradeSheet> {
               ),
               const SizedBox(height: 12),
 
-              // Lot
-              TextFormField(
-                controller: _lot,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                decoration: InputDecoration(labelText: l.journal_lot),
-                validator: (v) => _number(v, l),
-                onChanged: (_) => setState(() {}),
-              ),
-              const SizedBox(height: 12),
-
-              // Есептелген нәтиже (P&L + пипс) — қолмен енгізілмейді
-              _ResultBox(result: _result(), l: l),
-              const SizedBox(height: 12),
-
-              // RR planned + actual
+              // Lot + Stop Loss (R-multiple есептеу үшін)
               Row(
                 children: [
                   Expanded(
                     child: TextFormField(
-                      controller: _rrPlanned,
+                      controller: _lot,
                       keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      decoration: InputDecoration(labelText: l.journal_rr_planned),
+                      decoration: InputDecoration(labelText: l.journal_lot),
+                      validator: (v) => _number(v, l),
+                      onChanged: (_) => setState(() {}),
                     ),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
                     child: TextFormField(
-                      controller: _rrActual,
+                      controller: _sl,
                       keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      decoration: InputDecoration(labelText: l.journal_rr_actual),
+                      decoration: InputDecoration(labelText: l.journal_sl_opt),
+                      onChanged: (_) => setState(() {}),
                     ),
                   ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: TextFormField(
+                      controller: _fees,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      decoration: InputDecoration(labelText: l.journal_fees_opt),
+                      onChanged: (_) => setState(() {}),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+
+              // Есептелген нәтиже (P&L + пипс + R-multiple) — қолмен енгізілмейді
+              _ResultBox(result: _result(), l: l),
+              const SizedBox(height: 16),
+
+              // Сделка бағасы (A/B/C) — өзін-өзі бағалау (журнал best practice)
+              Text(l.journal_grade, style: AppTypography.label()),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  for (final g in const ['A', 'B', 'C'])
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: ChoiceChip(
+                          label: SizedBox(width: double.infinity, child: Text(g, textAlign: TextAlign.center)),
+                          selected: _grade == g,
+                          onSelected: (_) => setState(() => _grade = g),
+                        ),
+                      ),
+                    ),
                 ],
               ),
               const SizedBox(height: 16),
@@ -548,14 +580,14 @@ class _AddTradeSheetState extends ConsumerState<_AddTradeSheet> {
 class _ResultBox extends StatelessWidget {
   const _ResultBox({required this.result, required this.l});
 
-  final ({double pnl, double pips})? result;
+  final ({double pnl, double pips, double? r})? result;
   final AppLocalizations l;
 
   @override
   Widget build(BuildContext context) {
-    final r = result;
-    final hasResult = r != null;
-    final win = hasResult && r.pnl >= 0;
+    final res = result;
+    final hasResult = res != null;
+    final win = hasResult && res.pnl >= 0;
     final color = !hasResult
         ? AppColors.textMuted
         : (win ? AppColors.profitGreen : AppColors.lossRed);
@@ -574,10 +606,15 @@ class _ResultBox extends StatelessWidget {
           Text(l.journal_pnl, style: AppTypography.label(color: AppColors.textSecondary)),
           const Spacer(),
           if (hasResult) ...[
-            Text('${Fmt.pipsSigned(r.pips.round())} pips',
+            if (res.r != null) ...[
+              Text('${res.r! >= 0 ? '+' : ''}${res.r!.toStringAsFixed(1)}R',
+                  style: AppTypography.label(color: color).copyWith(fontWeight: FontWeight.w700)),
+              const SizedBox(width: 10),
+            ],
+            Text('${Fmt.pipsSigned(res.pips.round())} pips',
                 style: AppTypography.label(color: color).copyWith(fontWeight: FontWeight.w600)),
             const SizedBox(width: 10),
-            Text(Fmt.money(r.pnl),
+            Text(Fmt.money(res.pnl),
                 style: AppTypography.price(size: 16, weight: FontWeight.w800, color: color)),
           ] else
             Text('—', style: AppTypography.price(size: 16, weight: FontWeight.w700, color: AppColors.textMuted)),

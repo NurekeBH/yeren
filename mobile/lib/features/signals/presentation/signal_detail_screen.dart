@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -79,8 +81,11 @@ class _Body extends ConsumerWidget {
         _Screenshot(signal: signal, unlocked: unlocked, l: l),
         const SizedBox(height: 16),
         if (unlocked) ...[
-          _LevelsCard(signal: signal, l: l),
-          const SizedBox(height: 16),
+          // Сандық деңгейлер болса — кесте; жылдам идеяда деңгейлер мәтінде (analysis).
+          if (signal.hasLevels) ...[
+            _LevelsCard(signal: signal, l: l),
+            const SizedBox(height: 16),
+          ],
           _AnalysisCard(signal: signal, l: l),
           const SizedBox(height: 16),
           SizedBox(
@@ -130,20 +135,30 @@ class _Screenshot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasImage = signal.screenshotUrl.isNotEmpty;
+    final url = signal.screenshotUrl;
+    final hasImage = url.isNotEmpty;
+    final isNetwork = url.startsWith('http');
     if (unlocked) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(12),
-        child: hasImage
-            ? CachedNetworkImage(
-                imageUrl: signal.screenshotUrl,
-                height: 200,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                placeholder: (_, _) => const _ChartPlaceholder(),
-                errorWidget: (_, _, _) => const _ChartPlaceholder(),
-              )
-            : const _ChartPlaceholder(),
+        child: !hasImage
+            ? const _ChartPlaceholder()
+            : isNetwork
+                ? CachedNetworkImage(
+                    imageUrl: url,
+                    height: 200,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    placeholder: (_, _) => const _ChartPlaceholder(),
+                    errorWidget: (_, _, _) => const _ChartPlaceholder(),
+                  )
+                : Image.file(
+                    File(url),
+                    height: 200,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, _, _) => const _ChartPlaceholder(),
+                  ),
       );
     }
     // Құлыпталған — суретті көрсетпейміз.

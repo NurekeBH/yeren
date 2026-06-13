@@ -34,6 +34,7 @@ class Signal extends Equatable {
     this.isFree = false,
     this.isMine = false,
     this.authorName,
+    this.priceOverride,
   });
 
   final String id;
@@ -63,6 +64,12 @@ class Signal extends Equatable {
   /// Авторы көрсетілетін аты (isMine идеялар үшін; provider жоқ болғанда).
   final String? authorName;
 
+  /// Жылдам жарияланған идея бағасы (₸) — деңгейлер мәтінде, пипстен есептелмейді.
+  final int? priceOverride;
+
+  /// Сандық деңгейлер (entry/TP) енгізілген бе — жоқ болса фото+мәтін режимі.
+  bool get hasLevels => entryFrom > 0 && tp1 > 0;
+
   double get entryMid => (entryFrom + entryTo) / 2;
 
   /// XAU/USD: 1 пипс = 0.10 баға қозғалысы (позиция калькуляторымен сәйкес).
@@ -77,8 +84,9 @@ class Signal extends Equatable {
     return furthest / pipSize;
   }
 
-  /// Идея бағасы (₸): тегін болса 0; әйтпесе TP 200 пипстен асса — 1000 ₸, басқаша 500 ₸.
-  int get priceTg => isFree ? 0 : (tpPips > 200 ? 1000 : 500);
+  /// Идея бағасы (₸): тегін болса 0; қолмен қойылса — priceOverride;
+  /// әйтпесе TP 200 пипстен асса — 1000 ₸, басқаша 500 ₸.
+  int get priceTg => isFree ? 0 : (priceOverride ?? (tpPips > 200 ? 1000 : 500));
 
   /// Ақылы идея ма (тегін емес).
   bool get isPaid => !isFree;
@@ -104,6 +112,7 @@ class Signal extends Equatable {
         isFree: isFree,
         isMine: isMine,
         authorName: authorName,
+        priceOverride: priceOverride,
       );
 
   Map<String, dynamic> toJson() => {
@@ -126,6 +135,7 @@ class Signal extends Equatable {
         'isFree': isFree,
         'isMine': isMine,
         'authorName': authorName,
+        'priceOverride': priceOverride,
       };
 
   factory Signal.fromJsonLocal(Map<String, dynamic> j) => Signal(
@@ -148,6 +158,7 @@ class Signal extends Equatable {
         isFree: j['isFree'] == true,
         isMine: j['isMine'] == true,
         authorName: j['authorName'] as String?,
+        priceOverride: (j['priceOverride'] as num?)?.toInt(),
       );
 
   @override

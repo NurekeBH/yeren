@@ -1222,6 +1222,12 @@ abstract class AppLocalizations {
   /// **'Әлеует'**
   String get signals_potential;
 
+  /// No description provided for @signals_paid_idea.
+  ///
+  /// In kk, this message translates to:
+  /// **'Ақылы идея'**
+  String get signals_paid_idea;
+
   /// No description provided for @signals_screenshot_locked.
   ///
   /// In kk, this message translates to:
@@ -1324,6 +1330,30 @@ abstract class AppLocalizations {
   /// **'Идея жарияланды!'**
   String get signals_published;
 
+  /// No description provided for @signals_publish_add_photo.
+  ///
+  /// In kk, this message translates to:
+  /// **'График фотосын қосу'**
+  String get signals_publish_add_photo;
+
+  /// No description provided for @signals_publish_text.
+  ///
+  /// In kk, this message translates to:
+  /// **'Идея мәтіні'**
+  String get signals_publish_text;
+
+  /// No description provided for @signals_publish_text_hint.
+  ///
+  /// In kk, this message translates to:
+  /// **'Мыс: BUY 2400, TP 2410/2420, SL 2390 — қысқа негіздеме'**
+  String get signals_publish_text_hint;
+
+  /// No description provided for @signals_publish_need_text.
+  ///
+  /// In kk, this message translates to:
+  /// **'Идея мәтінін жазыңыз'**
+  String get signals_publish_need_text;
+
   /// No description provided for @signals_entry_from.
   ///
   /// In kk, this message translates to:
@@ -1407,6 +1437,102 @@ abstract class AppLocalizations {
   /// In kk, this message translates to:
   /// **'Идея жариялау және басқару'**
   String get profile_trader_mode_desc;
+
+  /// No description provided for @profile_become_trader.
+  ///
+  /// In kk, this message translates to:
+  /// **'Расталған трейдер болу'**
+  String get profile_become_trader;
+
+  /// No description provided for @profile_verified_trader.
+  ///
+  /// In kk, this message translates to:
+  /// **'Расталған трейдер ✓'**
+  String get profile_verified_trader;
+
+  /// No description provided for @profile_verified_trader_desc.
+  ///
+  /// In kk, this message translates to:
+  /// **'Идеяларды Ideas бетінен жариялайсыз'**
+  String get profile_verified_trader_desc;
+
+  /// No description provided for @profile_support.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қолдау / Әкімшілік'**
+  String get profile_support;
+
+  /// No description provided for @support_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қолдау қызметі'**
+  String get support_title;
+
+  /// No description provided for @support_desc.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сұрақтар, верификация немесе серіктестік бойынша хабарласыңыз:\n\nTelegram: @altyn_support\nEmail: support@altyn.app'**
+  String get support_desc;
+
+  /// No description provided for @trader_apply_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Расталған трейдерге өтінім'**
+  String get trader_apply_title;
+
+  /// No description provided for @trader_apply_desc.
+  ///
+  /// In kk, this message translates to:
+  /// **'Команда тексеруі үшін өзіңіз туралы ақпарат жіберіңіз.'**
+  String get trader_apply_desc;
+
+  /// No description provided for @trader_apply_years.
+  ///
+  /// In kk, this message translates to:
+  /// **'Трейдинг тәжірибесі (жыл)'**
+  String get trader_apply_years;
+
+  /// No description provided for @trader_apply_about.
+  ///
+  /// In kk, this message translates to:
+  /// **'Өзіңіз туралы / стратегияңыз'**
+  String get trader_apply_about;
+
+  /// No description provided for @trader_apply_about_hint.
+  ///
+  /// In kk, this message translates to:
+  /// **'Стиль, нарықтар, нәтижелер…'**
+  String get trader_apply_about_hint;
+
+  /// No description provided for @trader_apply_proof.
+  ///
+  /// In kk, this message translates to:
+  /// **'Дәлел сілтемесі (қалауыңша)'**
+  String get trader_apply_proof;
+
+  /// No description provided for @trader_apply_proof_hint.
+  ///
+  /// In kk, this message translates to:
+  /// **'MyFxBook, есеп, Telegram/Instagram…'**
+  String get trader_apply_proof_hint;
+
+  /// No description provided for @trader_apply_tip.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сенімге ие болудың ең жақсы жолы — алдымен 3 ТЕГІН сигнал жариялау. Сонда команда мен қолданушылар сіздің edge-іңізді көреді.'**
+  String get trader_apply_tip;
+
+  /// No description provided for @trader_apply_send.
+  ///
+  /// In kk, this message translates to:
+  /// **'Өтінім жіберу'**
+  String get trader_apply_send;
+
+  /// No description provided for @trader_apply_sent.
+  ///
+  /// In kk, this message translates to:
+  /// **'Өтінім жіберілді! (демо: трейдер режимі қосылды)'**
+  String get trader_apply_sent;
 
   /// No description provided for @signals_provider_stats.
   ///
@@ -1605,6 +1731,24 @@ abstract class AppLocalizations {
   /// In kk, this message translates to:
   /// **'Лот'**
   String get journal_lot;
+
+  /// No description provided for @journal_sl_opt.
+  ///
+  /// In kk, this message translates to:
+  /// **'SL (қалауыңша)'**
+  String get journal_sl_opt;
+
+  /// No description provided for @journal_fees_opt.
+  ///
+  /// In kk, this message translates to:
+  /// **'Комиссия (\$)'**
+  String get journal_fees_opt;
+
+  /// No description provided for @journal_grade.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сделка бағасы'**
+  String get journal_grade;
 
   /// No description provided for @journal_open_price.
   ///

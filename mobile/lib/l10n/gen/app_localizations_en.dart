@@ -602,6 +602,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signals_potential => 'Potential';
 
   @override
+  String get signals_paid_idea => 'Paid idea';
+
+  @override
   String get signals_screenshot_locked => 'Screenshot after payment';
 
   @override
@@ -663,6 +666,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signals_published => 'Idea published!';
 
   @override
+  String get signals_publish_add_photo => 'Add chart photo';
+
+  @override
+  String get signals_publish_text => 'Idea text';
+
+  @override
+  String get signals_publish_text_hint =>
+      'e.g. BUY 2400, TP 2410/2420, SL 2390 — short reasoning';
+
+  @override
+  String get signals_publish_need_text => 'Please write the idea text';
+
+  @override
   String get signals_entry_from => 'Entry (from)';
 
   @override
@@ -703,6 +719,60 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profile_trader_mode_desc => 'Publish and manage ideas';
+
+  @override
+  String get profile_become_trader => 'Become a verified trader';
+
+  @override
+  String get profile_verified_trader => 'Verified trader ✓';
+
+  @override
+  String get profile_verified_trader_desc =>
+      'Publish ideas from the Ideas page';
+
+  @override
+  String get profile_support => 'Support / Admin';
+
+  @override
+  String get support_title => 'Support';
+
+  @override
+  String get support_desc =>
+      'For questions, verification or partnership, contact us:\n\nTelegram: @altyn_support\nEmail: support@altyn.app';
+
+  @override
+  String get trader_apply_title => 'Verified trader application';
+
+  @override
+  String get trader_apply_desc =>
+      'Send some info about yourself so the team can verify you.';
+
+  @override
+  String get trader_apply_years => 'Years of trading experience';
+
+  @override
+  String get trader_apply_about => 'About you / your strategy';
+
+  @override
+  String get trader_apply_about_hint => 'Style, markets, track record…';
+
+  @override
+  String get trader_apply_proof => 'Proof link (optional)';
+
+  @override
+  String get trader_apply_proof_hint =>
+      'MyFxBook, statement, Telegram/Instagram…';
+
+  @override
+  String get trader_apply_tip =>
+      'The best way to earn trust is to publish 3 FREE signals first, so the team and users can see your edge.';
+
+  @override
+  String get trader_apply_send => 'Send application';
+
+  @override
+  String get trader_apply_sent =>
+      'Application sent! (demo: trader mode enabled)';
 
   @override
   String get signals_provider_stats => 'Provider stats';
@@ -802,6 +872,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get journal_lot => 'Lot';
+
+  @override
+  String get journal_sl_opt => 'SL (optional)';
+
+  @override
+  String get journal_fees_opt => 'Fees (\$)';
+
+  @override
+  String get journal_grade => 'Trade grade';
 
   @override
   String get journal_open_price => 'Open price';
