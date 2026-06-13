@@ -8,6 +8,7 @@ import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/signal.dart';
 import '../../../shared/utils/formatters.dart';
+import '../application/signal_unlock_controller.dart';
 
 class SignalCard extends ConsumerWidget {
   const SignalCard({super.key, required this.signal});
@@ -22,6 +23,8 @@ class SignalCard extends ConsumerWidget {
     final providers = ref.watch(signalProvidersProvider).valueOrNull ?? const [];
     final providerMatches = providers.where((p) => p.id == signal.providerId);
     final provider = providerMatches.isEmpty ? null : providerMatches.first;
+    // Тегін немесе сатып алынған идеялар толық көрінеді; жабықтар тек тизер.
+    final unlocked = signal.isFree || ref.watch(signalUnlockProvider).contains(signal.id);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -74,13 +77,24 @@ class SignalCard extends ConsumerWidget {
                     const SizedBox(width: 8),
                     Text(signal.pair, style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w600)),
                     const Spacer(),
+                    if (signal.isFree)
+                      _FreeChip(l: l)
+                    else if (unlocked)
+                      _UnlockedChip(l: l)
+                    else
+                      _PriceChip(priceTg: signal.priceTg),
+                    const SizedBox(width: 6),
                     _StatusChip(status: signal.status, l: l),
                   ],
                 ),
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    Expanded(child: _MiniStat(label: l.signals_entry_zone, value: '${Fmt.price(signal.entryFrom)}–${Fmt.price(signal.entryTo)}')),
+                    Expanded(
+                      child: unlocked
+                          ? _MiniStat(label: l.signals_entry_zone, value: '${Fmt.price(signal.entryFrom)}–${Fmt.price(signal.entryTo)}')
+                          : _MiniStat(label: l.signals_entry_zone, value: '•••', locked: true),
+                    ),
                     Expanded(child: _MiniStat(label: l.signals_rr, value: '1:${signal.rr.toStringAsFixed(1)}')),
                     Expanded(child: _MiniStat(label: l.signals_confidence, value: '${signal.confidence}%')),
                   ],
@@ -93,6 +107,39 @@ class SignalCard extends ConsumerWidget {
                       size: 14,
                       weight: FontWeight.w700,
                       color: signal.resultPips! >= 0 ? AppColors.profitGreen : AppColors.lossRed,
+                    ),
+                  ),
+                ],
+                // Автор (трейдер) + Win Rate + рейтинг — кіші шрифт, идея астында.
+                if (provider != null) ...[
+                  const SizedBox(height: 10),
+                  const Divider(height: 1),
+                  const SizedBox(height: 8),
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => GoRouter.of(context).push('/providers/${provider.id}'),
+                    child: Row(
+                      children: [
+                        Text(provider.avatar, style: const TextStyle(fontSize: 13)),
+                        const SizedBox(width: 5),
+                        Flexible(
+                          child: Text(provider.name,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTypography.label(color: AppColors.textSecondary).copyWith(fontSize: 11)),
+                        ),
+                        if (provider.verified) ...[
+                          const SizedBox(width: 3),
+                          const Icon(Icons.verified, size: 11, color: AppColors.dxyBlue),
+                        ],
+                        const SizedBox(width: 8),
+                        Text('${l.signals_wr_short} ${(provider.winRate * 100).round()}%',
+                            style: AppTypography.label(color: AppColors.profitGreen).copyWith(fontSize: 11, fontWeight: FontWeight.w700)),
+                        const SizedBox(width: 8),
+                        const Icon(Icons.star, size: 11, color: AppColors.gold),
+                        const SizedBox(width: 2),
+                        Text(provider.rating.toStringAsFixed(1),
+                            style: AppTypography.label(color: AppColors.gold).copyWith(fontSize: 11, fontWeight: FontWeight.w700)),
+                      ],
                     ),
                   ),
                 ],
@@ -111,10 +158,11 @@ class SignalCard extends ConsumerWidget {
 }
 
 class _MiniStat extends StatelessWidget {
-  const _MiniStat({required this.label, required this.value});
+  const _MiniStat({required this.label, required this.value, this.locked = false});
 
   final String label;
   final String value;
+  final bool locked;
 
   @override
   Widget build(BuildContext context) {
@@ -123,8 +171,86 @@ class _MiniStat extends StatelessWidget {
       children: [
         Text(label, style: AppTypography.label(color: AppColors.textSecondary)),
         const SizedBox(height: 2),
-        Text(value, style: AppTypography.price(size: 13, weight: FontWeight.w600)),
+        if (locked)
+          Row(
+            children: [
+              const Icon(Icons.lock, size: 12, color: AppColors.textMuted),
+              const SizedBox(width: 4),
+              Text(value, style: AppTypography.price(size: 13, weight: FontWeight.w600, color: AppColors.textMuted)),
+            ],
+          )
+        else
+          Text(value, style: AppTypography.price(size: 13, weight: FontWeight.w600)),
       ],
+    );
+  }
+}
+
+/// Жабық идеяның бағасы (₸) — алтын белгі.
+class _PriceChip extends StatelessWidget {
+  const _PriceChip({required this.priceTg});
+  final int priceTg;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: AppColors.gold.withValues(alpha: 0.14),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.lock, size: 11, color: AppColors.gold),
+          const SizedBox(width: 3),
+          Text('$priceTg ₸', style: AppTypography.label(color: AppColors.gold).copyWith(fontWeight: FontWeight.w700)),
+        ],
+      ),
+    );
+  }
+}
+
+/// Тегін идея — жасыл «Тегін» белгісі.
+class _FreeChip extends StatelessWidget {
+  const _FreeChip({required this.l});
+  final AppLocalizations l;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: AppColors.profitGreen.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(l.signals_free_badge,
+          style: AppTypography.label(color: AppColors.profitGreen).copyWith(fontWeight: FontWeight.w700)),
+    );
+  }
+}
+
+/// Ашылған идея — жасыл белгі.
+class _UnlockedChip extends StatelessWidget {
+  const _UnlockedChip({required this.l});
+  final AppLocalizations l;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: AppColors.profitGreen.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.lock_open, size: 11, color: AppColors.profitGreen),
+          const SizedBox(width: 3),
+          Text(l.signals_unlocked_badge, style: AppTypography.label(color: AppColors.profitGreen)),
+        ],
+      ),
     );
   }
 }

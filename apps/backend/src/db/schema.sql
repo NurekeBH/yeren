@@ -101,6 +101,7 @@ create table if not exists signals (
   confidence     int not null check (confidence between 0 and 100),
   screenshot_url text,
   analysis       text not null,
+  is_free        boolean not null default false,          -- тегін идея (paywall жоқ)
   status         text not null default 'active',         -- active | closed_tp1 | closed_tp2 | closed_tp3 | closed_sl
   result_pips    int,
   source         text default 'admin',                   -- admin | telegram_bot
@@ -108,6 +109,8 @@ create table if not exists signals (
   published_at   timestamptz default now(),
   closed_at      timestamptz
 );
+-- Бұрыннан бар БД-лар үшін (create table if not exists жаңа бағанды қоспайды):
+alter table signals add column if not exists is_free boolean not null default false;
 create index if not exists signals_status_published_idx on signals(status, published_at desc);
 
 -- ─────────────────── INTEL POSTS (TZ §7) ───────────────────
@@ -355,6 +358,18 @@ create table if not exists trader_post_comments (
   created_at timestamptz default now()
 );
 create index if not exists trader_post_comments_post_idx on trader_post_comments(post_id, created_at);
+
+-- ─────────────────── SIGNAL PURCHASES (ақылы идеялар) ───────────────────
+-- Әр идея ақылы: TP 50–200 пипс → 500 ₸, 200 пипстен астам → 1000 ₸.
+-- price_tg — сатып алу сәтіндегі баға (snapshot, серверде есептеледі).
+create table if not exists signal_purchases (
+  user_id    uuid not null references users(id) on delete cascade,
+  signal_id  uuid not null references signals(id) on delete cascade,
+  price_tg   int not null,
+  created_at timestamptz default now(),
+  primary key (user_id, signal_id)
+);
+create index if not exists signal_purchases_user_idx on signal_purchases(user_id, created_at desc);
 
 -- ─────────────────── HOUSEKEEPING ───────────────────
 -- updated_at автоматты жаңарту үшін trigger функциясы

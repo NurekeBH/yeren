@@ -112,6 +112,7 @@ class UserProfile extends Equatable {
     this.xp = 0,
     this.streak = 0,
     this.weekProgress = const [false, false, false, false, false, false, false],
+    this.onboardedFlag = false,
   });
 
   final String name;
@@ -126,7 +127,11 @@ class UserProfile extends Equatable {
   final int streak;
   final List<bool> weekProgress;
 
-  bool get isOnboarded => name.isNotEmpty && styles.isNotEmpty;
+  /// Қайта оралған пайдаланушы (login) немесе онбордингті аяқтаған соң — true.
+  /// Профиль сұрақнамасын қайталап сұрамас үшін.
+  final bool onboardedFlag;
+
+  bool get isOnboarded => onboardedFlag || (name.isNotEmpty && styles.isNotEmpty);
 
   UserProfile copyWith({
     String? name,
@@ -140,6 +145,7 @@ class UserProfile extends Equatable {
     int? xp,
     int? streak,
     List<bool>? weekProgress,
+    bool? onboardedFlag,
   }) =>
       UserProfile(
         name: name ?? this.name,
@@ -153,6 +159,7 @@ class UserProfile extends Equatable {
         xp: xp ?? this.xp,
         streak: streak ?? this.streak,
         weekProgress: weekProgress ?? this.weekProgress,
+        onboardedFlag: onboardedFlag ?? this.onboardedFlag,
       );
 
   Map<String, dynamic> toJson() => {
@@ -168,6 +175,7 @@ class UserProfile extends Equatable {
         'xp': xp,
         'streak': streak,
         'weekProgress': weekProgress,
+        'onboarded': onboardedFlag,
       };
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
@@ -204,11 +212,12 @@ class UserProfile extends Equatable {
       streak: (json['streak'] as num?)?.toInt() ?? 0,
       weekProgress: ((json['weekProgress'] as List?)?.cast<bool>()) ??
           const [false, false, false, false, false, false, false],
+      onboardedFlag: (json['onboarded'] as bool?) ?? false,
     );
   }
 
   @override
-  List<Object?> get props => [name, city, styles, bio, avatarPath, preferredSessions, notifications, gallup, xp, streak, weekProgress];
+  List<Object?> get props => [name, city, styles, bio, avatarPath, preferredSessions, notifications, gallup, xp, streak, weekProgress, onboardedFlag];
 }
 
 const _profileKey = 'user_profile_v1';
@@ -261,8 +270,39 @@ class ProfileController extends StateNotifier<UserProfile> {
     required Set<TradingStyle> styles,
     String bio = '',
   }) {
-    _set(state.copyWith(name: name, city: city, styles: styles, bio: bio));
+    _set(state.copyWith(name: name, city: city, styles: styles, bio: bio, onboardedFlag: true));
     _syncRemote();
+  }
+
+  /// Login (mock): қайта оралған пайдаланушы — профиль сұрақнамасын өткізіп жібереміз.
+  void markReturningUser() {
+    if (state.isOnboarded) return;
+    _set(state.copyWith(onboardedFlag: true));
+  }
+
+  /// Login (remote): backend профилін (/auth/me) жергілікті профильге толтырамыз.
+  /// Бар деректер онбордингті өткізіп жіберуге жеткілікті болады.
+  Future<void> hydrateFromRemote() async {
+    if (!AppConfig.useRemoteApi) return;
+    try {
+      final me = await _ref.read(apiServiceProvider).me();
+      final user = (me['user'] as Map?)?.cast<String, dynamic>() ?? me;
+      final stylesRaw = (user['trading_styles'] as List?)?.cast<dynamic>() ?? const [];
+      final styles = stylesRaw
+          .map((s) => TradingStyle.values.where((v) => v.name == s.toString()))
+          .expand((e) => e)
+          .toSet();
+      _set(state.copyWith(
+        name: (user['name'] as String?)?.trim().isNotEmpty == true ? user['name'] as String : state.name,
+        city: (user['city'] as String?) ?? state.city,
+        bio: (user['bio'] as String?) ?? state.bio,
+        styles: styles.isNotEmpty ? styles : state.styles,
+        onboardedFlag: true,
+      ));
+    } catch (_) {
+      // Backend қолжетімсіз — қайта оралған пайдаланушы деп белгілейміз.
+      markReturningUser();
+    }
   }
 
   /// Профильді өңдеу (аты, қаласы, bio, сауда стильдері).

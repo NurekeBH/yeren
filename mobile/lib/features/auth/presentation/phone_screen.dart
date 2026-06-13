@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
+import 'country_codes.dart';
 
 class PhoneScreen extends ConsumerStatefulWidget {
   const PhoneScreen({super.key, required this.mode});
@@ -20,6 +21,7 @@ class PhoneScreen extends ConsumerStatefulWidget {
 class _PhoneScreenState extends ConsumerState<PhoneScreen> {
   final _controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  Country _country = kDefaultCountry;
 
   @override
   void dispose() {
@@ -27,9 +29,16 @@ class _PhoneScreenState extends ConsumerState<PhoneScreen> {
     super.dispose();
   }
 
+  Future<void> _pickCountry() async {
+    final picked = await showCountryPicker(context, _country);
+    if (picked != null) setState(() => _country = picked);
+  }
+
   void _onContinue() {
     if (!_formKey.currentState!.validate()) return;
-    final phone = _controller.text.trim();
+    // Толық нөмір: +<елдік код><жергілікті нөмір> (алдыңғы 0 алынады).
+    final local = _controller.text.replaceAll(RegExp(r'\D'), '').replaceFirst(RegExp(r'^0+'), '');
+    final phone = '+${_country.dial}$local';
     context.push('/auth/password?mode=${widget.mode}&phone=${Uri.encodeComponent(phone)}');
   }
 
@@ -49,24 +58,55 @@ class _PhoneScreenState extends ConsumerState<PhoneScreen> {
                 const SizedBox(height: 12),
                 Text(l.auth_phone_title, style: AppTypography.h1()),
                 const SizedBox(height: 24),
-                TextFormField(
-                  controller: _controller,
-                  keyboardType: TextInputType.phone,
-                  autofocus: true,
-                  style: AppTypography.price(size: 18),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'[\d\+\s\-\(\)]')),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Ел коды таңдау
+                    InkWell(
+                      onTap: _pickCountry,
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        height: 58,
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        decoration: BoxDecoration(
+                          color: AppColors.cardSurface,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppColors.border),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(_country.flag, style: const TextStyle(fontSize: 20)),
+                            const SizedBox(width: 6),
+                            Text('+${_country.dial}', style: AppTypography.price(size: 18)),
+                            const Icon(Icons.arrow_drop_down, color: AppColors.textMuted),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _controller,
+                        keyboardType: TextInputType.phone,
+                        autofocus: true,
+                        style: AppTypography.price(size: 18),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'[\d\s\-\(\)]')),
+                        ],
+                        decoration: InputDecoration(
+                          hintText: l.auth_phone_hint,
+                          prefixIcon: const Icon(Icons.phone, color: AppColors.textMuted),
+                        ),
+                        validator: (v) {
+                          if (v == null) return l.auth_phone_error;
+                          final digits = v.replaceAll(RegExp(r'\D'), '');
+                          if (digits.length < 7) return l.auth_phone_error;
+                          return null;
+                        },
+                      ),
+                    ),
                   ],
-                  decoration: InputDecoration(
-                    hintText: l.auth_phone_hint,
-                    prefixIcon: const Icon(Icons.phone, color: AppColors.textMuted),
-                  ),
-                  validator: (v) {
-                    if (v == null) return l.auth_phone_error;
-                    final digits = v.replaceAll(RegExp(r'\D'), '');
-                    if (digits.length < 10) return l.auth_phone_error;
-                    return null;
-                  },
                 ),
                 const Spacer(),
                 ElevatedButton(onPressed: _onContinue, child: Text(l.common_continue)),

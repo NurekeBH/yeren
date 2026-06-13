@@ -24,6 +24,8 @@ import '../../features/intel/presentation/intel_screen.dart';
 import '../../features/journal/presentation/accounts_screen.dart';
 import '../../features/journal/presentation/journal_screen.dart';
 import '../../features/journal/presentation/link_broker_screen.dart';
+import '../../features/onboarding/application/intro_controller.dart';
+import '../../features/onboarding/presentation/intro_screen.dart';
 import '../../features/profile/application/profile_controller.dart';
 import '../../features/profile/presentation/edit_profile_screen.dart';
 import '../../features/profile/presentation/notifications_screen.dart';
@@ -39,6 +41,7 @@ class _AuthListenable extends ChangeNotifier {
   _AuthListenable(this._ref) {
     _ref.listen<AuthState>(authControllerProvider, (_, _) => notifyListeners());
     _ref.listen<UserProfile>(profileControllerProvider, (_, _) => notifyListeners());
+    _ref.listen<bool>(introControllerProvider, (_, _) => notifyListeners());
   }
   final Ref _ref;
 }
@@ -52,7 +55,12 @@ final routerProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       final auth = ref.read(authControllerProvider);
       final profile = ref.read(profileControllerProvider);
+      final introSeen = ref.read(introControllerProvider);
       final path = state.matchedLocation;
+
+      // Бірінші іске қосу: таныстыру слайдтарын көрсетеміз (auth-қа дейін).
+      if (!introSeen) return path == '/intro' ? null : '/intro';
+      if (path == '/intro') return '/home';
 
       // Authenticated, бірақ onboarding өтпеген: міндетті түрде onboarding
       if (auth.status == AuthStatus.authenticated && !profile.isOnboarded) {
@@ -65,6 +73,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       return null;
     },
     routes: [
+      // Бірінші іске қосудағы таныстыру (intro)
+      GoRoute(path: '/intro', builder: (_, _) => const IntroScreen()),
+
       // Auth экрандары — push арқылы ашылады
       GoRoute(
         path: '/auth/phone',

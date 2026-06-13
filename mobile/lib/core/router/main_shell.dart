@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../l10n/gen/app_localizations.dart';
-import '../../shared/widgets/live_ticker_bar.dart';
 
 class MainShell extends StatelessWidget {
   const MainShell({super.key, required this.navigationShell});
@@ -12,13 +11,10 @@ class MainShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
+    // Live ticker bar жоғарыдан алынды — басты бетте XAU/USD live баға (gold hero
+    // card) бар, сондықтан үстіңгі таспа артық еді (user 2026-06-13).
     return Scaffold(
-      body: Column(
-        children: [
-          const SafeArea(bottom: false, child: LiveTickerBar()),
-          Expanded(child: navigationShell),
-        ],
-      ),
+      body: navigationShell,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: navigationShell.currentIndex,
         onTap: (i) => navigationShell.goBranch(i, initialLocation: i == navigationShell.currentIndex),

@@ -134,6 +134,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboarding_finish => 'Get started';
 
   @override
+  String get intro_skip => 'Skip';
+
+  @override
+  String get intro_next => 'Next';
+
+  @override
+  String get intro_start => 'Get started';
+
+  @override
+  String get intro_s1_title => 'Gold, in real time';
+
+  @override
+  String get intro_s1_text =>
+      'Live XAU/USD price, DXY and the economic calendar — all on one screen.';
+
+  @override
+  String get intro_s2_title => 'Ideas from traders';
+
+  @override
+  String get intro_s2_text =>
+      'Signals from verified traders: entry, TP, SL, win rate and rating.';
+
+  @override
+  String get intro_s3_title => 'Learn & journal';
+
+  @override
+  String get intro_s3_text =>
+      'Edge Academy, price alerts and a trading journal — built for your growth.';
+
+  @override
   String get style_smc => 'SMC (Smart Money Concepts)';
 
   @override
@@ -540,6 +570,64 @@ class AppLocalizationsEn extends AppLocalizations {
   String signals_result_pips(int pips) {
     return '$pips pips';
   }
+
+  @override
+  String get signals_wr_short => 'WR';
+
+  @override
+  String get signals_free_badge => 'Free';
+
+  @override
+  String get signals_screenshot_locked => 'Screenshot after payment';
+
+  @override
+  String get signals_unlocked_badge => 'Unlocked';
+
+  @override
+  String get signals_locked_title => 'Idea locked';
+
+  @override
+  String get signals_locked_desc =>
+      'Unlock this idea to see the screenshot, entry zone, TP, SL and full analysis.';
+
+  @override
+  String get signals_unlock_title => 'Unlock idea';
+
+  @override
+  String get signals_unlock_desc =>
+      'Chart screenshot, full entry/TP/SL levels and the trader\'s analysis.';
+
+  @override
+  String get signals_price_label => 'Price';
+
+  @override
+  String signals_tp_pips(int pips) {
+    return 'TP $pips pips';
+  }
+
+  @override
+  String signals_price_tg(int price) {
+    return '$price ₸';
+  }
+
+  @override
+  String signals_unlock_for(int price) {
+    return 'Unlock for $price ₸';
+  }
+
+  @override
+  String signals_pay_kaspi(int price) {
+    return 'Pay $price ₸ with Kaspi';
+  }
+
+  @override
+  String get signals_paying => 'Paying…';
+
+  @override
+  String get signals_pay_secure => 'Secure payment · Kaspi Pay';
+
+  @override
+  String get signals_unlock_success => 'Idea unlocked!';
 
   @override
   String get signals_provider_stats => 'Provider stats';

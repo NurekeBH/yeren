@@ -31,6 +31,7 @@ class Signal extends Equatable {
     required this.publishedAt,
     this.resultPips,
     this.providerId,
+    this.isFree = false,
   });
 
   final String id;
@@ -51,7 +52,28 @@ class Signal extends Equatable {
   final int? resultPips;
   final String? providerId;
 
+  /// Тегін идея — paywall жоқ, толық көрінеді (баға 0).
+  final bool isFree;
+
   double get entryMid => (entryFrom + entryTo) / 2;
+
+  /// XAU/USD: 1 пипс = 0.10 баға қозғалысы (позиция калькуляторымен сәйкес).
+  static const double pipSize = 0.10;
+
+  /// Идеяның толық мақсатына дейінгі қашықтық (пипс) — кіру ортасынан ең алыс TP-ке.
+  /// Buy/Sell бағытына тәуелсіз: үш TP ішінен ең үлкен модульдік қашықтық алынады.
+  double get tpPips {
+    final furthest = [tp1, tp2, tp3]
+        .map((tp) => (tp - entryMid).abs())
+        .reduce((a, b) => a > b ? a : b);
+    return furthest / pipSize;
+  }
+
+  /// Идея бағасы (₸): тегін болса 0; әйтпесе TP 200 пипстен асса — 1000 ₸, басқаша 500 ₸.
+  int get priceTg => isFree ? 0 : (tpPips > 200 ? 1000 : 500);
+
+  /// Ақылы идея ма (тегін емес).
+  bool get isPaid => !isFree;
 
   @override
   List<Object?> get props => [id, pair, direction, status, publishedAt];

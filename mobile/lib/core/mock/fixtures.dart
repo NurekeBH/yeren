@@ -49,7 +49,8 @@ class MockFixtures {
           direction: SignalDirection.buy,
           entryFrom: 2371.00, entryTo: 2374.00,
           tp1: 2380.00, tp2: 2387.50, tp3: 2395.00, sl: 2365.00,
-          rr: 2.4, confidence: 78, screenshotUrl: '',
+          rr: 2.4, confidence: 78, isFree: true,
+          screenshotUrl: 'https://picsum.photos/seed/altyn-sig001/800/450',
           analysis: _pick(loc, {
             'kk': 'DXY кері кетті, Лондон сессиясы ашылуында retest setup. 2371 зонасынан bullish reaction күтілуде. SL — Asia low-дан төмен.',
             'ru': 'DXY развернулся вниз, на открытии Лондона ретест-сетап. От зоны 2371 ожидается bullish-реакция. SL ниже азиатского минимума.',
@@ -65,7 +66,8 @@ class MockFixtures {
           direction: SignalDirection.sell,
           entryFrom: 2392.50, entryTo: 2394.00,
           tp1: 2385.00, tp2: 2378.00, tp3: 2371.00, sl: 2398.00,
-          rr: 2.1, confidence: 65, screenshotUrl: '',
+          rr: 2.1, confidence: 65,
+          screenshotUrl: 'https://picsum.photos/seed/altyn-sig002/800/450',
           analysis: _pick(loc, {
             'kk': 'NY ашылуында resistance breakout fakeout мүмкіндігі. Confidence орташа — DXY консолидацияда.',
             'ru': 'На открытии NY возможен fakeout пробоя сопротивления. Уверенность средняя — DXY в консолидации.',
@@ -81,7 +83,8 @@ class MockFixtures {
           direction: SignalDirection.buy,
           entryFrom: 2350.00, entryTo: 2352.00,
           tp1: 2360.00, tp2: 2368.00, tp3: 2375.00, sl: 2344.00,
-          rr: 2.6, confidence: 82, screenshotUrl: '',
+          rr: 2.6, confidence: 82,
+          screenshotUrl: 'https://picsum.photos/seed/altyn-sig003/800/450',
           analysis: _pick(loc, {
             'kk': 'SMC Order Block 2350 деңгейінде. Asia сессиясы низ retest, NY сессиясында reversal.',
             'ru': 'SMC Order Block на 2350. Ретест азиатского минимума, разворот в сессии NY.',
@@ -98,7 +101,8 @@ class MockFixtures {
           direction: SignalDirection.sell,
           entryFrom: 2402.00, entryTo: 2404.00,
           tp1: 2396.00, tp2: 2390.00, tp3: 2383.00, sl: 2408.00,
-          rr: 1.8, confidence: 55, screenshotUrl: '',
+          rr: 1.8, confidence: 55,
+          screenshotUrl: 'https://picsum.photos/seed/altyn-sig004/800/450',
           analysis: _pick(loc, {
             'kk': 'Resistance қайтарған, бірақ DXY өсуі сигналды әлсіретті. SL шықты.',
             'ru': 'Сопротивление отбило, но рост DXY ослабил сигнал. SL сработал.',

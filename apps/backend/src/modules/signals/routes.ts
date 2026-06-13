@@ -15,6 +15,7 @@ const SignalCreate = z.object({
   confidence: z.number().int().min(0).max(100),
   screenshot_url: z.string().url().optional(),
   analysis: z.string().min(1),
+  is_free: z.boolean().default(false),
   provider_id: z.string().uuid().optional(),
   source: z.enum(['admin', 'telegram_bot']).default('admin'),
   source_message_id: z.string().optional(),
@@ -45,11 +46,11 @@ export async function signalsRoutes(app: FastifyInstance) {
     const s = parsed.data;
     const { rows } = await query(
       `insert into signals (pair, direction, entry_from, entry_to, tp1, tp2, tp3, sl, rr, confidence,
-                            screenshot_url, analysis, provider_id, source, source_message_id)
-       values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
+                            screenshot_url, analysis, is_free, provider_id, source, source_message_id)
+       values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)
        returning *`,
       [s.pair, s.direction, s.entry_from, s.entry_to, s.tp1, s.tp2 ?? null, s.tp3 ?? null, s.sl, s.rr,
-        s.confidence, s.screenshot_url ?? null, s.analysis, s.provider_id ?? null, s.source, s.source_message_id ?? null],
+        s.confidence, s.screenshot_url ?? null, s.analysis, s.is_free, s.provider_id ?? null, s.source, s.source_message_id ?? null],
     );
     return { signal: rows[0] };
   });
@@ -65,6 +66,47 @@ export async function signalsRoutes(app: FastifyInstance) {
     );
     if (rows.length === 0) return reply.code(404).send({ error: 'not_found' });
     return { signal: rows[0] };
+  });
+
+  // ─────────────── Ақылы идеялар (TP пипсіне қарай баға) ───────────────
+  // Идея бағасы серверде есептеледі (клиентке сенбейміз): XAU/USD pip = 0.10,
+  // кіру ортасынан ең алыс TP-ке дейінгі қашықтық 200 пипстен асса — 1000 ₸, әйтпесе 500 ₸.
+  const priceFor = (s: {
+    entry_from: number; entry_to: number; tp1: number; tp2: number | null; tp3: number | null;
+    is_free?: boolean;
+  }): number => {
+    if (s.is_free) return 0; // тегін идея — paywall жоқ
+    const mid = (Number(s.entry_from) + Number(s.entry_to)) / 2;
+    const tps = [s.tp1, s.tp2, s.tp3].filter((v) => v != null).map((v) => Number(v));
+    const maxDist = tps.reduce((m, tp) => Math.max(m, Math.abs(tp - mid)), 0);
+    const pips = maxDist / 0.10;
+    return pips > 200 ? 1000 : 500;
+  };
+
+  // Пайдаланушы ашқан идеялардың id-тізімі
+  app.get('/signals/purchased', { onRequest: [app.authenticate] }, async (req) => {
+    const { rows } = await query<{ signal_id: string }>(
+      'select signal_id from signal_purchases where user_id = $1',
+      [req.userId],
+    );
+    return { signal_ids: rows.map((r) => r.signal_id) };
+  });
+
+  // Идеяны сатып алу (Kaspi төлемінен кейін). Идемпотентті — қайталанса сол баға.
+  app.post('/signals/:id/purchase', { onRequest: [app.authenticate] }, async (req, reply) => {
+    const id = (req.params as { id: string }).id;
+    const { rows } = await query('select * from signals where id = $1', [id]);
+    if (rows.length === 0) return reply.code(404).send({ error: 'not_found' });
+    // Тегін идея — сатып алу қажет емес.
+    if (rows[0].is_free) return { ok: true, price_tg: 0, free: true };
+    const price = priceFor(rows[0] as never);
+    await query(
+      `insert into signal_purchases (user_id, signal_id, price_tg)
+       values ($1, $2, $3)
+       on conflict (user_id, signal_id) do nothing`,
+      [req.userId, id, price],
+    );
+    return { ok: true, price_tg: price };
   });
 
   // Provider stats (TZ §10.4)

@@ -346,6 +346,60 @@ abstract class AppLocalizations {
   /// **'Бастау'**
   String get onboarding_finish;
 
+  /// No description provided for @intro_skip.
+  ///
+  /// In kk, this message translates to:
+  /// **'Өткізу'**
+  String get intro_skip;
+
+  /// No description provided for @intro_next.
+  ///
+  /// In kk, this message translates to:
+  /// **'Әрі қарай'**
+  String get intro_next;
+
+  /// No description provided for @intro_start.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бастау'**
+  String get intro_start;
+
+  /// No description provided for @intro_s1_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Алтын — нақты уақытта'**
+  String get intro_s1_title;
+
+  /// No description provided for @intro_s1_text.
+  ///
+  /// In kk, this message translates to:
+  /// **'XAU/USD тірі бағасы, DXY және экономикалық календарь — бәрі бір экранда.'**
+  String get intro_s1_text;
+
+  /// No description provided for @intro_s2_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Трейдерлердің идеялары'**
+  String get intro_s2_title;
+
+  /// No description provided for @intro_s2_text.
+  ///
+  /// In kk, this message translates to:
+  /// **'Расталған трейдерлердің сигналдары: кіру, TP, SL, Win Rate және рейтинг.'**
+  String get intro_s2_text;
+
+  /// No description provided for @intro_s3_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Оқу және журнал'**
+  String get intro_s3_title;
+
+  /// No description provided for @intro_s3_text.
+  ///
+  /// In kk, this message translates to:
+  /// **'Edge Academy, баға ескертулері және сауда журналы — өсуіңіз үшін.'**
+  String get intro_s3_text;
+
   /// No description provided for @style_smc.
   ///
   /// In kk, this message translates to:
@@ -1107,6 +1161,102 @@ abstract class AppLocalizations {
   /// In kk, this message translates to:
   /// **'{pips} пипс'**
   String signals_result_pips(int pips);
+
+  /// No description provided for @signals_wr_short.
+  ///
+  /// In kk, this message translates to:
+  /// **'WR'**
+  String get signals_wr_short;
+
+  /// No description provided for @signals_free_badge.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тегін'**
+  String get signals_free_badge;
+
+  /// No description provided for @signals_screenshot_locked.
+  ///
+  /// In kk, this message translates to:
+  /// **'Скриншот төлемнен кейін'**
+  String get signals_screenshot_locked;
+
+  /// No description provided for @signals_unlocked_badge.
+  ///
+  /// In kk, this message translates to:
+  /// **'Ашық'**
+  String get signals_unlocked_badge;
+
+  /// No description provided for @signals_locked_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Идея жабық'**
+  String get signals_locked_title;
+
+  /// No description provided for @signals_locked_desc.
+  ///
+  /// In kk, this message translates to:
+  /// **'Скриншот, кіру зонасы, TP, SL және толық талдауды көру үшін идеяны ашыңыз.'**
+  String get signals_locked_desc;
+
+  /// No description provided for @signals_unlock_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Идеяны ашу'**
+  String get signals_unlock_title;
+
+  /// No description provided for @signals_unlock_desc.
+  ///
+  /// In kk, this message translates to:
+  /// **'График скриншоты, толық кіру/TP/SL деңгейлері және трейдер талдауы.'**
+  String get signals_unlock_desc;
+
+  /// No description provided for @signals_price_label.
+  ///
+  /// In kk, this message translates to:
+  /// **'Баға'**
+  String get signals_price_label;
+
+  /// No description provided for @signals_tp_pips.
+  ///
+  /// In kk, this message translates to:
+  /// **'TP {pips} пипс'**
+  String signals_tp_pips(int pips);
+
+  /// No description provided for @signals_price_tg.
+  ///
+  /// In kk, this message translates to:
+  /// **'{price} ₸'**
+  String signals_price_tg(int price);
+
+  /// No description provided for @signals_unlock_for.
+  ///
+  /// In kk, this message translates to:
+  /// **'{price} ₸-ге ашу'**
+  String signals_unlock_for(int price);
+
+  /// No description provided for @signals_pay_kaspi.
+  ///
+  /// In kk, this message translates to:
+  /// **'Kaspi-мен {price} ₸ төлеу'**
+  String signals_pay_kaspi(int price);
+
+  /// No description provided for @signals_paying.
+  ///
+  /// In kk, this message translates to:
+  /// **'Төленуде…'**
+  String get signals_paying;
+
+  /// No description provided for @signals_pay_secure.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қауіпсіз төлем · Kaspi Pay'**
+  String get signals_pay_secure;
+
+  /// No description provided for @signals_unlock_success.
+  ///
+  /// In kk, this message translates to:
+  /// **'Идея ашылды!'**
+  String get signals_unlock_success;
 
   /// No description provided for @signals_provider_stats.
   ///

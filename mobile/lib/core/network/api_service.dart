@@ -59,6 +59,15 @@ class ApiService {
       (await _get('/signals/$id'))['signal'] as Map<String, dynamic>;
   Future<Map<String, dynamic>> signalStats() => _get('/signals/stats');
 
+  /// Ашылған (сатып алынған) идеялардың id-тізімі.
+  Future<List<String>> purchasedSignals() async {
+    final list = (await _get('/signals/purchased'))['signal_ids'] as List? ?? const [];
+    return list.map((e) => e.toString()).toList();
+  }
+
+  /// Идеяны сатып алу (Kaspi төлемінен кейін backend-ке тіркеу).
+  Future<void> purchaseSignal(String id) => _send('POST', '/signals/$id/purchase');
+
   // ─────────────── Providers (aggregator) ───────────────
   Future<List<dynamic>> providers() async => (await _get('/providers'))['providers'] as List;
   Future<Map<String, dynamic>> provider(String id) => _get('/providers/$id');

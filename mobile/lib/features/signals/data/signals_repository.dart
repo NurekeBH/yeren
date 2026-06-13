@@ -49,6 +49,7 @@ Signal signalFromJson(Map<String, dynamic> j) => Signal(
       status: _statusOf((j['status'] ?? 'active').toString()),
       publishedAt: DateTime.tryParse('${j['published_at']}') ?? DateTime.now(),
       resultPips: _i(j['result_pips']),
+      isFree: j['is_free'] == true || j['is_free']?.toString() == 'true',
     );
 
 class ApiSignalsRepository implements SignalsRepository {

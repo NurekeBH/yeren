@@ -134,6 +134,36 @@ class AppLocalizationsKk extends AppLocalizations {
   String get onboarding_finish => 'Бастау';
 
   @override
+  String get intro_skip => 'Өткізу';
+
+  @override
+  String get intro_next => 'Әрі қарай';
+
+  @override
+  String get intro_start => 'Бастау';
+
+  @override
+  String get intro_s1_title => 'Алтын — нақты уақытта';
+
+  @override
+  String get intro_s1_text =>
+      'XAU/USD тірі бағасы, DXY және экономикалық календарь — бәрі бір экранда.';
+
+  @override
+  String get intro_s2_title => 'Трейдерлердің идеялары';
+
+  @override
+  String get intro_s2_text =>
+      'Расталған трейдерлердің сигналдары: кіру, TP, SL, Win Rate және рейтинг.';
+
+  @override
+  String get intro_s3_title => 'Оқу және журнал';
+
+  @override
+  String get intro_s3_text =>
+      'Edge Academy, баға ескертулері және сауда журналы — өсуіңіз үшін.';
+
+  @override
   String get style_smc => 'SMC (Smart Money Concepts)';
 
   @override
@@ -539,6 +569,64 @@ class AppLocalizationsKk extends AppLocalizations {
   String signals_result_pips(int pips) {
     return '$pips пипс';
   }
+
+  @override
+  String get signals_wr_short => 'WR';
+
+  @override
+  String get signals_free_badge => 'Тегін';
+
+  @override
+  String get signals_screenshot_locked => 'Скриншот төлемнен кейін';
+
+  @override
+  String get signals_unlocked_badge => 'Ашық';
+
+  @override
+  String get signals_locked_title => 'Идея жабық';
+
+  @override
+  String get signals_locked_desc =>
+      'Скриншот, кіру зонасы, TP, SL және толық талдауды көру үшін идеяны ашыңыз.';
+
+  @override
+  String get signals_unlock_title => 'Идеяны ашу';
+
+  @override
+  String get signals_unlock_desc =>
+      'График скриншоты, толық кіру/TP/SL деңгейлері және трейдер талдауы.';
+
+  @override
+  String get signals_price_label => 'Баға';
+
+  @override
+  String signals_tp_pips(int pips) {
+    return 'TP $pips пипс';
+  }
+
+  @override
+  String signals_price_tg(int price) {
+    return '$price ₸';
+  }
+
+  @override
+  String signals_unlock_for(int price) {
+    return '$price ₸-ге ашу';
+  }
+
+  @override
+  String signals_pay_kaspi(int price) {
+    return 'Kaspi-мен $price ₸ төлеу';
+  }
+
+  @override
+  String get signals_paying => 'Төленуде…';
+
+  @override
+  String get signals_pay_secure => 'Қауіпсіз төлем · Kaspi Pay';
+
+  @override
+  String get signals_unlock_success => 'Идея ашылды!';
 
   @override
   String get signals_provider_stats => 'Провайдер статистикасы';

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/config/app_config.dart';
 import '../../../core/network/api_service.dart';
 import '../../../core/storage/secure_storage.dart';
+import '../../profile/application/profile_controller.dart';
 
 enum AuthStatus { unknown, unauthenticated, authenticated }
 
@@ -60,6 +61,13 @@ class AuthController extends StateNotifier<AuthState> {
         ? (await _ref.read(apiServiceProvider).login(phone, password))['token'] as String
         : await _mockToken();
     await _persistAuth(token, phone);
+    // Қайта оралған пайдаланушы — профиль сұрақнамасын қайта сұрамаймыз.
+    // Remote режимде backend профилін жүктейміз; mock режимде onboarded деп белгілейміз.
+    if (AppConfig.useRemoteApi) {
+      await _ref.read(profileControllerProvider.notifier).hydrateFromRemote();
+    } else {
+      _ref.read(profileControllerProvider.notifier).markReturningUser();
+    }
   }
 
   Future<String> _mockToken() async {
