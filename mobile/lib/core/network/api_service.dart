@@ -134,7 +134,6 @@ class ApiService {
   Future<Map<String, dynamic>> createTrade(Map<String, dynamic> body) async =>
       (await _send('POST', '/trades', body: body))['trade'] as Map<String, dynamic>? ?? const {};
   Future<void> deleteTrade(String id) => _send('DELETE', '/trades/$id');
-  Future<Map<String, dynamic>> subscription() => _get('/subscription');
 }
 
 final apiServiceProvider = Provider<ApiService>((ref) => ApiService(ref.watch(apiClientProvider)));
