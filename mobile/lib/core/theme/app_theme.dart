@@ -30,13 +30,13 @@ class AppTheme {
       // Жұмсақ көлеңкелі карталар — тереңдік пен «премиум» сезім.
       cardTheme: CardThemeData(
         color: AppColors.cardSurface,
-        elevation: 8,
+        elevation: 5,
         shadowColor: AppColors.shadow,
         surfaceTintColor: Colors.transparent,
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-          side: BorderSide(color: AppColors.border.withValues(alpha: 0.7)),
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(color: AppColors.border),
         ),
         margin: EdgeInsets.zero,
       ),
@@ -45,19 +45,19 @@ class AppTheme {
         fillColor: AppColors.cardSurface,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.border),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.border),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.gold, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.lossRed),
         ),
         hintStyle: AppTypography.bodyMedium(color: AppColors.textMuted),
@@ -67,7 +67,7 @@ class AppTheme {
           backgroundColor: AppColors.gold,
           foregroundColor: Colors.white,
           minimumSize: const Size.fromHeight(54),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           textStyle: AppTypography.button(),
           elevation: 1.5,
           shadowColor: AppColors.gold.withValues(alpha: 0.35),
@@ -78,7 +78,7 @@ class AppTheme {
           foregroundColor: AppColors.gold,
           minimumSize: const Size.fromHeight(54),
           side: BorderSide(color: AppColors.gold.withValues(alpha: 0.55)),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           textStyle: AppTypography.button(color: AppColors.gold),
         ),
       ),
@@ -91,7 +91,7 @@ class AppTheme {
       chipTheme: ChipThemeData(
         backgroundColor: AppColors.surfaceMuted,
         side: BorderSide.none,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9)),
         labelStyle: AppTypography.bodySmall(color: AppColors.textPrimary),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       ),

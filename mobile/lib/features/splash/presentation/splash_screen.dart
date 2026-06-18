@@ -48,7 +48,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFFFFFDF8), Color(0xFFF3E9D4)],
+            colors: [Color(0xFFFAFBFC), Color(0xFFE6EDFF)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
