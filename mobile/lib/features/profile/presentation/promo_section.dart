@@ -11,34 +11,8 @@ import '../../../l10n/gen/app_localizations.dart';
 import '../application/profile_controller.dart';
 import '../application/promo_registry.dart';
 
-/// Профиль басындағы бонус баланс картасы (UX: жоғарыда тұрады).
-class PromoBalanceCard extends ConsumerWidget {
-  const PromoBalanceCard({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l = AppLocalizations.of(context);
-    final p = ref.watch(profileControllerProvider);
-    if (p.bonusBalance <= 0) return const SizedBox.shrink();
-    return Card(
-      child: ListTile(
-        leading: Container(
-          width: 38,
-          height: 38,
-          decoration: BoxDecoration(color: AppColors.gold.withValues(alpha: 0.14), shape: BoxShape.circle),
-          child: const Icon(Icons.account_balance_wallet, size: 19, color: AppColors.gold),
-        ),
-        title: Text(l.promo_bonus_balance, style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w600)),
-        subtitle: Text(l.promo_bonus_balance_desc, style: AppTypography.bodySmall()),
-        trailing: Text(l.promo_bonus_amount(p.bonusBalance),
-            style: AppTypography.h2().copyWith(color: AppColors.gold)),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      ),
-    );
-  }
-}
-
-/// Промокод бөлімі: жеке код + бөлісу + қалай табу + енгізу.
+/// «Менің бонустарым» — бонусқа қатысты барлығы бір картада (баланс, қалай табу,
+/// промокод, бөлісу CTA, тіркелулер саны, код енгізу).
 class PromoSection extends ConsumerStatefulWidget {
   const PromoSection({super.key});
 
@@ -60,126 +34,99 @@ class _PromoSectionState extends ConsumerState<PromoSection> {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final p = ref.watch(profileControllerProvider);
+    if (p.promoCode.isEmpty) return const SizedBox.shrink();
 
-    return Column(
-      children: [
-        // Жеке промокод — әр қолданушыда болады (досын шақыру + бонус).
-        if (p.promoCode.isNotEmpty)
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 14, 12, 14),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(Icons.card_giftcard, size: 18, color: AppColors.profitGreen),
-                      const SizedBox(width: 8),
-                      Text(l.promo_my_code_title,
-                          style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w600)),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Text(l.promo_my_code_desc(kPromoBonusTg),
-                      style: AppTypography.bodySmall(color: AppColors.textSecondary)),
-                  const SizedBox(height: 6),
-                  // Реферер табысы: әр тіркелуге +500.
-                  Text(l.promo_my_code_earn(kReferrerBonusTg),
-                      style: AppTypography.bodySmall(color: AppColors.profitGreen).copyWith(fontWeight: FontWeight.w600)),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                          decoration: BoxDecoration(
-                            color: AppColors.surfaceMuted,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: AppColors.border),
-                          ),
-                          child: Text(p.promoCode,
-                              style: AppTypography.h2().copyWith(letterSpacing: 2, color: AppColors.textPrimary)),
-                        ),
-                      ),
-                      IconButton(
-                        tooltip: l.promo_copy,
-                        icon: const Icon(Icons.copy, size: 20, color: AppColors.gold),
-                        onPressed: () async {
-                          await Clipboard.setData(ClipboardData(text: p.promoCode));
-                          if (!context.mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.promo_copied)));
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    width: double.infinity,
-                    child: FilledButton.icon(
-                      onPressed: () => Share.share(l.promo_share_message(p.promoCode, kPromoBonusTg)),
-                      icon: const Icon(Icons.ios_share, size: 18),
-                      label: Text(l.promo_share),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      const Icon(Icons.group_outlined, size: 16, color: AppColors.profitGreen),
-                      const SizedBox(width: 6),
-                      Text(
-                        l.promo_referrals(math.max(
-                          p.referralCount,
-                          ref.watch(promoRegistryProvider)[p.promoCode.toUpperCase()] ?? 0,
-                        )),
-                        style: AppTypography.bodySmall().copyWith(fontWeight: FontWeight.w600),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
+    final referrals = math.max(
+      p.referralCount,
+      ref.watch(promoRegistryProvider)[p.promoCode.toUpperCase()] ?? 0,
+    );
+    final notReferred = p.referredBy == null || p.referredBy!.isEmpty;
 
-        // Бонусты қалай табу/жұмсау туралы түсіндірме.
-        Card(
-          color: AppColors.surfaceMuted,
-          elevation: 0,
-          child: Padding(
-            padding: const EdgeInsets.all(14),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ── Header: тақырып + баланс ──
+            Row(
               children: [
-                const Icon(Icons.info_outline, size: 18, color: AppColors.dxyBlue),
+                Container(
+                  width: 34,
+                  height: 34,
+                  decoration: BoxDecoration(color: AppColors.gold.withValues(alpha: 0.14), shape: BoxShape.circle),
+                  child: const Icon(Icons.card_giftcard, size: 18, color: AppColors.gold),
+                ),
                 const SizedBox(width: 10),
+                Expanded(child: Text(l.promo_my_bonuses, style: AppTypography.h2())),
+                Text(l.promo_bonus_amount(p.bonusBalance),
+                    style: AppTypography.h2().copyWith(color: AppColors.gold)),
+              ],
+            ),
+            const SizedBox(height: 12),
+            // ── Қалай табу/жұмсау ──
+            Text(
+              l.promo_how_it_works(kReferrerBonusTg, kPromoBonusTg),
+              style: AppTypography.bodySmall(color: AppColors.textSecondary).copyWith(height: 1.4),
+            ),
+            const SizedBox(height: 14),
+            // ── Промокод + көшіру ──
+            Row(
+              children: [
                 Expanded(
-                  child: Text(
-                    l.promo_how_it_works(kReferrerBonusTg, kPromoBonusTg),
-                    style: AppTypography.bodySmall(color: AppColors.textSecondary).copyWith(height: 1.4),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: AppColors.surfaceMuted,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: AppColors.border),
+                    ),
+                    child: Text(p.promoCode,
+                        style: AppTypography.h2().copyWith(letterSpacing: 2, color: AppColors.textPrimary)),
                   ),
+                ),
+                IconButton(
+                  tooltip: l.promo_copy,
+                  icon: const Icon(Icons.copy, size: 20, color: AppColors.gold),
+                  onPressed: () async {
+                    await Clipboard.setData(ClipboardData(text: p.promoCode));
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.promo_copied)));
+                  },
                 ),
               ],
             ),
-          ),
-        ),
-
-        // Промокод енгізу (әлі қолданбаған қолданушыға).
-        if (p.referredBy == null || p.referredBy!.isEmpty)
-          Card(
-            child: ListTile(
-              leading: Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(color: AppColors.dxyBlue.withValues(alpha: 0.12), shape: BoxShape.circle),
-                child: const Icon(Icons.redeem, size: 18, color: AppColors.dxyBlue),
+            const SizedBox(height: 10),
+            // ── CTA: бөлісу ──
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                onPressed: () => Share.share(l.promo_share_message(p.promoCode, kPromoBonusTg)),
+                icon: const Icon(Icons.ios_share, size: 18),
+                label: Text(l.promo_share),
               ),
-              title: Text(l.promo_enter_title, style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w600)),
-              subtitle: Text(l.promo_enter_desc(kPromoBonusTg), style: AppTypography.bodySmall()),
-              trailing: const Icon(Icons.chevron_right, size: 20),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              onTap: () => _showEnterPromoDialog(context, ref),
             ),
-          ),
-      ],
+            const SizedBox(height: 10),
+            // ── Footer: тіркелулер саны + код енгізу ──
+            Row(
+              children: [
+                const Icon(Icons.group_outlined, size: 16, color: AppColors.profitGreen),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(l.promo_referrals(referrals),
+                      style: AppTypography.bodySmall().copyWith(fontWeight: FontWeight.w600)),
+                ),
+                if (notReferred)
+                  TextButton(
+                    onPressed: () => _showEnterPromoDialog(context, ref),
+                    style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 8), minimumSize: const Size(0, 32)),
+                    child: Text(l.promo_enter_title),
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

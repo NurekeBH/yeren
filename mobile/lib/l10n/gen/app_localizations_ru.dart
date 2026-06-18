@@ -1549,6 +1549,9 @@ class AppLocalizationsRu extends AppLocalizations {
       'Применяется автоматически при открытии идеи';
 
   @override
+  String get promo_my_bonuses => 'Мои бонусы';
+
+  @override
   String promo_bonus_amount(int count) {
     return '$count бонусов';
   }

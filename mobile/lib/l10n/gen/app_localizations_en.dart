@@ -1547,6 +1547,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Applied automatically when unlocking an idea';
 
   @override
+  String get promo_my_bonuses => 'My bonuses';
+
+  @override
   String promo_bonus_amount(int count) {
     return '$count bonus';
   }

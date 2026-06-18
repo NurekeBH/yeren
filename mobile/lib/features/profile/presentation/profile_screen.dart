@@ -135,8 +135,8 @@ class ProfileScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
-          // Бонус баланс — UX үшін жоғарыда (профиль картасынан кейін бірден).
-          const PromoBalanceCard(),
+          // «Менің бонустарым» — бір модуль (баланс + қалай табу + код + бөлісу).
+          const PromoSection(),
           // Расталған трейдер: расталса — мәртебе; әйтпесе — өтінім беру.
           if (profile.isVerifiedTrader)
             Card(
@@ -158,7 +158,6 @@ class ProfileScreen extends ConsumerWidget {
               label: l.profile_become_trader,
               onTap: () => showTraderApplicationSheet(context),
             ),
-          const PromoSection(),
           _MenuItem(
             icon: Icons.bookmark_outline,
             label: l.profile_saved,

@@ -2992,6 +2992,12 @@ abstract class AppLocalizations {
   /// **'Идея ашқанда автоматты қолданылады'**
   String get promo_bonus_balance_desc;
 
+  /// No description provided for @promo_my_bonuses.
+  ///
+  /// In kk, this message translates to:
+  /// **'Менің бонустарым'**
+  String get promo_my_bonuses;
+
   /// No description provided for @promo_bonus_amount.
   ///
   /// In kk, this message translates to:
