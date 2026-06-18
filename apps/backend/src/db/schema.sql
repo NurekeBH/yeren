@@ -157,8 +157,10 @@ create table if not exists calendar_events (
   previous        text,
   actual          text,
   gold_impact_note text,                                  -- Claude classification
-  scheduled_at    timestamptz not null
+  scheduled_at    timestamptz not null,
+  reminder_sent   boolean not null default false          -- push еске салу жіберілді ме
 );
+alter table calendar_events add column if not exists reminder_sent boolean not null default false;
 create index if not exists calendar_scheduled_idx on calendar_events(scheduled_at);
 create index if not exists calendar_impact_idx on calendar_events(impact, scheduled_at);
 

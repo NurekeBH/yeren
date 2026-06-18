@@ -1568,7 +1568,7 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String promo_how_it_works(int referrer, int invitee) {
-    return 'Бонусты қалай табасыз: промокодты бөлісіңіз — әр тіркелуге +$referrer бонус; досыңыздың кодымен тіркеліп +$invitee бонус аласыз. Бонусты сауда идеяларын ашуға жұмсайсыз.';
+    return 'Промокодты бөлісіңіз: біреу сіздің кодыңызбен тіркелгенде — ол $invitee бонус, ал сіз $referrer бонус аласыз. Бонусты сауда идеяларын ашуға жұмсай аласыз.';
   }
 
   @override

@@ -527,7 +527,7 @@
   "promo_my_code_title": "My promo code",
   "promo_my_code_desc": "A new user gets {bonus} bonus when they register with your code",
   "promo_my_code_earn": "You get +{bonus} bonus per sign-up",
-  "promo_how_it_works": "How to earn bonus: share your promo code — +{referrer} bonus per sign-up; register with a friend's code — +{invitee} bonus. Spend bonus to unlock trade ideas.",
+  "promo_how_it_works": "Share your promo code: when a user registers with it, they get {invitee} bonus and you get {referrer} bonus. Spend bonus to unlock trade ideas.",
   "promo_copy": "Copy",
   "promo_copied": "Promo code copied",
   "promo_referrals": "{count} sign-ups with your code",

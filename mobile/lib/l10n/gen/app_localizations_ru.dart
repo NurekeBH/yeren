@@ -1571,7 +1571,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String promo_how_it_works(int referrer, int invitee) {
-    return 'Как заработать бонусы: делитесь промокодом — за каждую регистрацию +$referrer бонусов; зарегистрируйтесь по коду друга — +$invitee бонусов. Бонусами можно открывать торговые идеи.';
+    return 'Делитесь промокодом: когда пользователь регистрируется по нему — он получает $invitee бонусов, а вы — $referrer бонусов. Бонусами можно открывать торговые идеи.';
   }
 
   @override

@@ -537,7 +537,7 @@
   "@promo_my_code_desc": {"placeholders": {"bonus": {"type": "int"}}},
   "promo_my_code_earn": "Әр тіркелуге сіз +{bonus} бонус аласыз",
   "@promo_my_code_earn": {"placeholders": {"bonus": {"type": "int"}}},
-  "promo_how_it_works": "Бонусты қалай табасыз: промокодты бөлісіңіз — әр тіркелуге +{referrer} бонус; досыңыздың кодымен тіркеліп +{invitee} бонус аласыз. Бонусты сауда идеяларын ашуға жұмсайсыз.",
+  "promo_how_it_works": "Промокодты бөлісіңіз: біреу сіздің кодыңызбен тіркелгенде — ол {invitee} бонус, ал сіз {referrer} бонус аласыз. Бонусты сауда идеяларын ашуға жұмсай аласыз.",
   "@promo_how_it_works": {"placeholders": {"referrer": {"type": "int"}, "invitee": {"type": "int"}}},
   "promo_copy": "Көшіру",
   "promo_copied": "Промокод көшірілді",

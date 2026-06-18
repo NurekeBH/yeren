@@ -22,6 +22,7 @@ import { supportRoutes } from './modules/support/routes.js';
 import { ingestNews } from './services/news.js';
 import { ingestCalendar } from './services/calendar.js';
 import { checkPriceAlerts } from './services/alerts.js';
+import { sendCalendarReminders } from './services/calendar_reminders.js';
 import { pool } from './db/client.js';
 
 const app = Fastify({
@@ -144,4 +145,26 @@ if (env.FINNHUB_API_KEY) {
   const alertTimer = setInterval(() => void tick(), ALERT_MS);
   alertTimer.unref?.();
   app.log.info(`Price-alert poller started (every ${ALERT_MS / 1000}s)`);
+}
+
+// ─────────────── Календарь еске салу поллері (high-impact, ~15 мин бұрын) ───────────────
+{
+  const CAL_MS = 5 * 60_000;
+  let busy = false;
+  const tick = async () => {
+    if (busy) return;
+    busy = true;
+    try {
+      const r = await sendCalendarReminders();
+      if (r.sent > 0) app.log.info({ sent: r.sent }, 'calendar_reminders_sent');
+    } catch (err) {
+      app.log.warn(err, 'calendar_reminder_failed');
+    } finally {
+      busy = false;
+    }
+  };
+  void tick();
+  const calRemTimer = setInterval(() => void tick(), CAL_MS);
+  calRemTimer.unref?.();
+  app.log.info(`Calendar-reminder poller started (every ${CAL_MS / 60000}m)`);
 }

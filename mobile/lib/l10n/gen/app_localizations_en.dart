@@ -1569,7 +1569,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String promo_how_it_works(int referrer, int invitee) {
-    return 'How to earn bonus: share your promo code — +$referrer bonus per sign-up; register with a friend\'s code — +$invitee bonus. Spend bonus to unlock trade ideas.';
+    return 'Share your promo code: when a user registers with it, they get $invitee bonus and you get $referrer bonus. Spend bonus to unlock trade ideas.';
   }
 
   @override

@@ -3025,7 +3025,7 @@ abstract class AppLocalizations {
   /// No description provided for @promo_how_it_works.
   ///
   /// In kk, this message translates to:
-  /// **'Бонусты қалай табасыз: промокодты бөлісіңіз — әр тіркелуге +{referrer} бонус; досыңыздың кодымен тіркеліп +{invitee} бонус аласыз. Бонусты сауда идеяларын ашуға жұмсайсыз.'**
+  /// **'Промокодты бөлісіңіз: біреу сіздің кодыңызбен тіркелгенде — ол {invitee} бонус, ал сіз {referrer} бонус аласыз. Бонусты сауда идеяларын ашуға жұмсай аласыз.'**
   String promo_how_it_works(int referrer, int invitee);
 
   /// No description provided for @promo_copy.
