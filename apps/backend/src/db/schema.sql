@@ -383,9 +383,11 @@ create table if not exists signal_purchases (
   user_id    uuid not null references users(id) on delete cascade,
   signal_id  uuid not null references signals(id) on delete cascade,
   price_tg   int not null,
+  bonus_used int not null default 0,                      -- қолданылған бонус (ұпай)
   created_at timestamptz default now(),
   primary key (user_id, signal_id)
 );
+alter table signal_purchases add column if not exists bonus_used int not null default 0;
 create index if not exists signal_purchases_user_idx on signal_purchases(user_id, created_at desc);
 
 -- ─────────────────── SIGNAL VOTES (нәтижеге дауыс) ───────────────────

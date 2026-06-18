@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
-import { query } from '../../db/client.js';
+import { query, tx } from '../../db/client.js';
 
 const SignalCreate = z.object({
   pair: z.string().default('XAU/USD'),
@@ -120,13 +120,34 @@ export async function signalsRoutes(app: FastifyInstance) {
     // Тегін идея — сатып алу қажет емес.
     if (rows[0].is_free) return { ok: true, price_tg: 0, free: true };
     const price = priceFor(rows[0] as never);
-    await query(
-      `insert into signal_purchases (user_id, signal_id, price_tg)
-       values ($1, $2, $3)
-       on conflict (user_id, signal_id) do nothing`,
-      [req.userId, id, price],
-    );
-    return { ok: true, price_tg: price };
+
+    // Бонусты серверде қолданамыз: payable = баға − бонус; баланстан шегереміз.
+    // Идемпотентті: бұрын сатып алынса — қайта шегермейміз.
+    const result = await tx(async (c) => {
+      const existing = await c.query<{ price_tg: number; bonus_used: number }>(
+        'select price_tg, bonus_used from signal_purchases where user_id = $1 and signal_id = $2',
+        [req.userId, id],
+      );
+      if (existing.rowCount) {
+        return { price_tg: existing.rows[0]!.price_tg, bonus_used: existing.rows[0]!.bonus_used, already: true };
+      }
+      const u = await c.query<{ bonus_balance: number }>(
+        'select bonus_balance from users where id = $1 for update',
+        [req.userId],
+      );
+      const balance = u.rows[0]?.bonus_balance ?? 0;
+      const bonusUsed = Math.min(balance, price);
+      const payable = price - bonusUsed;
+      if (bonusUsed > 0) {
+        await c.query('update users set bonus_balance = bonus_balance - $1 where id = $2', [bonusUsed, req.userId]);
+      }
+      await c.query(
+        'insert into signal_purchases (user_id, signal_id, price_tg, bonus_used) values ($1, $2, $3, $4)',
+        [req.userId, id, payable, bonusUsed],
+      );
+      return { price_tg: payable, bonus_used: bonusUsed, already: false };
+    });
+    return { ok: true, ...result };
   });
 
   // ─────────────── Нәтижеге дауыс беру (ашқан/төлеген қолданушылар) ───────────────
