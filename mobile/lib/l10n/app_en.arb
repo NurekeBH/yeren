@@ -531,5 +531,7 @@
   "promo_enter_desc": "Get {bonus} ₸ bonus",
   "promo_apply": "Apply",
   "signals_to_pay": "To pay",
-  "signals_unlock_with_bonus": "Unlock with bonus"
+  "signals_unlock_with_bonus": "Unlock with bonus",
+  "promo_share": "Share promo code",
+  "promo_share_message": "🎁 My ALTYN promo code: {code}. Get a 100 ₸ bonus when you sign up! ALTYN — gold (XAU/USD) trading platform."
 }

@@ -531,5 +531,7 @@
   "promo_enter_desc": "Получите {bonus} ₸ бонус",
   "promo_apply": "Применить",
   "signals_to_pay": "К оплате",
-  "signals_unlock_with_bonus": "Открыть бонусом"
+  "signals_unlock_with_bonus": "Открыть бонусом",
+  "promo_share": "Поделиться промокодом",
+  "promo_share_message": "🎁 Мой промокод ALTYN: {code}. Получи 100 ₸ бонус при регистрации! ALTYN — платформа для трейдинга золотом (XAU/USD)."
 }

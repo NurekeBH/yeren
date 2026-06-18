@@ -541,5 +541,8 @@
   "@promo_enter_desc": {"placeholders": {"bonus": {"type": "int"}}},
   "promo_apply": "Қолдану",
   "signals_to_pay": "Төлеуге",
-  "signals_unlock_with_bonus": "Бонуспен ашу"
+  "signals_unlock_with_bonus": "Бонуспен ашу",
+  "promo_share": "Промокодты бөлісу",
+  "promo_share_message": "🎁 ALTYN промокодым: {code}. Тіркелгенде 100 ₸ бонус ал! ALTYN — алтын (XAU/USD) трейдинг платформасы.",
+  "@promo_share_message": {"placeholders": {"code": {"type": "String"}}}
 }

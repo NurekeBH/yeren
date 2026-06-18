@@ -3051,6 +3051,18 @@ abstract class AppLocalizations {
   /// In kk, this message translates to:
   /// **'Бонуспен ашу'**
   String get signals_unlock_with_bonus;
+
+  /// No description provided for @promo_share.
+  ///
+  /// In kk, this message translates to:
+  /// **'Промокодты бөлісу'**
+  String get promo_share;
+
+  /// No description provided for @promo_share_message.
+  ///
+  /// In kk, this message translates to:
+  /// **'🎁 ALTYN промокодым: {code}. Тіркелгенде 100 ₸ бонус ал! ALTYN — алтын (XAU/USD) трейдинг платформасы.'**
+  String promo_share_message(String code);
 }
 
 class _AppLocalizationsDelegate

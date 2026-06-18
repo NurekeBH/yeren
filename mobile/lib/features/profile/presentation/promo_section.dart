@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'dart:math' as math;
 
+import 'package:share_plus/share_plus.dart';
+
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
@@ -88,7 +90,17 @@ class PromoSection extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 12),
+                  // CTA: промокодты бөлісу (жүйелік share sheet).
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton.icon(
+                      onPressed: () => Share.share(l.promo_share_message(p.promoCode)),
+                      icon: const Icon(Icons.ios_share, size: 18),
+                      label: Text(l.promo_share),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
                   // Кодпен тіркелгендер саны — трейдер әрқашан көреді.
                   // Remote: backend санайды; mock: құрылғы-жергілікті тізілім.
                   Builder(builder: (_) {

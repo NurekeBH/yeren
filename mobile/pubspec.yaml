@@ -36,6 +36,7 @@ dependencies:
   fl_chart: ^0.69.2
   cached_network_image: ^3.4.1
   image_picker: ^1.1.2
+  share_plus: ^10.1.4
 
   # Models / codegen
   freezed_annotation: ^2.4.4

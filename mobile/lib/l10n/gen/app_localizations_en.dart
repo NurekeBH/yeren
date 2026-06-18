@@ -1581,4 +1581,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get signals_unlock_with_bonus => 'Unlock with bonus';
+
+  @override
+  String get promo_share => 'Share promo code';
+
+  @override
+  String promo_share_message(String code) {
+    return '🎁 My ALTYN promo code: $code. Get a 100 ₸ bonus when you sign up! ALTYN — gold (XAU/USD) trading platform.';
+  }
 }

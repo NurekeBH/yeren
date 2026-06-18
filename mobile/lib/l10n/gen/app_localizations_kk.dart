@@ -1580,4 +1580,12 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get signals_unlock_with_bonus => 'Бонуспен ашу';
+
+  @override
+  String get promo_share => 'Промокодты бөлісу';
+
+  @override
+  String promo_share_message(String code) {
+    return '🎁 ALTYN промокодым: $code. Тіркелгенде 100 ₸ бонус ал! ALTYN — алтын (XAU/USD) трейдинг платформасы.';
+  }
 }
