@@ -2953,13 +2953,13 @@ abstract class AppLocalizations {
   /// No description provided for @promo_field_help.
   ///
   /// In kk, this message translates to:
-  /// **'Промокодпен тіркелсеңіз — {bonus} ₸ бонус'**
+  /// **'Промокодпен тіркелсеңіз — {bonus} бонус'**
   String promo_field_help(int bonus);
 
   /// No description provided for @promo_applied.
   ///
   /// In kk, this message translates to:
-  /// **'Промокод қолданылды! +{bonus} ₸ бонус'**
+  /// **'Промокод қолданылды! +{bonus} бонус'**
   String promo_applied(int bonus);
 
   /// No description provided for @promo_already_used.
@@ -2992,6 +2992,12 @@ abstract class AppLocalizations {
   /// **'Идея ашқанда автоматты қолданылады'**
   String get promo_bonus_balance_desc;
 
+  /// No description provided for @promo_bonus_amount.
+  ///
+  /// In kk, this message translates to:
+  /// **'{count} бонус'**
+  String promo_bonus_amount(int count);
+
   /// No description provided for @promo_my_code_title.
   ///
   /// In kk, this message translates to:
@@ -3001,8 +3007,20 @@ abstract class AppLocalizations {
   /// No description provided for @promo_my_code_desc.
   ///
   /// In kk, this message translates to:
-  /// **'Сіздің кодыңызбен тіркелген жаңа қолданушы {bonus} ₸ бонус алады'**
+  /// **'Сіздің кодыңызбен тіркелген жаңа қолданушы {bonus} бонус алады'**
   String promo_my_code_desc(int bonus);
+
+  /// No description provided for @promo_my_code_earn.
+  ///
+  /// In kk, this message translates to:
+  /// **'Әр тіркелуге сіз +{bonus} бонус аласыз'**
+  String promo_my_code_earn(int bonus);
+
+  /// No description provided for @promo_how_it_works.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бонусты қалай табасыз: промокодты бөлісіңіз — әр тіркелуге +{referrer} бонус; досыңыздың кодымен тіркеліп +{invitee} бонус аласыз. Бонусты сауда идеяларын ашуға жұмсайсыз.'**
+  String promo_how_it_works(int referrer, int invitee);
 
   /// No description provided for @promo_copy.
   ///
@@ -3031,7 +3049,7 @@ abstract class AppLocalizations {
   /// No description provided for @promo_enter_desc.
   ///
   /// In kk, this message translates to:
-  /// **'{bonus} ₸ бонус алыңыз'**
+  /// **'{bonus} бонус алыңыз'**
   String promo_enter_desc(int bonus);
 
   /// No description provided for @promo_apply.
@@ -3061,8 +3079,8 @@ abstract class AppLocalizations {
   /// No description provided for @promo_share_message.
   ///
   /// In kk, this message translates to:
-  /// **'🎁 ALTYN промокодым: {code}. Тіркелгенде 100 ₸ бонус ал! ALTYN — алтын (XAU/USD) трейдинг платформасы.'**
-  String promo_share_message(String code);
+  /// **'🎁 ALTYN промокодым: {code}. Тіркелгенде {bonus} бонус ал! ALTYN — алтын (XAU/USD) трейдинг платформасы.'**
+  String promo_share_message(String code, int bonus);
 }
 
 class _AppLocalizationsDelegate

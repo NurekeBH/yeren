@@ -1522,12 +1522,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String promo_field_help(int bonus) {
-    return 'Register with a promo code — get $bonus ₸ bonus';
+    return 'Register with a promo code — get $bonus bonus';
   }
 
   @override
   String promo_applied(int bonus) {
-    return 'Promo code applied! +$bonus ₸ bonus';
+    return 'Promo code applied! +$bonus bonus';
   }
 
   @override
@@ -1547,11 +1547,26 @@ class AppLocalizationsEn extends AppLocalizations {
       'Applied automatically when unlocking an idea';
 
   @override
+  String promo_bonus_amount(int count) {
+    return '$count bonus';
+  }
+
+  @override
   String get promo_my_code_title => 'My promo code';
 
   @override
   String promo_my_code_desc(int bonus) {
-    return 'A new user gets $bonus ₸ bonus when they register with your code';
+    return 'A new user gets $bonus bonus when they register with your code';
+  }
+
+  @override
+  String promo_my_code_earn(int bonus) {
+    return 'You get +$bonus bonus per sign-up';
+  }
+
+  @override
+  String promo_how_it_works(int referrer, int invitee) {
+    return 'How to earn bonus: share your promo code — +$referrer bonus per sign-up; register with a friend\'s code — +$invitee bonus. Spend bonus to unlock trade ideas.';
   }
 
   @override
@@ -1570,7 +1585,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String promo_enter_desc(int bonus) {
-    return 'Get $bonus ₸ bonus';
+    return 'Get $bonus bonus';
   }
 
   @override
@@ -1586,7 +1601,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get promo_share => 'Share promo code';
 
   @override
-  String promo_share_message(String code) {
-    return '🎁 My ALTYN promo code: $code. Get a 100 ₸ bonus when you sign up! ALTYN — gold (XAU/USD) trading platform.';
+  String promo_share_message(String code, int bonus) {
+    return '🎁 My ALTYN promo code: $code. Get $bonus bonus when you sign up! ALTYN — gold (XAU/USD) trading platform.';
   }
 }

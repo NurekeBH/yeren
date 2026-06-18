@@ -1524,12 +1524,12 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String promo_field_help(int bonus) {
-    return 'Зарегистрируйтесь по промокоду — $bonus ₸ бонус';
+    return 'Зарегистрируйтесь по промокоду — $bonus бонусов';
   }
 
   @override
   String promo_applied(int bonus) {
-    return 'Промокод применён! +$bonus ₸ бонус';
+    return 'Промокод применён! +$bonus бонусов';
   }
 
   @override
@@ -1546,14 +1546,29 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get promo_bonus_balance_desc =>
-      'Применяется автоматически при покупке идеи';
+      'Применяется автоматически при открытии идеи';
+
+  @override
+  String promo_bonus_amount(int count) {
+    return '$count бонусов';
+  }
 
   @override
   String get promo_my_code_title => 'Мой промокод';
 
   @override
   String promo_my_code_desc(int bonus) {
-    return 'Новый пользователь получает $bonus ₸ бонус при регистрации по вашему коду';
+    return 'Новый пользователь получает $bonus бонусов при регистрации по вашему коду';
+  }
+
+  @override
+  String promo_my_code_earn(int bonus) {
+    return 'За каждую регистрацию вы получаете +$bonus бонусов';
+  }
+
+  @override
+  String promo_how_it_works(int referrer, int invitee) {
+    return 'Как заработать бонусы: делитесь промокодом — за каждую регистрацию +$referrer бонусов; зарегистрируйтесь по коду друга — +$invitee бонусов. Бонусами можно открывать торговые идеи.';
   }
 
   @override
@@ -1572,7 +1587,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String promo_enter_desc(int bonus) {
-    return 'Получите $bonus ₸ бонус';
+    return 'Получите $bonus бонусов';
   }
 
   @override
@@ -1588,7 +1603,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get promo_share => 'Поделиться промокодом';
 
   @override
-  String promo_share_message(String code) {
-    return '🎁 Мой промокод ALTYN: $code. Получи 100 ₸ бонус при регистрации! ALTYN — платформа для трейдинга золотом (XAU/USD).';
+  String promo_share_message(String code, int bonus) {
+    return '🎁 Мой промокод ALTYN: $code. Получи $bonus бонусов при регистрации! ALTYN — платформа для трейдинга золотом (XAU/USD).';
   }
 }

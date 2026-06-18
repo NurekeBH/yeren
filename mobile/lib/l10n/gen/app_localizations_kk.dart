@@ -1522,12 +1522,12 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String promo_field_help(int bonus) {
-    return 'Промокодпен тіркелсеңіз — $bonus ₸ бонус';
+    return 'Промокодпен тіркелсеңіз — $bonus бонус';
   }
 
   @override
   String promo_applied(int bonus) {
-    return 'Промокод қолданылды! +$bonus ₸ бонус';
+    return 'Промокод қолданылды! +$bonus бонус';
   }
 
   @override
@@ -1546,11 +1546,26 @@ class AppLocalizationsKk extends AppLocalizations {
   String get promo_bonus_balance_desc => 'Идея ашқанда автоматты қолданылады';
 
   @override
+  String promo_bonus_amount(int count) {
+    return '$count бонус';
+  }
+
+  @override
   String get promo_my_code_title => 'Менің промокодым';
 
   @override
   String promo_my_code_desc(int bonus) {
-    return 'Сіздің кодыңызбен тіркелген жаңа қолданушы $bonus ₸ бонус алады';
+    return 'Сіздің кодыңызбен тіркелген жаңа қолданушы $bonus бонус алады';
+  }
+
+  @override
+  String promo_my_code_earn(int bonus) {
+    return 'Әр тіркелуге сіз +$bonus бонус аласыз';
+  }
+
+  @override
+  String promo_how_it_works(int referrer, int invitee) {
+    return 'Бонусты қалай табасыз: промокодты бөлісіңіз — әр тіркелуге +$referrer бонус; досыңыздың кодымен тіркеліп +$invitee бонус аласыз. Бонусты сауда идеяларын ашуға жұмсайсыз.';
   }
 
   @override
@@ -1569,7 +1584,7 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String promo_enter_desc(int bonus) {
-    return '$bonus ₸ бонус алыңыз';
+    return '$bonus бонус алыңыз';
   }
 
   @override
@@ -1585,7 +1600,7 @@ class AppLocalizationsKk extends AppLocalizations {
   String get promo_share => 'Промокодты бөлісу';
 
   @override
-  String promo_share_message(String code) {
-    return '🎁 ALTYN промокодым: $code. Тіркелгенде 100 ₸ бонус ал! ALTYN — алтын (XAU/USD) трейдинг платформасы.';
+  String promo_share_message(String code, int bonus) {
+    return '🎁 ALTYN промокодым: $code. Тіркелгенде $bonus бонус ал! ALTYN — алтын (XAU/USD) трейдинг платформасы.';
   }
 }

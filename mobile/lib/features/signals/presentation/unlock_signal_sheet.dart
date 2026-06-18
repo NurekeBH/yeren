@@ -142,7 +142,7 @@ class _UnlockSheetState extends ConsumerState<_UnlockSheet> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(l.promo_bonus_balance, style: AppTypography.bodyMedium(color: AppColors.profitGreen)),
-                Text('−$bonusUsed ₸', style: AppTypography.bodyMedium(color: AppColors.profitGreen)),
+                Text('− ${l.promo_bonus_amount(bonusUsed)}', style: AppTypography.bodyMedium(color: AppColors.profitGreen)),
               ],
             ),
             const SizedBox(height: 8),

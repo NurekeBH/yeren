@@ -18,8 +18,11 @@ const RegisterBody = Credentials.extend({
   promo_code: z.string().max(24).optional(),
 });
 
-/** Промокодпен тіркелген жаңа қолданушыға берілетін бонус (₸). */
+/** Промокодпен тіркелген ЖАҢА қолданушыға берілетін бонус (ұпай). */
 const PROMO_BONUS_TG = 100;
+
+/** Промокодын бөліскен реферерге әр тіркелу үшін бонус (ұпай). */
+const REFERRER_BONUS_TG = 500;
 
 /** Шатастырмайтын таңбалар (O/0/I/1 жоқ). */
 const PROMO_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -90,14 +93,16 @@ export async function authRoutes(app: FastifyInstance) {
           [code],
         );
         if (ref.rowCount && ref.rows[0]!.id !== u.rows[0]!.id) {
+          // Жаңа қолданушыға +100; реферерге +500 және реферал саны +1.
           await c.query('update users set bonus_balance = $1, referred_by = $2 where id = $3', [
             PROMO_BONUS_TG,
             code,
             u.rows[0]!.id,
           ]);
-          await c.query('update users set referral_count = referral_count + 1 where id = $1', [
-            ref.rows[0]!.id,
-          ]);
+          await c.query(
+            'update users set bonus_balance = bonus_balance + $1, referral_count = referral_count + 1 where id = $2',
+            [REFERRER_BONUS_TG, ref.rows[0]!.id],
+          );
         }
       }
       return u;
@@ -206,7 +211,11 @@ export async function authRoutes(app: FastifyInstance) {
         code,
         req.userId,
       ]);
-      await c.query('update users set referral_count = referral_count + 1 where id = $1', [ref.rows[0]!.id]);
+      // Реферерге +500 және реферал саны +1.
+      await c.query(
+        'update users set bonus_balance = bonus_balance + $1, referral_count = referral_count + 1 where id = $2',
+        [REFERRER_BONUS_TG, ref.rows[0]!.id],
+      );
     });
     return { ok: true, bonus: PROMO_BONUS_TG };
   });

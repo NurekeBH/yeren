@@ -12,8 +12,11 @@ import '../../../shared/models/gallup.dart';
 import '../../../shared/models/market_session.dart';
 import 'promo_registry.dart';
 
-/// Промокодпен тіркелген жаңа қолданушыға берілетін бонус (₸).
+/// Промокодпен тіркелген ЖАҢА қолданушыға берілетін бонус (₸).
 const int kPromoBonusTg = 100;
+
+/// Промокодын бөліскен қолданушыға (реферерге) әр тіркелу үшін бонус (₸).
+const int kReferrerBonusTg = 500;
 
 /// Промокодты қолдану нәтижесі (UI хабарламасын таңдау үшін).
 enum PromoResult { applied, alreadyUsed, invalid, ownCode }
@@ -122,6 +125,7 @@ class UserProfile extends Equatable {
     this.bonusBalance = 0,
     this.referredBy,
     this.referralCount = 0,
+    this.referralCreditedCount = 0,
   });
 
   final String name;
@@ -147,6 +151,9 @@ class UserProfile extends Equatable {
 
   /// Осы трейдердің промокодымен тіркелген қолданушылар саны (remote-та нақты).
   final int referralCount;
+
+  /// Реферер бонусы есептелген тіркелулер саны (қайта есептемеу үшін, mock).
+  final int referralCreditedCount;
 
   /// Қайта оралған пайдаланушы (login) немесе онбордингті аяқтаған соң — true.
   /// Профиль сұрақнамасын қайталап сұрамас үшін.
@@ -175,6 +182,7 @@ class UserProfile extends Equatable {
     int? bonusBalance,
     String? referredBy,
     int? referralCount,
+    int? referralCreditedCount,
   }) =>
       UserProfile(
         name: name ?? this.name,
@@ -194,6 +202,7 @@ class UserProfile extends Equatable {
         bonusBalance: bonusBalance ?? this.bonusBalance,
         referredBy: referredBy ?? this.referredBy,
         referralCount: referralCount ?? this.referralCount,
+        referralCreditedCount: referralCreditedCount ?? this.referralCreditedCount,
       );
 
   Map<String, dynamic> toJson() => {
@@ -215,6 +224,7 @@ class UserProfile extends Equatable {
         'bonusBalance': bonusBalance,
         'referredBy': referredBy,
         'referralCount': referralCount,
+        'referralCreditedCount': referralCreditedCount,
       };
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
@@ -257,11 +267,12 @@ class UserProfile extends Equatable {
       bonusBalance: (json['bonusBalance'] as num?)?.toInt() ?? 0,
       referredBy: json['referredBy'] as String?,
       referralCount: (json['referralCount'] as num?)?.toInt() ?? 0,
+      referralCreditedCount: (json['referralCreditedCount'] as num?)?.toInt() ?? 0,
     );
   }
 
   @override
-  List<Object?> get props => [name, city, styles, bio, avatarPath, preferredSessions, notifications, gallup, xp, streak, weekProgress, onboardedFlag, isVerifiedTrader, promoCode, bonusBalance, referredBy, referralCount];
+  List<Object?> get props => [name, city, styles, bio, avatarPath, preferredSessions, notifications, gallup, xp, streak, weekProgress, onboardedFlag, isVerifiedTrader, promoCode, bonusBalance, referredBy, referralCount, referralCreditedCount];
 }
 
 const _profileKey = 'user_profile_v1';
@@ -365,6 +376,21 @@ class ProfileController extends StateNotifier<UserProfile> {
       _ref.read(apiServiceProvider).redeemPromo(code).catchError((_) {});
     }
     return PromoResult.applied;
+  }
+
+  /// Реферал табысын есептеу (mock): өз кодыммен әр жаңа тіркелуге +500₸.
+  /// Remote режимде backend реферерге тікелей есептейді — мұнда қайталамаймыз.
+  void creditReferralEarnings() {
+    if (AppConfig.useRemoteApi || state.promoCode.isEmpty) return;
+    final total = _ref.read(promoRegistryProvider.notifier).countFor(state.promoCode);
+    if (total > state.referralCreditedCount) {
+      final fresh = total - state.referralCreditedCount;
+      _set(state.copyWith(
+        bonusBalance: state.bonusBalance + fresh * kReferrerBonusTg,
+        referralCreditedCount: total,
+        referralCount: total,
+      ));
+    }
   }
 
   /// Бонусты жұмсау (идея ашқанда). Баланстан [amount] шегереміз.

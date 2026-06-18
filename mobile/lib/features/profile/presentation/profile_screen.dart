@@ -135,6 +135,8 @@ class ProfileScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
+          // Бонус баланс — UX үшін жоғарыда (профиль картасынан кейін бірден).
+          const PromoBalanceCard(),
           // Расталған трейдер: расталса — мәртебе; әйтпесе — өтінім беру.
           if (profile.isVerifiedTrader)
             Card(
