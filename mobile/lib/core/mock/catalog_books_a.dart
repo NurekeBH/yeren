@@ -1,5 +1,6 @@
 import '../../shared/models/library_item.dart';
 import 'catalog_covers.dart';
+import 'library_text.dart';
 
 double _r(String t) {
   var h = 0;
@@ -15,7 +16,8 @@ LibraryItem _b(int i, String title, String author, int year, String topic) =>
       category: LibraryCategory.book,
       title: title,
       author: author,
-      summary: topic,
+      summary: kLibraryText["b-$i"]?.summary ?? topic,
+      ideas: kLibraryText["b-$i"]?.ideas ?? const [],
       genre: topic,
       topic: topic,
       year: year,

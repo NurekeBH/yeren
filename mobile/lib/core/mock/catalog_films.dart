@@ -1,5 +1,6 @@
 import '../../shared/models/library_item.dart';
 import 'catalog_covers.dart';
+import 'library_text.dart';
 
 double _r(String t) {
   var h = 0;
@@ -14,7 +15,8 @@ LibraryItem _f(int i, String title, int year, String topic) => LibraryItem(
   category: LibraryCategory.film,
   title: title,
   author: "",
-  summary: topic,
+  summary: kLibraryText["f-$i"]?.summary ?? topic,
+  ideas: kLibraryText["f-$i"]?.ideas ?? const [],
   genre: topic,
   topic: topic,
   year: year,
