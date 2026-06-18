@@ -85,10 +85,16 @@ class PromoSection extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  if (p.referralCount > 0) ...[
-                    const SizedBox(height: 8),
-                    Text(l.promo_referrals(p.referralCount), style: AppTypography.label(color: AppColors.textSecondary)),
-                  ],
+                  const SizedBox(height: 10),
+                  // Кодпен тіркелгендер саны — трейдер әрқашан көреді.
+                  Row(
+                    children: [
+                      const Icon(Icons.group_outlined, size: 16, color: AppColors.profitGreen),
+                      const SizedBox(width: 6),
+                      Text(l.promo_referrals(p.referralCount),
+                          style: AppTypography.bodySmall().copyWith(fontWeight: FontWeight.w600)),
+                    ],
+                  ),
                 ],
               ),
             ),
