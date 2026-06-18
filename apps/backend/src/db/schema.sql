@@ -383,6 +383,17 @@ create table if not exists signal_votes (
 );
 create index if not exists signal_votes_signal_idx on signal_votes(signal_id);
 
+-- ─────────────────── SUPPORT MESSAGES (қолдау → админ) ───────────────────
+-- Пайдаланушы профильден жазған хабарлар админ-панельде көрінеді.
+create table if not exists support_messages (
+  id         uuid primary key default uuid_generate_v4(),
+  user_id    uuid references users(id) on delete set null,
+  text       text not null,
+  resolved   boolean not null default false,
+  created_at timestamptz default now()
+);
+create index if not exists support_messages_idx on support_messages(resolved, created_at desc);
+
 -- ─────────────────── HOUSEKEEPING ───────────────────
 -- updated_at автоматты жаңарту үшін trigger функциясы
 create or replace function set_updated_at() returns trigger as $$

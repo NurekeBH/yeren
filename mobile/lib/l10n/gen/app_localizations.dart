@@ -1507,8 +1507,26 @@ abstract class AppLocalizations {
   /// No description provided for @support_desc.
   ///
   /// In kk, this message translates to:
-  /// **'Сұрақтар, верификация немесе серіктестік бойынша хабарласыңыз:\n\nTelegram: @altyn_support\nEmail: support@altyn.app'**
+  /// **'Сұрақ, верификация немесе серіктестік туралы жазыңыз — хабарыңыз командаға жетеді.'**
   String get support_desc;
+
+  /// No description provided for @support_message_hint.
+  ///
+  /// In kk, this message translates to:
+  /// **'Хабарыңызды жазыңыз…'**
+  String get support_message_hint;
+
+  /// No description provided for @support_send.
+  ///
+  /// In kk, this message translates to:
+  /// **'Жіберу'**
+  String get support_send;
+
+  /// No description provided for @support_sent.
+  ///
+  /// In kk, this message translates to:
+  /// **'Хабар жіберілді! Жақын арада жауап береміз.'**
+  String get support_sent;
 
   /// No description provided for @trader_apply_title.
   ///

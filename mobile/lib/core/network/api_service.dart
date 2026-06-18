@@ -134,6 +134,10 @@ class ApiService {
   Future<Map<String, dynamic>> createTrade(Map<String, dynamic> body) async =>
       (await _send('POST', '/trades', body: body))['trade'] as Map<String, dynamic>? ?? const {};
   Future<void> deleteTrade(String id) => _send('DELETE', '/trades/$id');
+
+  // ─────────────── Support (қолдау хабары → админ-панель) ───────────────
+  Future<void> sendSupportMessage(String text) =>
+      _send('POST', '/support', body: {'text': text});
 }
 
 final apiServiceProvider = Provider<ApiService>((ref) => ApiService(ref.watch(apiClientProvider)));

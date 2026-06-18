@@ -763,7 +763,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get support_desc =>
-      'For questions, verification or partnership, contact us:\n\nTelegram: @altyn_support\nEmail: support@altyn.app';
+      'Message us about questions, verification or partnership — it reaches the team.';
+
+  @override
+  String get support_message_hint => 'Write your message…';
+
+  @override
+  String get support_send => 'Send';
+
+  @override
+  String get support_sent => 'Message sent! We\'ll get back to you soon.';
 
   @override
   String get trader_apply_title => 'Verified trader application';

@@ -18,6 +18,7 @@ import { eventsRoutes } from './modules/events/routes.js';
 import { alertsRoutes } from './modules/alerts/routes.js';
 import { libraryRoutes } from './modules/library/routes.js';
 import { agreementRoutes } from './modules/agreement/routes.js';
+import { supportRoutes } from './modules/support/routes.js';
 import { ingestNews } from './services/news.js';
 import { pool } from './db/client.js';
 
@@ -55,6 +56,7 @@ await app.register(async (api) => {
   await alertsRoutes(api);
   await libraryRoutes(api);
   await agreementRoutes(api);
+  await supportRoutes(api);
 }, { prefix: '/api/v1' });
 
 const shutdown = async (signal: string) => {

@@ -763,7 +763,16 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get support_desc =>
-      'Сұрақтар, верификация немесе серіктестік бойынша хабарласыңыз:\n\nTelegram: @altyn_support\nEmail: support@altyn.app';
+      'Сұрақ, верификация немесе серіктестік туралы жазыңыз — хабарыңыз командаға жетеді.';
+
+  @override
+  String get support_message_hint => 'Хабарыңызды жазыңыз…';
+
+  @override
+  String get support_send => 'Жіберу';
+
+  @override
+  String get support_sent => 'Хабар жіберілді! Жақын арада жауап береміз.';
 
   @override
   String get trader_apply_title => 'Расталған трейдерге өтінім';

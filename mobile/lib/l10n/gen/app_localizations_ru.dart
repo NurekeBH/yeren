@@ -766,7 +766,16 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get support_desc =>
-      'По вопросам, верификации или сотрудничеству свяжитесь с нами:\n\nTelegram: @altyn_support\nEmail: support@altyn.app';
+      'Напишите нам по вопросам, верификации или сотрудничеству — сообщение придёт команде.';
+
+  @override
+  String get support_message_hint => 'Напишите сообщение…';
+
+  @override
+  String get support_send => 'Отправить';
+
+  @override
+  String get support_sent => 'Сообщение отправлено! Мы скоро ответим.';
 
   @override
   String get trader_apply_title => 'Заявка на верификацию трейдера';

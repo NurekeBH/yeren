@@ -11,6 +11,7 @@ import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/widgets/language_switcher.dart';
 import '../../auth/application/auth_controller.dart';
 import '../application/profile_controller.dart';
+import 'support_sheet.dart';
 import 'trader_application_sheet.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -177,16 +178,7 @@ class ProfileScreen extends ConsumerWidget {
           _MenuItem(
             icon: Icons.support_agent_outlined,
             label: l.profile_support,
-            onTap: () => showDialog<void>(
-              context: context,
-              builder: (_) => AlertDialog(
-                title: Text(l.support_title),
-                content: Text(l.support_desc),
-                actions: [
-                  TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l.common_continue)),
-                ],
-              ),
-            ),
+            onTap: () => showSupportSheet(context),
           ),
           _MenuItem(
             icon: Icons.logout,
