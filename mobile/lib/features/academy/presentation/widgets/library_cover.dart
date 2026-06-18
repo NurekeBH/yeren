@@ -28,8 +28,9 @@ class LibraryCover extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Мұқаба URL-ін сыртқы API-дан табамыз (кэштеледі); болмаса градиент.
-    final url = ref.watch(coverResolverProvider(item)).valueOrNull;
+    // Алдын ала есептелген мұқаба (catalog_covers.dart) → тікелей жүктеу (жылдам).
+    // Болмаса ғана runtime resolver сыртқы API-дан іздейді; ол да болмаса — градиент.
+    final url = item.coverImageUrl ?? ref.watch(coverResolverProvider(item)).valueOrNull;
     final br = BorderRadius.circular(radius);
     final image = url == null
         ? _fallback()

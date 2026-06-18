@@ -1,4 +1,5 @@
 import '../../shared/models/library_item.dart';
+import 'catalog_covers.dart';
 
 double _r(String t) {
   var h = 0;
@@ -20,6 +21,7 @@ LibraryItem _b(int i, String title, String author, int year, String topic) =>
       year: year,
       rating: double.parse(_r(title).toStringAsFixed(1)),
       ratingMax: 5,
+      coverUrl: kCoverUrls["b-$i"],
     );
 
 final List<LibraryItem> kBooksCatalogB = [
