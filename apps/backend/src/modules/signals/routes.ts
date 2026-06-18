@@ -1,6 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { query, tx } from '../../db/client.js';
+import { sendToCategory } from '../../services/push.js';
 
 const SignalCreate = z.object({
   pair: z.string().default('XAU/USD'),
@@ -69,6 +70,14 @@ export async function signalsRoutes(app: FastifyInstance) {
         s.confidence, s.screenshot_url ?? null, s.analysis, s.is_free, s.provider_id ?? null, s.source, s.source_message_id ?? null,
         req.userId],
     );
+    const sig = rows[0] as { id: string; pair: string; direction: string; is_free: boolean };
+    // Жаңа идея туралы push (signals_on қосулы құрылғыларға).
+    const dir = sig.direction === 'buy' ? 'BUY' : 'SELL';
+    void sendToCategory('signals_on', {
+      title: 'Жаңа идея · New idea',
+      body: `${dir} ${sig.pair}${sig.is_free ? ' · Free' : ''}`,
+      data: { type: 'signal', id: sig.id },
+    });
     return { signal: rows[0] };
   });
 

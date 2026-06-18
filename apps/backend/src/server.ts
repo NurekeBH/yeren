@@ -21,6 +21,7 @@ import { agreementRoutes } from './modules/agreement/routes.js';
 import { supportRoutes } from './modules/support/routes.js';
 import { ingestNews } from './services/news.js';
 import { ingestCalendar } from './services/calendar.js';
+import { checkPriceAlerts } from './services/alerts.js';
 import { pool } from './db/client.js';
 
 const app = Fastify({
@@ -120,4 +121,27 @@ if (env.FINNHUB_API_KEY) {
   calTimer.unref?.();
 } else {
   app.log.info('Market Intel poller disabled (no FINNHUB_API_KEY)');
+}
+
+// ─────────────── Баға дабылы поллері (кілтсіз, Binance PAXG) ───────────────
+// Тірі XAU/USD бағасы мақсатты деңгейді кигенде дабыл иесіне FCM push жібереді.
+{
+  const ALERT_MS = 60_000;
+  let checking = false;
+  const tick = async () => {
+    if (checking) return;
+    checking = true;
+    try {
+      const r = await checkPriceAlerts();
+      if (r.triggered > 0) app.log.info({ triggered: r.triggered, price: r.price }, 'price_alerts_triggered');
+    } catch (err) {
+      app.log.warn(err, 'price_alert_check_failed');
+    } finally {
+      checking = false;
+    }
+  };
+  void tick();
+  const alertTimer = setInterval(() => void tick(), ALERT_MS);
+  alertTimer.unref?.();
+  app.log.info(`Price-alert poller started (every ${ALERT_MS / 1000}s)`);
 }

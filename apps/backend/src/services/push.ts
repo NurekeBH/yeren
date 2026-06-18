@@ -27,35 +27,30 @@ function messaging() {
   return getMessaging(_app);
 }
 
-export type IntelPush = { id: string; text: string; impact: string };
+export type PushPayload = {
+  title: string;
+  body: string;
+  data?: Record<string, string>;
+};
 
-/// Market Intel urgent жаңалығы туралы push (intel_on қосулы құрылғыларға).
-export async function sendIntelPush(post: IntelPush): Promise<void> {
-  const { rows } = await query<{ token: string }>(
-    `select expo_push_token as token from notification_prefs
-      where intel_on = true and expo_push_token is not null and expo_push_token <> ''`,
-  );
-  const tokens = rows.map((r) => r.token);
-  const title = 'Market Intel';
-  const body = post.text.length > 160 ? `${post.text.slice(0, 157)}…` : post.text;
-
+/// Берілген токендерге push жіберу (500-дік чанк, жарамсыз токендерді тазалау).
+export async function sendPushToTokens(tokens: string[], payload: PushPayload): Promise<void> {
+  const uniq = [...new Set(tokens.filter((t) => t && t.length > 0))];
   const m = messaging();
-  if (!m || tokens.length === 0) {
+  if (!m || uniq.length === 0) {
     // eslint-disable-next-line no-console
-    console.log(`[push:intel] (${m ? 'no recipients' : 'FCM not configured'}) "${title}: ${body}"`);
+    console.log(`[push] (${m ? 'no recipients' : 'FCM not configured'}) "${payload.title}: ${payload.body}"`);
     return;
   }
-
-  // FCM multicast лимиті — бір сұранысқа 500 токен.
   const invalid: string[] = [];
   let sent = 0;
   let failed = 0;
-  for (let i = 0; i < tokens.length; i += 500) {
-    const chunk = tokens.slice(i, i + 500);
+  for (let i = 0; i < uniq.length; i += 500) {
+    const chunk = uniq.slice(i, i + 500);
     const res = await m.sendEachForMulticast({
       tokens: chunk,
-      notification: { title, body },
-      data: { type: 'intel', id: post.id, impact: post.impact },
+      notification: { title: payload.title, body: payload.body },
+      data: payload.data ?? {},
       android: { priority: 'high' },
       apns: { payload: { aps: { sound: 'default' } } },
     });
@@ -74,12 +69,43 @@ export async function sendIntelPush(post: IntelPush): Promise<void> {
       }
     });
   }
-
-  // Жарамсыз/ескірген токендерді тазалаймыз.
   if (invalid.length > 0) {
     await query(`update notification_prefs set expo_push_token = null where expo_push_token = any($1)`, [invalid]);
   }
-
   // eslint-disable-next-line no-console
-  console.log(`[push:intel] sent=${sent} failed=${failed} cleaned=${invalid.length} "${title}: ${body}"`);
+  console.log(`[push] sent=${sent} failed=${failed} cleaned=${invalid.length} "${payload.title}: ${payload.body}"`);
+}
+
+const SAFE_CATEGORIES = new Set(['signals_on', 'intel_on', 'calendar_on', 'ideas_on', 'review_on', 'academy_on', 'broker_on', 'streak_on']);
+
+/// Категория қосулы (мыс. signals_on=true) барлық құрылғыларға push.
+export async function sendToCategory(column: string, payload: PushPayload): Promise<void> {
+  if (!SAFE_CATEGORIES.has(column)) throw new Error(`bad category: ${column}`);
+  const { rows } = await query<{ token: string }>(
+    `select expo_push_token as token from notification_prefs
+      where ${column} = true and expo_push_token is not null and expo_push_token <> ''`,
+  );
+  await sendPushToTokens(rows.map((r) => r.token), payload);
+}
+
+/// Бір қолданушыға push (баға дабылы сияқты дербес хабарлар).
+export async function sendToUser(userId: string, payload: PushPayload): Promise<void> {
+  const { rows } = await query<{ token: string }>(
+    `select expo_push_token as token from notification_prefs
+      where user_id = $1 and expo_push_token is not null and expo_push_token <> ''`,
+    [userId],
+  );
+  await sendPushToTokens(rows.map((r) => r.token), payload);
+}
+
+export type IntelPush = { id: string; text: string; impact: string };
+
+/// Market Intel urgent жаңалығы туралы push (intel_on қосулы құрылғыларға).
+export async function sendIntelPush(post: IntelPush): Promise<void> {
+  const body = post.text.length > 160 ? `${post.text.slice(0, 157)}…` : post.text;
+  await sendToCategory('intel_on', {
+    title: 'Market Intel',
+    body,
+    data: { type: 'intel', id: post.id, impact: post.impact },
+  });
 }
