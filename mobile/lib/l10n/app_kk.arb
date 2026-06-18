@@ -89,6 +89,7 @@
   "@alerts_cond_pips": {"placeholders": {"pips": {"type": "String"}, "price": {"type": "String"}}},
   "alerts_cond_price": "{price} болғанда",
   "@alerts_cond_price": {"placeholders": {"price": {"type": "String"}}},
+  "lib_podcast_translate": "Видеоны орысша да, ағылшынша да көруге болады — YouTube-та авто-аударылған субтитр/дубляжды қосыңыз.",
   "lib_save": "Сақтау",
   "lib_your_rating": "Сіздің бағаңыз",
   "lib_your_review": "Сіздің пікіріңіз",

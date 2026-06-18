@@ -260,6 +260,10 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
+  String get lib_podcast_translate =>
+      'Видеоны орысша да, ағылшынша да көруге болады — YouTube-та авто-аударылған субтитр/дубляжды қосыңыз.';
+
+  @override
   String get lib_save => 'Сақтау';
 
   @override

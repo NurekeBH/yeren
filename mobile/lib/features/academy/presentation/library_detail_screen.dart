@@ -94,7 +94,30 @@ class _LibraryDetailScreenState extends ConsumerState<LibraryDetailScreen> {
               ),
             ),
           ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 12),
+
+        // Подкаст: YouTube авто-аударма туралы ескерту (RU/EN көру).
+        if (item.isPodcast) ...[
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            decoration: BoxDecoration(
+              color: AppColors.dxyBlue.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.dxyBlue.withValues(alpha: 0.25)),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.translate, size: 18, color: AppColors.dxyBlue),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(l.lib_podcast_translate,
+                      style: AppTypography.bodySmall(color: AppColors.textSecondary).copyWith(height: 1.35)),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
+        ],
 
         Wrap(
           spacing: 8,

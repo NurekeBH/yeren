@@ -85,6 +85,7 @@
   "alerts_default_manual": "{pair} reached the target",
   "alerts_cond_pips": "{pips} pips before {price}",
   "alerts_cond_price": "at {price}",
+  "lib_podcast_translate": "Watch in Russian or English — turn on YouTube auto-translated subtitles/dubbing in the video.",
   "lib_save": "Save",
   "lib_your_rating": "Your rating",
   "lib_your_review": "Your review",

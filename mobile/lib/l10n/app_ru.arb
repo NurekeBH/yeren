@@ -85,6 +85,7 @@
   "alerts_default_manual": "Цена {pair} достигла цели",
   "alerts_cond_pips": "за {pips} п. до {price}",
   "alerts_cond_price": "при {price}",
+  "lib_podcast_translate": "Видео можно смотреть на русском или английском — включите авто-перевод субтитров/озвучки в YouTube.",
   "lib_save": "Сохранить",
   "lib_your_rating": "Ваша оценка",
   "lib_your_review": "Ваш отзыв",

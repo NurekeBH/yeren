@@ -260,6 +260,10 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String get lib_podcast_translate =>
+      'Видео можно смотреть на русском или английском — включите авто-перевод субтитров/озвучки в YouTube.';
+
+  @override
   String get lib_save => 'Сохранить';
 
   @override

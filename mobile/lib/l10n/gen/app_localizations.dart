@@ -574,6 +574,12 @@ abstract class AppLocalizations {
   /// **'{price} болғанда'**
   String alerts_cond_price(String price);
 
+  /// No description provided for @lib_podcast_translate.
+  ///
+  /// In kk, this message translates to:
+  /// **'Видеоны орысша да, ағылшынша да көруге болады — YouTube-та авто-аударылған субтитр/дубляжды қосыңыз.'**
+  String get lib_podcast_translate;
+
   /// No description provided for @lib_save.
   ///
   /// In kk, this message translates to:
