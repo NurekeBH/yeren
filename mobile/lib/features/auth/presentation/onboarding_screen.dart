@@ -17,6 +17,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final _name = TextEditingController();
   final _city = TextEditingController();
   final _bio = TextEditingController();
+  final _promo = TextEditingController();
   final Set<TradingStyle> _styles = {TradingStyle.smc};
   final _formKey = GlobalKey<FormState>();
 
@@ -25,18 +26,29 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     _name.dispose();
     _city.dispose();
     _bio.dispose();
+    _promo.dispose();
     super.dispose();
   }
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
     if (_styles.isEmpty) return;
-    ref.read(profileControllerProvider.notifier).completeOnboarding(
-          name: _name.text.trim(),
-          city: _city.text.trim(),
-          styles: _styles,
-          bio: _bio.text.trim(),
-        );
+    final notifier = ref.read(profileControllerProvider.notifier);
+    notifier.completeOnboarding(
+      name: _name.text.trim(),
+      city: _city.text.trim(),
+      styles: _styles,
+      bio: _bio.text.trim(),
+      promoCode: _promo.text.trim(),
+    );
+    // Промокод сәтті болса — бонус туралы хабарлама.
+    final l = AppLocalizations.of(context);
+    if (_promo.text.trim().isNotEmpty &&
+        ref.read(profileControllerProvider).bonusBalance > 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l.promo_applied(kPromoBonusTg))),
+      );
+    }
     // Явный navigation — router redirect-ке тәуелсіз UX.
     if (mounted) context.go('/home');
   }
@@ -111,6 +123,18 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   controller: _bio,
                   maxLength: 200,
                   maxLines: 3,
+                ),
+                const SizedBox(height: 16),
+                Text(l.promo_field_label, style: AppTypography.label()),
+                const SizedBox(height: 6),
+                TextFormField(
+                  controller: _promo,
+                  textCapitalization: TextCapitalization.characters,
+                  decoration: InputDecoration(
+                    hintText: l.promo_field_hint,
+                    prefixIcon: const Icon(Icons.card_giftcard, size: 18),
+                    helperText: l.promo_field_help(kPromoBonusTg),
+                  ),
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton(onPressed: _submit, child: Text(l.onboarding_finish)),

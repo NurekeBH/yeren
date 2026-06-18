@@ -1515,4 +1515,72 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get notif_dnd_desc => 'Только срочные уведомления';
+
+  @override
+  String get promo_field_label => 'Промокод (необязательно)';
+
+  @override
+  String get promo_field_hint => 'Промокод трейдера';
+
+  @override
+  String promo_field_help(int bonus) {
+    return 'Зарегистрируйтесь по промокоду — $bonus ₸ бонус';
+  }
+
+  @override
+  String promo_applied(int bonus) {
+    return 'Промокод применён! +$bonus ₸ бонус';
+  }
+
+  @override
+  String get promo_already_used => 'Промокод уже использован';
+
+  @override
+  String get promo_invalid => 'Неверный промокод';
+
+  @override
+  String get promo_own_code => 'Нельзя использовать свой промокод';
+
+  @override
+  String get promo_bonus_balance => 'Бонусный баланс';
+
+  @override
+  String get promo_bonus_balance_desc =>
+      'Применяется автоматически при покупке идеи';
+
+  @override
+  String get promo_my_code_title => 'Мой промокод';
+
+  @override
+  String promo_my_code_desc(int bonus) {
+    return 'Новый пользователь получает $bonus ₸ бонус при регистрации по вашему коду';
+  }
+
+  @override
+  String get promo_copy => 'Копировать';
+
+  @override
+  String get promo_copied => 'Промокод скопирован';
+
+  @override
+  String promo_referrals(int count) {
+    return '$count регистраций по вашему коду';
+  }
+
+  @override
+  String get promo_enter_title => 'Ввести промокод';
+
+  @override
+  String promo_enter_desc(int bonus) {
+    return 'Получите $bonus ₸ бонус';
+  }
+
+  @override
+  String get promo_apply => 'Применить';
+
+  @override
+  String get signals_to_pay => 'К оплате';
+
+  @override
+  String get signals_unlock_with_bonus => 'Открыть бонусом';
 }

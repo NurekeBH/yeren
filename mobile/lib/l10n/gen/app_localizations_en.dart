@@ -1513,4 +1513,72 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notif_dnd_desc => 'Only urgent notifications';
+
+  @override
+  String get promo_field_label => 'Promo code (optional)';
+
+  @override
+  String get promo_field_hint => 'Trader\'s promo code';
+
+  @override
+  String promo_field_help(int bonus) {
+    return 'Register with a promo code — get $bonus ₸ bonus';
+  }
+
+  @override
+  String promo_applied(int bonus) {
+    return 'Promo code applied! +$bonus ₸ bonus';
+  }
+
+  @override
+  String get promo_already_used => 'Promo code already used';
+
+  @override
+  String get promo_invalid => 'Invalid promo code';
+
+  @override
+  String get promo_own_code => 'You can\'t use your own promo code';
+
+  @override
+  String get promo_bonus_balance => 'Bonus balance';
+
+  @override
+  String get promo_bonus_balance_desc =>
+      'Applied automatically when unlocking an idea';
+
+  @override
+  String get promo_my_code_title => 'My promo code';
+
+  @override
+  String promo_my_code_desc(int bonus) {
+    return 'A new user gets $bonus ₸ bonus when they register with your code';
+  }
+
+  @override
+  String get promo_copy => 'Copy';
+
+  @override
+  String get promo_copied => 'Promo code copied';
+
+  @override
+  String promo_referrals(int count) {
+    return '$count sign-ups with your code';
+  }
+
+  @override
+  String get promo_enter_title => 'Enter promo code';
+
+  @override
+  String promo_enter_desc(int bonus) {
+    return 'Get $bonus ₸ bonus';
+  }
+
+  @override
+  String get promo_apply => 'Apply';
+
+  @override
+  String get signals_to_pay => 'To pay';
+
+  @override
+  String get signals_unlock_with_bonus => 'Unlock with bonus';
 }

@@ -11,6 +11,7 @@ import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/widgets/language_switcher.dart';
 import '../../auth/application/auth_controller.dart';
 import '../application/profile_controller.dart';
+import 'promo_section.dart';
 import 'support_sheet.dart';
 import 'trader_application_sheet.dart';
 
@@ -155,6 +156,7 @@ class ProfileScreen extends ConsumerWidget {
               label: l.profile_become_trader,
               onTap: () => showTraderApplicationSheet(context),
             ),
+          const PromoSection(),
           _MenuItem(
             icon: Icons.bookmark_outline,
             label: l.profile_saved,

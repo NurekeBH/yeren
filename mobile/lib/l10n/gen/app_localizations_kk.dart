@@ -1513,4 +1513,71 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get notif_dnd_desc => 'Тек шұғыл хабарландырулар';
+
+  @override
+  String get promo_field_label => 'Промокод (міндетті емес)';
+
+  @override
+  String get promo_field_hint => 'Трейдердің промокоды';
+
+  @override
+  String promo_field_help(int bonus) {
+    return 'Промокодпен тіркелсеңіз — $bonus ₸ бонус';
+  }
+
+  @override
+  String promo_applied(int bonus) {
+    return 'Промокод қолданылды! +$bonus ₸ бонус';
+  }
+
+  @override
+  String get promo_already_used => 'Промокод бұрын қолданылған';
+
+  @override
+  String get promo_invalid => 'Промокод қате';
+
+  @override
+  String get promo_own_code => 'Өз промокодыңызды қолдана алмайсыз';
+
+  @override
+  String get promo_bonus_balance => 'Бонус баланс';
+
+  @override
+  String get promo_bonus_balance_desc => 'Идея ашқанда автоматты қолданылады';
+
+  @override
+  String get promo_my_code_title => 'Менің промокодым';
+
+  @override
+  String promo_my_code_desc(int bonus) {
+    return 'Сіздің кодыңызбен тіркелген жаңа қолданушы $bonus ₸ бонус алады';
+  }
+
+  @override
+  String get promo_copy => 'Көшіру';
+
+  @override
+  String get promo_copied => 'Промокод көшірілді';
+
+  @override
+  String promo_referrals(int count) {
+    return 'Кодыңызбен $count тіркелу';
+  }
+
+  @override
+  String get promo_enter_title => 'Промокод енгізу';
+
+  @override
+  String promo_enter_desc(int bonus) {
+    return '$bonus ₸ бонус алыңыз';
+  }
+
+  @override
+  String get promo_apply => 'Қолдану';
+
+  @override
+  String get signals_to_pay => 'Төлеуге';
+
+  @override
+  String get signals_unlock_with_bonus => 'Бонуспен ашу';
 }

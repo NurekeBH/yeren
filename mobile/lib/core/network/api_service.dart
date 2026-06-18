@@ -147,6 +147,11 @@ class ApiService {
   // ─────────────── Support (қолдау хабары → админ-панель) ───────────────
   Future<void> sendSupportMessage(String text) =>
       _send('POST', '/support', body: {'text': text});
+
+  // ─────────────── Promo / Bonus ───────────────
+  /// Промокод қолдану (тіркелуден кейін) — backend бонус есептейді.
+  Future<void> redeemPromo(String code) =>
+      _send('POST', '/promo/redeem', body: {'code': code});
 }
 
 final apiServiceProvider = Provider<ApiService>((ref) => ApiService(ref.watch(apiClientProvider)));

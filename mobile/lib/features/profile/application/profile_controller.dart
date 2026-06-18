@@ -11,6 +11,12 @@ import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/gallup.dart';
 import '../../../shared/models/market_session.dart';
 
+/// Промокодпен тіркелген жаңа қолданушыға берілетін бонус (₸).
+const int kPromoBonusTg = 100;
+
+/// Промокодты қолдану нәтижесі (UI хабарламасын таңдау үшін).
+enum PromoResult { applied, alreadyUsed, invalid, ownCode }
+
 /// Сауда стилінің локализацияланған атауы (профиль + өңдеу экрандарында).
 String tradingStyleLabel(TradingStyle s, AppLocalizations l) {
   switch (s) {
@@ -111,6 +117,10 @@ class UserProfile extends Equatable {
     this.weekProgress = const [false, false, false, false, false, false, false],
     this.onboardedFlag = false,
     this.isVerifiedTrader = false,
+    this.promoCode = '',
+    this.bonusBalance = 0,
+    this.referredBy,
+    this.referralCount = 0,
   });
 
   final String name;
@@ -124,6 +134,18 @@ class UserProfile extends Equatable {
   final int xp;
   final int streak;
   final List<bool> weekProgress;
+
+  /// Трейдердің жеке промокоды (расталған трейдерде болады). Бөлісу үшін.
+  final String promoCode;
+
+  /// Бонус балансы (₸) — промокодпен тіркелгенде +100; идея ашқанда жұмсалады.
+  final int bonusBalance;
+
+  /// Тіркелу кезінде енгізілген промокод (бір рет қана бонус алу үшін белгі).
+  final String? referredBy;
+
+  /// Осы трейдердің промокодымен тіркелген қолданушылар саны (remote-та нақты).
+  final int referralCount;
 
   /// Қайта оралған пайдаланушы (login) немесе онбордингті аяқтаған соң — true.
   /// Профиль сұрақнамасын қайталап сұрамас үшін.
@@ -148,6 +170,10 @@ class UserProfile extends Equatable {
     List<bool>? weekProgress,
     bool? onboardedFlag,
     bool? isVerifiedTrader,
+    String? promoCode,
+    int? bonusBalance,
+    String? referredBy,
+    int? referralCount,
   }) =>
       UserProfile(
         name: name ?? this.name,
@@ -163,6 +189,10 @@ class UserProfile extends Equatable {
         weekProgress: weekProgress ?? this.weekProgress,
         onboardedFlag: onboardedFlag ?? this.onboardedFlag,
         isVerifiedTrader: isVerifiedTrader ?? this.isVerifiedTrader,
+        promoCode: promoCode ?? this.promoCode,
+        bonusBalance: bonusBalance ?? this.bonusBalance,
+        referredBy: referredBy ?? this.referredBy,
+        referralCount: referralCount ?? this.referralCount,
       );
 
   Map<String, dynamic> toJson() => {
@@ -180,6 +210,10 @@ class UserProfile extends Equatable {
         'weekProgress': weekProgress,
         'onboarded': onboardedFlag,
         'isVerifiedTrader': isVerifiedTrader,
+        'promoCode': promoCode,
+        'bonusBalance': bonusBalance,
+        'referredBy': referredBy,
+        'referralCount': referralCount,
       };
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
@@ -218,11 +252,15 @@ class UserProfile extends Equatable {
           const [false, false, false, false, false, false, false],
       onboardedFlag: (json['onboarded'] as bool?) ?? false,
       isVerifiedTrader: (json['isVerifiedTrader'] as bool?) ?? false,
+      promoCode: (json['promoCode'] as String?) ?? '',
+      bonusBalance: (json['bonusBalance'] as num?)?.toInt() ?? 0,
+      referredBy: json['referredBy'] as String?,
+      referralCount: (json['referralCount'] as num?)?.toInt() ?? 0,
     );
   }
 
   @override
-  List<Object?> get props => [name, city, styles, bio, avatarPath, preferredSessions, notifications, gallup, xp, streak, weekProgress, onboardedFlag, isVerifiedTrader];
+  List<Object?> get props => [name, city, styles, bio, avatarPath, preferredSessions, notifications, gallup, xp, streak, weekProgress, onboardedFlag, isVerifiedTrader, promoCode, bonusBalance, referredBy, referralCount];
 }
 
 const _profileKey = 'user_profile_v1';
@@ -241,6 +279,8 @@ class ProfileController extends StateNotifier<UserProfile> {
       'city': state.city,
       'bio': state.bio,
       'trading_styles': state.styles.map((s) => s.name).toList(),
+      if (state.promoCode.isNotEmpty) 'promo_code': state.promoCode,
+      'is_verified_trader': state.isVerifiedTrader,
     }).catchError((_) {});
   }
 
@@ -274,9 +314,52 @@ class ProfileController extends StateNotifier<UserProfile> {
     required String city,
     required Set<TradingStyle> styles,
     String bio = '',
+    String? promoCode,
   }) {
     _set(state.copyWith(name: name, city: city, styles: styles, bio: bio, onboardedFlag: true));
+    // Тіркелу кезінде промокод енгізілсе — бонус есептейміз.
+    final code = promoCode?.trim() ?? '';
+    if (code.isNotEmpty) applyPromoCode(code);
     _syncRemote();
+  }
+
+  /// Трейдер промокодын генерациялау (бір рет, тұрақты түрде сақталады).
+  static String _genPromoCode(String name) {
+    final letters = name.toUpperCase().replaceAll(RegExp(r'[^A-ZА-ЯЁ]'), '');
+    final prefix = letters.isEmpty ? 'ALTYN' : letters.substring(0, letters.length.clamp(0, 5));
+    final seed = (name.isEmpty ? DateTime.now().millisecondsSinceEpoch : name.hashCode).abs();
+    final num = 1000 + seed % 9000;
+    return '$prefix$num';
+  }
+
+  /// Промокодты қолдану. Тіркелуде немесе профильден кейін шақырылады.
+  /// Сәтті болса бонус балансқа [kPromoBonusTg] қосылады.
+  PromoResult applyPromoCode(String raw) {
+    final code = raw.trim().toUpperCase();
+    if (state.referredBy != null && state.referredBy!.isNotEmpty) {
+      return PromoResult.alreadyUsed;
+    }
+    if (code.length < 4 || code.length > 24 || !RegExp(r'^[A-ZА-ЯЁ0-9-]+$').hasMatch(code)) {
+      return PromoResult.invalid;
+    }
+    if (state.promoCode.isNotEmpty && code == state.promoCode.toUpperCase()) {
+      return PromoResult.ownCode;
+    }
+    _set(state.copyWith(
+      referredBy: code,
+      bonusBalance: state.bonusBalance + kPromoBonusTg,
+    ));
+    // Remote режимде backend-ке тіркейміз (бонусты сервер де есептейді).
+    if (AppConfig.useRemoteApi) {
+      _ref.read(apiServiceProvider).redeemPromo(code).catchError((_) {});
+    }
+    return PromoResult.applied;
+  }
+
+  /// Бонусты жұмсау (идея ашқанда). Баланстан [amount] шегереміз.
+  void spendBonus(int amount) {
+    if (amount <= 0) return;
+    _set(state.copyWith(bonusBalance: (state.bonusBalance - amount).clamp(0, 1 << 31)));
   }
 
   /// Login (mock): қайта оралған пайдаланушы — профиль сұрақнамасын өткізіп жібереміз.
@@ -303,6 +386,11 @@ class ProfileController extends StateNotifier<UserProfile> {
         bio: (user['bio'] as String?) ?? state.bio,
         styles: styles.isNotEmpty ? styles : state.styles,
         onboardedFlag: true,
+        isVerifiedTrader: (user['is_verified_trader'] as bool?) ?? state.isVerifiedTrader,
+        promoCode: (user['promo_code'] as String?) ?? state.promoCode,
+        bonusBalance: (user['bonus_balance'] as num?)?.toInt() ?? state.bonusBalance,
+        referredBy: (user['referred_by'] as String?) ?? state.referredBy,
+        referralCount: (user['referral_count'] as num?)?.toInt() ?? state.referralCount,
       ));
     } catch (_) {
       // Backend қолжетімсіз — қайта оралған пайдаланушы деп белгілейміз.
@@ -321,7 +409,13 @@ class ProfileController extends StateNotifier<UserProfile> {
     _syncRemote();
   }
 
-  void toggleVerifiedTrader() => _set(state.copyWith(isVerifiedTrader: !state.isVerifiedTrader));
+  void toggleVerifiedTrader() {
+    final next = !state.isVerifiedTrader;
+    // Трейдер болғанда жеке промокод беріледі (бұрын жоқ болса).
+    final code = next && state.promoCode.isEmpty ? _genPromoCode(state.name) : state.promoCode;
+    _set(state.copyWith(isVerifiedTrader: next, promoCode: code));
+    _syncRemote();
+  }
 
   void setAvatar(String path) => _set(state.copyWith(avatarPath: path));
   void setBio(String value) => _set(state.copyWith(bio: value));

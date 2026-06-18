@@ -20,10 +20,22 @@ create table if not exists users (
   preferred_sessions text[] default array[]::text[],   -- asia/london/new_york/overlap
   locale        text default 'kk',                     -- kk | ru | en
   is_admin      boolean default false,
+  is_verified_trader boolean not null default false,
+  promo_code    text unique,                            -- трейдердің жеке промокоды
+  referred_by   text,                                   -- тіркелуде енгізілген промокод
+  bonus_balance integer not null default 0,             -- ₸ бонус (идея ашқанда жұмсалады)
+  referral_count integer not null default 0,            -- кодпен тіркелгендер саны
   created_at    timestamptz default now(),
   updated_at    timestamptz default now()
 );
 create index if not exists users_phone_idx on users(phone);
+-- Бар базаларға бағандарды идемпотентті қосу
+alter table users add column if not exists is_verified_trader boolean not null default false;
+alter table users add column if not exists promo_code text unique;
+alter table users add column if not exists referred_by text;
+alter table users add column if not exists bonus_balance integer not null default 0;
+alter table users add column if not exists referral_count integer not null default 0;
+create unique index if not exists users_promo_code_idx on users(promo_code) where promo_code is not null;
 
 -- ─────────────────── SESSIONS / REFRESH TOKENS ───────────────────
 create table if not exists user_sessions (

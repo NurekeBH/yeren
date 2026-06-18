@@ -2937,6 +2937,120 @@ abstract class AppLocalizations {
   /// In kk, this message translates to:
   /// **'Тек шұғыл хабарландырулар'**
   String get notif_dnd_desc;
+
+  /// No description provided for @promo_field_label.
+  ///
+  /// In kk, this message translates to:
+  /// **'Промокод (міндетті емес)'**
+  String get promo_field_label;
+
+  /// No description provided for @promo_field_hint.
+  ///
+  /// In kk, this message translates to:
+  /// **'Трейдердің промокоды'**
+  String get promo_field_hint;
+
+  /// No description provided for @promo_field_help.
+  ///
+  /// In kk, this message translates to:
+  /// **'Промокодпен тіркелсеңіз — {bonus} ₸ бонус'**
+  String promo_field_help(int bonus);
+
+  /// No description provided for @promo_applied.
+  ///
+  /// In kk, this message translates to:
+  /// **'Промокод қолданылды! +{bonus} ₸ бонус'**
+  String promo_applied(int bonus);
+
+  /// No description provided for @promo_already_used.
+  ///
+  /// In kk, this message translates to:
+  /// **'Промокод бұрын қолданылған'**
+  String get promo_already_used;
+
+  /// No description provided for @promo_invalid.
+  ///
+  /// In kk, this message translates to:
+  /// **'Промокод қате'**
+  String get promo_invalid;
+
+  /// No description provided for @promo_own_code.
+  ///
+  /// In kk, this message translates to:
+  /// **'Өз промокодыңызды қолдана алмайсыз'**
+  String get promo_own_code;
+
+  /// No description provided for @promo_bonus_balance.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бонус баланс'**
+  String get promo_bonus_balance;
+
+  /// No description provided for @promo_bonus_balance_desc.
+  ///
+  /// In kk, this message translates to:
+  /// **'Идея ашқанда автоматты қолданылады'**
+  String get promo_bonus_balance_desc;
+
+  /// No description provided for @promo_my_code_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Менің промокодым'**
+  String get promo_my_code_title;
+
+  /// No description provided for @promo_my_code_desc.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сіздің кодыңызбен тіркелген жаңа қолданушы {bonus} ₸ бонус алады'**
+  String promo_my_code_desc(int bonus);
+
+  /// No description provided for @promo_copy.
+  ///
+  /// In kk, this message translates to:
+  /// **'Көшіру'**
+  String get promo_copy;
+
+  /// No description provided for @promo_copied.
+  ///
+  /// In kk, this message translates to:
+  /// **'Промокод көшірілді'**
+  String get promo_copied;
+
+  /// No description provided for @promo_referrals.
+  ///
+  /// In kk, this message translates to:
+  /// **'Кодыңызбен {count} тіркелу'**
+  String promo_referrals(int count);
+
+  /// No description provided for @promo_enter_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Промокод енгізу'**
+  String get promo_enter_title;
+
+  /// No description provided for @promo_enter_desc.
+  ///
+  /// In kk, this message translates to:
+  /// **'{bonus} ₸ бонус алыңыз'**
+  String promo_enter_desc(int bonus);
+
+  /// No description provided for @promo_apply.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қолдану'**
+  String get promo_apply;
+
+  /// No description provided for @signals_to_pay.
+  ///
+  /// In kk, this message translates to:
+  /// **'Төлеуге'**
+  String get signals_to_pay;
+
+  /// No description provided for @signals_unlock_with_bonus.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бонуспен ашу'**
+  String get signals_unlock_with_bonus;
 }
 
 class _AppLocalizationsDelegate

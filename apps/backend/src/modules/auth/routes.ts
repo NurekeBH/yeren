@@ -15,7 +15,11 @@ const RegisterBody = Credentials.extend({
   trading_styles: z.array(z.string()).optional(),
   preferred_sessions: z.array(z.string()).optional(),
   locale: z.enum(['kk', 'ru', 'en']).optional(),
+  promo_code: z.string().max(24).optional(),
 });
+
+/** Промокодпен тіркелген жаңа қолданушыға берілетін бонус (₸). */
+const PROMO_BONUS_TG = 100;
 
 /**
  * TZ.rtf override: SMS жоқ. Тек phone + password (bcrypt).
@@ -24,7 +28,7 @@ export async function authRoutes(app: FastifyInstance) {
   app.post('/auth/register', async (req, reply) => {
     const parsed = RegisterBody.safeParse(req.body);
     if (!parsed.success) return reply.code(400).send({ error: 'bad_request', issues: parsed.error.issues });
-    const { phone, password, name, city, trading_styles, preferred_sessions, locale } = parsed.data;
+    const { phone, password, name, city, trading_styles, preferred_sessions, locale, promo_code } = parsed.data;
 
     const exists = await query('select 1 from users where phone = $1', [phone]);
     if (exists.rowCount && exists.rowCount > 0) {
@@ -52,6 +56,24 @@ export async function authRoutes(app: FastifyInstance) {
         `insert into subscriptions (user_id, status) values ($1, 'inactive')`,
         [u.rows[0]!.id],
       );
+      // Промокодпен тіркелсе — жаңа қолданушыға бонус, трейдерге +1 реферал.
+      const code = promo_code?.trim().toUpperCase();
+      if (code) {
+        const ref = await c.query<{ id: string }>(
+          'select id from users where upper(promo_code) = $1 limit 1',
+          [code],
+        );
+        if (ref.rowCount && ref.rows[0]!.id !== u.rows[0]!.id) {
+          await c.query('update users set bonus_balance = $1, referred_by = $2 where id = $3', [
+            PROMO_BONUS_TG,
+            code,
+            u.rows[0]!.id,
+          ]);
+          await c.query('update users set referral_count = referral_count + 1 where id = $1', [
+            ref.rows[0]!.id,
+          ]);
+        }
+      }
       return u;
     });
 
@@ -81,7 +103,8 @@ export async function authRoutes(app: FastifyInstance) {
 
   app.get('/auth/me', { onRequest: [app.authenticate] }, async (req) => {
     const { rows } = await query(
-      `select id, phone, name, city, bio, avatar_url, trading_styles, preferred_sessions, locale, is_admin, created_at
+      `select id, phone, name, city, bio, avatar_url, trading_styles, preferred_sessions, locale, is_admin,
+              is_verified_trader, promo_code, referred_by, bonus_balance, referral_count, created_at
        from users where id = $1`,
       [req.userId],
     );
@@ -97,6 +120,8 @@ export async function authRoutes(app: FastifyInstance) {
       trading_styles: z.array(z.string()).optional(),
       preferred_sessions: z.array(z.string()).optional(),
       locale: z.enum(['kk', 'ru', 'en']).optional(),
+      is_verified_trader: z.boolean().optional(),
+      promo_code: z.string().max(24).optional(),
     });
     const parsed = Body.safeParse(req.body);
     if (!parsed.success) return reply.code(400).send({ error: 'bad_request' });
@@ -112,5 +137,44 @@ export async function authRoutes(app: FastifyInstance) {
     args.push(req.userId);
     await query(`update users set ${set.join(', ')} where id = $${args.length}`, args);
     return { ok: true };
+  });
+
+  /**
+   * Тіркелуден кейін промокод қолдану. Бір рет қана бонус беріледі.
+   */
+  app.post('/promo/redeem', { onRequest: [app.authenticate] }, async (req, reply) => {
+    const Body = z.object({ code: z.string().min(4).max(24) });
+    const parsed = Body.safeParse(req.body);
+    if (!parsed.success) return reply.code(400).send({ error: 'bad_request' });
+    const code = parsed.data.code.trim().toUpperCase();
+
+    const me = await query<{ referred_by: string | null; promo_code: string | null }>(
+      'select referred_by, promo_code from users where id = $1',
+      [req.userId],
+    );
+    const u = me.rows[0];
+    if (!u) return reply.code(404).send({ error: 'not_found' });
+    if (u.referred_by) return reply.code(409).send({ error: 'already_used' });
+    if (u.promo_code && u.promo_code.toUpperCase() === code) {
+      return reply.code(400).send({ error: 'own_code' });
+    }
+
+    const ref = await query<{ id: string }>(
+      'select id from users where upper(promo_code) = $1 limit 1',
+      [code],
+    );
+    if (!ref.rowCount || ref.rows[0]!.id === req.userId) {
+      return reply.code(404).send({ error: 'invalid_code' });
+    }
+
+    await tx(async (c) => {
+      await c.query('update users set bonus_balance = bonus_balance + $1, referred_by = $2 where id = $3', [
+        PROMO_BONUS_TG,
+        code,
+        req.userId,
+      ]);
+      await c.query('update users set referral_count = referral_count + 1 where id = $1', [ref.rows[0]!.id]);
+    });
+    return { ok: true, bonus: PROMO_BONUS_TG };
   });
 }
