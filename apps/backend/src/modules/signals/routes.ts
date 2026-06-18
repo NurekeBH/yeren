@@ -40,7 +40,7 @@ export async function signalsRoutes(app: FastifyInstance) {
   });
 
   // Admin: жариялау (TZ §10.3)
-  app.post('/signals', { onRequest: [app.requireAdmin] }, async (req, reply) => {
+  app.post('/signals', { onRequest: [app.requireTrader] }, async (req, reply) => {
     const parsed = SignalCreate.safeParse(req.body);
     if (!parsed.success) return reply.code(400).send({ error: 'bad_request', issues: parsed.error.issues });
     const s = parsed.data;

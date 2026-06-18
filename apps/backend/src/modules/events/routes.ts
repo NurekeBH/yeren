@@ -52,8 +52,8 @@ export async function eventsRoutes(app: FastifyInstance) {
     return { application: rows[0] };
   });
 
-  // Admin: іс-шара құру + заявкалар тізімі
-  app.post('/events', { onRequest: [app.requireAdmin] }, async (req, reply) => {
+  // Расталған трейдер/админ: іс-шара құру
+  app.post('/events', { onRequest: [app.requireTrader] }, async (req, reply) => {
     const parsed = EventCreate.safeParse(req.body);
     if (!parsed.success) return reply.code(400).send({ error: 'bad_request', issues: parsed.error.issues });
     const e = parsed.data;
