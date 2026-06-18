@@ -286,7 +286,7 @@ class ProfileController extends StateNotifier<UserProfile> {
       'city': state.city,
       'bio': state.bio,
       'trading_styles': state.styles.map((s) => s.name).toList(),
-      if (state.promoCode.isNotEmpty) 'promo_code': state.promoCode,
+      // promo_code серверде генерацияланады (бірегейлік) — клиенттен жіберілмейді.
       'is_verified_trader': state.isVerifiedTrader,
     }).catchError((_) {});
   }
@@ -330,11 +330,13 @@ class ProfileController extends StateNotifier<UserProfile> {
     _syncRemote();
   }
 
-  /// Трейдер промокодын генерациялау (бір рет, тұрақты түрде сақталады).
+  /// Промокод генерациялау (mock fallback — бір рет, сақталады).
+  /// Remote режимде нақты бірегей кодты СЕРВЕР береді (auth/me); бұл тек жергілікті
+  /// демо үшін. Уақыт энтропиясы қосылады — бірдей атты екі қолданушы да қайталанбайды.
   static String _genPromoCode(String name) {
     final letters = name.toUpperCase().replaceAll(RegExp(r'[^A-ZА-ЯЁ]'), '');
     final prefix = letters.isEmpty ? 'ALTYN' : letters.substring(0, letters.length.clamp(0, 5));
-    final seed = (name.isEmpty ? DateTime.now().millisecondsSinceEpoch : name.hashCode).abs();
+    final seed = (name.hashCode ^ DateTime.now().microsecondsSinceEpoch).abs();
     final num = 1000 + seed % 9000;
     return '$prefix$num';
   }

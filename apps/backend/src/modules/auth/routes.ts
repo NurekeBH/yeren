@@ -21,6 +21,30 @@ const RegisterBody = Credentials.extend({
 /** Промокодпен тіркелген жаңа қолданушыға берілетін бонус (₸). */
 const PROMO_BONUS_TG = 100;
 
+/** Шатастырмайтын таңбалар (O/0/I/1 жоқ). */
+const PROMO_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
+function randomPromoCode(len = 6): string {
+  let s = '';
+  for (let i = 0; i < len; i++) {
+    s += PROMO_ALPHABET[Math.floor(Math.random() * PROMO_ALPHABET.length)];
+  }
+  return s;
+}
+
+type Runner = (sql: string, params?: unknown[]) => Promise<{ rowCount: number | null }>;
+
+/// Бірегей промокод генерациялау (DB-да тексеру + қайталау). Unique constraint —
+/// соңғы кепіл; бұл цикл коллизия ықтималдығын нөлге жақындатады.
+async function genUniquePromoCode(run: Runner): Promise<string> {
+  for (let i = 0; i < 8; i++) {
+    const code = randomPromoCode();
+    const { rowCount } = await run('select 1 from users where promo_code = $1', [code]);
+    if (!rowCount) return code;
+  }
+  return randomPromoCode(8); // өте сирек — ұзынырақ код
+}
+
 /**
  * TZ.rtf override: SMS жоқ. Тек phone + password (bcrypt).
  */
@@ -38,11 +62,13 @@ export async function authRoutes(app: FastifyInstance) {
     const hash = await bcrypt.hash(password, env.BCRYPT_ROUNDS);
 
     const { rows } = await tx(async (c) => {
+      // Сервер бірегей промокод генерациялайды (клиентке сенбейміз — қайталанбау кепілі).
+      const ownPromo = await genUniquePromoCode((sql, p) => c.query(sql, p as never[]));
       const u = await c.query<{ id: string; is_admin: boolean }>(
-        `insert into users (phone, password_hash, name, city, trading_styles, preferred_sessions, locale)
-         values ($1,$2,$3,$4,$5,$6,$7)
+        `insert into users (phone, password_hash, name, city, trading_styles, preferred_sessions, locale, promo_code)
+         values ($1,$2,$3,$4,$5,$6,$7,$8)
          returning id, is_admin`,
-        [phone, hash, name ?? '', city ?? '', trading_styles ?? [], preferred_sessions ?? [], locale ?? 'kk'],
+        [phone, hash, name ?? '', city ?? '', trading_styles ?? [], preferred_sessions ?? [], locale ?? 'kk', ownPromo],
       );
       await c.query(
         `insert into notification_prefs (user_id) values ($1) on conflict do nothing`,
@@ -102,13 +128,20 @@ export async function authRoutes(app: FastifyInstance) {
   });
 
   app.get('/auth/me', { onRequest: [app.authenticate] }, async (req) => {
-    const { rows } = await query(
+    const { rows } = await query<Record<string, unknown>>(
       `select id, phone, name, city, bio, avatar_url, trading_styles, preferred_sessions, locale, is_admin,
               is_verified_trader, promo_code, referred_by, bonus_balance, referral_count, created_at
        from users where id = $1`,
       [req.userId],
     );
-    return { user: rows[0] };
+    const user = rows[0];
+    // Ескі қолданушыларда промокод болмаса — бірегейін генерациялап сақтаймыз (backfill).
+    if (user && !user.promo_code) {
+      const code = await genUniquePromoCode(query);
+      await query('update users set promo_code = $1 where id = $2', [code, req.userId]);
+      user.promo_code = code;
+    }
+    return { user };
   });
 
   app.patch('/auth/me', { onRequest: [app.authenticate] }, async (req, reply) => {
@@ -121,7 +154,7 @@ export async function authRoutes(app: FastifyInstance) {
       preferred_sessions: z.array(z.string()).optional(),
       locale: z.enum(['kk', 'ru', 'en']).optional(),
       is_verified_trader: z.boolean().optional(),
-      promo_code: z.string().max(24).optional(),
+      // promo_code клиенттен ҚАБЫЛДАНБАЙДЫ — оны сервер генерациялайды (бірегейлік кепілі).
     });
     const parsed = Body.safeParse(req.body);
     if (!parsed.success) return reply.code(400).send({ error: 'bad_request' });
