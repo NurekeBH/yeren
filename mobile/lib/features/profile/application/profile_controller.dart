@@ -267,7 +267,13 @@ class UserProfile extends Equatable {
 const _profileKey = 'user_profile_v1';
 
 class ProfileController extends StateNotifier<UserProfile> {
-  ProfileController(this._ref) : super(_loadInitial(_ref.read(sharedPreferencesProvider)));
+  ProfileController(this._ref) : super(_loadInitial(_ref.read(sharedPreferencesProvider))) {
+    // Әр қолданушыда жеке промокод болады (досын шақырып, бонус беру үшін).
+    // Бір рет генерацияланып, сақталады.
+    if (state.promoCode.isEmpty) {
+      _set(state.copyWith(promoCode: _genPromoCode(state.name)));
+    }
+  }
 
   final Ref _ref;
   SharedPreferences get _prefs => _ref.read(sharedPreferencesProvider);

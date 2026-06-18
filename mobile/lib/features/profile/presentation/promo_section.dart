@@ -44,8 +44,8 @@ class PromoSection extends ConsumerWidget {
             ),
           ),
 
-        // Трейдердің жеке промокоды
-        if (p.isVerifiedTrader && p.promoCode.isNotEmpty)
+        // Жеке промокод — әр қолданушыда болады (досын шақыру + бонус).
+        if (p.promoCode.isNotEmpty)
           Card(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 14, 12, 14),
