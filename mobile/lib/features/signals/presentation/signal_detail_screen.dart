@@ -108,8 +108,9 @@ class _Body extends ConsumerWidget {
             const SizedBox(height: 16),
             _SetResultCard(signal: signal, l: l),
           ],
-          // Ашқан (төлеген/тегін) қолданушылар нәтижеге дауыс береді.
-          if (!signal.isMine) ...[
+          // Жабылған идея: қоғам трейдердің мәлімдеген нәтижесін растайды/даулайды
+          // (шынымен TP3-ке жетті ме, әлде SL-ге тиді ме — провайдер шынайылығын тексеру).
+          if (!signal.isMine && signal.status != SignalStatus.active) ...[
             const SizedBox(height: 16),
             _VotingCard(signal: signal, l: l),
           ],
@@ -275,10 +276,27 @@ class _VotingCard extends ConsumerWidget {
         _ => l.signals_status_sl,
       };
 
+  /// Трейдер мәлімдеген нәтиже (status → outcome коды).
+  String _claimedOutcome() => switch (signal.status) {
+        SignalStatus.closedTp1 => 'tp1',
+        SignalStatus.closedTp2 => 'tp2',
+        SignalStatus.closedTp3 => 'tp3',
+        SignalStatus.closedSl => 'sl',
+        SignalStatus.active => 'tp1',
+      };
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final vote = ref.watch(signalVotesProvider)[signal.id] ?? ref.read(signalVotesProvider.notifier).of(signal.id);
     final total = vote.total == 0 ? 1 : vote.total;
+    final claimed = _claimedOutcome();
+    // Қоғам ең көп таңдаған нәтиже.
+    String topOutcome = kVoteOutcomes.first;
+    for (final o in kVoteOutcomes) {
+      if (vote.countOf(o) > vote.countOf(topOutcome)) topOutcome = o;
+    }
+    final confirmed = topOutcome == claimed;
+    final agreePct = ((vote.countOf(claimed) / total) * 100).round();
 
     return Card(
       child: Padding(
@@ -287,17 +305,21 @@ class _VotingCard extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(children: [
-              const Icon(Icons.how_to_vote_outlined, size: 18, color: AppColors.gold),
+              const Icon(Icons.fact_check_outlined, size: 18, color: AppColors.gold),
               const SizedBox(width: 8),
-              Expanded(child: Text(l.signals_vote_title, style: AppTypography.h2())),
+              Expanded(child: Text(l.signals_verify_title, style: AppTypography.h2())),
               Text('${vote.total}', style: AppTypography.label(color: AppColors.textSecondary)),
             ]),
             const SizedBox(height: 4),
-            Text(l.signals_vote_desc, style: AppTypography.bodySmall(color: AppColors.textSecondary)),
+            // Трейдердің мәлімдемесі + сұрақ.
+            Text(l.signals_trader_marked(_label(claimed)),
+                style: AppTypography.bodySmall(color: AppColors.textSecondary)),
+            const SizedBox(height: 2),
+            Text(l.signals_verify_desc, style: AppTypography.bodySmall(color: AppColors.textSecondary)),
             const SizedBox(height: 12),
             for (final o in kVoteOutcomes) ...[
               _VoteRow(
-                label: _label(o),
+                label: _label(o) + (o == claimed ? '  ·  ${l.signals_trader_claim}' : ''),
                 count: vote.countOf(o),
                 pct: vote.countOf(o) / total,
                 selected: vote.myVote == o,
@@ -306,6 +328,31 @@ class _VotingCard extends ConsumerWidget {
               ),
               const SizedBox(height: 8),
             ],
+            const SizedBox(height: 4),
+            // Растау вердикті: қоғам трейдердің нәтижесін растай ма?
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              decoration: BoxDecoration(
+                color: (confirmed ? AppColors.profitGreen : AppColors.lossRed).withValues(alpha: 0.10),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: (confirmed ? AppColors.profitGreen : AppColors.lossRed).withValues(alpha: 0.35)),
+              ),
+              child: Row(
+                children: [
+                  Icon(confirmed ? Icons.verified : Icons.warning_amber_rounded,
+                      size: 18, color: confirmed ? AppColors.profitGreen : AppColors.lossRed),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      confirmed ? l.signals_verify_confirmed(agreePct) : l.signals_verify_disputed(_label(topOutcome)),
+                      style: AppTypography.bodySmall(color: confirmed ? AppColors.profitGreen : AppColors.lossRed)
+                          .copyWith(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

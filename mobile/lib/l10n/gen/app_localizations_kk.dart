@@ -706,6 +706,31 @@ class AppLocalizationsKk extends AppLocalizations {
   String get signals_vote_desc => 'Сіздің болжамыңыз: қай деңгейге жетеді?';
 
   @override
+  String get signals_verify_title => 'Нәтижені растау';
+
+  @override
+  String get signals_verify_desc =>
+      'Шынымен солай болды ма? Не болғанын дауыспен растаңыз.';
+
+  @override
+  String signals_trader_marked(String result) {
+    return 'Трейдер белгіледі: $result';
+  }
+
+  @override
+  String get signals_trader_claim => 'трейдер мәлімдемесі';
+
+  @override
+  String signals_verify_confirmed(int pct) {
+    return 'Қоғам растайды ($pct%)';
+  }
+
+  @override
+  String signals_verify_disputed(String result) {
+    return 'Дауланған — көбі $result дейді';
+  }
+
+  @override
   String get prov_tab_active => 'Белсенді';
 
   @override

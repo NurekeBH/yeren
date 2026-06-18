@@ -706,6 +706,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signals_vote_desc => 'Your prediction: which level will it reach?';
 
   @override
+  String get signals_verify_title => 'Verify the result';
+
+  @override
+  String get signals_verify_desc =>
+      'Did it really? Vote what actually happened.';
+
+  @override
+  String signals_trader_marked(String result) {
+    return 'Trader marked: $result';
+  }
+
+  @override
+  String get signals_trader_claim => 'trader\'s claim';
+
+  @override
+  String signals_verify_confirmed(int pct) {
+    return 'Community confirms ($pct%)';
+  }
+
+  @override
+  String signals_verify_disputed(String result) {
+    return 'Disputed — most say $result';
+  }
+
+  @override
   String get prov_tab_active => 'Active';
 
   @override

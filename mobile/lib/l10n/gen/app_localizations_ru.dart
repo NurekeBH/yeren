@@ -709,6 +709,31 @@ class AppLocalizationsRu extends AppLocalizations {
   String get signals_vote_desc => 'Ваш прогноз: какого уровня достигнет?';
 
   @override
+  String get signals_verify_title => 'Проверка результата';
+
+  @override
+  String get signals_verify_desc =>
+      'Так ли это на самом деле? Проголосуйте, что произошло.';
+
+  @override
+  String signals_trader_marked(String result) {
+    return 'Трейдер отметил: $result';
+  }
+
+  @override
+  String get signals_trader_claim => 'заявка трейдера';
+
+  @override
+  String signals_verify_confirmed(int pct) {
+    return 'Сообщество подтверждает ($pct%)';
+  }
+
+  @override
+  String signals_verify_disputed(String result) {
+    return 'Оспаривается — большинство за $result';
+  }
+
+  @override
   String get prov_tab_active => 'Активные';
 
   @override

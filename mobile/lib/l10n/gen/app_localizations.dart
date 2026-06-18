@@ -1408,6 +1408,42 @@ abstract class AppLocalizations {
   /// **'Сіздің болжамыңыз: қай деңгейге жетеді?'**
   String get signals_vote_desc;
 
+  /// No description provided for @signals_verify_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Нәтижені растау'**
+  String get signals_verify_title;
+
+  /// No description provided for @signals_verify_desc.
+  ///
+  /// In kk, this message translates to:
+  /// **'Шынымен солай болды ма? Не болғанын дауыспен растаңыз.'**
+  String get signals_verify_desc;
+
+  /// No description provided for @signals_trader_marked.
+  ///
+  /// In kk, this message translates to:
+  /// **'Трейдер белгіледі: {result}'**
+  String signals_trader_marked(String result);
+
+  /// No description provided for @signals_trader_claim.
+  ///
+  /// In kk, this message translates to:
+  /// **'трейдер мәлімдемесі'**
+  String get signals_trader_claim;
+
+  /// No description provided for @signals_verify_confirmed.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қоғам растайды ({pct}%)'**
+  String signals_verify_confirmed(int pct);
+
+  /// No description provided for @signals_verify_disputed.
+  ///
+  /// In kk, this message translates to:
+  /// **'Дауланған — көбі {result} дейді'**
+  String signals_verify_disputed(String result);
+
   /// No description provided for @prov_tab_active.
   ///
   /// In kk, this message translates to:

@@ -28,7 +28,8 @@ class SignalCard extends ConsumerWidget {
     // (нәтижесі белгілі — track record) идеялар толық көрінеді.
     final isActive = signal.status == SignalStatus.active;
     final purchased = ref.watch(signalUnlockProvider).contains(signal.id);
-    final unlocked = signal.isFree || !isActive || purchased;
+    // Өзім жариялаған идея да ашық (трейдер өз идеясын құлыпталған көрмеуі тиіс).
+    final unlocked = signal.isFree || signal.isMine || !isActive || purchased;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -71,6 +72,22 @@ class SignalCard extends ConsumerWidget {
                         const Icon(Icons.chevron_right, size: 16, color: AppColors.textMuted),
                       ],
                     ),
+                  ),
+                  const SizedBox(height: 10),
+                ] else if (signal.isMine && (signal.authorName ?? '').isNotEmpty) ...[
+                  // Өзім жариялаған идея — авторды көрсетеміз (provider жазбасы жоқ).
+                  Row(
+                    children: [
+                      const Icon(Icons.person, size: 14, color: AppColors.gold),
+                      const SizedBox(width: 6),
+                      Flexible(
+                        child: Text(signal.authorName!,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTypography.label(color: AppColors.gold).copyWith(fontWeight: FontWeight.w700)),
+                      ),
+                      const SizedBox(width: 4),
+                      Text('· ${l.profile_verified_trader}', style: AppTypography.label(color: AppColors.textMuted).copyWith(fontSize: 10)),
+                    ],
                   ),
                   const SizedBox(height: 10),
                 ],
