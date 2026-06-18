@@ -39,6 +39,20 @@ final libraryItemsProvider = Provider<List<LibraryItem>>((ref) {
   return LibraryFixtures.all(loc);
 });
 
+/// Категория бойынша алдын ала бөлінген каталог (тіл ауысқанда ғана қайта есептеледі).
+/// Экран әр build сайын `.where()` жүргізбес үшін кэштеледі — жүктеу/скролл жылдамдау.
+final libraryByCategoryProvider =
+    Provider<Map<LibraryCategory, List<LibraryItem>>>((ref) {
+  final items = ref.watch(libraryItemsProvider);
+  final map = <LibraryCategory, List<LibraryItem>>{
+    for (final c in LibraryCategory.values) c: <LibraryItem>[],
+  };
+  for (final it in items) {
+    (map[it.category] ??= <LibraryItem>[]).add(it);
+  }
+  return map;
+});
+
 const _completedKey = 'completed_lessons_v1';
 
 class CompletedLessonsController extends StateNotifier<Set<String>> {

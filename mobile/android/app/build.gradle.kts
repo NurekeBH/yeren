@@ -63,6 +63,14 @@ android {
             } else {
                 signingConfigs.getByName("debug")
             }
+            // Жүктеу өлшемін кішірейту: R8 код-минификациясы + қолданылмайтын
+            // Android ресурстарын алып тастау. (Dart коды AOT-та бұрыннан tree-shake.)
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
         }
     }
 }

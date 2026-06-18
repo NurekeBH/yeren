@@ -44,9 +44,6 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen>
     super.dispose();
   }
 
-  List<LibraryItem> _byCategory(List<LibraryItem> all, LibraryCategory c) =>
-      all.where((x) => x.category == c).toList();
-
   bool _yearOk(int? y) {
     if (_yearBand == 0) return true;
     final yr = y ?? 0;
@@ -79,10 +76,14 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen>
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    final items = ref.watch(libraryItemsProvider);
+    final byCat = ref.watch(libraryByCategoryProvider);
     const cats = [LibraryCategory.book, LibraryCategory.film, LibraryCategory.podcast];
     final curCat = cats[_tabs.index.clamp(0, 2)];
-    final topics = (_byCategory(items, curCat).map((x) => x.topic).whereType<String>().toSet().toList()
+    final topics = ((byCat[curCat] ?? const <LibraryItem>[])
+        .map((x) => x.topic)
+        .whereType<String>()
+        .toSet()
+        .toList()
       ..sort());
 
     return Scaffold(
@@ -148,9 +149,9 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen>
             child: TabBarView(
               controller: _tabs,
               children: [
-                _CoverGrid(items: _apply(_byCategory(items, LibraryCategory.book)), l: l),
-                _CoverGrid(items: _apply(_byCategory(items, LibraryCategory.film)), l: l),
-                _CoverGrid(items: _apply(_byCategory(items, LibraryCategory.podcast)), l: l),
+                _CoverGrid(items: _apply(byCat[LibraryCategory.book] ?? const []), l: l),
+                _CoverGrid(items: _apply(byCat[LibraryCategory.film] ?? const []), l: l),
+                _CoverGrid(items: _apply(byCat[LibraryCategory.podcast] ?? const []), l: l),
               ],
             ),
           ),

@@ -32,13 +32,22 @@ class LibraryCover extends ConsumerWidget {
     // Болмаса ғана runtime resolver сыртқы API-дан іздейді; ол да болмаса — градиент.
     final url = item.coverImageUrl ?? ref.watch(coverResolverProvider(item)).valueOrNull;
     final br = BorderRadius.circular(radius);
+    // Суретті нақты көрсетілетін өлшемде ғана декодтаймыз (memCacheWidth) —
+    // grid ұяшықтары үшін жадыны/CPU-ны үнемдейді, скролл жатық болады.
+    final dpr = MediaQuery.devicePixelRatioOf(context);
     final image = url == null
         ? _fallback()
-        : CachedNetworkImage(
-            imageUrl: url,
-            fit: BoxFit.cover,
-            placeholder: (_, _) => _fallback(loading: true),
-            errorWidget: (_, _, _) => _fallback(),
+        : LayoutBuilder(
+            builder: (_, c) {
+              final w = c.maxWidth.isFinite ? c.maxWidth : 200.0;
+              return CachedNetworkImage(
+                imageUrl: url,
+                fit: BoxFit.cover,
+                memCacheWidth: (w * dpr).round(),
+                placeholder: (_, _) => _fallback(loading: true),
+                errorWidget: (_, _, _) => _fallback(),
+              );
+            },
           );
 
     return ClipRRect(
@@ -46,7 +55,7 @@ class LibraryCover extends ConsumerWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          image,
+          RepaintBoundary(child: image),
           if (item.isPodcast) const _PlayBadge(),
           if (item.lang != null)
             Positioned(top: 6, left: 6, child: LangChip(lang: item.lang!)),
