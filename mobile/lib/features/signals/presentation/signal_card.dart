@@ -9,6 +9,7 @@ import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/signal.dart';
 import '../../../shared/utils/formatters.dart';
 import '../application/signal_unlock_controller.dart';
+import 'risk_ui.dart';
 import 'unlock_signal_sheet.dart';
 
 class SignalCard extends ConsumerWidget {
@@ -128,7 +129,7 @@ class SignalCard extends ConsumerWidget {
                       children: [
                         Expanded(child: _MiniStat(label: l.signals_entry_zone, value: '${Fmt.price(signal.entryFrom)}–${Fmt.price(signal.entryTo)}')),
                         Expanded(child: _MiniStat(label: l.signals_rr, value: '1:${signal.rr.toStringAsFixed(1)}')),
-                        Expanded(child: _MiniStat(label: l.signals_confidence, value: '${signal.confidence}%')),
+                        Expanded(child: _MiniStat(label: l.signals_risk, value: riskShort(signal.risk, l), valueColor: riskColor(signal.risk))),
                       ],
                     )
                   else
@@ -184,10 +185,11 @@ class SignalCard extends ConsumerWidget {
 }
 
 class _MiniStat extends StatelessWidget {
-  const _MiniStat({required this.label, required this.value});
+  const _MiniStat({required this.label, required this.value, this.valueColor});
 
   final String label;
   final String value;
+  final Color? valueColor;
 
   @override
   Widget build(BuildContext context) {
@@ -196,7 +198,7 @@ class _MiniStat extends StatelessWidget {
       children: [
         Text(label, style: AppTypography.label(color: AppColors.textSecondary)),
         const SizedBox(height: 2),
-        Text(value, style: AppTypography.price(size: 13, weight: FontWeight.w600)),
+        Text(value, style: AppTypography.price(size: 13, weight: FontWeight.w600, color: valueColor ?? AppColors.textPrimary)),
       ],
     );
   }

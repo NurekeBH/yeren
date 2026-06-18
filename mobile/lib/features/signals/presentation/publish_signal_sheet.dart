@@ -33,6 +33,7 @@ class _PublishSheet extends ConsumerStatefulWidget {
 class _PublishSheetState extends ConsumerState<_PublishSheet> {
   final _text = TextEditingController();
   SignalDirection _direction = SignalDirection.buy;
+  RiskLevel _risk = RiskLevel.medium; // тәуекел деңгейі (сенімділікке айналады)
   int _price = 500; // 0 = тегін, 500, 1000
   String? _photoPath;
   bool _busy = false;
@@ -63,7 +64,7 @@ class _PublishSheetState extends ConsumerState<_PublishSheet> {
       direction: _direction,
       // Деңгейлер мәтінде — сандық өрістер 0 (hasLevels=false).
       entryFrom: 0, entryTo: 0, tp1: 0, tp2: 0, tp3: 0, sl: 0,
-      rr: 0, confidence: 75,
+      rr: 0, confidence: Signal.confidenceForRisk(_risk),
       screenshotUrl: _photoPath ?? '',
       analysis: text,
       status: SignalStatus.active,
@@ -144,7 +145,21 @@ class _PublishSheetState extends ConsumerState<_PublishSheet> {
                 border: const OutlineInputBorder(),
               ),
             ),
+            const SizedBox(height: 16),
+
+            // Тәуекел деңгейі (сенімділіктің орнына)
+            Text(l.signals_risk, style: AppTypography.label()),
             const SizedBox(height: 8),
+            SegmentedButton<RiskLevel>(
+              segments: [
+                ButtonSegment(value: RiskLevel.low, label: Text(l.signals_risk_low_short)),
+                ButtonSegment(value: RiskLevel.medium, label: Text(l.signals_risk_medium_short)),
+                ButtonSegment(value: RiskLevel.high, label: Text(l.signals_risk_high_short)),
+              ],
+              selected: {_risk},
+              onSelectionChanged: (s) => setState(() => _risk = s.first),
+            ),
+            const SizedBox(height: 16),
 
             // Баға
             Text(l.signals_price_label, style: AppTypography.label()),

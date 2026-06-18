@@ -9,9 +9,10 @@ class LocaleController extends StateNotifier<Locale> {
 
   final SharedPreferences _prefs;
 
+  // Орыс тілі бірінші — әдепкі әрі кез келген fallback ru болады.
   static const supported = <Locale>[
-    Locale('kk'),
     Locale('ru'),
+    Locale('kk'),
     Locale('en'),
   ];
 

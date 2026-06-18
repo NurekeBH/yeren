@@ -1156,6 +1156,48 @@ abstract class AppLocalizations {
   /// **'Сенімділік'**
   String get signals_confidence;
 
+  /// No description provided for @signals_risk.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тәуекел'**
+  String get signals_risk;
+
+  /// No description provided for @signals_risk_low.
+  ///
+  /// In kk, this message translates to:
+  /// **'Төмен тәуекел'**
+  String get signals_risk_low;
+
+  /// No description provided for @signals_risk_medium.
+  ///
+  /// In kk, this message translates to:
+  /// **'Орташа тәуекел'**
+  String get signals_risk_medium;
+
+  /// No description provided for @signals_risk_high.
+  ///
+  /// In kk, this message translates to:
+  /// **'Жоғары тәуекел'**
+  String get signals_risk_high;
+
+  /// No description provided for @signals_risk_low_short.
+  ///
+  /// In kk, this message translates to:
+  /// **'Төмен'**
+  String get signals_risk_low_short;
+
+  /// No description provided for @signals_risk_medium_short.
+  ///
+  /// In kk, this message translates to:
+  /// **'Орташа'**
+  String get signals_risk_medium_short;
+
+  /// No description provided for @signals_risk_high_short.
+  ///
+  /// In kk, this message translates to:
+  /// **'Жоғары'**
+  String get signals_risk_high_short;
+
   /// No description provided for @signals_analysis.
   ///
   /// In kk, this message translates to:

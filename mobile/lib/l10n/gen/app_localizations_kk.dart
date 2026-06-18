@@ -566,6 +566,27 @@ class AppLocalizationsKk extends AppLocalizations {
   String get signals_confidence => 'Сенімділік';
 
   @override
+  String get signals_risk => 'Тәуекел';
+
+  @override
+  String get signals_risk_low => 'Төмен тәуекел';
+
+  @override
+  String get signals_risk_medium => 'Орташа тәуекел';
+
+  @override
+  String get signals_risk_high => 'Жоғары тәуекел';
+
+  @override
+  String get signals_risk_low_short => 'Төмен';
+
+  @override
+  String get signals_risk_medium_short => 'Орташа';
+
+  @override
+  String get signals_risk_high_short => 'Жоғары';
+
+  @override
   String get signals_analysis => 'Талдау';
 
   @override

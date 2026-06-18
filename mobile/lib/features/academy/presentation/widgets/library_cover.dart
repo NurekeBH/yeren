@@ -1,12 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/network/cover_resolver.dart';
 import '../../../../shared/models/library_item.dart';
 
 /// Библиотека элементінің мұқабасы.
-/// Кітап → Open Library суреті, подкаст → YouTube thumbnail,
-/// басқасы (немесе сурет жүктелмесе) → стильді генерацияланған градиент мұқаба.
-class LibraryCover extends StatelessWidget {
+/// Кітап → Google Books, фильм → iTunes постері, подкаст → YouTube thumbnail.
+/// Табылмаса/жүктелмесе → стильді генерацияланған градиент мұқаба.
+class LibraryCover extends ConsumerWidget {
   const LibraryCover({super.key, required this.item, this.radius = 12});
 
   final LibraryItem item;
@@ -25,8 +27,9 @@ class LibraryCover extends StatelessWidget {
   List<Color> get _palette => _palettes[item.id.hashCode.abs() % _palettes.length];
 
   @override
-  Widget build(BuildContext context) {
-    final url = item.coverImageUrl;
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Мұқаба URL-ін сыртқы API-дан табамыз (кэштеледі); болмаса градиент.
+    final url = ref.watch(coverResolverProvider(item)).valueOrNull;
     final br = BorderRadius.circular(radius);
     final image = url == null
         ? _fallback()

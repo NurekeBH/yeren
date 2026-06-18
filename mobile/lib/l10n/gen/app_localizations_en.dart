@@ -567,6 +567,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signals_confidence => 'Confidence';
 
   @override
+  String get signals_risk => 'Risk';
+
+  @override
+  String get signals_risk_low => 'Low risk';
+
+  @override
+  String get signals_risk_medium => 'Medium risk';
+
+  @override
+  String get signals_risk_high => 'High risk';
+
+  @override
+  String get signals_risk_low_short => 'Low';
+
+  @override
+  String get signals_risk_medium_short => 'Medium';
+
+  @override
+  String get signals_risk_high_short => 'High';
+
+  @override
   String get signals_analysis => 'Analysis';
 
   @override

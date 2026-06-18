@@ -2,6 +2,9 @@ import 'package:equatable/equatable.dart';
 
 enum SignalDirection { buy, sell }
 
+/// Тәуекел деңгейі — сенімділік пайызынан есептеледі (жоғары сенім = төмен тәуекел).
+enum RiskLevel { low, medium, high }
+
 enum SignalStatus { active, closedTp1, closedTp2, closedTp3, closedSl }
 
 extension SignalStatusX on SignalStatus {
@@ -90,6 +93,17 @@ class Signal extends Equatable {
 
   /// Ақылы идея ма (тегін емес).
   bool get isPaid => !isFree;
+
+  /// Тәуекел деңгейі: сенімділік ≥75 → төмен, 55–74 → орташа, <55 → жоғары.
+  RiskLevel get risk =>
+      confidence >= 75 ? RiskLevel.low : (confidence >= 55 ? RiskLevel.medium : RiskLevel.high);
+
+  /// Тәуекел деңгейіне сай сенімділік мәні (publish формасында қолданылады).
+  static int confidenceForRisk(RiskLevel r) => switch (r) {
+        RiskLevel.low => 85,
+        RiskLevel.medium => 68,
+        RiskLevel.high => 50,
+      };
 
   Signal copyWith({SignalStatus? status, int? resultPips}) => Signal(
         id: id,

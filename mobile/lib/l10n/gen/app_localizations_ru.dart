@@ -568,6 +568,27 @@ class AppLocalizationsRu extends AppLocalizations {
   String get signals_confidence => 'Уверенность';
 
   @override
+  String get signals_risk => 'Риск';
+
+  @override
+  String get signals_risk_low => 'Низкий риск';
+
+  @override
+  String get signals_risk_medium => 'Средний риск';
+
+  @override
+  String get signals_risk_high => 'Высокий риск';
+
+  @override
+  String get signals_risk_low_short => 'Низкий';
+
+  @override
+  String get signals_risk_medium_short => 'Средний';
+
+  @override
+  String get signals_risk_high_short => 'Высокий';
+
+  @override
   String get signals_analysis => 'Анализ';
 
   @override

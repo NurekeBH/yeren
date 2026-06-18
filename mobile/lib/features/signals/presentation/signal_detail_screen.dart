@@ -15,6 +15,7 @@ import '../application/signal_unlock_controller.dart';
 import '../application/signal_updates_controller.dart';
 import '../application/signal_votes_controller.dart';
 import '../data/signals_repository.dart';
+import 'risk_ui.dart';
 import 'unlock_signal_sheet.dart';
 
 class SignalDetailScreen extends ConsumerWidget {
@@ -629,7 +630,7 @@ class _LevelsCard extends StatelessWidget {
             _Row(label: l.signals_sl, value: Fmt.price(signal.sl), color: AppColors.lossRed),
             const Divider(height: 24),
             _Row(label: l.signals_rr, value: '1 : ${signal.rr.toStringAsFixed(2)}'),
-            _Row(label: l.signals_confidence, value: '${signal.confidence}%'),
+            _Row(label: l.signals_risk, value: riskLabel(signal.risk, l), color: riskColor(signal.risk)),
           ],
         ),
       ),
