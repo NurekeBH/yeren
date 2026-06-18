@@ -6,6 +6,7 @@ import '../../../core/network/api_client.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
+import '../../profile/application/profile_controller.dart';
 import '../application/auth_controller.dart';
 import 'user_agreement_screen.dart';
 
@@ -22,6 +23,7 @@ class PasswordScreen extends ConsumerStatefulWidget {
 class _PasswordScreenState extends ConsumerState<PasswordScreen> {
   final _password = TextEditingController();
   final _confirm = TextEditingController();
+  final _promo = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _busy = false;
   bool _obscure = true;
@@ -40,6 +42,7 @@ class _PasswordScreenState extends ConsumerState<PasswordScreen> {
   void dispose() {
     _password.dispose();
     _confirm.dispose();
+    _promo.dispose();
     super.dispose();
   }
 
@@ -50,6 +53,16 @@ class _PasswordScreenState extends ConsumerState<PasswordScreen> {
       final controller = ref.read(authControllerProvider.notifier);
       if (_isRegister) {
         await controller.register(phone: widget.phone, password: _password.text);
+        // Тіркелу кезінде промокод енгізілсе — бонус есептейміз.
+        final code = _promo.text.trim();
+        if (code.isNotEmpty) {
+          final res = ref.read(profileControllerProvider.notifier).applyPromoCode(code);
+          if (mounted && res == PromoResult.applied) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(AppLocalizations.of(context).promo_applied(kPromoBonusTg))),
+            );
+          }
+        }
       } else {
         await controller.login(phone: widget.phone, password: _password.text);
       }
@@ -111,6 +124,16 @@ class _PasswordScreenState extends ConsumerState<PasswordScreen> {
                       if (v != _password.text) return l.auth_password_mismatch;
                       return null;
                     },
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: _promo,
+                    textCapitalization: TextCapitalization.characters,
+                    decoration: InputDecoration(
+                      hintText: l.promo_field_hint,
+                      prefixIcon: const Icon(Icons.card_giftcard, size: 18),
+                      helperText: l.promo_field_help(kPromoBonusTg),
+                    ),
                   ),
                   const SizedBox(height: 12),
                   Row(
