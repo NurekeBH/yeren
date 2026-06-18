@@ -12,6 +12,7 @@ import '../../../shared/utils/formatters.dart';
 import '../../alerts/presentation/create_alert_sheet.dart';
 import '../application/my_signals_controller.dart';
 import '../application/signal_unlock_controller.dart';
+import '../application/signal_updates_controller.dart';
 import '../application/signal_votes_controller.dart';
 import '../data/signals_repository.dart';
 import 'unlock_signal_sheet.dart';
@@ -87,6 +88,10 @@ class _Body extends ConsumerWidget {
             const SizedBox(height: 16),
           ],
           _AnalysisCard(signal: signal, l: l),
+          const SizedBox(height: 16),
+          // Трейдердің follow-up апдейттері (timeline) — бәріне көрінеді,
+          // авторы (isMine) жаңа апдейт қоса алады.
+          _UpdatesCard(signal: signal, l: l),
           const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
@@ -414,6 +419,112 @@ class _VoteRow extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Трейдердің follow-up апдейттері (timeline). Авторы (isMine) жаңасын қоса алады.
+class _UpdatesCard extends ConsumerStatefulWidget {
+  const _UpdatesCard({required this.signal, required this.l});
+  final Signal signal;
+  final AppLocalizations l;
+
+  @override
+  ConsumerState<_UpdatesCard> createState() => _UpdatesCardState();
+}
+
+class _UpdatesCardState extends ConsumerState<_UpdatesCard> {
+  final _text = TextEditingController();
+
+  @override
+  void dispose() {
+    _text.dispose();
+    super.dispose();
+  }
+
+  void _add() {
+    final t = _text.text.trim();
+    if (t.isEmpty) return;
+    ref.read(signalUpdatesProvider.notifier).add(widget.signal.id, t, DateTime.now().toIso8601String());
+    _text.clear();
+    FocusScope.of(context).unfocus();
+  }
+
+  String _ago(String iso) {
+    final dt = DateTime.tryParse(iso);
+    if (dt == null) return '';
+    final d = DateTime.now().difference(dt);
+    if (d.inMinutes < 1) return 'now';
+    if (d.inMinutes < 60) return '${d.inMinutes}m';
+    if (d.inHours < 24) return '${d.inHours}h';
+    return '${d.inDays}d';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = widget.l;
+    final updates = ref.watch(signalUpdatesProvider)[widget.signal.id] ?? const [];
+    // Апдейт жоқ әрі автор емес болса — картаны мүлде көрсетпейміз.
+    if (updates.isEmpty && !widget.signal.isMine) return const SizedBox.shrink();
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(children: [
+              const Icon(Icons.timeline, size: 18, color: AppColors.gold),
+              const SizedBox(width: 8),
+              Text(l.signals_updates_title, style: AppTypography.h2()),
+            ]),
+            const SizedBox(height: 8),
+            if (updates.isEmpty)
+              Text(l.signals_updates_empty, style: AppTypography.bodySmall(color: AppColors.textSecondary))
+            else
+              for (final u in updates) ...[
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5, right: 8),
+                      child: Container(width: 7, height: 7, decoration: const BoxDecoration(color: AppColors.gold, shape: BoxShape.circle)),
+                    ),
+                    Expanded(child: Text(u.text, style: AppTypography.bodyMedium())),
+                    const SizedBox(width: 8),
+                    Text(_ago(u.createdAtIso), style: AppTypography.label(color: AppColors.textMuted).copyWith(fontSize: 10)),
+                  ],
+                ),
+                const SizedBox(height: 10),
+              ],
+            // Автор жаңа апдейт қосады.
+            if (widget.signal.isMine) ...[
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _text,
+                      minLines: 1,
+                      maxLines: 3,
+                      decoration: InputDecoration(
+                        hintText: l.signals_update_hint,
+                        border: const OutlineInputBorder(),
+                        isDense: true,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton.filled(
+                    onPressed: _add,
+                    icon: const Icon(Icons.send, size: 18),
+                  ),
+                ],
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }

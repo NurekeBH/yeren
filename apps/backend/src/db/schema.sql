@@ -383,6 +383,16 @@ create table if not exists signal_votes (
 );
 create index if not exists signal_votes_signal_idx on signal_votes(signal_id);
 
+-- ─────────────────── SIGNAL UPDATES (трейдер follow-up хабарлары) ───────────────────
+-- Трейдер өз идеясына timeline-апдейт қосады (мыс. «әлі ұстап тұрмын, TP3 күтемін»).
+create table if not exists signal_updates (
+  id         uuid primary key default uuid_generate_v4(),
+  signal_id  uuid not null references signals(id) on delete cascade,
+  text       text not null,
+  created_at timestamptz default now()
+);
+create index if not exists signal_updates_signal_idx on signal_updates(signal_id, created_at);
+
 -- ─────────────────── SUPPORT MESSAGES (қолдау → админ) ───────────────────
 -- Пайдаланушы профильден жазған хабарлар админ-панельде көрінеді.
 create table if not exists support_messages (

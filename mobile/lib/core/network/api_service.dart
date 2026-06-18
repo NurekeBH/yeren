@@ -83,6 +83,12 @@ class ApiService {
   /// Сигнал бойынша дауыс қорытындысы.
   Future<Map<String, dynamic>> signalVotes(String id) => _get('/signals/$id/votes');
 
+  /// Трейдердің follow-up апдейттері (timeline).
+  Future<List<dynamic>> signalUpdates(String id) async =>
+      (await _get('/signals/$id/updates'))['updates'] as List? ?? const [];
+  Future<void> addSignalUpdate(String id, String text) =>
+      _send('POST', '/signals/$id/updates', body: {'text': text});
+
   // ─────────────── Providers (aggregator) ───────────────
   Future<List<dynamic>> providers() async => (await _get('/providers'))['providers'] as List;
   Future<Map<String, dynamic>> provider(String id) => _get('/providers/$id');

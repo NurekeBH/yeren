@@ -721,6 +721,15 @@ class AppLocalizationsKk extends AppLocalizations {
   String get signals_trader_claim => 'трейдер мәлімдемесі';
 
   @override
+  String get signals_updates_title => 'Трейдер апдейттері';
+
+  @override
+  String get signals_updates_empty => 'Әзірге апдейт жоқ.';
+
+  @override
+  String get signals_update_hint => 'Апдейт қосу (мыс. «TP3 күтемін»)…';
+
+  @override
   String signals_verify_confirmed(int pct) {
     return 'Қоғам растайды ($pct%)';
   }

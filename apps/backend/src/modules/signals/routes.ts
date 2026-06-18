@@ -145,6 +145,28 @@ export async function signalsRoutes(app: FastifyInstance) {
     return { counts, my_vote: mine.rows[0]?.outcome ?? null };
   });
 
+  // ─────────────── Трейдер follow-up апдейттері (timeline) ───────────────
+  app.get('/signals/:id/updates', { onRequest: [app.authenticate] }, async (req) => {
+    const id = (req.params as { id: string }).id;
+    const { rows } = await query(
+      'select text, created_at from signal_updates where signal_id = $1 order by created_at asc',
+      [id],
+    );
+    return { updates: rows };
+  });
+
+  // Апдейт қосу (трейдер/админ).
+  app.post('/signals/:id/updates', { onRequest: [app.requireAdmin] }, async (req, reply) => {
+    const id = (req.params as { id: string }).id;
+    const parsed = z.object({ text: z.string().min(1).max(500) }).safeParse(req.body);
+    if (!parsed.success) return reply.code(400).send({ error: 'bad_request' });
+    const { rows } = await query(
+      'insert into signal_updates (signal_id, text) values ($1, $2) returning text, created_at',
+      [id, parsed.data.text],
+    );
+    return { ok: true, update: rows[0] };
+  });
+
   // Provider stats (TZ §10.4)
   app.get('/signals/stats', async () => {
     const { rows } = await query<{

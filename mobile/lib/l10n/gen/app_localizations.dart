@@ -1432,6 +1432,24 @@ abstract class AppLocalizations {
   /// **'трейдер мәлімдемесі'**
   String get signals_trader_claim;
 
+  /// No description provided for @signals_updates_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Трейдер апдейттері'**
+  String get signals_updates_title;
+
+  /// No description provided for @signals_updates_empty.
+  ///
+  /// In kk, this message translates to:
+  /// **'Әзірге апдейт жоқ.'**
+  String get signals_updates_empty;
+
+  /// No description provided for @signals_update_hint.
+  ///
+  /// In kk, this message translates to:
+  /// **'Апдейт қосу (мыс. «TP3 күтемін»)…'**
+  String get signals_update_hint;
+
   /// No description provided for @signals_verify_confirmed.
   ///
   /// In kk, this message translates to:

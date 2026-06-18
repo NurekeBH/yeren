@@ -724,6 +724,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get signals_trader_claim => 'заявка трейдера';
 
   @override
+  String get signals_updates_title => 'Обновления трейдера';
+
+  @override
+  String get signals_updates_empty => 'Пока нет обновлений.';
+
+  @override
+  String get signals_update_hint => 'Добавить обновление (напр. «жду TP3»)…';
+
+  @override
   String signals_verify_confirmed(int pct) {
     return 'Сообщество подтверждает ($pct%)';
   }

@@ -721,6 +721,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signals_trader_claim => 'trader\'s claim';
 
   @override
+  String get signals_updates_title => 'Trader updates';
+
+  @override
+  String get signals_updates_empty => 'No updates yet.';
+
+  @override
+  String get signals_update_hint => 'Add an update (e.g. \"waiting for TP3\")…';
+
+  @override
   String signals_verify_confirmed(int pct) {
     return 'Community confirms ($pct%)';
   }
