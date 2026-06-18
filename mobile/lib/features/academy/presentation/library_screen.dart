@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
-import '../../../shared/models/gallup.dart';
 import '../../../shared/models/library_item.dart';
 import '../data/lessons_repository.dart';
 import 'widgets/library_cover.dart';
@@ -21,11 +20,20 @@ class LibraryScreen extends ConsumerStatefulWidget {
 
 class _LibraryScreenState extends ConsumerState<LibraryScreen>
     with SingleTickerProviderStateMixin {
-  late final TabController _tabs = TabController(length: 3, vsync: this);
-  GallupProfile? _problemFilter;
+  late final TabController _tabs = TabController(length: 3, vsync: this)
+    ..addListener(_onTab);
+  String? _topic; // таңдалған категория (topic) — null = бәрі
+  double _minRating = 0; // ★ фильтр (0 = бәрі)
+  int _yearBand = 0; // 0=бәрі, 1=2020+, 2=2010+, 3=2000+, 4=<2000
+
+  void _onTab() {
+    // Қойынды ауысқанда категория сүзгісін тазалаймыз (топиктер әртүрлі).
+    if (_tabs.indexIsChanging) setState(() => _topic = null);
+  }
 
   @override
   void dispose() {
+    _tabs.removeListener(_onTab);
     _tabs.dispose();
     super.dispose();
   }
@@ -33,13 +41,42 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen>
   List<LibraryItem> _byCategory(List<LibraryItem> all, LibraryCategory c) =>
       all.where((x) => x.category == c).toList();
 
+  bool _yearOk(int? y) {
+    if (_yearBand == 0) return true;
+    final yr = y ?? 0;
+    return switch (_yearBand) {
+      1 => yr >= 2020,
+      2 => yr >= 2010,
+      3 => yr >= 2000,
+      4 => yr != 0 && yr < 2000,
+      _ => true,
+    };
+  }
+
+  /// Рейтинг/жыл фильтрі + категория бойынша топтап сұрыптау (ішінде рейтинг ↓).
+  List<LibraryItem> _apply(List<LibraryItem> items) {
+    final r = items.where((x) {
+      if (_topic != null && x.topic != _topic) return false;
+      if (_minRating > 0 && (x.rating ?? 0) < _minRating) return false;
+      if (!_yearOk(x.year)) return false;
+      return true;
+    }).toList();
+    r.sort((a, b) {
+      final t = (a.topic ?? '').compareTo(b.topic ?? '');
+      if (t != 0) return t;
+      return (b.rating ?? 0).compareTo(a.rating ?? 0);
+    });
+    return r;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final items = ref.watch(libraryItemsProvider);
-    final filtered = _problemFilter == null
-        ? items
-        : items.where((x) => x.profile == _problemFilter).toList();
+    const cats = [LibraryCategory.book, LibraryCategory.film, LibraryCategory.podcast];
+    final curCat = cats[_tabs.index.clamp(0, 2)];
+    final topics = (_byCategory(items, curCat).map((x) => x.topic).whereType<String>().toSet().toList()
+      ..sort());
 
     return Scaffold(
       appBar: AppBar(
@@ -61,20 +98,30 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen>
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  _FilterChip(
-                    label: l.academy_filter_all,
-                    selected: _problemFilter == null,
-                    color: AppColors.textSecondary,
-                    onTap: () => setState(() => _problemFilter = null),
-                  ),
-                  const SizedBox(width: 8),
-                  for (final p in GallupProfile.values) ...[
-                    _FilterChip(
-                      label: '${p.emoji} ${_profileLabel(p, l)}',
-                      selected: _problemFilter == p,
-                      color: AppColors.purple,
-                      onTap: () => setState(() => _problemFilter = p),
+                  // Категория (topic) — dropdown
+                  if (topics.isNotEmpty) ...[
+                    _TopicDropdown(
+                      topics: topics,
+                      selected: _topic,
+                      allLabel: l.academy_filter_all,
+                      onSelect: (t) => setState(() => _topic = t),
                     ),
+                    const SizedBox(width: 8),
+                    _Divider(),
+                    const SizedBox(width: 8),
+                  ],
+                  // Рейтинг фильтрі
+                  _FilterChip(label: l.academy_filter_all, selected: _minRating == 0, color: AppColors.gold, onTap: () => setState(() => _minRating = 0)),
+                  const SizedBox(width: 8),
+                  _FilterChip(label: '★ 4.0+', selected: _minRating == 4.0, color: AppColors.gold, onTap: () => setState(() => _minRating = 4.0)),
+                  const SizedBox(width: 8),
+                  _FilterChip(label: '★ 4.5+', selected: _minRating == 4.5, color: AppColors.gold, onTap: () => setState(() => _minRating = 4.5)),
+                  const SizedBox(width: 8),
+                  _Divider(),
+                  const SizedBox(width: 8),
+                  // Жыл фильтрі
+                  for (final (band, lbl) in const [(1, '2020+'), (2, '2010+'), (3, '2000+'), (4, '<2000')]) ...[
+                    _FilterChip(label: lbl, selected: _yearBand == band, color: AppColors.dxyBlue, onTap: () => setState(() => _yearBand = _yearBand == band ? 0 : band)),
                     const SizedBox(width: 8),
                   ],
                 ],
@@ -85,9 +132,9 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen>
             child: TabBarView(
               controller: _tabs,
               children: [
-                _CoverGrid(items: _byCategory(filtered, LibraryCategory.book), l: l),
-                _CoverGrid(items: _byCategory(filtered, LibraryCategory.film), l: l),
-                _CoverGrid(items: _byCategory(filtered, LibraryCategory.podcast), l: l),
+                _CoverGrid(items: _apply(_byCategory(items, LibraryCategory.book)), l: l),
+                _CoverGrid(items: _apply(_byCategory(items, LibraryCategory.film)), l: l),
+                _CoverGrid(items: _apply(_byCategory(items, LibraryCategory.podcast)), l: l),
               ],
             ),
           ),
@@ -236,15 +283,55 @@ class _FilterChip extends StatelessWidget {
   }
 }
 
-String _profileLabel(GallupProfile p, AppLocalizations l) {
-  switch (p) {
-    case GallupProfile.revenge:
-      return l.gallup_profile_revenge;
-    case GallupProfile.uncontrolledRisk:
-      return l.gallup_profile_risk;
-    case GallupProfile.hope:
-      return l.gallup_profile_hope;
-    case GallupProfile.disciplined:
-      return l.gallup_profile_disciplined;
+/// Сүзгілер арасындағы тік бөлгіш.
+class _Divider extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) =>
+      Container(width: 1, height: 22, color: AppColors.border);
+}
+
+/// Категория (topic) таңдау dropdown-ы.
+class _TopicDropdown extends StatelessWidget {
+  const _TopicDropdown({
+    required this.topics,
+    required this.selected,
+    required this.allLabel,
+    required this.onSelect,
+  });
+
+  final List<String> topics;
+  final String? selected;
+  final String allLabel;
+  final ValueChanged<String?> onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    final active = selected != null;
+    return PopupMenuButton<String?>(
+      onSelected: onSelect,
+      itemBuilder: (_) => [
+        PopupMenuItem<String?>(value: null, child: Text(allLabel)),
+        for (final t in topics) PopupMenuItem<String?>(value: t, child: Text(t)),
+      ],
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+        decoration: BoxDecoration(
+          color: active ? AppColors.purple.withValues(alpha: 0.14) : AppColors.cardSurface,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: active ? AppColors.purple : AppColors.border),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.category_outlined, size: 14, color: active ? AppColors.purple : AppColors.textSecondary),
+            const SizedBox(width: 5),
+            Text(selected ?? allLabel,
+                style: AppTypography.label(color: active ? AppColors.purple : AppColors.textSecondary)
+                    .copyWith(fontWeight: FontWeight.w600)),
+            const Icon(Icons.arrow_drop_down, size: 18, color: AppColors.textMuted),
+          ],
+        ),
+      ),
+    );
   }
 }

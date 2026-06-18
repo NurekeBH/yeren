@@ -31,6 +31,7 @@ class LibraryItem extends Equatable {
     this.ideas = const [],
     this.conclusion,
     this.profile,
+    this.topic,
     this.year,
     this.rating,
     this.ratingMax = 5,
@@ -65,6 +66,9 @@ class LibraryItem extends Equatable {
 
   /// Gallup профилі бойынша сүзу үшін (қалауыңызша).
   final GallupProfile? profile;
+
+  /// Тақырыптық категория (мыс. «Классика», «Кризисы») — сұрыптау/топтау үшін.
+  final String? topic;
 
   final int? year;
 

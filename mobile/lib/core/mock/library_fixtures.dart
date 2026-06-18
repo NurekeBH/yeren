@@ -1,5 +1,8 @@
 import '../../shared/models/gallup.dart';
 import '../../shared/models/library_item.dart';
+import 'catalog_books_a.dart';
+import 'catalog_books_b.dart';
+import 'catalog_films.dart';
 import 'library_content.dart';
 
 /// Библиотека каталогы — максималды толтырылған тізім (кітаптар/фильмдер/подкасттар),
@@ -797,9 +800,8 @@ class LibraryFixtures {
       ),
     ];
 
-    // Подкастарды тіл бойынша араластыру (EN ↔ RU кезектесіп).
-    final books = items.where((x) => x.category == LibraryCategory.book).toList();
-    final films = items.where((x) => x.category == LibraryCategory.film).toList();
+    // Кітаптар мен фильмдер — толық каталогтан (250 кітап + 100 фильм).
+    // Подкасттар — қолмен жазылған, тіл бойынша араластырылады (EN ↔ RU кезектесіп).
     final pods = items.where((x) => x.category == LibraryCategory.podcast).toList();
     final en = pods.where((p) => p.lang != 'RU').toList();
     final ru = pods.where((p) => p.lang == 'RU').toList();
@@ -808,6 +810,6 @@ class LibraryFixtures {
       if (i < en.length) mixed.add(en[i]);
       if (i < ru.length) mixed.add(ru[i]);
     }
-    return [...books, ...films, ...mixed];
+    return [...kBooksCatalogA, ...kBooksCatalogB, ...kFilmsCatalog, ...mixed];
   }
 }
