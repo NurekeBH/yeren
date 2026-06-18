@@ -42,15 +42,25 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   void _save(AppLocalizations l) {
     if (!_formKey.currentState!.validate()) return;
-    if (_styles.isEmpty) return;
+    if (_styles.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.onboarding_style_label)));
+      return;
+    }
     ref.read(profileControllerProvider.notifier).updateProfile(
           name: _name.text.trim(),
           city: _city.text.trim(),
           bio: _bio.text.trim(),
           styles: _styles,
         );
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.profile_saved_toast)));
-    if (context.canPop()) context.pop();
+    // Сақтаған соң бірден профиль бетіне ораламыз (messenger-ді алдын ала аламыз,
+    // pop-тан кейін context деактив болуы мүмкін).
+    final messenger = ScaffoldMessenger.of(context);
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.go('/profile');
+    }
+    messenger.showSnackBar(SnackBar(content: Text(l.profile_saved_toast)));
   }
 
   @override
