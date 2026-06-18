@@ -165,12 +165,15 @@ class _DayHeader extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      color: AppColors.midnight,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: const BoxDecoration(
+        color: AppColors.surfaceMuted,
+        border: Border(bottom: BorderSide(color: AppColors.border)),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Row(
         children: [
           Expanded(
-            child: Text(label, style: AppTypography.bodyMedium(color: AppColors.goldBright).copyWith(fontWeight: FontWeight.w700)),
+            child: Text(label, style: AppTypography.bodyMedium(color: AppColors.textPrimary).copyWith(fontWeight: FontWeight.w700)),
           ),
           _CountChip(color: _impactColor(ImpactLevel.low), count: low),
           const SizedBox(width: 12),
@@ -205,7 +208,7 @@ class _CountChip extends StatelessWidget {
       children: [
         Container(width: 14, height: 14, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
         const SizedBox(width: 6),
-        Text('$count', style: AppTypography.bodyMedium(color: Colors.white).copyWith(fontWeight: FontWeight.w700)),
+        Text('$count', style: AppTypography.bodyMedium(color: AppColors.textPrimary).copyWith(fontWeight: FontWeight.w700)),
       ],
     );
   }
