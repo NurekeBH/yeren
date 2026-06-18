@@ -26,6 +26,22 @@ const SignalClose = z.object({
   result_pips: z.number().int(),
 });
 
+/// Сигнал меншігін тексеру: 'ok' (админ немесе автор), 'not_found', 'forbidden'.
+/// created_by = null (ескі/админ жариялаған) сигналдарды тек админ басқарады.
+async function ownsSignal(
+  userId: string,
+  isAdmin: boolean,
+  signalId: string,
+): Promise<'ok' | 'not_found' | 'forbidden'> {
+  const { rows } = await query<{ created_by: string | null }>(
+    'select created_by from signals where id = $1',
+    [signalId],
+  );
+  if (rows.length === 0) return 'not_found';
+  if (isAdmin) return 'ok';
+  return rows[0]!.created_by === userId ? 'ok' : 'forbidden';
+}
+
 export async function signalsRoutes(app: FastifyInstance) {
   app.get('/signals', async () => {
     const { rows } = await query(`select * from signals order by published_at desc limit 200`);
@@ -46,20 +62,24 @@ export async function signalsRoutes(app: FastifyInstance) {
     const s = parsed.data;
     const { rows } = await query(
       `insert into signals (pair, direction, entry_from, entry_to, tp1, tp2, tp3, sl, rr, confidence,
-                            screenshot_url, analysis, is_free, provider_id, source, source_message_id)
-       values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)
+                            screenshot_url, analysis, is_free, provider_id, source, source_message_id, created_by)
+       values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17)
        returning *`,
       [s.pair, s.direction, s.entry_from, s.entry_to, s.tp1, s.tp2 ?? null, s.tp3 ?? null, s.sl, s.rr,
-        s.confidence, s.screenshot_url ?? null, s.analysis, s.is_free, s.provider_id ?? null, s.source, s.source_message_id ?? null],
+        s.confidence, s.screenshot_url ?? null, s.analysis, s.is_free, s.provider_id ?? null, s.source, s.source_message_id ?? null,
+        req.userId],
     );
     return { signal: rows[0] };
   });
 
-  // Admin: жабу
-  app.post('/signals/:id/close', { onRequest: [app.requireAdmin] }, async (req, reply) => {
+  // Сигналды жабу — тек жариялаған трейдер (немесе админ).
+  app.post('/signals/:id/close', { onRequest: [app.requireTrader] }, async (req, reply) => {
     const id = (req.params as { id: string }).id;
     const parsed = SignalClose.safeParse(req.body);
     if (!parsed.success) return reply.code(400).send({ error: 'bad_request' });
+    const owns = await ownsSignal(req.userId, req.isAdmin, id);
+    if (owns === 'not_found') return reply.code(404).send({ error: 'not_found' });
+    if (owns === 'forbidden') return reply.code(403).send({ error: 'not_owner' });
     const { rows } = await query(
       `update signals set status = $1, result_pips = $2, closed_at = now() where id = $3 returning *`,
       [parsed.data.status, parsed.data.result_pips, id],
@@ -155,11 +175,14 @@ export async function signalsRoutes(app: FastifyInstance) {
     return { updates: rows };
   });
 
-  // Апдейт қосу (трейдер/админ).
-  app.post('/signals/:id/updates', { onRequest: [app.requireAdmin] }, async (req, reply) => {
+  // Апдейт қосу — тек жариялаған трейдер (немесе админ).
+  app.post('/signals/:id/updates', { onRequest: [app.requireTrader] }, async (req, reply) => {
     const id = (req.params as { id: string }).id;
     const parsed = z.object({ text: z.string().min(1).max(500) }).safeParse(req.body);
     if (!parsed.success) return reply.code(400).send({ error: 'bad_request' });
+    const owns = await ownsSignal(req.userId, req.isAdmin, id);
+    if (owns === 'not_found') return reply.code(404).send({ error: 'not_found' });
+    if (owns === 'forbidden') return reply.code(403).send({ error: 'not_owner' });
     const { rows } = await query(
       'insert into signal_updates (signal_id, text) values ($1, $2) returning text, created_at',
       [id, parsed.data.text],

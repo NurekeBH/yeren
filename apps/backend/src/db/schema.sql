@@ -118,6 +118,7 @@ create table if not exists signals (
   result_pips    int,
   source         text default 'admin',                   -- admin | telegram_bot
   source_message_id text,                                -- Telegram message id (TZ.rtf)
+  created_by     uuid references users(id) on delete set null,  -- жариялаған трейдер (меншік тексеру)
   published_at   timestamptz default now(),
   closed_at      timestamptz
 );
@@ -270,6 +271,10 @@ create index if not exists prov_subs_user_idx on provider_subscriptions(user_id)
 -- Сигналды провайдерге байлау
 alter table signals add column if not exists provider_id uuid references signal_providers(id) on delete set null;
 create index if not exists signals_provider_idx on signals(provider_id);
+
+-- Сигналды жариялаған трейдерге байлау (меншік: тек өз сигналын жабу/жаңарту)
+alter table signals add column if not exists created_by uuid references users(id) on delete set null;
+create index if not exists signals_created_by_idx on signals(created_by);
 
 -- ─────────────────── EVENTS (мастер-класс / лайв-трейд / вебинар) ───────────────────
 create table if not exists events (
