@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../features/events/application/my_events_controller.dart';
 import '../../shared/models/trading_event.dart';
 import '../config/app_config.dart';
 import '../locale/locale_controller.dart';
@@ -159,10 +160,16 @@ class EventsFixtures {
 }
 
 final eventsProvider = FutureProvider<List<TradingEvent>>((ref) async {
+  // Трейдер жариялаған іс-шаралар (жергілікті) тізімнің басына қосылады.
+  final mine = ref.watch(myEventsProvider);
+  final List<TradingEvent> base;
   if (AppConfig.useRemoteApi) {
     final list = await ref.watch(apiServiceProvider).events();
-    return list.map((e) => eventFromJson((e as Map).cast<String, dynamic>())).toList();
+    base = list.map((e) => eventFromJson((e as Map).cast<String, dynamic>())).toList();
+  } else {
+    final loc = ref.watch(localeControllerProvider).languageCode;
+    base = EventsFixtures.all(loc);
   }
-  final loc = ref.watch(localeControllerProvider).languageCode;
-  return EventsFixtures.all(loc);
+  final mineIds = mine.map((e) => e.id).toSet();
+  return [...mine, ...base.where((e) => !mineIds.contains(e.id))];
 });

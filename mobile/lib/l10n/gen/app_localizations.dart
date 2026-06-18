@@ -724,6 +724,72 @@ abstract class AppLocalizations {
   /// **'Өтінім жіберілді'**
   String get apply_sent;
 
+  /// No description provided for @event_publish.
+  ///
+  /// In kk, this message translates to:
+  /// **'Іс-шара жариялау'**
+  String get event_publish;
+
+  /// No description provided for @event_publish_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Жаңа іс-шара'**
+  String get event_publish_title;
+
+  /// No description provided for @event_published.
+  ///
+  /// In kk, this message translates to:
+  /// **'Іс-шара жарияланды!'**
+  String get event_published;
+
+  /// No description provided for @event_need_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Атауын жазыңыз'**
+  String get event_need_title;
+
+  /// No description provided for @event_field_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Атауы'**
+  String get event_field_title;
+
+  /// No description provided for @event_field_date.
+  ///
+  /// In kk, this message translates to:
+  /// **'Күн мен уақыт'**
+  String get event_field_date;
+
+  /// No description provided for @event_field_online.
+  ///
+  /// In kk, this message translates to:
+  /// **'Онлайн'**
+  String get event_field_online;
+
+  /// No description provided for @event_field_city.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қала / орын'**
+  String get event_field_city;
+
+  /// No description provided for @event_field_price.
+  ///
+  /// In kk, this message translates to:
+  /// **'Баға (₸)'**
+  String get event_field_price;
+
+  /// No description provided for @event_field_price_help.
+  ///
+  /// In kk, this message translates to:
+  /// **'0 = тегін'**
+  String get event_field_price_help;
+
+  /// No description provided for @event_field_desc.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сипаттама'**
+  String get event_field_desc;
+
   /// No description provided for @home_events.
   ///
   /// In kk, this message translates to:

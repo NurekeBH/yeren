@@ -7,6 +7,8 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/trading_event.dart';
+import '../../profile/application/profile_controller.dart';
+import 'publish_event_sheet.dart';
 
 String eventDate(String iso) {
   final d = DateTime.parse(iso).toLocal();
@@ -38,9 +40,17 @@ class EventsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     final async = ref.watch(eventsProvider);
+    final isTrader = ref.watch(profileControllerProvider).isVerifiedTrader;
 
     return Scaffold(
       appBar: AppBar(title: Text(l.events_title)),
+      floatingActionButton: isTrader
+          ? FloatingActionButton.extended(
+              onPressed: () => showPublishEventSheet(context),
+              icon: const Icon(Icons.add),
+              label: Text(l.event_publish),
+            )
+          : null,
       body: async.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('${l.common_error}: $e')),

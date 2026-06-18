@@ -337,6 +337,39 @@ class AppLocalizationsRu extends AppLocalizations {
   String get apply_sent => 'Заявка отправлена';
 
   @override
+  String get event_publish => 'Опубликовать событие';
+
+  @override
+  String get event_publish_title => 'Новое событие';
+
+  @override
+  String get event_published => 'Событие опубликовано!';
+
+  @override
+  String get event_need_title => 'Введите название';
+
+  @override
+  String get event_field_title => 'Название';
+
+  @override
+  String get event_field_date => 'Дата и время';
+
+  @override
+  String get event_field_online => 'Онлайн';
+
+  @override
+  String get event_field_city => 'Город / место';
+
+  @override
+  String get event_field_price => 'Цена (₸)';
+
+  @override
+  String get event_field_price_help => '0 = бесплатно';
+
+  @override
+  String get event_field_desc => 'Описание';
+
+  @override
   String get home_events => 'События';
 
   @override

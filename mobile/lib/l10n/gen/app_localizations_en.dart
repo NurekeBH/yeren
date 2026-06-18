@@ -337,6 +337,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get apply_sent => 'Application sent';
 
   @override
+  String get event_publish => 'Publish event';
+
+  @override
+  String get event_publish_title => 'New event';
+
+  @override
+  String get event_published => 'Event published!';
+
+  @override
+  String get event_need_title => 'Enter a title';
+
+  @override
+  String get event_field_title => 'Title';
+
+  @override
+  String get event_field_date => 'Date & time';
+
+  @override
+  String get event_field_online => 'Online';
+
+  @override
+  String get event_field_city => 'City / venue';
+
+  @override
+  String get event_field_price => 'Price (₸)';
+
+  @override
+  String get event_field_price_help => '0 = free';
+
+  @override
+  String get event_field_desc => 'Description';
+
+  @override
   String get home_events => 'Events';
 
   @override

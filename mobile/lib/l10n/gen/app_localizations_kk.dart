@@ -337,6 +337,39 @@ class AppLocalizationsKk extends AppLocalizations {
   String get apply_sent => 'Өтінім жіберілді';
 
   @override
+  String get event_publish => 'Іс-шара жариялау';
+
+  @override
+  String get event_publish_title => 'Жаңа іс-шара';
+
+  @override
+  String get event_published => 'Іс-шара жарияланды!';
+
+  @override
+  String get event_need_title => 'Атауын жазыңыз';
+
+  @override
+  String get event_field_title => 'Атауы';
+
+  @override
+  String get event_field_date => 'Күн мен уақыт';
+
+  @override
+  String get event_field_online => 'Онлайн';
+
+  @override
+  String get event_field_city => 'Қала / орын';
+
+  @override
+  String get event_field_price => 'Баға (₸)';
+
+  @override
+  String get event_field_price_help => '0 = тегін';
+
+  @override
+  String get event_field_desc => 'Сипаттама';
+
+  @override
   String get home_events => 'Іс-шаралар';
 
   @override

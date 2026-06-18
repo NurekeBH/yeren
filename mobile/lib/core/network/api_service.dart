@@ -110,6 +110,9 @@ class ApiService {
   Future<void> applyToEvent(String id, {required String name, required String phone, String? comment}) =>
       _send('POST', '/events/$id/apply', body: {'name': name, 'phone': phone, 'comment': comment ?? ''});
 
+  /// Іс-шара жариялау (расталған трейдер/админ).
+  Future<void> publishEvent(Map<String, dynamic> body) => _send('POST', '/events', body: body);
+
   // ─────────────── Price alerts ───────────────
   Future<List<dynamic>> alerts() async => (await _get('/alerts'))['alerts'] as List;
   Future<Map<String, dynamic>> createAlert(Map<String, dynamic> body) =>
