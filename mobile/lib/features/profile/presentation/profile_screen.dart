@@ -169,11 +169,6 @@ class ProfileScreen extends ConsumerWidget {
             onTap: () => context.push('/notifications'),
           ),
           _MenuItem(
-            icon: Icons.event_note,
-            label: l.calendar_title,
-            onTap: () => context.push('/calendar'),
-          ),
-          _MenuItem(
             icon: Icons.description_outlined,
             label: l.agreement_title,
             onTap: () => context.push('/legal/agreement'),
