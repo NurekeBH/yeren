@@ -50,19 +50,26 @@ Future<String?> _bookCover(LibraryItem item) async {
   return null;
 }
 
-/// Фильм постері — iTunes Search (кілтсіз). artworkUrl100 → 600x600.
+/// Фильм/сериал постері — Wikipedia (кілтсіз): search → article → summary thumbnail.
 Future<String?> _filmCover(LibraryItem item) async {
+  const ua = {'User-Agent': 'ALTYN/1.0 (library covers)'};
   try {
-    final res = await _coverDio.get<dynamic>(
-      'https://itunes.apple.com/search',
-      queryParameters: {'term': item.title, 'media': 'movie', 'limit': 1, 'country': 'US'},
+    final yr = item.year != null ? ' ${item.year}' : '';
+    final search = await _coverDio.get<dynamic>(
+      'https://en.wikipedia.org/w/api.php',
+      queryParameters: {'action': 'query', 'list': 'search', 'srsearch': '${item.title}$yr', 'format': 'json', 'srlimit': 1},
+      options: Options(headers: ua),
     );
-    final data = _asMap(res.data);
-    final results = data?['results'] as List?;
-    if (results != null && results.isNotEmpty) {
-      final art = (results.first as Map)['artworkUrl100']?.toString();
-      return art?.replaceFirst('100x100bb', '600x600bb');
-    }
+    final sd = _asMap(search.data);
+    final hits = (sd?['query'] as Map?)?['search'] as List?;
+    if (hits == null || hits.isEmpty) return null;
+    final page = (hits.first as Map)['title'].toString().replaceAll(' ', '_');
+    final sum = await _coverDio.get<dynamic>(
+      'https://en.wikipedia.org/api/rest_v1/page/summary/${Uri.encodeComponent(page)}',
+      options: Options(headers: ua),
+    );
+    final rd = _asMap(sum.data);
+    return (rd?['thumbnail'] as Map?)?['source']?.toString();
   } catch (_) {/* желі — fallback */}
   return null;
 }

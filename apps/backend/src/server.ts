@@ -20,6 +20,7 @@ import { libraryRoutes } from './modules/library/routes.js';
 import { agreementRoutes } from './modules/agreement/routes.js';
 import { supportRoutes } from './modules/support/routes.js';
 import { ingestNews } from './services/news.js';
+import { ingestCalendar } from './services/calendar.js';
 import { pool } from './db/client.js';
 
 const app = Fastify({
@@ -104,6 +105,19 @@ if (env.FINNHUB_API_KEY) {
   const timer = setInterval(() => void poll(), POLL_MS);
   timer.unref?.();
   app.log.info(`Market Intel poller started (every ${POLL_MS / 1000}s)`);
+
+  // Экономикалық календарь — live (Finnhub economic calendar), әр 30 минут.
+  const calPoll = async () => {
+    try {
+      const r = await ingestCalendar();
+      if (r.inserted > 0) app.log.info({ inserted: r.inserted }, 'calendar_ingested');
+    } catch (err) {
+      app.log.warn(err, 'calendar_poll_failed');
+    }
+  };
+  void calPoll();
+  const calTimer = setInterval(() => void calPoll(), 30 * 60_000);
+  calTimer.unref?.();
 } else {
   app.log.info('Market Intel poller disabled (no FINNHUB_API_KEY)');
 }
