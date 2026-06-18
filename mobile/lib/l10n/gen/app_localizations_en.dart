@@ -909,6 +909,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String get calendar_empty => 'No events';
 
   @override
+  String calendar_in_h(int h) {
+    return 'in ${h}h';
+  }
+
+  @override
+  String calendar_in_m(int m) {
+    return 'in ${m}m';
+  }
+
+  @override
+  String get calendar_soon => 'soon';
+
+  @override
+  String get calendar_today => 'Today';
+
+  @override
+  String get calendar_tomorrow => 'Tomorrow';
+
+  @override
+  String get calendar_previous_short => 'PREV';
+
+  @override
+  String get calendar_forecast_short => 'FORE';
+
+  @override
+  String get calendar_actual_short => 'ACT';
+
+  @override
+  String get calendar_released => 'released';
+
+  @override
   String get journal_empty => 'No trades';
 
   @override

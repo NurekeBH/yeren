@@ -908,6 +908,37 @@ class AppLocalizationsKk extends AppLocalizations {
   String get calendar_empty => 'Оқиға жоқ';
 
   @override
+  String calendar_in_h(int h) {
+    return '$h сағаттан кейін';
+  }
+
+  @override
+  String calendar_in_m(int m) {
+    return '$m минуттан кейін';
+  }
+
+  @override
+  String get calendar_soon => 'жақында';
+
+  @override
+  String get calendar_today => 'Бүгін';
+
+  @override
+  String get calendar_tomorrow => 'Ертең';
+
+  @override
+  String get calendar_previous_short => 'АЛДЫҢҒЫ';
+
+  @override
+  String get calendar_forecast_short => 'БОЛЖАМ';
+
+  @override
+  String get calendar_actual_short => 'НАҚТЫ';
+
+  @override
+  String get calendar_released => 'жарияланды';
+
+  @override
   String get journal_empty => 'Сделка жоқ';
 
   @override

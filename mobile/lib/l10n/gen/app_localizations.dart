@@ -1786,6 +1786,60 @@ abstract class AppLocalizations {
   /// **'Оқиға жоқ'**
   String get calendar_empty;
 
+  /// No description provided for @calendar_in_h.
+  ///
+  /// In kk, this message translates to:
+  /// **'{h} сағаттан кейін'**
+  String calendar_in_h(int h);
+
+  /// No description provided for @calendar_in_m.
+  ///
+  /// In kk, this message translates to:
+  /// **'{m} минуттан кейін'**
+  String calendar_in_m(int m);
+
+  /// No description provided for @calendar_soon.
+  ///
+  /// In kk, this message translates to:
+  /// **'жақында'**
+  String get calendar_soon;
+
+  /// No description provided for @calendar_today.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бүгін'**
+  String get calendar_today;
+
+  /// No description provided for @calendar_tomorrow.
+  ///
+  /// In kk, this message translates to:
+  /// **'Ертең'**
+  String get calendar_tomorrow;
+
+  /// No description provided for @calendar_previous_short.
+  ///
+  /// In kk, this message translates to:
+  /// **'АЛДЫҢҒЫ'**
+  String get calendar_previous_short;
+
+  /// No description provided for @calendar_forecast_short.
+  ///
+  /// In kk, this message translates to:
+  /// **'БОЛЖАМ'**
+  String get calendar_forecast_short;
+
+  /// No description provided for @calendar_actual_short.
+  ///
+  /// In kk, this message translates to:
+  /// **'НАҚТЫ'**
+  String get calendar_actual_short;
+
+  /// No description provided for @calendar_released.
+  ///
+  /// In kk, this message translates to:
+  /// **'жарияланды'**
+  String get calendar_released;
+
   /// No description provided for @journal_empty.
   ///
   /// In kk, this message translates to:

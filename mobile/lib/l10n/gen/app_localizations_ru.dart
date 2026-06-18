@@ -911,6 +911,37 @@ class AppLocalizationsRu extends AppLocalizations {
   String get calendar_empty => 'Событий нет';
 
   @override
+  String calendar_in_h(int h) {
+    return 'через $h ч';
+  }
+
+  @override
+  String calendar_in_m(int m) {
+    return 'через $m мин';
+  }
+
+  @override
+  String get calendar_soon => 'скоро';
+
+  @override
+  String get calendar_today => 'Сегодня';
+
+  @override
+  String get calendar_tomorrow => 'Завтра';
+
+  @override
+  String get calendar_previous_short => 'ПРЕД';
+
+  @override
+  String get calendar_forecast_short => 'ПРОГНОЗ';
+
+  @override
+  String get calendar_actual_short => 'ФАКТ';
+
+  @override
+  String get calendar_released => 'вышло';
+
+  @override
   String get journal_empty => 'Сделок нет';
 
   @override
