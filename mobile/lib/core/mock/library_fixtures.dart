@@ -3,6 +3,9 @@ import '../../shared/models/library_item.dart';
 import 'catalog_books_a.dart';
 import 'catalog_books_b.dart';
 import 'catalog_films.dart';
+import 'catalog_podcasts_1.dart';
+import 'catalog_podcasts_2.dart';
+import 'catalog_podcasts_3.dart';
 import 'library_content.dart';
 
 /// Библиотека каталогы — максималды толтырылған тізім (кітаптар/фильмдер/подкасттар),
@@ -810,6 +813,14 @@ class LibraryFixtures {
       if (i < en.length) mixed.add(en[i]);
       if (i < ru.length) mixed.add(ru[i]);
     }
-    return [...kBooksCatalogA, ...kBooksCatalogB, ...kFilmsCatalog, ...mixed];
+    return [
+      ...kBooksCatalogA,
+      ...kBooksCatalogB,
+      ...kFilmsCatalog,
+      ...mixed,
+      ...kPodcasts1,
+      ...kPodcasts2,
+      ...kPodcasts3,
+    ];
   }
 }

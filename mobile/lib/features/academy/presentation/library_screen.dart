@@ -25,10 +25,16 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen>
   String? _topic; // таңдалған категория (topic) — null = бәрі
   double _minRating = 0; // ★ фильтр (0 = бәрі)
   int _yearBand = 0; // 0=бәрі, 1=2020+, 2=2010+, 3=2000+, 4=<2000
+  String? _lang; // подкаст тілі: null=бәрі, 'EN', 'RU'
 
   void _onTab() {
     // Қойынды ауысқанда категория сүзгісін тазалаймыз (топиктер әртүрлі).
-    if (_tabs.indexIsChanging) setState(() => _topic = null);
+    if (_tabs.indexIsChanging) {
+      setState(() {
+        _topic = null;
+        _lang = null;
+      });
+    }
   }
 
   @override
@@ -59,6 +65,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen>
       if (_topic != null && x.topic != _topic) return false;
       if (_minRating > 0 && (x.rating ?? 0) < _minRating) return false;
       if (!_yearOk(x.year)) return false;
+      if (_lang != null && x.lang != _lang) return false;
       return true;
     }).toList();
     r.sort((a, b) {
@@ -123,6 +130,15 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen>
                   for (final (band, lbl) in const [(1, '2020+'), (2, '2010+'), (3, '2000+'), (4, '<2000')]) ...[
                     _FilterChip(label: lbl, selected: _yearBand == band, color: AppColors.dxyBlue, onTap: () => setState(() => _yearBand = _yearBand == band ? 0 : band)),
                     const SizedBox(width: 8),
+                  ],
+                  // Тіл фильтрі — тек подкаст табында (видеолар EN/RU).
+                  if (curCat == LibraryCategory.podcast) ...[
+                    _Divider(),
+                    const SizedBox(width: 8),
+                    for (final lng in const ['EN', 'RU']) ...[
+                      _FilterChip(label: lng == 'EN' ? '🇬🇧 EN' : '🇷🇺 RU', selected: _lang == lng, color: AppColors.profitGreen, onTap: () => setState(() => _lang = _lang == lng ? null : lng)),
+                      const SizedBox(width: 8),
+                    ],
                   ],
                 ],
               ),
