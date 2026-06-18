@@ -66,10 +66,10 @@ class CalendarModule extends ConsumerWidget {
   }
 }
 
-// Импакт түстері — толық календарь экранымен бірдей (сары/қызғылт сары/қызыл).
+// Импакт түстері — апп палитрасы (толық календарь экранымен бірдей).
 Color _impactColor(ImpactLevel l) => switch (l) {
-      ImpactLevel.low => const Color(0xFFF5B301),
-      ImpactLevel.medium => const Color(0xFFF97316),
+      ImpactLevel.low => AppColors.profitGreen,
+      ImpactLevel.medium => AppColors.gold,
       ImpactLevel.high => AppColors.lossRed,
     };
 

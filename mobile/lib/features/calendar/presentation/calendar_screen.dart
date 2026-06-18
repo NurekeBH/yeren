@@ -9,10 +9,10 @@ import '../../../shared/models/calendar_event.dart';
 import '../../../shared/utils/formatters.dart';
 import '../data/calendar_repository.dart';
 
-// Импакт түстері — референске сай (сары / қызғылт сары / қызыл).
+// Импакт түстері — апп палитрасы (төмен=жасыл, орташа=алтын, жоғары=қызыл).
 Color _impactColor(ImpactLevel l) => switch (l) {
-      ImpactLevel.low => const Color(0xFFF5B301),
-      ImpactLevel.medium => const Color(0xFFF97316),
+      ImpactLevel.low => AppColors.profitGreen,
+      ImpactLevel.medium => AppColors.gold,
       ImpactLevel.high => AppColors.lossRed,
     };
 
@@ -165,12 +165,12 @@ class _DayHeader extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      color: const Color(0xFF5A7184),
+      color: AppColors.midnight,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: [
           Expanded(
-            child: Text(label, style: AppTypography.bodyMedium(color: Colors.white).copyWith(fontWeight: FontWeight.w700)),
+            child: Text(label, style: AppTypography.bodyMedium(color: AppColors.goldBright).copyWith(fontWeight: FontWeight.w700)),
           ),
           _CountChip(color: _impactColor(ImpactLevel.low), count: low),
           const SizedBox(width: 12),
