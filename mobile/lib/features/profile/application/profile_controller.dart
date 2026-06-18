@@ -10,6 +10,7 @@ import '../../../core/network/api_service.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/gallup.dart';
 import '../../../shared/models/market_session.dart';
+import 'promo_registry.dart';
 
 /// Промокодпен тіркелген жаңа қолданушыға берілетін бонус (₸).
 const int kPromoBonusTg = 100;
@@ -349,6 +350,8 @@ class ProfileController extends StateNotifier<UserProfile> {
       referredBy: code,
       bonusBalance: state.bonusBalance + kPromoBonusTg,
     ));
+    // Құрылғы-жергілікті есеп: осы кодпен тіркелуді +1 (трейдер санды көреді).
+    _ref.read(promoRegistryProvider.notifier).record(code);
     // Remote режимде backend-ке тіркейміз (бонусты сервер де есептейді).
     if (AppConfig.useRemoteApi) {
       _ref.read(apiServiceProvider).redeemPromo(code).catchError((_) {});

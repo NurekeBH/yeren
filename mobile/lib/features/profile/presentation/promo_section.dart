@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'dart:math' as math;
+
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../application/profile_controller.dart';
+import '../application/promo_registry.dart';
 
 /// Профильдегі промокод/бонус бөлімі:
 /// • бонус балансы (промокодпен тіркелсе);
@@ -87,14 +90,19 @@ class PromoSection extends ConsumerWidget {
                   ),
                   const SizedBox(height: 10),
                   // Кодпен тіркелгендер саны — трейдер әрқашан көреді.
-                  Row(
-                    children: [
-                      const Icon(Icons.group_outlined, size: 16, color: AppColors.profitGreen),
-                      const SizedBox(width: 6),
-                      Text(l.promo_referrals(p.referralCount),
-                          style: AppTypography.bodySmall().copyWith(fontWeight: FontWeight.w600)),
-                    ],
-                  ),
+                  // Remote: backend санайды; mock: құрылғы-жергілікті тізілім.
+                  Builder(builder: (_) {
+                    final local = ref.watch(promoRegistryProvider)[p.promoCode.toUpperCase()] ?? 0;
+                    final count = math.max(p.referralCount, local);
+                    return Row(
+                      children: [
+                        const Icon(Icons.group_outlined, size: 16, color: AppColors.profitGreen),
+                        const SizedBox(width: 6),
+                        Text(l.promo_referrals(count),
+                            style: AppTypography.bodySmall().copyWith(fontWeight: FontWeight.w600)),
+                      ],
+                    );
+                  }),
                 ],
               ),
             ),
