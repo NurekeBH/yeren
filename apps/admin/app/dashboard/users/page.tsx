@@ -49,6 +49,19 @@ export default function UsersPage() {
     }
   }
 
+  async function setRole(u: User, patch: { is_admin?: boolean; is_verified_trader?: boolean }) {
+    setBusyId(u.id);
+    setErr('');
+    try {
+      await api(`/admin/users/${u.id}/role`, { method: 'PATCH', body: patch });
+      await load();
+    } catch (e: any) {
+      setErr(e.message);
+    } finally {
+      setBusyId('');
+    }
+  }
+
   return (
     <div>
       <h1>Пользователи</h1>
@@ -94,13 +107,29 @@ export default function UsersPage() {
                 <td style={{ padding: 10 }}>{u.bonus_balance}</td>
                 <td style={{ padding: 10 }}>{u.referral_count}</td>
                 <td style={{ padding: 10 }}>
-                  <button
-                    className={u.is_blocked ? '' : 'ghost'}
-                    disabled={busyId === u.id}
-                    onClick={() => toggleBlock(u)}
-                  >
-                    {u.is_blocked ? 'Разблокировать' : 'Заблокировать'}
-                  </button>
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                    <button
+                      className="ghost"
+                      disabled={busyId === u.id}
+                      onClick={() => setRole(u, { is_verified_trader: !u.is_verified_trader })}
+                    >
+                      {u.is_verified_trader ? '− trader' : '+ trader'}
+                    </button>
+                    <button
+                      className="ghost"
+                      disabled={busyId === u.id}
+                      onClick={() => setRole(u, { is_admin: !u.is_admin })}
+                    >
+                      {u.is_admin ? '− admin' : '+ admin'}
+                    </button>
+                    <button
+                      className={u.is_blocked ? '' : 'ghost'}
+                      disabled={busyId === u.id}
+                      onClick={() => toggleBlock(u)}
+                    >
+                      {u.is_blocked ? 'Разблок.' : 'Блок'}
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
