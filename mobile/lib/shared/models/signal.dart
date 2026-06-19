@@ -81,7 +81,10 @@ class Signal extends Equatable {
   /// Идеяның толық мақсатына дейінгі қашықтық (пипс) — кіру ортасынан ең алыс TP-ке.
   /// Buy/Sell бағытына тәуелсіз: үш TP ішінен ең үлкен модульдік қашықтық алынады.
   double get tpPips {
-    final furthest = [tp1, tp2, tp3]
+    // Тек қойылған TP-лерді (>0) ескереміз — қойылмаған tp2/tp3=0 нәтижені бұзбас үшін.
+    final tps = [tp1, tp2, tp3].where((tp) => tp > 0);
+    if (tps.isEmpty) return 0;
+    final furthest = tps
         .map((tp) => (tp - entryMid).abs())
         .reduce((a, b) => a > b ? a : b);
     return furthest / pipSize;
