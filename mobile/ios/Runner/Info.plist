@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Идеяға скриншот пен профиль суретін қою үшін галереяға қол жеткізу қажет.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Сурет түсіріп идеяға/профильге қосу үшін камераға қол жеткізу қажет.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
