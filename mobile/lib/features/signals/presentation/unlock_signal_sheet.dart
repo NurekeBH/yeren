@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
@@ -8,8 +9,8 @@ import '../../../shared/models/signal.dart';
 import '../../profile/application/profile_controller.dart';
 import '../application/signal_unlock_controller.dart';
 
-/// Идеяны ашу (сатып алу) sheet-і. Kaspi Pay арқылы төлем → идея ашылады.
-/// Сәтті аяқталса true қайтарады.
+/// Идеяны ашу sheet-і. Идея бонус ұпайымен ашылады (баланстан шегеріледі).
+/// Бонус жетпесе — досын шақырып табуды ұсынады. Сәтті болса true қайтарады.
 Future<bool> showUnlockSignalSheet(BuildContext context, WidgetRef ref, Signal signal) async {
   final ok = await showModalBottomSheet<bool>(
     context: context,
@@ -32,17 +33,14 @@ class _UnlockSheet extends ConsumerStatefulWidget {
 }
 
 class _UnlockSheetState extends ConsumerState<_UnlockSheet> {
-  bool _paying = false;
+  bool _busy = false;
 
-  Future<void> _pay(AppLocalizations l, int bonusUsed) async {
-    setState(() => _paying = true);
+  Future<void> _unlock(AppLocalizations l, int cost) async {
+    setState(() => _busy = true);
     try {
-      // Kaspi Pay интеграциясы орнына — төлемді имитациялаймыз (mock).
-      // Remote режимде unlock() backend-ке сатып алуды тіркейді.
-      await Future<void>.delayed(const Duration(milliseconds: 900));
       await ref.read(signalUnlockProvider.notifier).unlock(widget.signal.id);
-      // Қолданылған бонусты баланстан шегереміз.
-      if (bonusUsed > 0) ref.read(profileControllerProvider.notifier).spendBonus(bonusUsed);
+      // Идея құнын бонус баланстан шегереміз.
+      if (cost > 0) ref.read(profileControllerProvider.notifier).spendBonus(cost);
       if (!mounted) return;
       Navigator.of(context).pop(true);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -50,7 +48,7 @@ class _UnlockSheetState extends ConsumerState<_UnlockSheet> {
       );
     } catch (e) {
       if (!mounted) return;
-      setState(() => _paying = false);
+      setState(() => _busy = false);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('${l.common_error}: $e')),
       );
@@ -63,11 +61,12 @@ class _UnlockSheetState extends ConsumerState<_UnlockSheet> {
     final s = widget.signal;
     final isBuy = s.direction == SignalDirection.buy;
     final dirColor = isBuy ? AppColors.profitGreen : AppColors.lossRed;
-    // Бонус балансы бағаны азайтады (қалғаны Kaspi арқылы төленеді).
-    final bonus = ref.watch(profileControllerProvider).bonusBalance;
-    final price = s.priceTg;
-    final bonusUsed = bonus.clamp(0, price);
-    final payable = price - bonusUsed;
+
+    final p = ref.watch(profileControllerProvider);
+    final cost = s.priceTg; // идея құны — бонус ұпайымен
+    final balance = p.bonusBalance;
+    final canAfford = balance >= cost;
+    final shortfall = (cost - balance).clamp(0, cost);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
@@ -79,10 +78,7 @@ class _UnlockSheetState extends ConsumerState<_UnlockSheet> {
             child: Container(
               width: 40,
               height: 4,
-              decoration: BoxDecoration(
-                color: AppColors.border,
-                borderRadius: BorderRadius.circular(2),
-              ),
+              decoration: BoxDecoration(color: AppColors.border, borderRadius: BorderRadius.circular(2)),
             ),
           ),
           const SizedBox(height: 16),
@@ -108,79 +104,71 @@ class _UnlockSheetState extends ConsumerState<_UnlockSheet> {
               children: [
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: dirColor.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    isBuy ? l.signals_direction_buy : l.signals_direction_sell,
-                    style: AppTypography.label(color: dirColor),
-                  ),
+                  decoration: BoxDecoration(color: dirColor.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(6)),
+                  child: Text(isBuy ? l.signals_direction_buy : l.signals_direction_sell,
+                      style: AppTypography.label(color: dirColor)),
                 ),
                 const SizedBox(width: 8),
                 Text(s.pair, style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w600)),
                 const Spacer(),
-                Text(l.signals_tp_pips(s.tpPips.round()),
-                    style: AppTypography.label(color: AppColors.textSecondary)),
+                Text(l.signals_tp_pips(s.tpPips.round()), style: AppTypography.label(color: AppColors.textSecondary)),
               ],
             ),
           ),
           const SizedBox(height: 16),
-          // Баға
+          // Баға (бонус)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(l.signals_price_label, style: AppTypography.bodyMedium(color: AppColors.textSecondary)),
-              Text(l.signals_price_tg(price),
-                  style: AppTypography.bodyMedium(color: AppColors.textSecondary)
-                      .copyWith(decoration: bonusUsed > 0 ? TextDecoration.lineThrough : null)),
+              Text(l.promo_bonus_amount(cost), style: AppTypography.h2().copyWith(color: AppColors.gold)),
             ],
           ),
-          if (bonusUsed > 0) ...[
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(l.promo_bonus_balance, style: AppTypography.bodyMedium(color: AppColors.profitGreen)),
-                Text('− ${l.promo_bonus_amount(bonusUsed)}', style: AppTypography.bodyMedium(color: AppColors.profitGreen)),
-              ],
+          const SizedBox(height: 8),
+          // Баланс
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(l.signals_your_balance, style: AppTypography.bodyMedium(color: AppColors.textSecondary)),
+              Text(l.promo_bonus_amount(balance),
+                  style: AppTypography.bodyMedium(color: canAfford ? AppColors.profitGreen : AppColors.lossRed)
+                      .copyWith(fontWeight: FontWeight.w700)),
+            ],
+          ),
+          const SizedBox(height: 20),
+          if (canAfford)
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: _busy ? null : () => _unlock(l, cost),
+                icon: _busy
+                    ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                    : const Icon(Icons.lock_open, size: 18),
+                label: Text(_busy ? l.signals_paying : l.signals_unlock_for(cost)),
+              ),
+            )
+          else ...[
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.lossRed.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.lossRed.withValues(alpha: 0.25)),
+              ),
+              child: Text(l.signals_not_enough(shortfall),
+                  style: AppTypography.bodySmall(color: AppColors.lossRed).copyWith(fontWeight: FontWeight.w600)),
             ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(l.signals_to_pay, style: AppTypography.bodyMedium(color: AppColors.textSecondary)),
-                Text(l.signals_price_tg(payable),
-                    style: AppTypography.h2().copyWith(color: AppColors.gold)),
-              ],
-            ),
-          ] else ...[
-            const SizedBox(height: 8),
-            Align(
-              alignment: Alignment.centerRight,
-              child: Text(l.signals_price_tg(payable),
-                  style: AppTypography.h2().copyWith(color: AppColors.gold)),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                onPressed: () => Share.share(l.promo_share_message(p.promoCode, kPromoBonusTg)),
+                icon: const Icon(Icons.ios_share, size: 18),
+                label: Text(l.promo_share),
+              ),
             ),
           ],
-          const SizedBox(height: 20),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: _paying ? null : () => _pay(l, bonusUsed),
-              icon: _paying
-                  ? const SizedBox(
-                      width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                  : const Icon(Icons.account_balance_wallet, size: 18),
-              label: Text(_paying
-                  ? l.signals_paying
-                  : (payable > 0 ? l.signals_pay_kaspi(payable) : l.signals_unlock_with_bonus)),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Center(
-            child: Text(l.signals_pay_secure,
-                style: AppTypography.label(color: AppColors.textMuted).copyWith(fontSize: 10)),
-          ),
         ],
       ),
     );

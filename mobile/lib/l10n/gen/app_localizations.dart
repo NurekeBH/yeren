@@ -1399,8 +1399,20 @@ abstract class AppLocalizations {
   /// No description provided for @signals_unlock_for.
   ///
   /// In kk, this message translates to:
-  /// **'{price} ₸-ге ашу'**
+  /// **'{price} бонусқа ашу'**
   String signals_unlock_for(int price);
+
+  /// No description provided for @signals_your_balance.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сіздің балансыңыз'**
+  String get signals_your_balance;
+
+  /// No description provided for @signals_not_enough.
+  ///
+  /// In kk, this message translates to:
+  /// **'{count} бонус жетпейді — досыңызды шақырыңыз'**
+  String signals_not_enough(int count);
 
   /// No description provided for @signals_pay_kaspi.
   ///

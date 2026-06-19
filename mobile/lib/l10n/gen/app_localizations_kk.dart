@@ -696,7 +696,15 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String signals_unlock_for(int price) {
-    return '$price ₸-ге ашу';
+    return '$price бонусқа ашу';
+  }
+
+  @override
+  String get signals_your_balance => 'Сіздің балансыңыз';
+
+  @override
+  String signals_not_enough(int count) {
+    return '$count бонус жетпейді — досыңызды шақырыңыз';
   }
 
   @override

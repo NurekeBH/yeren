@@ -204,13 +204,14 @@ class _MiniStat extends StatelessWidget {
   }
 }
 
-/// Жабық идеяның бағасы (₸) — алтын белгі.
+/// Жабық идеяның бағасы (бонус) — алтын белгі.
 class _PriceChip extends StatelessWidget {
   const _PriceChip({required this.priceTg});
   final int priceTg;
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
@@ -222,7 +223,7 @@ class _PriceChip extends StatelessWidget {
         children: [
           const Icon(Icons.lock, size: 11, color: AppColors.gold),
           const SizedBox(width: 3),
-          Text('$priceTg ₸', style: AppTypography.label(color: AppColors.gold).copyWith(fontWeight: FontWeight.w700)),
+          Text(l.promo_bonus_amount(priceTg), style: AppTypography.label(color: AppColors.gold).copyWith(fontWeight: FontWeight.w700)),
         ],
       ),
     );

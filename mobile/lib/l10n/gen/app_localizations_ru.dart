@@ -698,7 +698,15 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String signals_unlock_for(int price) {
-    return 'Открыть за $price ₸';
+    return 'Открыть за $price бонусов';
+  }
+
+  @override
+  String get signals_your_balance => 'Ваш баланс';
+
+  @override
+  String signals_not_enough(int count) {
+    return 'Не хватает $count бонусов — пригласите друзей';
   }
 
   @override

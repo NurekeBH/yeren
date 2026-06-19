@@ -572,7 +572,7 @@ class _Paywall extends ConsumerWidget {
               children: [
                 Text('${l.signals_tp_pips(signal.tpPips.round())}  ·  ',
                     style: AppTypography.label(color: AppColors.textMuted)),
-                Text(l.signals_price_tg(signal.priceTg),
+                Text(l.promo_bonus_amount(signal.priceTg),
                     style: AppTypography.label(color: AppColors.gold).copyWith(fontWeight: FontWeight.w700)),
               ],
             ),

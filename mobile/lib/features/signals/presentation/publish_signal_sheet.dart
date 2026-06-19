@@ -167,8 +167,8 @@ class _PublishSheetState extends ConsumerState<_PublishSheet> {
             SegmentedButton<int>(
               segments: [
                 ButtonSegment(value: 0, label: Text(l.signals_free_badge)),
-                ButtonSegment(value: 500, label: Text(l.signals_price_tg(500))),
-                ButtonSegment(value: 1000, label: Text(l.signals_price_tg(1000))),
+                ButtonSegment(value: 500, label: Text(l.promo_bonus_amount(500))),
+                ButtonSegment(value: 1000, label: Text(l.promo_bonus_amount(1000))),
               ],
               selected: {_price},
               onSelectionChanged: (s) => setState(() => _price = s.first),
