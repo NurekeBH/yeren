@@ -21,6 +21,7 @@ import { agreementRoutes } from './modules/agreement/routes.js';
 import { supportRoutes } from './modules/support/routes.js';
 import { adminRoutes } from './modules/admin/routes.js';
 import { traderAppsRoutes } from './modules/trader_apps/routes.js';
+import { ensureAdmin } from './services/bootstrap_admin.js';
 import { ingestNews } from './services/news.js';
 import { ingestCalendar } from './services/calendar.js';
 import { checkPriceAlerts } from './services/alerts.js';
@@ -83,6 +84,8 @@ process.on('SIGTERM', () => void shutdown('SIGTERM'));
 try {
   await app.listen({ port: env.PORT, host: env.HOST });
   app.log.info(`ALTYN API listening at http://${env.HOST}:${env.PORT}`);
+  // Деплойда ADMIN_PHONE/ADMIN_PASSWORD орнатылса — админ аккаунтын қамтамасыз етеміз.
+  await ensureAdmin(app.log).catch((e) => app.log.warn(e, 'ensure_admin_failed'));
 } catch (err) {
   app.log.error(err, 'failed_to_start');
   process.exit(1);

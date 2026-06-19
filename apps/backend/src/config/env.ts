@@ -25,6 +25,11 @@ const Env = z.object({
   FCM_PROJECT_ID: z.string().optional(),
   FCM_CLIENT_EMAIL: z.string().optional(),
   FCM_PRIVATE_KEY: z.string().optional(),
+
+  // Админ-панельге кіру — деплойда осы екеуін орнатыңыз. Сервер қосылғанда
+  // осы телефон/құпиясөзбен админ аккаунты автоматты жасалады/жаңартылады.
+  ADMIN_PHONE: z.string().optional(),
+  ADMIN_PASSWORD: z.string().optional(),
 });
 
 export const env = Env.parse(process.env);
