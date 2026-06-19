@@ -60,9 +60,10 @@ class _CreateAlertSheetState extends ConsumerState<_CreateAlertSheet> {
   @override
   void initState() {
     super.initState();
-    // Default баға — ағымдағы live баға (cached), болмаса refPrice.
+    // Идеядан келсе (ideaId бар) — идеяның кіру аймағының бағасын толтырамыз
+    // (refPrice = entryMid). Әйтпесе — ағымдағы live баға (cached).
     final live = ref.read(cachedQuotesProvider)[widget.instrument]?.price;
-    _ref = live ?? widget.refPrice;
+    _ref = widget.ideaId != null ? widget.refPrice : (live ?? widget.refPrice);
     _price = TextEditingController(text: _ref.toStringAsFixed(2));
   }
 
