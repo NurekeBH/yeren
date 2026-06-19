@@ -34,9 +34,9 @@ class _IntelModuleState extends ConsumerState<IntelModule> {
           children: [
             Row(
               children: [
-                const Icon(Icons.bolt, color: AppColors.lossRed, size: 18),
+                const Icon(Icons.insights, color: AppColors.gold, size: 18),
                 const SizedBox(width: 6),
-                Text(l.home_intel_module, style: AppTypography.label(color: AppColors.lossRed)),
+                Text(l.home_intel_module, style: AppTypography.label(color: AppColors.gold)),
                 const Spacer(),
                 IconButton(
                   tooltip: l.home_intel_open_full,
