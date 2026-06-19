@@ -7,6 +7,7 @@ import { clearToken, getToken } from '@/lib/api';
 
 const NAV = [
   { href: '/dashboard', label: 'Обзор' },
+  { href: '/dashboard/users', label: 'Пользователи' },
   { href: '/dashboard/subscriptions', label: 'Подписки' },
   { href: '/dashboard/signals', label: 'Сигналы / Идеи' },
   { href: '/dashboard/providers', label: 'Провайдеры' },

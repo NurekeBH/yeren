@@ -118,12 +118,13 @@ export async function authRoutes(app: FastifyInstance) {
     if (!parsed.success) return reply.code(400).send({ error: 'bad_request' });
     const { phone, password } = parsed.data;
 
-    const { rows } = await query<{ id: string; password_hash: string; is_admin: boolean }>(
-      'select id, password_hash, is_admin from users where phone = $1',
+    const { rows } = await query<{ id: string; password_hash: string; is_admin: boolean; is_blocked: boolean }>(
+      'select id, password_hash, is_admin, is_blocked from users where phone = $1',
       [phone],
     );
     const user = rows[0];
     if (!user) return reply.code(401).send({ error: 'invalid_credentials' });
+    if (user.is_blocked) return reply.code(403).send({ error: 'account_blocked' });
 
     const ok = await bcrypt.compare(password, user.password_hash);
     if (!ok) return reply.code(401).send({ error: 'invalid_credentials' });

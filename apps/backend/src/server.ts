@@ -19,6 +19,7 @@ import { alertsRoutes } from './modules/alerts/routes.js';
 import { libraryRoutes } from './modules/library/routes.js';
 import { agreementRoutes } from './modules/agreement/routes.js';
 import { supportRoutes } from './modules/support/routes.js';
+import { adminRoutes } from './modules/admin/routes.js';
 import { ingestNews } from './services/news.js';
 import { ingestCalendar } from './services/calendar.js';
 import { checkPriceAlerts } from './services/alerts.js';
@@ -60,6 +61,7 @@ await app.register(async (api) => {
   await libraryRoutes(api);
   await agreementRoutes(api);
   await supportRoutes(api);
+  await adminRoutes(api);
 }, { prefix: '/api/v1' });
 
 const shutdown = async (signal: string) => {

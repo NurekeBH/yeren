@@ -25,6 +25,7 @@ create table if not exists users (
   referred_by   text,                                   -- тіркелуде енгізілген промокод
   bonus_balance integer not null default 0,             -- ₸ бонус (идея ашқанда жұмсалады)
   referral_count integer not null default 0,            -- кодпен тіркелгендер саны
+  is_blocked    boolean not null default false,         -- админ бұғаттаған (кіре алмайды)
   created_at    timestamptz default now(),
   updated_at    timestamptz default now()
 );
@@ -35,6 +36,7 @@ alter table users add column if not exists promo_code text unique;
 alter table users add column if not exists referred_by text;
 alter table users add column if not exists bonus_balance integer not null default 0;
 alter table users add column if not exists referral_count integer not null default 0;
+alter table users add column if not exists is_blocked boolean not null default false;
 create unique index if not exists users_promo_code_idx on users(promo_code) where promo_code is not null;
 
 -- ─────────────────── SESSIONS / REFRESH TOKENS ───────────────────
