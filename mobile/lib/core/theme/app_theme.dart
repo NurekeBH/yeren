@@ -35,7 +35,7 @@ class AppTheme {
         surfaceTintColor: Colors.transparent,
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(18),
           side: BorderSide(color: AppColors.border),
         ),
         margin: EdgeInsets.zero,
@@ -95,13 +95,15 @@ class AppTheme {
         labelStyle: AppTypography.bodySmall(color: AppColors.textPrimary),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       ),
-      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: AppColors.cardSurface,
         selectedItemColor: AppColors.gold,
         unselectedItemColor: AppColors.textMuted,
         type: BottomNavigationBarType.fixed,
         showUnselectedLabels: true,
         elevation: 12,
+        selectedLabelStyle: AppTypography.label(color: AppColors.gold).copyWith(fontWeight: FontWeight.w700),
+        unselectedLabelStyle: AppTypography.label(color: AppColors.textMuted),
       ),
       dividerTheme: DividerThemeData(color: AppColors.border.withValues(alpha: 0.8), thickness: 1, space: 1),
     );
