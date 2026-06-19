@@ -1561,6 +1561,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get promo_my_bonuses => 'My bonuses';
 
   @override
+  String get promo_bonus_tile_sub => 'Promo code · bonus · top up';
+
+  @override
   String promo_bonus_amount(int count) {
     return '$count bonus';
   }

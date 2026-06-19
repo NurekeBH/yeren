@@ -527,6 +527,7 @@
   "promo_bonus_balance": "Бонусный баланс",
   "promo_bonus_balance_desc": "Применяется автоматически при открытии идеи",
   "promo_my_bonuses": "Мои бонусы",
+  "promo_bonus_tile_sub": "Промокод · бонусы · пополнение",
   "promo_bonus_amount": "{count} бонусов",
   "promo_my_code_title": "Мой промокод",
   "promo_my_code_desc": "Новый пользователь получает {bonus} бонусов при регистрации по вашему коду",

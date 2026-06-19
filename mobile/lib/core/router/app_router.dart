@@ -28,6 +28,7 @@ import '../../features/onboarding/presentation/intro_screen.dart';
 import '../../features/splash/presentation/splash_screen.dart';
 import '../../features/profile/application/profile_controller.dart';
 import '../../features/profile/presentation/edit_profile_screen.dart';
+import '../../features/profile/presentation/bonuses_screen.dart';
 import '../../features/profile/presentation/notifications_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
 import '../../features/signals/presentation/provider_detail_screen.dart';
@@ -108,6 +109,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/calendar', builder: (_, _) => const AuthGuard(child: CalendarScreen())),
       GoRoute(path: '/notifications', builder: (_, _) => const AuthGuard(child: NotificationsScreen())),
       GoRoute(path: '/profile/edit', builder: (_, _) => const AuthGuard(child: EditProfileScreen())),
+      GoRoute(path: '/bonuses', builder: (_, _) => const AuthGuard(child: BonusesScreen())),
       GoRoute(path: '/alerts', builder: (_, _) => const AuthGuard(child: PriceAlertsScreen())),
       GoRoute(path: '/legal/agreement', builder: (_, _) => const UserAgreementScreen(showAccept: false)),
       GoRoute(path: '/events', builder: (_, _) => const AuthGuard(child: EventsScreen())),

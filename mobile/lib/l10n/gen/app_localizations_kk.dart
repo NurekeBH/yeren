@@ -1560,6 +1560,9 @@ class AppLocalizationsKk extends AppLocalizations {
   String get promo_my_bonuses => 'Менің бонустарым';
 
   @override
+  String get promo_bonus_tile_sub => 'Промокод · бонус · толтыру';
+
+  @override
   String promo_bonus_amount(int count) {
     return '$count бонус';
   }

@@ -527,6 +527,7 @@
   "promo_bonus_balance": "Bonus balance",
   "promo_bonus_balance_desc": "Applied automatically when unlocking an idea",
   "promo_my_bonuses": "My bonuses",
+  "promo_bonus_tile_sub": "Promo code · bonus · top up",
   "promo_bonus_amount": "{count} bonus",
   "promo_my_code_title": "My promo code",
   "promo_my_code_desc": "A new user gets {bonus} bonus when they register with your code",

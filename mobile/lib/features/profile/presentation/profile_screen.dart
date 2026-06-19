@@ -135,8 +135,8 @@ class ProfileScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
-          // «Менің бонустарым» — бір модуль (баланс + қалай табу + код + бөлісу).
-          const PromoSection(),
+          // «Менің бонустарым» — ықшам тілке, толық бетке өтеді (/bonuses).
+          const BonusBalanceTile(),
           // Расталған трейдер: расталса — мәртебе; әйтпесе — өтінім беру.
           if (profile.isVerifiedTrader)
             Card(

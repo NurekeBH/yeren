@@ -3016,6 +3016,12 @@ abstract class AppLocalizations {
   /// **'Менің бонустарым'**
   String get promo_my_bonuses;
 
+  /// No description provided for @promo_bonus_tile_sub.
+  ///
+  /// In kk, this message translates to:
+  /// **'Промокод · бонус · толтыру'**
+  String get promo_bonus_tile_sub;
+
   /// No description provided for @promo_bonus_amount.
   ///
   /// In kk, this message translates to:

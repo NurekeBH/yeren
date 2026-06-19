@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../core/theme/app_colors.dart';
@@ -11,6 +12,54 @@ import '../../../l10n/gen/app_localizations.dart';
 import '../application/profile_controller.dart';
 import '../application/promo_registry.dart';
 import 'top_up_bonus_sheet.dart';
+
+/// Профильдегі ықшам «Менің бонустарым» тілкесі — толық бетке өтеді (/bonuses).
+/// Реферал табысын ашылғанда есептейді (баланс жаңа болады).
+class BonusBalanceTile extends ConsumerStatefulWidget {
+  const BonusBalanceTile({super.key});
+
+  @override
+  ConsumerState<BonusBalanceTile> createState() => _BonusBalanceTileState();
+}
+
+class _BonusBalanceTileState extends ConsumerState<BonusBalanceTile> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) ref.read(profileControllerProvider.notifier).creditReferralEarnings();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final p = ref.watch(profileControllerProvider);
+    return Card(
+      child: ListTile(
+        leading: Container(
+          width: 38,
+          height: 38,
+          decoration: BoxDecoration(color: AppColors.gold.withValues(alpha: 0.14), shape: BoxShape.circle),
+          child: const Icon(Icons.card_giftcard, size: 19, color: AppColors.gold),
+        ),
+        title: Text(l.promo_my_bonuses, style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w600)),
+        subtitle: Text(l.promo_bonus_tile_sub, style: AppTypography.bodySmall()),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(l.promo_bonus_amount(p.bonusBalance),
+                style: AppTypography.bodyMedium(color: AppColors.gold).copyWith(fontWeight: FontWeight.w700)),
+            const SizedBox(width: 4),
+            const Icon(Icons.chevron_right, size: 20, color: AppColors.textMuted),
+          ],
+        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        onTap: () => context.push('/bonuses'),
+      ),
+    );
+  }
+}
 
 /// «Менің бонустарым» — бонусқа қатысты барлығы бір картада (баланс, қалай табу,
 /// промокод, бөлісу CTA, тіркелулер саны, код енгізу).

@@ -1563,6 +1563,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get promo_my_bonuses => 'Мои бонусы';
 
   @override
+  String get promo_bonus_tile_sub => 'Промокод · бонусы · пополнение';
+
+  @override
   String promo_bonus_amount(int count) {
     return '$count бонусов';
   }

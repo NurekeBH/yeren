@@ -534,6 +534,7 @@
   "promo_bonus_balance": "Бонус баланс",
   "promo_bonus_balance_desc": "Идея ашқанда автоматты қолданылады",
   "promo_my_bonuses": "Менің бонустарым",
+  "promo_bonus_tile_sub": "Промокод · бонус · толтыру",
   "promo_bonus_amount": "{count} бонус",
   "@promo_bonus_amount": {"placeholders": {"count": {"type": "int"}}},
   "promo_my_code_title": "Менің промокодым",
