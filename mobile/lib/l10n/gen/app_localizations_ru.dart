@@ -701,7 +701,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String signals_unlock_for(int price) {
-    return 'Смотреть полную идею · $price бонусов';
+    return 'Смотреть идею · $price бон.';
   }
 
   @override

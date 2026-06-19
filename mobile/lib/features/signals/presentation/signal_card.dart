@@ -159,7 +159,7 @@ class SignalCard extends ConsumerWidget {
                         child: ElevatedButton.icon(
                           onPressed: () => showUnlockSignalSheet(context, ref, signal),
                           icon: const Icon(Icons.lock_open, size: 16),
-                          label: Text(l.signals_unlock_for(signal.priceTg)),
+                          label: Text(l.signals_unlock_for(signal.priceTg), maxLines: 1, overflow: TextOverflow.ellipsis),
                         ),
                       ),
                     ],
