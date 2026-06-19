@@ -108,15 +108,16 @@ class SignalCard extends ConsumerWidget {
                     const SizedBox(width: 8),
                     Text(signal.pair, style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w600)),
                     const Spacer(),
-                    // Баға/құлып белгісі тек белсенді идеяларға (жабықтарда — тек статус).
+                    // Тегін/ашылған белгісі ғана. Ақылы идея бағасы — тек төмендегі
+                    // батырмада (қайталанбайды).
                     if (isActive) ...[
-                      if (signal.isFree)
-                        _FreeChip(l: l)
-                      else if (purchased)
-                        _UnlockedChip(l: l)
-                      else
-                        _PriceChip(priceTg: signal.priceTg),
-                      const SizedBox(width: 6),
+                      if (signal.isFree) ...[
+                        _FreeChip(l: l),
+                        const SizedBox(width: 6),
+                      ] else if (purchased) ...[
+                        _UnlockedChip(l: l),
+                        const SizedBox(width: 6),
+                      ],
                     ],
                     _StatusChip(status: signal.status, l: l),
                   ],
@@ -204,32 +205,6 @@ class _MiniStat extends StatelessWidget {
   }
 }
 
-/// Жабық идеяның бағасы (бонус) — алтын белгі.
-class _PriceChip extends StatelessWidget {
-  const _PriceChip({required this.priceTg});
-  final int priceTg;
-
-  @override
-  Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: AppColors.gold.withValues(alpha: 0.14),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.lock, size: 11, color: AppColors.gold),
-          const SizedBox(width: 3),
-          Text(l.promo_bonus_amount(priceTg), style: AppTypography.label(color: AppColors.gold).copyWith(fontWeight: FontWeight.w700)),
-        ],
-      ),
-    );
-  }
-}
-
 /// Тегін идея — жасыл «Тегін» белгісі.
 class _FreeChip extends StatelessWidget {
   const _FreeChip({required this.l});
@@ -281,8 +256,16 @@ class _StatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Белсенді идея «Активные» табында тұр — мәтін артық, тек жасыл нүкте.
+    if (status == SignalStatus.active) {
+      return Container(
+        width: 9,
+        height: 9,
+        decoration: const BoxDecoration(color: AppColors.profitGreen, shape: BoxShape.circle),
+      );
+    }
     final (text, color) = switch (status) {
-      SignalStatus.active => (l.signals_status_active, AppColors.gold),
+      SignalStatus.active => (l.signals_status_active, AppColors.profitGreen),
       SignalStatus.closedTp1 => (l.signals_status_tp1, AppColors.profitGreen),
       SignalStatus.closedTp2 => (l.signals_status_tp2, AppColors.profitGreen),
       SignalStatus.closedTp3 => (l.signals_status_tp3, AppColors.profitGreen),
