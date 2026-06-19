@@ -52,8 +52,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 style={{
                   padding: '9px 11px',
                   borderRadius: 8,
-                  color: active ? '#1a1a1a' : 'var(--text)',
-                  background: active ? 'var(--gold)' : 'transparent',
+                  color: active ? '#fff' : 'var(--text)',
+                  background: active ? 'var(--accent)' : 'transparent',
                   fontWeight: active ? 700 : 500,
                 }}
               >
