@@ -145,6 +145,7 @@
   "prov_follow": "Follow",
   "prov_following": "Following",
   "prov_follow_toast": "You follow this trader (free)",
+  "prov_follow_note": "We'll notify you when they post a new idea",
   "posts_published": "Published Ideas",
   "posts_empty": "No posts yet",
   "posts_comments_title": "Comments",

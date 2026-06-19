@@ -96,6 +96,18 @@ class ProviderCard extends ConsumerWidget {
                           label: Text(l.prov_follow),
                         ),
                 ),
+                const SizedBox(height: 6),
+                // Бақылау = жаңа идея жарияланғанда хабарландыру келеді.
+                Row(
+                  children: [
+                    const Icon(Icons.notifications_active_outlined, size: 13, color: AppColors.textMuted),
+                    const SizedBox(width: 5),
+                    Expanded(
+                      child: Text(l.prov_follow_note,
+                          style: AppTypography.label(color: AppColors.textMuted)),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),

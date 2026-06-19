@@ -444,6 +444,9 @@ class AppLocalizationsKk extends AppLocalizations {
   String get prov_follow_toast => 'Трейдерді бақылайсыз (тегін)';
 
   @override
+  String get prov_follow_note => 'Жаңа идея жариялағанда хабарландыру келеді';
+
+  @override
   String get posts_published => 'Жарияланған идеялар';
 
   @override

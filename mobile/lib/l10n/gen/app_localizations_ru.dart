@@ -444,6 +444,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get prov_follow_toast => 'Вы отслеживаете трейдера (бесплатно)';
 
   @override
+  String get prov_follow_note => 'Уведомим, когда он опубликует новую идею';
+
+  @override
   String get posts_published => 'Опубликованные идеи';
 
   @override

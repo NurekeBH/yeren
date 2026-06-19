@@ -444,6 +444,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get prov_follow_toast => 'You follow this trader (free)';
 
   @override
+  String get prov_follow_note => 'We\'ll notify you when they post a new idea';
+
+  @override
   String get posts_published => 'Published Ideas';
 
   @override

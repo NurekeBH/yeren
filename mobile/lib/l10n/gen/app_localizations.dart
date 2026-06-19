@@ -934,6 +934,12 @@ abstract class AppLocalizations {
   /// **'Трейдерді бақылайсыз (тегін)'**
   String get prov_follow_toast;
 
+  /// No description provided for @prov_follow_note.
+  ///
+  /// In kk, this message translates to:
+  /// **'Жаңа идея жариялағанда хабарландыру келеді'**
+  String get prov_follow_note;
+
   /// No description provided for @posts_published.
   ///
   /// In kk, this message translates to:
