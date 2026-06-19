@@ -280,6 +280,21 @@ create index if not exists signals_provider_idx on signals(provider_id);
 alter table signals add column if not exists created_by uuid references users(id) on delete set null;
 create index if not exists signals_created_by_idx on signals(created_by);
 
+-- ─────────────────── TRADER APPLICATIONS (расталған трейдер өтінімі) ───────────────────
+create table if not exists trader_applications (
+  id           uuid primary key default uuid_generate_v4(),
+  user_id      uuid not null references users(id) on delete cascade,
+  years        text,
+  about        text not null,
+  proof        text,
+  status       text not null default 'pending',         -- pending | approved | rejected
+  reviewed_by  uuid references users(id),
+  reviewed_at  timestamptz,
+  created_at   timestamptz default now()
+);
+create unique index if not exists trader_apps_one_pending on trader_applications(user_id) where status = 'pending';
+create index if not exists trader_apps_status_idx on trader_applications(status, created_at desc);
+
 -- ─────────────────── EVENTS (мастер-класс / лайв-трейд / вебинар) ───────────────────
 create table if not exists events (
   id           uuid primary key default uuid_generate_v4(),

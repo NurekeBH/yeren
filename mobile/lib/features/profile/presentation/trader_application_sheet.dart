@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/config/app_config.dart';
+import '../../../core/network/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
@@ -42,10 +44,20 @@ class _State extends ConsumerState<_TraderApplicationSheet> {
   Future<void> _send(AppLocalizations l) async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _busy = true);
-    // Mock: өтінім «жіберілді» деп есептейміз әрі трейдер режимін қосамыз (тестілеу үшін).
-    // Нақты backend-те бұл админ-модерацияға түсетін еді.
-    await Future<void>.delayed(const Duration(milliseconds: 700));
-    ref.read(profileControllerProvider.notifier).toggleVerifiedTrader();
+    if (AppConfig.useRemoteApi) {
+      // Remote: өтінім админ модерациясына түседі (бірден трейдер БОЛМАЙДЫ).
+      try {
+        await ref.read(apiServiceProvider).submitTraderApplication(
+              about: _about.text.trim(),
+              years: _years.text.trim(),
+              proof: _proof.text.trim(),
+            );
+      } catch (_) {}
+    } else {
+      // Mock (демо): админ жоқ — бірден трейдер режимін қосамыз.
+      await Future<void>.delayed(const Duration(milliseconds: 700));
+      ref.read(profileControllerProvider.notifier).toggleVerifiedTrader();
+    }
     if (!mounted) return;
     Navigator.of(context).pop();
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.trader_apply_sent)));

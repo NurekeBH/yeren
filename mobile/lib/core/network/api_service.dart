@@ -156,6 +156,11 @@ class ApiService {
   /// Бонусты толтыру (Kaspi төлемінен кейін) — backend балансқа қосады.
   Future<void> topUpBonus(int amount) =>
       _send('POST', '/bonus/topup', body: {'amount': amount});
+
+  // ─────────────── Trader application (расталған трейдер өтінімі) ───────────────
+  /// Расталған трейдер болуға өтінім жіберу (админ модерациясына түседі).
+  Future<void> submitTraderApplication({required String about, String? years, String? proof}) =>
+      _send('POST', '/trader-applications', body: {'about': about, 'years': years, 'proof': proof});
 }
 
 final apiServiceProvider = Provider<ApiService>((ref) => ApiService(ref.watch(apiClientProvider)));
