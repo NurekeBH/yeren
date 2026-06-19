@@ -147,25 +147,23 @@ class _PromoSectionState extends ConsumerState<PromoSection> {
               ],
             ),
             const SizedBox(height: 10),
-            // ── CTA: бөлісу (тегін табу) + Kaspi-мен толтыру ──
-            Row(
-              children: [
-                Expanded(
-                  child: FilledButton.icon(
-                    onPressed: () => Share.share(l.promo_share_message(p.promoCode, kPromoBonusTg)),
-                    icon: const Icon(Icons.ios_share, size: 18),
-                    label: Text(l.promo_share),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () => showTopUpBonusSheet(context),
-                    icon: const Icon(Icons.add_card, size: 18),
-                    label: Text(l.bonus_topup),
-                  ),
-                ),
-              ],
+            // ── CTA: толтыру (негізгі) + бөлісу (тегін табу) — толық ені, бөлек жол ──
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                onPressed: () => showTopUpBonusSheet(context),
+                icon: const Icon(Icons.add_card, size: 18),
+                label: Text(l.bonus_topup, maxLines: 1, overflow: TextOverflow.ellipsis),
+              ),
+            ),
+            const SizedBox(height: 8),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () => Share.share(l.promo_share_message(p.promoCode, kPromoBonusTg)),
+                icon: const Icon(Icons.ios_share, size: 18),
+                label: Text(l.promo_share, maxLines: 1, overflow: TextOverflow.ellipsis),
+              ),
             ),
             const SizedBox(height: 10),
             // ── Footer: тіркелулер саны + код енгізу ──

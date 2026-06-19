@@ -545,6 +545,6 @@
   "promo_share_message": "🎁 My ALTYN promo code: {code}. Get {bonus} bonus when you sign up! ALTYN — gold (XAU/USD) trading platform.",
   "bonus_topup_title": "Top up bonus",
   "bonus_topup_desc": "Choose a pack — pay with Kaspi",
-  "bonus_topup": "Top up bonus",
+  "bonus_topup": "Top up bonus with Kaspi",
   "bonus_topup_success": "Balance topped up: +{amount} bonus"
 }

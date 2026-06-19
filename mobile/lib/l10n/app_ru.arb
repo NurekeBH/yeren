@@ -545,6 +545,6 @@
   "promo_share_message": "🎁 Мой промокод ALTYN: {code}. Получи {bonus} бонусов при регистрации! ALTYN — платформа для трейдинга золотом (XAU/USD).",
   "bonus_topup_title": "Пополнить бонусы",
   "bonus_topup_desc": "Выберите пакет — оплата через Kaspi",
-  "bonus_topup": "Пополнить бонусы",
+  "bonus_topup": "Пополнить бонусы через Kaspi",
   "bonus_topup_success": "Баланс пополнен: +{amount} бонусов"
 }

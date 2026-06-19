@@ -559,7 +559,7 @@
   "@promo_share_message": {"placeholders": {"code": {"type": "String"}, "bonus": {"type": "int"}}},
   "bonus_topup_title": "Бонус толтыру",
   "bonus_topup_desc": "Пакет таңдаңыз — Kaspi арқылы төлеңіз",
-  "bonus_topup": "Бонус толтыру",
+  "bonus_topup": "Kaspi-мен бонус толтыру",
   "bonus_topup_success": "Баланс толтырылды: +{amount} бонус",
   "@bonus_topup_success": {"placeholders": {"amount": {"type": "int"}}}
 }

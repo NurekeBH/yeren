@@ -1629,7 +1629,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bonus_topup_desc => 'Choose a pack — pay with Kaspi';
 
   @override
-  String get bonus_topup => 'Top up bonus';
+  String get bonus_topup => 'Top up bonus with Kaspi';
 
   @override
   String bonus_topup_success(int amount) {

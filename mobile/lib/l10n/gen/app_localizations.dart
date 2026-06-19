@@ -3127,7 +3127,7 @@ abstract class AppLocalizations {
   /// No description provided for @bonus_topup.
   ///
   /// In kk, this message translates to:
-  /// **'Бонус толтыру'**
+  /// **'Kaspi-мен бонус толтыру'**
   String get bonus_topup;
 
   /// No description provided for @bonus_topup_success.

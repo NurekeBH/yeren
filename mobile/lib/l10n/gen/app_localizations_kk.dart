@@ -1628,7 +1628,7 @@ class AppLocalizationsKk extends AppLocalizations {
   String get bonus_topup_desc => 'Пакет таңдаңыз — Kaspi арқылы төлеңіз';
 
   @override
-  String get bonus_topup => 'Бонус толтыру';
+  String get bonus_topup => 'Kaspi-мен бонус толтыру';
 
   @override
   String bonus_topup_success(int amount) {

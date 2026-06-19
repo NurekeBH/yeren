@@ -1631,7 +1631,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get bonus_topup_desc => 'Выберите пакет — оплата через Kaspi';
 
   @override
-  String get bonus_topup => 'Пополнить бонусы';
+  String get bonus_topup => 'Пополнить бонусы через Kaspi';
 
   @override
   String bonus_topup_success(int amount) {
