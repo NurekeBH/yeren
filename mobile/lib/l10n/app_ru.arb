@@ -231,7 +231,7 @@
   "@signals_tp_pips": {"placeholders": {"pips": {"type": "int"}}},
   "signals_price_tg": "{price} ₸",
   "@signals_price_tg": {"placeholders": {"price": {"type": "int"}}},
-  "signals_unlock_for": "Открыть за {price} бонусов",
+  "signals_unlock_for": "Смотреть полную идею · {price} бонусов",
   "@signals_unlock_for": {"placeholders": {"price": {"type": "int"}}},
   "signals_your_balance": "Ваш баланс",
   "signals_not_enough": "Не хватает {count} бонусов — пригласите друзей",
@@ -541,5 +541,9 @@
   "signals_to_pay": "К оплате",
   "signals_unlock_with_bonus": "Открыть бонусом",
   "promo_share": "Поделиться промокодом",
-  "promo_share_message": "🎁 Мой промокод ALTYN: {code}. Получи {bonus} бонусов при регистрации! ALTYN — платформа для трейдинга золотом (XAU/USD)."
+  "promo_share_message": "🎁 Мой промокод ALTYN: {code}. Получи {bonus} бонусов при регистрации! ALTYN — платформа для трейдинга золотом (XAU/USD).",
+  "bonus_topup_title": "Пополнить бонусы",
+  "bonus_topup_desc": "Выберите пакет — оплата через Kaspi",
+  "bonus_topup": "Пополнить бонусы",
+  "bonus_topup_success": "Баланс пополнен: +{amount} бонусов"
 }

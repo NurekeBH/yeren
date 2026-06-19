@@ -236,7 +236,7 @@
   "@signals_tp_pips": {"placeholders": {"pips": {"type": "int"}}},
   "signals_price_tg": "{price} ₸",
   "@signals_price_tg": {"placeholders": {"price": {"type": "int"}}},
-  "signals_unlock_for": "{price} бонусқа ашу",
+  "signals_unlock_for": "Толық идеяны көру · {price} бонус",
   "@signals_unlock_for": {"placeholders": {"price": {"type": "int"}}},
   "signals_your_balance": "Сіздің балансыңыз",
   "signals_not_enough": "{count} бонус жетпейді — досыңызды шақырыңыз",
@@ -555,5 +555,10 @@
   "signals_unlock_with_bonus": "Бонуспен ашу",
   "promo_share": "Промокодты бөлісу",
   "promo_share_message": "🎁 ALTYN промокодым: {code}. Тіркелгенде {bonus} бонус ал! ALTYN — алтын (XAU/USD) трейдинг платформасы.",
-  "@promo_share_message": {"placeholders": {"code": {"type": "String"}, "bonus": {"type": "int"}}}
+  "@promo_share_message": {"placeholders": {"code": {"type": "String"}, "bonus": {"type": "int"}}},
+  "bonus_topup_title": "Бонус толтыру",
+  "bonus_topup_desc": "Пакет таңдаңыз — Kaspi арқылы төлеңіз",
+  "bonus_topup": "Бонус толтыру",
+  "bonus_topup_success": "Баланс толтырылды: +{amount} бонус",
+  "@bonus_topup_success": {"placeholders": {"amount": {"type": "int"}}}
 }

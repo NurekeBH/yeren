@@ -7,6 +7,7 @@ import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/signal.dart';
 import '../../profile/application/profile_controller.dart';
+import '../../profile/presentation/top_up_bonus_sheet.dart';
 import '../application/signal_unlock_controller.dart';
 
 /// Идеяны ашу sheet-і. Идея бонус ұпайымен ашылады (баланстан шегеріледі).
@@ -160,9 +161,28 @@ class _UnlockSheetState extends ConsumerState<_UnlockSheet> {
                   style: AppTypography.bodySmall(color: AppColors.lossRed).copyWith(fontWeight: FontWeight.w600)),
             ),
             const SizedBox(height: 12),
+            // Негізгі: Kaspi арқылы бонус толтыру (жетпеген сомаға жетеді).
             SizedBox(
               width: double.infinity,
-              child: FilledButton.icon(
+              child: ElevatedButton.icon(
+                onPressed: _busy
+                    ? null
+                    : () async {
+                        final ok = await showTopUpBonusSheet(context, suggested: shortfall);
+                        // Толтырғаннан кейін баланс жетсе — бірден ашамыз.
+                        if (ok && mounted && ref.read(profileControllerProvider).bonusBalance >= cost) {
+                          await _unlock(l, cost);
+                        }
+                      },
+                icon: const Icon(Icons.add_card, size: 18),
+                label: Text(l.bonus_topup),
+              ),
+            ),
+            const SizedBox(height: 8),
+            // Қосымша: досын шақырып тегін бонус табу.
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
                 onPressed: () => Share.share(l.promo_share_message(p.promoCode, kPromoBonusTg)),
                 icon: const Icon(Icons.ios_share, size: 18),
                 label: Text(l.promo_share),

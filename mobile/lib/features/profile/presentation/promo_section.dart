@@ -10,6 +10,7 @@ import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../application/profile_controller.dart';
 import '../application/promo_registry.dart';
+import 'top_up_bonus_sheet.dart';
 
 /// «Менің бонустарым» — бонусқа қатысты барлығы бір картада (баланс, қалай табу,
 /// промокод, бөлісу CTA, тіркелулер саны, код енгізу).
@@ -97,14 +98,25 @@ class _PromoSectionState extends ConsumerState<PromoSection> {
               ],
             ),
             const SizedBox(height: 10),
-            // ── CTA: бөлісу ──
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton.icon(
-                onPressed: () => Share.share(l.promo_share_message(p.promoCode, kPromoBonusTg)),
-                icon: const Icon(Icons.ios_share, size: 18),
-                label: Text(l.promo_share),
-              ),
+            // ── CTA: бөлісу (тегін табу) + Kaspi-мен толтыру ──
+            Row(
+              children: [
+                Expanded(
+                  child: FilledButton.icon(
+                    onPressed: () => Share.share(l.promo_share_message(p.promoCode, kPromoBonusTg)),
+                    icon: const Icon(Icons.ios_share, size: 18),
+                    label: Text(l.promo_share),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => showTopUpBonusSheet(context),
+                    icon: const Icon(Icons.add_card, size: 18),
+                    label: Text(l.bonus_topup),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 10),
             // ── Footer: тіркелулер саны + код енгізу ──

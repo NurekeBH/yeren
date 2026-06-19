@@ -699,7 +699,7 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String signals_unlock_for(int price) {
-    return '$price бонусқа ашу';
+    return 'Толық идеяны көру · $price бонус';
   }
 
   @override
@@ -1616,5 +1616,19 @@ class AppLocalizationsKk extends AppLocalizations {
   @override
   String promo_share_message(String code, int bonus) {
     return '🎁 ALTYN промокодым: $code. Тіркелгенде $bonus бонус ал! ALTYN — алтын (XAU/USD) трейдинг платформасы.';
+  }
+
+  @override
+  String get bonus_topup_title => 'Бонус толтыру';
+
+  @override
+  String get bonus_topup_desc => 'Пакет таңдаңыз — Kaspi арқылы төлеңіз';
+
+  @override
+  String get bonus_topup => 'Бонус толтыру';
+
+  @override
+  String bonus_topup_success(int amount) {
+    return 'Баланс толтырылды: +$amount бонус';
   }
 }

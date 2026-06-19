@@ -152,6 +152,10 @@ class ApiService {
   /// Промокод қолдану (тіркелуден кейін) — backend бонус есептейді.
   Future<void> redeemPromo(String code) =>
       _send('POST', '/promo/redeem', body: {'code': code});
+
+  /// Бонусты толтыру (Kaspi төлемінен кейін) — backend балансқа қосады.
+  Future<void> topUpBonus(int amount) =>
+      _send('POST', '/bonus/topup', body: {'amount': amount});
 }
 
 final apiServiceProvider = Provider<ApiService>((ref) => ApiService(ref.watch(apiClientProvider)));

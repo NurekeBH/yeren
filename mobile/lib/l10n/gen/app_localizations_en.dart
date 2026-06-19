@@ -700,7 +700,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String signals_unlock_for(int price) {
-    return 'Unlock for $price bonus';
+    return 'See the full idea · $price bonus';
   }
 
   @override
@@ -1617,5 +1617,19 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String promo_share_message(String code, int bonus) {
     return '🎁 My ALTYN promo code: $code. Get $bonus bonus when you sign up! ALTYN — gold (XAU/USD) trading platform.';
+  }
+
+  @override
+  String get bonus_topup_title => 'Top up bonus';
+
+  @override
+  String get bonus_topup_desc => 'Choose a pack — pay with Kaspi';
+
+  @override
+  String get bonus_topup => 'Top up bonus';
+
+  @override
+  String bonus_topup_success(int amount) {
+    return 'Balance topped up: +$amount bonus';
   }
 }

@@ -1405,7 +1405,7 @@ abstract class AppLocalizations {
   /// No description provided for @signals_unlock_for.
   ///
   /// In kk, this message translates to:
-  /// **'{price} бонусқа ашу'**
+  /// **'Толық идеяны көру · {price} бонус'**
   String signals_unlock_for(int price);
 
   /// No description provided for @signals_your_balance.
@@ -3105,6 +3105,30 @@ abstract class AppLocalizations {
   /// In kk, this message translates to:
   /// **'🎁 ALTYN промокодым: {code}. Тіркелгенде {bonus} бонус ал! ALTYN — алтын (XAU/USD) трейдинг платформасы.'**
   String promo_share_message(String code, int bonus);
+
+  /// No description provided for @bonus_topup_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бонус толтыру'**
+  String get bonus_topup_title;
+
+  /// No description provided for @bonus_topup_desc.
+  ///
+  /// In kk, this message translates to:
+  /// **'Пакет таңдаңыз — Kaspi арқылы төлеңіз'**
+  String get bonus_topup_desc;
+
+  /// No description provided for @bonus_topup.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бонус толтыру'**
+  String get bonus_topup;
+
+  /// No description provided for @bonus_topup_success.
+  ///
+  /// In kk, this message translates to:
+  /// **'Баланс толтырылды: +{amount} бонус'**
+  String bonus_topup_success(int amount);
 }
 
 class _AppLocalizationsDelegate

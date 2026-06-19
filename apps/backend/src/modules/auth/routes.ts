@@ -219,4 +219,16 @@ export async function authRoutes(app: FastifyInstance) {
     });
     return { ok: true, bonus: PROMO_BONUS_TG };
   });
+
+  /// Бонусты толтыру (Kaspi төлемі расталғаннан кейін). Балансқа қосамыз.
+  app.post('/bonus/topup', { onRequest: [app.authenticate] }, async (req, reply) => {
+    const Body = z.object({ amount: z.number().int().min(1).max(100000) });
+    const parsed = Body.safeParse(req.body);
+    if (!parsed.success) return reply.code(400).send({ error: 'bad_request' });
+    const { rows } = await query<{ bonus_balance: number }>(
+      'update users set bonus_balance = bonus_balance + $1 where id = $2 returning bonus_balance',
+      [parsed.data.amount, req.userId],
+    );
+    return { ok: true, bonus_balance: rows[0]?.bonus_balance ?? 0 };
+  });
 }

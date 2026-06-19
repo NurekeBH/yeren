@@ -701,7 +701,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String signals_unlock_for(int price) {
-    return 'Открыть за $price бонусов';
+    return 'Смотреть полную идею · $price бонусов';
   }
 
   @override
@@ -1619,5 +1619,19 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String promo_share_message(String code, int bonus) {
     return '🎁 Мой промокод ALTYN: $code. Получи $bonus бонусов при регистрации! ALTYN — платформа для трейдинга золотом (XAU/USD).';
+  }
+
+  @override
+  String get bonus_topup_title => 'Пополнить бонусы';
+
+  @override
+  String get bonus_topup_desc => 'Выберите пакет — оплата через Kaspi';
+
+  @override
+  String get bonus_topup => 'Пополнить бонусы';
+
+  @override
+  String bonus_topup_success(int amount) {
+    return 'Баланс пополнен: +$amount бонусов';
   }
 }

@@ -399,6 +399,15 @@ class ProfileController extends StateNotifier<UserProfile> {
     _set(state.copyWith(bonusBalance: (state.bonusBalance - amount).clamp(0, 1 << 31)));
   }
 
+  /// Бонусты толтыру (Kaspi төлемінен кейін). Балансқа [amount] қосамыз.
+  void topUpBonus(int amount) {
+    if (amount <= 0) return;
+    _set(state.copyWith(bonusBalance: state.bonusBalance + amount));
+    if (AppConfig.useRemoteApi) {
+      _ref.read(apiServiceProvider).topUpBonus(amount).catchError((_) {});
+    }
+  }
+
   /// Login (mock): қайта оралған пайдаланушы — профиль сұрақнамасын өткізіп жібереміз.
   void markReturningUser() {
     if (state.isOnboarded) return;
