@@ -161,27 +161,69 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen>
   }
 }
 
-class _CoverGrid extends StatelessWidget {
+class _CoverGrid extends StatefulWidget {
   const _CoverGrid({required this.items, required this.l});
 
   final List<LibraryItem> items;
   final AppLocalizations l;
 
   @override
+  State<_CoverGrid> createState() => _CoverGridState();
+}
+
+class _CoverGridState extends State<_CoverGrid> {
+  final _sc = ScrollController();
+  bool _showTop = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _sc.addListener(() {
+      final show = _sc.hasClients && _sc.offset > 600;
+      if (show != _showTop) setState(() => _showTop = show);
+    });
+  }
+
+  @override
+  void dispose() {
+    _sc.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (items.isEmpty) {
-      return Center(child: Text(l.calendar_empty, style: AppTypography.bodyMedium()));
+    if (widget.items.isEmpty) {
+      return Center(child: Text(widget.l.calendar_empty, style: AppTypography.bodyMedium()));
     }
-    return GridView.builder(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 0.60,
-        crossAxisSpacing: 14,
-        mainAxisSpacing: 18,
-      ),
-      itemCount: items.length,
-      itemBuilder: (_, i) => _CoverCard(item: items[i], l: l),
+    return Stack(
+      children: [
+        GridView.builder(
+          controller: _sc,
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: 0.60,
+            crossAxisSpacing: 14,
+            mainAxisSpacing: 18,
+          ),
+          itemCount: widget.items.length,
+          itemBuilder: (_, i) => _CoverCard(item: widget.items[i], l: widget.l),
+        ),
+        // Жоғарыға қайту батырмасы — төмен скролл болғанда көрінеді.
+        Positioned(
+          right: 16,
+          bottom: 16,
+          child: AnimatedScale(
+            scale: _showTop ? 1 : 0,
+            duration: const Duration(milliseconds: 180),
+            child: FloatingActionButton.small(
+              heroTag: null,
+              onPressed: () => _sc.animateTo(0, duration: const Duration(milliseconds: 350), curve: Curves.easeOut),
+              child: const Icon(Icons.keyboard_arrow_up),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
