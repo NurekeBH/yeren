@@ -151,6 +151,8 @@ class _Callout extends StatelessWidget {
       CalloutKind.rule => (AppColors.profitGreen, Icons.gavel, 'Правило'),
       CalloutKind.mechanic => (AppColors.purple, Icons.settings_suggest, 'Механика'),
       CalloutKind.warning => (AppColors.lossRed, Icons.warning_amber, 'Внимание'),
+      CalloutKind.fact => (AppColors.oilRed, Icons.auto_awesome, '💡 Интересный факт'),
+      CalloutKind.story => (AppColors.silverGray, Icons.menu_book, 'История'),
     };
     return Container(
       width: double.infinity,

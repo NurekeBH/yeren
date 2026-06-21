@@ -29,6 +29,16 @@ Widget buildCourseInteractive(String key) {
       return const _WinRateRrSim();
     case 'compound':
       return const _CompoundSim();
+    case 'drawdown':
+      return const _DrawdownSim();
+    case 'fear_greed':
+      return const _FearGreedSim();
+    case 'position_size':
+      return const _PositionSizeSim();
+    case 'liquidity_grab':
+      return const _LiquidityGrab();
+    case 'debt_cycle':
+      return const _DebtCycle();
     default:
       return const SizedBox.shrink();
   }
@@ -861,6 +871,321 @@ class _CompoundSimState extends State<_CompoundSim> {
               '\$1,000 → \$${bal.round()} за ${_months.round()} мес.\n'
               'Спокойные проценты на дистанции делают богатым. Жадность ломает кривую.',
               style: AppTypography.bodySmall(color: AppColors.textPrimary).copyWith(fontWeight: FontWeight.w600),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ════════════════════════════ DRAWDOWN ════════════════════════════
+class _DrawdownSim extends StatefulWidget {
+  const _DrawdownSim();
+  @override
+  State<_DrawdownSim> createState() => _DrawdownSimState();
+}
+
+class _DrawdownSimState extends State<_DrawdownSim> {
+  double _dd = 20; // % просадки
+
+  @override
+  Widget build(BuildContext context) {
+    final recovery = _dd >= 99 ? 9900 : _dd / (100 - _dd) * 100;
+    return _Frame(
+      title: 'Математика просадки',
+      icon: Icons.trending_down,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Депозит просел на:', style: AppTypography.bodySmall(color: AppColors.textSecondary)),
+          Slider(
+            value: _dd,
+            min: 5,
+            max: 90,
+            divisions: 17,
+            label: '-${_dd.round()}%',
+            activeColor: AppColors.lossRed,
+            onChanged: (v) => setState(() => _dd = v),
+          ),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(color: AppColors.surfaceMuted, borderRadius: BorderRadius.circular(10)),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Убыток', style: AppTypography.bodySmall(color: AppColors.textSecondary)),
+                    Text('-${_dd.round()}%', style: AppTypography.price(size: 18, color: AppColors.lossRed)),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Нужно отыграть', style: AppTypography.bodySmall(color: AppColors.textSecondary)),
+                    Text('+${recovery.round()}%', style: AppTypography.price(size: 18, color: AppColors.profitGreen)),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            _dd >= 50
+                ? '☠️ Потеряв ${_dd.round()}%, нужно сделать +${recovery.round()}%, чтобы вернуться в ноль. Вот почему профи берегут депозит как жизнь.'
+                : 'Убытки и прибыль НЕ симметричны: чем глубже просадка, тем непропорционально тяжелее восстановление.',
+            style: AppTypography.bodySmall(color: AppColors.textPrimary).copyWith(fontWeight: FontWeight.w600),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ════════════════════════════ FEAR & GREED ════════════════════════════
+class _FearGreedSim extends StatefulWidget {
+  const _FearGreedSim();
+  @override
+  State<_FearGreedSim> createState() => _FearGreedSimState();
+}
+
+class _FearGreedSimState extends State<_FearGreedSim> {
+  double _idx = 50;
+
+  @override
+  Widget build(BuildContext context) {
+    final (label, color, advice) = _idx < 25
+        ? ('😱 Крайний страх', AppColors.profitGreen, 'Толпа в панике распродаёт. «Будь жадным, когда другие боятся» — Баффет. Здесь рождаются лучшие сделки на покупку.')
+        : _idx < 45
+            ? ('😟 Страх', AppColors.profitGreen, 'Рынок нервничает. Профи начинают присматриваться к покупкам.')
+            : _idx < 55
+                ? ('😐 Нейтрально', AppColors.textSecondary, 'Баланс сил. Нет толпы — нет крайностей.')
+                : _idx < 75
+                    ? ('🤑 Жадность', AppColors.lossRed, 'Толпа жадничает и докупает на хаях. Время повышенной осторожности.')
+                    : ('🚀 Крайняя жадность', AppColors.lossRed, 'Эйфория! Таксисты дают советы по акциям. Часто это вершина перед разворотом.');
+    return _Frame(
+      title: 'Индекс страха и жадности',
+      icon: Icons.speed,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Slider(
+            value: _idx,
+            min: 0,
+            max: 100,
+            divisions: 20,
+            label: '${_idx.round()}',
+            activeColor: color,
+            onChanged: (v) => setState(() => _idx = v),
+          ),
+          Center(child: Text(label, style: AppTypography.h2(color: color))),
+          const SizedBox(height: 10),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(color: color.withValues(alpha: 0.08), borderRadius: BorderRadius.circular(10)),
+            child: Text(advice, style: AppTypography.bodySmall(color: AppColors.textPrimary).copyWith(fontWeight: FontWeight.w600)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ════════════════════════════ POSITION SIZE ════════════════════════════
+class _PositionSizeSim extends StatefulWidget {
+  const _PositionSizeSim();
+  @override
+  State<_PositionSizeSim> createState() => _PositionSizeSimState();
+}
+
+class _PositionSizeSimState extends State<_PositionSizeSim> {
+  double _deposit = 1000;
+  double _riskPct = 2;
+  double _stopUsd = 5; // движение стопа в \$ на 1 лот (условно)
+
+  @override
+  Widget build(BuildContext context) {
+    final riskUsd = _deposit * _riskPct / 100;
+    final lots = riskUsd / (_stopUsd * 100); // условный размер
+    return _Frame(
+      title: 'Калькулятор размера позиции',
+      icon: Icons.calculate,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Депозит: \$${_deposit.round()}', style: AppTypography.bodySmall(color: AppColors.textSecondary)),
+          Slider(value: _deposit, min: 100, max: 10000, divisions: 99, onChanged: (v) => setState(() => _deposit = v)),
+          Text('Риск на сделку: ${_riskPct.toStringAsFixed(1)}%', style: AppTypography.bodySmall(color: AppColors.textSecondary)),
+          Slider(value: _riskPct, min: 0.5, max: 10, divisions: 19, onChanged: (v) => setState(() => _riskPct = v)),
+          Text('Стоп-лосс: \$${_stopUsd.round()} / лот', style: AppTypography.bodySmall(color: AppColors.textSecondary)),
+          Slider(value: _stopUsd, min: 1, max: 20, divisions: 19, onChanged: (v) => setState(() => _stopUsd = v)),
+          const SizedBox(height: 6),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(color: AppColors.surfaceMuted, borderRadius: BorderRadius.circular(10)),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Рискуешь в деньгах', style: AppTypography.bodySmall(color: AppColors.textSecondary)),
+                    Text('\$${riskUsd.toStringAsFixed(0)}', style: AppTypography.price(size: 18, color: _riskPct > 3 ? AppColors.lossRed : AppColors.gold)),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Размер позиции', style: AppTypography.bodySmall(color: AppColors.textSecondary)),
+                    Text('${lots.toStringAsFixed(2)} лота', style: AppTypography.price(size: 18, color: AppColors.textPrimary)),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            _riskPct > 3
+                ? '⚠️ Риск ${_riskPct.toStringAsFixed(0)}% на сделку — это путь к разорению. Профи рискуют 0.5–2%.'
+                : '✅ Здоровый риск. Размер позиции вытекает из риска и стопа, а не из «хочу побольше».',
+            style: AppTypography.bodySmall(color: AppColors.textPrimary).copyWith(fontWeight: FontWeight.w600),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ════════════════════════════ LIQUIDITY GRAB ════════════════════════════
+class _LiquidityGrab extends StatefulWidget {
+  const _LiquidityGrab();
+  @override
+  State<_LiquidityGrab> createState() => _LiquidityGrabState();
+}
+
+class _LiquidityGrabState extends State<_LiquidityGrab> {
+  int _step = 0; // 0 setup, 1 grab, 2 reversal
+
+  @override
+  Widget build(BuildContext context) {
+    return _Frame(
+      title: 'Охота за ликвидностью (Stop Hunt)',
+      icon: Icons.gps_fixed,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(color: AppColors.surfaceMuted, borderRadius: BorderRadius.circular(10)),
+            child: Text(
+              switch (_step) {
+                0 => '📉 Цена сделала ровный минимум. Под ним толпа новичков поставила стоп-лоссы — там «лежит» ликвидность.',
+                1 => '🎯 Крупный игрок специально пробивает минимум — срабатывают стопы толпы. Это даёт ему встречные ордера для крупной покупки.',
+                _ => '🚀 Собрав ликвидность, цена резко разворачивается вверх. Новичков выбило по стопу, профи купил у самого дна.',
+              },
+              style: AppTypography.bodyMedium(color: AppColors.textPrimary).copyWith(height: 1.45),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              for (int i = 0; i < 3; i++) ...[
+                Expanded(
+                  child: Container(
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: i <= _step ? AppColors.gold : AppColors.surfaceMuted,
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                  ),
+                ),
+                if (i < 2) const SizedBox(width: 4),
+              ],
+            ],
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: _Btn(
+              label: _step < 2 ? 'Что дальше? →' : 'Сначала ↺',
+              active: true,
+              color: AppColors.gold,
+              onTap: () => setState(() => _step = _step < 2 ? _step + 1 : 0),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ════════════════════════════ DEBT CYCLE (Dalio) ════════════════════════════
+class _DebtCycle extends StatefulWidget {
+  const _DebtCycle();
+  @override
+  State<_DebtCycle> createState() => _DebtCycleState();
+}
+
+class _DebtCycleState extends State<_DebtCycle> {
+  int _phase = 0;
+  static const _phases = [
+    ('🌱 Ранний цикл', 'Кредит дешёвый, долгов мало. Люди берут займы, тратят, экономика растёт. Все счастливы.'),
+    ('🎈 Пузырь', 'Долги растут быстрее доходов. Активы (недвижимость, акции) надуваются. Эйфория и кредитное плечо повсюду.'),
+    ('💥 Вершина и кризис', 'ЦБ поднимает ставки. Обслуживать долги дорого. Пузырь лопается — распродажи, дефолты, паника.'),
+    ('🩹 Делевередж', 'Долги списывают/реструктурируют. ЦБ печатает деньги (QE), снижает ставки. Золото и реальные активы в цене.'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final (title, body) = _phases[_phase];
+    return _Frame(
+      title: 'Долговой суперцикл (Рэй Далио)',
+      icon: Icons.cyclone,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: AppTypography.h2(color: AppColors.gold)),
+          const SizedBox(height: 8),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(color: AppColors.surfaceMuted, borderRadius: BorderRadius.circular(10)),
+            child: Text(body, style: AppTypography.bodyMedium(color: AppColors.textPrimary).copyWith(height: 1.45)),
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              for (int i = 0; i < _phases.length; i++) ...[
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => setState(() => _phase = i),
+                    child: Container(
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: i == _phase ? AppColors.gold : AppColors.surfaceMuted,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ),
+                ),
+                if (i < _phases.length - 1) const SizedBox(width: 4),
+              ],
+            ],
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: _Btn(
+              label: _phase < _phases.length - 1 ? 'Следующая фаза →' : 'Цикл повторяется ↺',
+              active: true,
+              color: AppColors.gold,
+              onTap: () => setState(() => _phase = (_phase + 1) % _phases.length),
             ),
           ),
         ],

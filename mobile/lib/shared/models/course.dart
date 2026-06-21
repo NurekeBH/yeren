@@ -99,7 +99,7 @@ class HeadingBlock extends LessonBlock {
   final String text;
 }
 
-enum CalloutKind { essence, example, rule, mechanic, warning }
+enum CalloutKind { essence, example, rule, mechanic, warning, fact, story }
 
 /// Түсті «callout» карточка: Суть / Пример / Правило / Механика / Внимание.
 class CalloutBlock extends LessonBlock {
