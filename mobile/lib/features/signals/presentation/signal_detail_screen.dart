@@ -93,22 +93,26 @@ class _Body extends ConsumerWidget {
           // Трейдердің follow-up апдейттері (timeline) — бәріне көрінеді,
           // авторы (isMine) жаңа апдейт қоса алады.
           _UpdatesCard(signal: signal, l: l),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: () => showCreateAlertSheet(
-                context,
-                ref,
-                instrument: signal.pair,
-                refPrice: signal.entryMid,
-                ideaId: signal.id,
-                defaultText: l.alerts_default_idea(signal.pair),
+          // Баға ескертуі тек белсенді идеяға қажет — жабылған идеяда
+          // ескерту мағынасыз, сондықтан батырманы көрсетпейміз.
+          if (signal.status == SignalStatus.active) ...[
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () => showCreateAlertSheet(
+                  context,
+                  ref,
+                  instrument: signal.pair,
+                  refPrice: signal.entryMid,
+                  ideaId: signal.id,
+                  defaultText: l.alerts_default_idea(signal.pair),
+                ),
+                icon: const Icon(Icons.notifications_active, size: 18),
+                label: Text(l.alerts_notify),
               ),
-              icon: const Icon(Icons.notifications_active, size: 18),
-              label: Text(l.alerts_notify),
             ),
-          ),
+          ],
           // Трейдер өз белсенді идеясының нәтижесін қояды (жабады).
           if (signal.isMine && signal.status == SignalStatus.active) ...[
             const SizedBox(height: 16),
