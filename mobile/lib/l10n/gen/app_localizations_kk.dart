@@ -1634,4 +1634,81 @@ class AppLocalizationsKk extends AppLocalizations {
   String bonus_topup_success(int amount) {
     return 'Баланс толтырылды: +$amount бонус';
   }
+
+  @override
+  String get academy_courses => 'Курстар';
+
+  @override
+  String get academy_courses_subtitle =>
+      'Терең премиум-курстар — теория, мысал, интерактив және тест';
+
+  @override
+  String get academy_premium_badge => 'ПРЕМИУМ';
+
+  @override
+  String course_modules_count(int count) {
+    return '$count модуль';
+  }
+
+  @override
+  String course_lessons_count(int count) {
+    return '$count сабақ';
+  }
+
+  @override
+  String get course_what_inside => 'Курс ішінде не бар';
+
+  @override
+  String course_unlock_for(int count) {
+    return '$count бонусқа ашу';
+  }
+
+  @override
+  String get course_unlocked => 'Курс ашық';
+
+  @override
+  String get course_locked_hint => 'Сабақтарды ашу үшін курсты сатып алыңыз';
+
+  @override
+  String course_module_label(int n) {
+    return 'МОДУЛЬ $n';
+  }
+
+  @override
+  String course_progress(int done, int total) {
+    return '$done/$total сабақ өтілді';
+  }
+
+  @override
+  String get course_start => 'Бастау';
+
+  @override
+  String get course_continue => 'Жалғастыру';
+
+  @override
+  String get course_completed_all => 'Курс толық өтілді 🎉';
+
+  @override
+  String get lesson_quiz_title => 'Өзіңді тексер';
+
+  @override
+  String get lesson_quiz_check => 'Жауап беру';
+
+  @override
+  String get lesson_quiz_correct => 'Дұрыс!';
+
+  @override
+  String get lesson_quiz_wrong => 'Қате';
+
+  @override
+  String get lesson_done_badge => 'Өтілді';
+
+  @override
+  String get lesson_next => 'Келесі сабақ';
+
+  @override
+  String get course_unlock_title => 'Курсты ашу';
+
+  @override
+  String get course_unlock_balance => 'Сіздің балансыңыз';
 }

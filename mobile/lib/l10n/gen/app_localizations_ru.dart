@@ -1637,4 +1637,82 @@ class AppLocalizationsRu extends AppLocalizations {
   String bonus_topup_success(int amount) {
     return 'Баланс пополнен: +$amount бонусов';
   }
+
+  @override
+  String get academy_courses => 'Курсы';
+
+  @override
+  String get academy_courses_subtitle =>
+      'Глубокие премиум-курсы — теория, примеры, интерактив и тест';
+
+  @override
+  String get academy_premium_badge => 'ПРЕМИУМ';
+
+  @override
+  String course_modules_count(int count) {
+    return '$count модулей';
+  }
+
+  @override
+  String course_lessons_count(int count) {
+    return '$count уроков';
+  }
+
+  @override
+  String get course_what_inside => 'Что внутри курса';
+
+  @override
+  String course_unlock_for(int count) {
+    return 'Разблокировать за $count бонусов';
+  }
+
+  @override
+  String get course_unlocked => 'Курс открыт';
+
+  @override
+  String get course_locked_hint =>
+      'Откройте курс, чтобы получить доступ к урокам';
+
+  @override
+  String course_module_label(int n) {
+    return 'МОДУЛЬ $n';
+  }
+
+  @override
+  String course_progress(int done, int total) {
+    return 'Пройдено $done/$total уроков';
+  }
+
+  @override
+  String get course_start => 'Начать';
+
+  @override
+  String get course_continue => 'Продолжить';
+
+  @override
+  String get course_completed_all => 'Курс пройден полностью 🎉';
+
+  @override
+  String get lesson_quiz_title => 'Проверь себя';
+
+  @override
+  String get lesson_quiz_check => 'Ответить';
+
+  @override
+  String get lesson_quiz_correct => 'Верно!';
+
+  @override
+  String get lesson_quiz_wrong => 'Неверно';
+
+  @override
+  String get lesson_done_badge => 'Пройдено';
+
+  @override
+  String get lesson_next => 'Следующий урок';
+
+  @override
+  String get course_unlock_title => 'Открыть курс';
+
+  @override
+  String get course_unlock_balance => 'Ваш баланс';
 }

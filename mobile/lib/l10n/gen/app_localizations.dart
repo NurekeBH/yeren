@@ -3135,6 +3135,138 @@ abstract class AppLocalizations {
   /// In kk, this message translates to:
   /// **'Баланс толтырылды: +{amount} бонус'**
   String bonus_topup_success(int amount);
+
+  /// No description provided for @academy_courses.
+  ///
+  /// In kk, this message translates to:
+  /// **'Курстар'**
+  String get academy_courses;
+
+  /// No description provided for @academy_courses_subtitle.
+  ///
+  /// In kk, this message translates to:
+  /// **'Терең премиум-курстар — теория, мысал, интерактив және тест'**
+  String get academy_courses_subtitle;
+
+  /// No description provided for @academy_premium_badge.
+  ///
+  /// In kk, this message translates to:
+  /// **'ПРЕМИУМ'**
+  String get academy_premium_badge;
+
+  /// No description provided for @course_modules_count.
+  ///
+  /// In kk, this message translates to:
+  /// **'{count} модуль'**
+  String course_modules_count(int count);
+
+  /// No description provided for @course_lessons_count.
+  ///
+  /// In kk, this message translates to:
+  /// **'{count} сабақ'**
+  String course_lessons_count(int count);
+
+  /// No description provided for @course_what_inside.
+  ///
+  /// In kk, this message translates to:
+  /// **'Курс ішінде не бар'**
+  String get course_what_inside;
+
+  /// No description provided for @course_unlock_for.
+  ///
+  /// In kk, this message translates to:
+  /// **'{count} бонусқа ашу'**
+  String course_unlock_for(int count);
+
+  /// No description provided for @course_unlocked.
+  ///
+  /// In kk, this message translates to:
+  /// **'Курс ашық'**
+  String get course_unlocked;
+
+  /// No description provided for @course_locked_hint.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сабақтарды ашу үшін курсты сатып алыңыз'**
+  String get course_locked_hint;
+
+  /// No description provided for @course_module_label.
+  ///
+  /// In kk, this message translates to:
+  /// **'МОДУЛЬ {n}'**
+  String course_module_label(int n);
+
+  /// No description provided for @course_progress.
+  ///
+  /// In kk, this message translates to:
+  /// **'{done}/{total} сабақ өтілді'**
+  String course_progress(int done, int total);
+
+  /// No description provided for @course_start.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бастау'**
+  String get course_start;
+
+  /// No description provided for @course_continue.
+  ///
+  /// In kk, this message translates to:
+  /// **'Жалғастыру'**
+  String get course_continue;
+
+  /// No description provided for @course_completed_all.
+  ///
+  /// In kk, this message translates to:
+  /// **'Курс толық өтілді 🎉'**
+  String get course_completed_all;
+
+  /// No description provided for @lesson_quiz_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Өзіңді тексер'**
+  String get lesson_quiz_title;
+
+  /// No description provided for @lesson_quiz_check.
+  ///
+  /// In kk, this message translates to:
+  /// **'Жауап беру'**
+  String get lesson_quiz_check;
+
+  /// No description provided for @lesson_quiz_correct.
+  ///
+  /// In kk, this message translates to:
+  /// **'Дұрыс!'**
+  String get lesson_quiz_correct;
+
+  /// No description provided for @lesson_quiz_wrong.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қате'**
+  String get lesson_quiz_wrong;
+
+  /// No description provided for @lesson_done_badge.
+  ///
+  /// In kk, this message translates to:
+  /// **'Өтілді'**
+  String get lesson_done_badge;
+
+  /// No description provided for @lesson_next.
+  ///
+  /// In kk, this message translates to:
+  /// **'Келесі сабақ'**
+  String get lesson_next;
+
+  /// No description provided for @course_unlock_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Курсты ашу'**
+  String get course_unlock_title;
+
+  /// No description provided for @course_unlock_balance.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сіздің балансыңыз'**
+  String get course_unlock_balance;
 }
 
 class _AppLocalizationsDelegate

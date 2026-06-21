@@ -1635,4 +1635,81 @@ class AppLocalizationsEn extends AppLocalizations {
   String bonus_topup_success(int amount) {
     return 'Balance topped up: +$amount bonus';
   }
+
+  @override
+  String get academy_courses => 'Courses';
+
+  @override
+  String get academy_courses_subtitle =>
+      'Deep premium courses — theory, examples, interactive and a test';
+
+  @override
+  String get academy_premium_badge => 'PREMIUM';
+
+  @override
+  String course_modules_count(int count) {
+    return '$count modules';
+  }
+
+  @override
+  String course_lessons_count(int count) {
+    return '$count lessons';
+  }
+
+  @override
+  String get course_what_inside => 'What\'s inside';
+
+  @override
+  String course_unlock_for(int count) {
+    return 'Unlock for $count bonus';
+  }
+
+  @override
+  String get course_unlocked => 'Course unlocked';
+
+  @override
+  String get course_locked_hint => 'Unlock the course to access the lessons';
+
+  @override
+  String course_module_label(int n) {
+    return 'MODULE $n';
+  }
+
+  @override
+  String course_progress(int done, int total) {
+    return '$done/$total lessons done';
+  }
+
+  @override
+  String get course_start => 'Start';
+
+  @override
+  String get course_continue => 'Continue';
+
+  @override
+  String get course_completed_all => 'Course fully completed 🎉';
+
+  @override
+  String get lesson_quiz_title => 'Test yourself';
+
+  @override
+  String get lesson_quiz_check => 'Submit';
+
+  @override
+  String get lesson_quiz_correct => 'Correct!';
+
+  @override
+  String get lesson_quiz_wrong => 'Wrong';
+
+  @override
+  String get lesson_done_badge => 'Completed';
+
+  @override
+  String get lesson_next => 'Next lesson';
+
+  @override
+  String get course_unlock_title => 'Unlock course';
+
+  @override
+  String get course_unlock_balance => 'Your balance';
 }

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/academy/presentation/course_detail_screen.dart';
+import '../../features/academy/presentation/course_lesson_screen.dart';
+import '../../features/academy/presentation/courses_screen.dart';
 import '../../features/academy/presentation/gallup_result_screen.dart';
 import '../../features/academy/presentation/gallup_test_screen.dart';
 import '../../features/academy/presentation/lesson_detail_screen.dart';
@@ -131,6 +134,21 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/academy/lesson/:id',
         builder: (_, s) => AuthGuard(child: LessonDetailScreen(lessonId: s.pathParameters['id']!)),
+      ),
+      // Премиум-курстар (Академия): тізім → курс деталі → сабақ (интерактив + тест).
+      GoRoute(path: '/academy/courses', builder: (_, _) => const AuthGuard(child: CoursesScreen())),
+      GoRoute(
+        path: '/academy/course/:id',
+        builder: (_, s) => AuthGuard(child: CourseDetailScreen(courseId: s.pathParameters['id']!)),
+      ),
+      GoRoute(
+        path: '/academy/course/:id/lesson/:lessonId',
+        builder: (_, s) => AuthGuard(
+          child: CourseLessonScreen(
+            courseId: s.pathParameters['id']!,
+            lessonId: s.pathParameters['lessonId']!,
+          ),
+        ),
       ),
 
       StatefulShellRoute.indexedStack(

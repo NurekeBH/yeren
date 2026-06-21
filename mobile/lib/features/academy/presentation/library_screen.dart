@@ -100,6 +100,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen>
       ),
       body: Column(
         children: [
+          const _CoursesBanner(),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
             child: SingleChildScrollView(
@@ -156,6 +157,65 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen>
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Edge Academy табындағы премиум-курстарға кіру баннері.
+class _CoursesBanner extends StatelessWidget {
+  const _CoursesBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+      child: GestureDetector(
+        onTap: () => GoRouter.of(context).push('/academy/courses'),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [AppColors.gold, AppColors.goldBright],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: const [BoxShadow(color: AppColors.shadow, blurRadius: 14, offset: Offset(0, 6))],
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(Icons.workspace_premium, color: Colors.white, size: 24),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(l.academy_courses,
+                        style: AppTypography.bodyLarge(color: Colors.white).copyWith(fontWeight: FontWeight.w800)),
+                    const SizedBox(height: 2),
+                    Text(l.academy_courses_subtitle,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTypography.label(color: Colors.white).copyWith(height: 1.25)),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              const Icon(Icons.arrow_forward, color: Colors.white, size: 20),
+            ],
+          ),
+        ),
       ),
     );
   }
