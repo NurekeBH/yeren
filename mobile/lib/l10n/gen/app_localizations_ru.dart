@@ -1715,4 +1715,82 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get course_unlock_balance => 'Ваш баланс';
+
+  @override
+  String get course_back_to_lessons => 'Назад к урокам';
+
+  @override
+  String get course_module_lessons => 'Уроки модуля';
+
+  @override
+  String get course_next => 'Далее';
+
+  @override
+  String get course_prev => 'Назад';
+
+  @override
+  String get course_finish_lesson => 'Завершить урок';
+
+  @override
+  String get quiz_answer_cta => 'Ответь на вопрос';
+
+  @override
+  String get quiz_try_again => 'Попробовать снова';
+
+  @override
+  String course_solved(int done, int total) {
+    return 'Раскрыто $done/$total';
+  }
+
+  @override
+  String lesson_minutes(int count) {
+    return '$count мин';
+  }
+
+  @override
+  String get course_secrets_intro => 'Это стоит знать';
+
+  @override
+  String get academy_cta_title => 'Академия трейдера';
+
+  @override
+  String get academy_cta_sub =>
+      'Фундамент решает всё. 90% теряют депозит не из-за стратегии, а из-за пробелов в базе.';
+
+  @override
+  String get academy_cta_button => 'Открыть курсы →';
+
+  @override
+  String get course_sell_headline => 'Инвестиция в себя, которая окупается';
+
+  @override
+  String get course_sell_b1 =>
+      '10 модулей, 49 уроков — от природы денег до анатомии кризисов';
+
+  @override
+  String get course_sell_b2 => 'Интерактивные симуляторы вместо сухой теории';
+
+  @override
+  String get course_sell_b3 => 'Тест после каждого урока — знания закрепляются';
+
+  @override
+  String get course_sell_b4 => 'Доступ навсегда';
+
+  @override
+  String get course_sell_footer =>
+      'Один грамотный вход может окупить курс многократно.';
+
+  @override
+  String get course_locked_lesson_title => 'Урок закрыт';
+
+  @override
+  String get course_locked_lesson_desc =>
+      'Этот урок — часть премиум-курса. Открой курс, чтобы пройти его.';
+
+  @override
+  String get course_preview_label => 'Что внутри (превью)';
+
+  @override
+  String get course_locked_screen_hint =>
+      'Чтобы открыть этот урок, сначала разблокируй курс.';
 }

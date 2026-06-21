@@ -11,12 +11,16 @@ class Course extends Equatable {
     required this.priceBonus,
     required this.modules,
     this.accent = 0xFF2563EB,
+    this.emoji = '🧠',
   });
 
   final String id;
   final String title;
   final String subtitle;
   final String description;
+
+  /// Курс мұқабасының эмодзиі.
+  final String emoji;
 
   /// Курс бағасы (бонус ұпай). 0 болса — тегін.
   final int priceBonus;
@@ -43,6 +47,7 @@ class CourseModule extends Equatable {
     required this.title,
     required this.goal,
     required this.lessons,
+    this.emoji = '📦',
   });
 
   final String id;
@@ -50,6 +55,9 @@ class CourseModule extends Equatable {
   /// Модуль реттік нөмірі (1..N) — UI-да «МОДУЛЬ N» деп көрсетіледі.
   final int index;
   final String title;
+
+  /// Модуль мұқабасының эмодзиі (hero-карточкада).
+  final String emoji;
 
   /// Модуль мақсаты (қысқа сипаттама).
   final String goal;
@@ -66,6 +74,9 @@ class CourseLesson extends Equatable {
     required this.title,
     required this.blocks,
     required this.quiz,
+    this.emoji = '📊',
+    this.hook = '',
+    this.minutes = 10,
   });
 
   final String id;
@@ -73,6 +84,15 @@ class CourseLesson extends Equatable {
   /// Сабақ коды (мыс. «1.1», «4.3») — тақырып алдында көрсетіледі.
   final String code;
   final String title;
+
+  /// Hero-карточкадағы үлкен эмодзи.
+  final String emoji;
+
+  /// Маркетингтік ілмек (қысқа қызықтыратын субтитр) — hero-да.
+  final String hook;
+
+  /// Сабақтың шамамен ұзақтығы (минут) — тізімде көрсетіледі.
+  final int minutes;
   final List<LessonBlock> blocks;
 
   /// Сабақ соңындағы тест (бір сұрақ).
@@ -122,6 +142,21 @@ class InteractiveBlock extends LessonBlock {
   const InteractiveBlock(this.key, {this.title});
   final String key;
   final String? title;
+}
+
+/// Мини-карточкалар тізбегі (мыс. «4 секрета успеха») — әрқайсысы
+/// эмодзи + тақырып + мәтін. Көлденең тізіммен көрсетіледі.
+class CardsBlock extends LessonBlock {
+  const CardsBlock(this.title, this.items);
+  final String title;
+  final List<CardItem> items;
+}
+
+class CardItem {
+  const CardItem(this.emoji, this.title, this.text);
+  final String emoji;
+  final String title;
+  final String text;
 }
 
 class QuizQuestion {

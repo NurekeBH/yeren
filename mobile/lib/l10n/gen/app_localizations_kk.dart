@@ -1711,4 +1711,82 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get course_unlock_balance => 'Сіздің балансыңыз';
+
+  @override
+  String get course_back_to_lessons => 'Сабақтарға оралу';
+
+  @override
+  String get course_module_lessons => 'Модуль сабақтары';
+
+  @override
+  String get course_next => 'Әрі қарай';
+
+  @override
+  String get course_prev => 'Артқа';
+
+  @override
+  String get course_finish_lesson => 'Сабақты аяқтау';
+
+  @override
+  String get quiz_answer_cta => 'Сұраққа жауап бер';
+
+  @override
+  String get quiz_try_again => 'Қайта көру';
+
+  @override
+  String course_solved(int done, int total) {
+    return 'Ашылды $done/$total';
+  }
+
+  @override
+  String lesson_minutes(int count) {
+    return '$count мин';
+  }
+
+  @override
+  String get course_secrets_intro => 'Білуге тұрарлық';
+
+  @override
+  String get academy_cta_title => 'Трейдер Академиясы';
+
+  @override
+  String get academy_cta_sub =>
+      'Фундамент бәрін шешеді. Трейдерлердің 90%-ы стратегиядан емес, базалық білімнің кемшілігінен депозит жоғалтады.';
+
+  @override
+  String get academy_cta_button => 'Курстарды ашу →';
+
+  @override
+  String get course_sell_headline => 'Өзіңе салынған инвестиция — өзін ақтайды';
+
+  @override
+  String get course_sell_b1 =>
+      '10 модуль, 49 сабақ — ақша табиғатынан дағдарыс анатомиясына дейін';
+
+  @override
+  String get course_sell_b2 => 'Құрғақ теория емес — интерактивті симуляторлар';
+
+  @override
+  String get course_sell_b3 => 'Әр сабақтан кейін тест — білім бекиді';
+
+  @override
+  String get course_sell_b4 => 'Мәңгілік қолжетімділік';
+
+  @override
+  String get course_sell_footer =>
+      'Бір сауатты кіру курс құнын бірнеше есе ақтай алады.';
+
+  @override
+  String get course_locked_lesson_title => 'Сабақ жабық';
+
+  @override
+  String get course_locked_lesson_desc =>
+      'Бұл сабақ — премиум-курстың бөлігі. Өту үшін курсты ашыңыз.';
+
+  @override
+  String get course_preview_label => 'Курс ішінде (превью)';
+
+  @override
+  String get course_locked_screen_hint =>
+      'Бұл сабақты көру үшін алдымен курсты ашыңыз.';
 }

@@ -3267,6 +3267,144 @@ abstract class AppLocalizations {
   /// In kk, this message translates to:
   /// **'Сіздің балансыңыз'**
   String get course_unlock_balance;
+
+  /// No description provided for @course_back_to_lessons.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сабақтарға оралу'**
+  String get course_back_to_lessons;
+
+  /// No description provided for @course_module_lessons.
+  ///
+  /// In kk, this message translates to:
+  /// **'Модуль сабақтары'**
+  String get course_module_lessons;
+
+  /// No description provided for @course_next.
+  ///
+  /// In kk, this message translates to:
+  /// **'Әрі қарай'**
+  String get course_next;
+
+  /// No description provided for @course_prev.
+  ///
+  /// In kk, this message translates to:
+  /// **'Артқа'**
+  String get course_prev;
+
+  /// No description provided for @course_finish_lesson.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сабақты аяқтау'**
+  String get course_finish_lesson;
+
+  /// No description provided for @quiz_answer_cta.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сұраққа жауап бер'**
+  String get quiz_answer_cta;
+
+  /// No description provided for @quiz_try_again.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қайта көру'**
+  String get quiz_try_again;
+
+  /// No description provided for @course_solved.
+  ///
+  /// In kk, this message translates to:
+  /// **'Ашылды {done}/{total}'**
+  String course_solved(int done, int total);
+
+  /// No description provided for @lesson_minutes.
+  ///
+  /// In kk, this message translates to:
+  /// **'{count} мин'**
+  String lesson_minutes(int count);
+
+  /// No description provided for @course_secrets_intro.
+  ///
+  /// In kk, this message translates to:
+  /// **'Білуге тұрарлық'**
+  String get course_secrets_intro;
+
+  /// No description provided for @academy_cta_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Трейдер Академиясы'**
+  String get academy_cta_title;
+
+  /// No description provided for @academy_cta_sub.
+  ///
+  /// In kk, this message translates to:
+  /// **'Фундамент бәрін шешеді. Трейдерлердің 90%-ы стратегиядан емес, базалық білімнің кемшілігінен депозит жоғалтады.'**
+  String get academy_cta_sub;
+
+  /// No description provided for @academy_cta_button.
+  ///
+  /// In kk, this message translates to:
+  /// **'Курстарды ашу →'**
+  String get academy_cta_button;
+
+  /// No description provided for @course_sell_headline.
+  ///
+  /// In kk, this message translates to:
+  /// **'Өзіңе салынған инвестиция — өзін ақтайды'**
+  String get course_sell_headline;
+
+  /// No description provided for @course_sell_b1.
+  ///
+  /// In kk, this message translates to:
+  /// **'10 модуль, 49 сабақ — ақша табиғатынан дағдарыс анатомиясына дейін'**
+  String get course_sell_b1;
+
+  /// No description provided for @course_sell_b2.
+  ///
+  /// In kk, this message translates to:
+  /// **'Құрғақ теория емес — интерактивті симуляторлар'**
+  String get course_sell_b2;
+
+  /// No description provided for @course_sell_b3.
+  ///
+  /// In kk, this message translates to:
+  /// **'Әр сабақтан кейін тест — білім бекиді'**
+  String get course_sell_b3;
+
+  /// No description provided for @course_sell_b4.
+  ///
+  /// In kk, this message translates to:
+  /// **'Мәңгілік қолжетімділік'**
+  String get course_sell_b4;
+
+  /// No description provided for @course_sell_footer.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бір сауатты кіру курс құнын бірнеше есе ақтай алады.'**
+  String get course_sell_footer;
+
+  /// No description provided for @course_locked_lesson_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сабақ жабық'**
+  String get course_locked_lesson_title;
+
+  /// No description provided for @course_locked_lesson_desc.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бұл сабақ — премиум-курстың бөлігі. Өту үшін курсты ашыңыз.'**
+  String get course_locked_lesson_desc;
+
+  /// No description provided for @course_preview_label.
+  ///
+  /// In kk, this message translates to:
+  /// **'Курс ішінде (превью)'**
+  String get course_preview_label;
+
+  /// No description provided for @course_locked_screen_hint.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бұл сабақты көру үшін алдымен курсты ашыңыз.'**
+  String get course_locked_screen_hint;
 }
 
 class _AppLocalizationsDelegate

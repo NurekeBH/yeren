@@ -9,6 +9,7 @@ import '../../../shared/models/course.dart';
 import '../../profile/application/profile_controller.dart';
 import '../../profile/presentation/top_up_bonus_sheet.dart';
 import '../data/courses_repository.dart';
+import 'course_unlock_sheet.dart';
 
 /// Курс деталі — модульдер мен сабақтар тізімі + paywall.
 class CourseDetailScreen extends ConsumerWidget {
@@ -76,20 +77,9 @@ class CourseDetailScreen extends ConsumerWidget {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  if (unlocked) ...[
-                    LinearProgressIndicator(
-                      value: total == 0 ? 0 : done / total,
-                      minHeight: 8,
-                      backgroundColor: AppColors.surfaceMuted,
-                      color: accent,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      done >= total && total > 0 ? l.course_completed_all : l.course_progress(done, total),
-                      style: AppTypography.label(color: AppColors.textSecondary),
-                    ),
-                  ] else
+                  if (unlocked)
+                    _GamifiedProgress(done: done, total: total, l: l)
+                  else
                     _UnlockBanner(course: course, accent: accent),
                   const SizedBox(height: 20),
                   Text(l.course_what_inside, style: AppTypography.h2()),
@@ -141,6 +131,77 @@ class _Stat extends StatelessWidget {
   }
 }
 
+/// Геймификацияланған прогресс — «🕵️ Раскрыто X/Y» қара карточка.
+class _GamifiedProgress extends StatelessWidget {
+  const _GamifiedProgress({required this.done, required this.total, required this.l});
+  final int done;
+  final int total;
+  final AppLocalizations l;
+
+  @override
+  Widget build(BuildContext context) {
+    final pct = total == 0 ? 0.0 : done / total;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.midnight,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('🕵️ ${l.course_solved(done, total)}',
+                  style: AppTypography.bodyMedium(color: Colors.white).copyWith(fontWeight: FontWeight.w700)),
+              Text('${(pct * 100).round()}%',
+                  style: AppTypography.bodyMedium(color: AppColors.gold).copyWith(fontWeight: FontWeight.w800)),
+            ],
+          ),
+          const SizedBox(height: 10),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(5),
+            child: LinearProgressIndicator(
+              value: pct,
+              minHeight: 9,
+              backgroundColor: Colors.white.withValues(alpha: 0.12),
+              color: AppColors.gold,
+            ),
+          ),
+          if (done >= total && total > 0) ...[
+            const SizedBox(height: 8),
+            Text(l.course_completed_all, style: AppTypography.label(color: AppColors.profitGreen).copyWith(fontWeight: FontWeight.w700)),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// Сатушы құнды-ұсыныс жолы (✓ ...).
+class _SellBullet extends StatelessWidget {
+  const _SellBullet({required this.text});
+  final String text;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 7),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.check_circle, size: 17, color: AppColors.profitGreen),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(text, style: AppTypography.bodySmall(color: AppColors.textPrimary).copyWith(height: 1.35)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _UnlockBanner extends ConsumerStatefulWidget {
   const _UnlockBanner({required this.course, required this.accent});
   final Course course;
@@ -183,15 +244,25 @@ class _UnlockBannerState extends ConsumerState<_UnlockBanner> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Icon(Icons.lock, size: 18, color: widget.accent),
-              const SizedBox(width: 8),
-              Text(l.course_locked_hint,
-                  style: AppTypography.bodySmall(color: AppColors.textSecondary)),
-            ],
-          ),
+          Text(l.course_sell_headline,
+              style: AppTypography.bodyLarge().copyWith(fontWeight: FontWeight.w800)),
           const SizedBox(height: 12),
+          _SellBullet(text: l.course_sell_b1),
+          _SellBullet(text: l.course_sell_b2),
+          _SellBullet(text: l.course_sell_b3),
+          _SellBullet(text: l.course_sell_b4),
+          const SizedBox(height: 8),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: AppColors.gold.withValues(alpha: 0.10),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Text('💡 ${l.course_sell_footer}',
+                style: AppTypography.bodySmall(color: AppColors.textPrimary).copyWith(fontWeight: FontWeight.w600)),
+          ),
+          const SizedBox(height: 14),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -260,15 +331,38 @@ class _ModuleSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+      padding: const EdgeInsets.fromLTRB(16, 18, 16, 4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(l.course_module_label(module.index),
-              style: AppTypography.label(color: accent).copyWith(fontWeight: FontWeight.w800, letterSpacing: 1)),
-          const SizedBox(height: 4),
-          Text(module.title, style: AppTypography.bodyLarge().copyWith(fontWeight: FontWeight.w700, height: 1.2)),
-          const SizedBox(height: 4),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 46,
+                height: 46,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: accent.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(13),
+                ),
+                child: Text(module.emoji, style: const TextStyle(fontSize: 24)),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(l.course_module_label(module.index),
+                        style: AppTypography.label(color: accent).copyWith(fontWeight: FontWeight.w800, letterSpacing: 1)),
+                    const SizedBox(height: 2),
+                    Text(module.title, style: AppTypography.bodyLarge().copyWith(fontWeight: FontWeight.w800, height: 1.15)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
           Text(module.goal, style: AppTypography.bodySmall(color: AppColors.textSecondary)),
           const SizedBox(height: 12),
           for (final lesson in module.lessons)
@@ -285,7 +379,7 @@ class _ModuleSection extends StatelessWidget {
   }
 }
 
-class _LessonTile extends StatelessWidget {
+class _LessonTile extends ConsumerWidget {
   const _LessonTile({
     required this.course,
     required this.lesson,
@@ -301,11 +395,12 @@ class _LessonTile extends StatelessWidget {
   final bool done;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
       onTap: unlocked
           ? () => context.push('/academy/course/${course.id}/lesson/${lesson.id}')
-          : null,
+          // Құлыпталған: тек атауын көреді, басқанда сатушы upsell ашылады.
+          : () => showCourseUnlockSheet(context, ref, course),
       child: Container(
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.all(14),
@@ -317,28 +412,39 @@ class _LessonTile extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 42,
-              height: 42,
+              width: 44,
+              height: 44,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: done ? AppColors.profitGreen.withValues(alpha: 0.12) : accent.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(10),
+                color: done ? AppColors.profitGreen.withValues(alpha: 0.12) : accent.withValues(alpha: 0.10),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: done
                   ? const Icon(Icons.check, color: AppColors.profitGreen, size: 22)
-                  : Text(lesson.code, style: AppTypography.label(color: accent).copyWith(fontWeight: FontWeight.w800)),
+                  : Icon(unlocked ? Icons.play_arrow_rounded : Icons.lock_outline,
+                      color: unlocked ? accent : AppColors.textMuted, size: 24),
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: Text(lesson.title,
-                  style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w600, height: 1.2)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(lesson.title,
+                      style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w700, height: 1.2)),
+                  const SizedBox(height: 3),
+                  Row(
+                    children: [
+                      const Icon(Icons.schedule, size: 13, color: AppColors.textMuted),
+                      const SizedBox(width: 4),
+                      Text(AppLocalizations.of(context).lesson_minutes(lesson.minutes),
+                          style: AppTypography.label(color: AppColors.textMuted)),
+                    ],
+                  ),
+                ],
+              ),
             ),
             const SizedBox(width: 8),
-            Icon(
-              unlocked ? Icons.chevron_right : Icons.lock_outline,
-              color: unlocked ? AppColors.textMuted : AppColors.textMuted,
-              size: 20,
-            ),
+            Icon(Icons.arrow_forward, color: unlocked ? accent : AppColors.textMuted, size: 18),
           ],
         ),
       ),

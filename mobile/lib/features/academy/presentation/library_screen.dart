@@ -174,45 +174,53 @@ class _CoursesBanner extends StatelessWidget {
       child: GestureDetector(
         onTap: () => GoRouter.of(context).push('/academy/courses'),
         child: Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
             gradient: const LinearGradient(
               colors: [AppColors.gold, AppColors.goldBright],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: const [BoxShadow(color: AppColors.shadow, blurRadius: 14, offset: Offset(0, 6))],
+            borderRadius: BorderRadius.circular(18),
+            boxShadow: const [BoxShadow(color: AppColors.shadow, blurRadius: 16, offset: Offset(0, 8))],
           ),
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Row(
+                children: [
+                  const Text('🎓', style: TextStyle(fontSize: 26)),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(l.academy_cta_title,
+                        style: AppTypography.h2(color: Colors.white).copyWith(fontWeight: FontWeight.w800)),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.22),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(l.academy_premium_badge,
+                        style: AppTypography.label(color: Colors.white).copyWith(fontWeight: FontWeight.w800, letterSpacing: 1)),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Text(l.academy_cta_sub,
+                  style: AppTypography.bodySmall(color: Colors.white).copyWith(height: 1.35)),
+              const SizedBox(height: 14),
               Container(
-                width: 44,
-                height: 44,
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 12),
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Icon(Icons.workspace_premium, color: Colors.white, size: 24),
+                child: Text(l.academy_cta_button,
+                    style: AppTypography.button(color: AppColors.gold).copyWith(fontSize: 15, fontWeight: FontWeight.w800)),
               ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(l.academy_courses,
-                        style: AppTypography.bodyLarge(color: Colors.white).copyWith(fontWeight: FontWeight.w800)),
-                    const SizedBox(height: 2),
-                    Text(l.academy_courses_subtitle,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTypography.label(color: Colors.white).copyWith(height: 1.25)),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 8),
-              const Icon(Icons.arrow_forward, color: Colors.white, size: 20),
             ],
           ),
         ),

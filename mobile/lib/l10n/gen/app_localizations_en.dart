@@ -1712,4 +1712,82 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get course_unlock_balance => 'Your balance';
+
+  @override
+  String get course_back_to_lessons => 'Back to lessons';
+
+  @override
+  String get course_module_lessons => 'Module lessons';
+
+  @override
+  String get course_next => 'Next';
+
+  @override
+  String get course_prev => 'Back';
+
+  @override
+  String get course_finish_lesson => 'Finish lesson';
+
+  @override
+  String get quiz_answer_cta => 'Answer the question';
+
+  @override
+  String get quiz_try_again => 'Try again';
+
+  @override
+  String course_solved(int done, int total) {
+    return 'Solved $done/$total';
+  }
+
+  @override
+  String lesson_minutes(int count) {
+    return '$count min';
+  }
+
+  @override
+  String get course_secrets_intro => 'Worth knowing';
+
+  @override
+  String get academy_cta_title => 'Trader Academy';
+
+  @override
+  String get academy_cta_sub =>
+      'Fundamentals decide everything. 90% lose their deposit not from strategy, but from gaps in the basics.';
+
+  @override
+  String get academy_cta_button => 'Open courses →';
+
+  @override
+  String get course_sell_headline => 'An investment in yourself that pays off';
+
+  @override
+  String get course_sell_b1 =>
+      '10 modules, 49 lessons — from the nature of money to the anatomy of crises';
+
+  @override
+  String get course_sell_b2 => 'Interactive simulators instead of dry theory';
+
+  @override
+  String get course_sell_b3 => 'A test after every lesson — knowledge sticks';
+
+  @override
+  String get course_sell_b4 => 'Lifetime access';
+
+  @override
+  String get course_sell_footer =>
+      'One well-informed trade can pay for the course many times over.';
+
+  @override
+  String get course_locked_lesson_title => 'Lesson locked';
+
+  @override
+  String get course_locked_lesson_desc =>
+      'This lesson is part of the premium course. Unlock it to continue.';
+
+  @override
+  String get course_preview_label => 'What\'s inside (preview)';
+
+  @override
+  String get course_locked_screen_hint =>
+      'Unlock the course first to open this lesson.';
 }

@@ -3,10 +3,49 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/locale/locale_controller.dart';
 import '../../../shared/models/course.dart';
+import 'course_meta.dart';
 import 'courses_data.dart';
 
-/// Барлық премиум-курстар каталогы (қазір мазмұн орыс тілінде — кеңейтуге дайын).
-final coursesProvider = Provider<List<Course>>((ref) => buildCourses());
+/// Барлық премиум-курстар каталогы. Мазмұн courses_data-да, ал «сатылатын»
+/// маркетинг қабаты (ілмекті тақырып, эмодзи, минут) course_meta-да —
+/// осы жерде біріктіреміз.
+final coursesProvider = Provider<List<Course>>(
+  (ref) => buildCourses().map(_applyMeta).toList(),
+);
+
+/// Курсқа маркетинг метасын қолданып, жаңа (immutable) көшірмесін құрады.
+Course _applyMeta(Course c) => Course(
+      id: c.id,
+      title: c.title,
+      subtitle: c.subtitle,
+      description: c.description,
+      priceBonus: c.priceBonus,
+      accent: c.accent,
+      emoji: c.emoji,
+      modules: [
+        for (final m in c.modules)
+          CourseModule(
+            id: m.id,
+            index: m.index,
+            title: m.title,
+            goal: m.goal,
+            emoji: moduleEmoji[m.id] ?? m.emoji,
+            lessons: [
+              for (final l in m.lessons)
+                CourseLesson(
+                  id: l.id,
+                  code: l.code,
+                  title: lessonMeta[l.id]?.title ?? l.title,
+                  emoji: lessonMeta[l.id]?.emoji ?? l.emoji,
+                  hook: lessonMeta[l.id]?.hook ?? l.hook,
+                  minutes: lessonMeta[l.id]?.minutes ?? l.minutes,
+                  blocks: l.blocks,
+                  quiz: l.quiz,
+                ),
+            ],
+          ),
+      ],
+    );
 
 /// Курсты id бойынша табу (детал/сабақ экрандарына).
 final courseByIdProvider = Provider.family<Course?, String>((ref, id) {
