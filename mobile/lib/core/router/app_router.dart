@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/academy/presentation/course_detail_screen.dart';
 import '../../features/academy/presentation/course_lesson_screen.dart';
 import '../../features/academy/presentation/courses_screen.dart';
+import '../../features/academy/presentation/exam_screen.dart';
 import '../../features/academy/presentation/gallup_result_screen.dart';
 import '../../features/academy/presentation/gallup_test_screen.dart';
 import '../../features/academy/presentation/lesson_detail_screen.dart';
@@ -149,6 +150,10 @@ final routerProvider = Provider<GoRouter>((ref) {
             lessonId: s.pathParameters['lessonId']!,
           ),
         ),
+      ),
+      GoRoute(
+        path: '/academy/course/:id/exam',
+        builder: (_, s) => AuthGuard(child: ExamScreen(courseId: s.pathParameters['id']!)),
       ),
 
       StatefulShellRoute.indexedStack(

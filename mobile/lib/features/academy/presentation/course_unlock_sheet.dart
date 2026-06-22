@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../core/network/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
@@ -40,6 +41,8 @@ class _UnlockSheetState extends ConsumerState<_UnlockSheet> {
     setState(() => _busy = true);
     if (cost > 0) ref.read(profileControllerProvider.notifier).spendBonus(cost);
     ref.read(purchasedCoursesProvider.notifier).unlock(widget.course.id);
+    // Backend синхрондау (best-effort): леджерге жазылады.
+    ref.read(apiServiceProvider).purchaseCourse(widget.course.id, cost).catchError((_) {});
     if (!mounted) return;
     Navigator.of(context).pop(true);
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.course_unlocked)));

@@ -3405,6 +3405,96 @@ abstract class AppLocalizations {
   /// In kk, this message translates to:
   /// **'Бұл сабақты көру үшін алдымен курсты ашыңыз.'**
   String get course_locked_screen_hint;
+
+  /// No description provided for @exam_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Финалдық емтихан'**
+  String get exam_title;
+
+  /// No description provided for @exam_intro_sub.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бүкіл курс бойынша өзіңді тексер'**
+  String get exam_intro_sub;
+
+  /// No description provided for @exam_questions_count.
+  ///
+  /// In kk, this message translates to:
+  /// **'{count} сұрақ'**
+  String exam_questions_count(int count);
+
+  /// No description provided for @exam_start.
+  ///
+  /// In kk, this message translates to:
+  /// **'Емтиханды бастау'**
+  String get exam_start;
+
+  /// No description provided for @exam_question_progress.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сұрақ {n}/{total}'**
+  String exam_question_progress(int n, int total);
+
+  /// No description provided for @exam_finish.
+  ///
+  /// In kk, this message translates to:
+  /// **'Емтиханды аяқтау'**
+  String get exam_finish;
+
+  /// No description provided for @exam_passed.
+  ///
+  /// In kk, this message translates to:
+  /// **'Емтихан тапсырылды!'**
+  String get exam_passed;
+
+  /// No description provided for @exam_failed.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сәл жетпеді'**
+  String get exam_failed;
+
+  /// No description provided for @exam_your_score.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сіздің нәтижеңіз'**
+  String get exam_your_score;
+
+  /// No description provided for @exam_advice_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Нені қайталау керек'**
+  String get exam_advice_title;
+
+  /// No description provided for @exam_advice_all_good.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тамаша нәтиже! Материалды сенімді меңгергенсіз.'**
+  String get exam_advice_all_good;
+
+  /// No description provided for @exam_retake.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қайта тапсыру'**
+  String get exam_retake;
+
+  /// No description provided for @exam_back_to_course.
+  ///
+  /// In kk, this message translates to:
+  /// **'Курсқа оралу'**
+  String get exam_back_to_course;
+
+  /// No description provided for @exam_last_result.
+  ///
+  /// In kk, this message translates to:
+  /// **'Соңғы нәтиже: {score}/{total}'**
+  String exam_last_result(int score, int total);
+
+  /// No description provided for @exam_locked_hint.
+  ///
+  /// In kk, this message translates to:
+  /// **'Емтихан курсты ашқаннан кейін қолжетімді'**
+  String get exam_locked_hint;
 }
 
 class _AppLocalizationsDelegate

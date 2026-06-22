@@ -1793,4 +1793,56 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get course_locked_screen_hint =>
       'Чтобы открыть этот урок, сначала разблокируй курс.';
+
+  @override
+  String get exam_title => 'Финальный экзамен';
+
+  @override
+  String get exam_intro_sub => 'Проверь себя по всему курсу';
+
+  @override
+  String exam_questions_count(int count) {
+    return '$count вопросов';
+  }
+
+  @override
+  String get exam_start => 'Начать экзамен';
+
+  @override
+  String exam_question_progress(int n, int total) {
+    return 'Вопрос $n/$total';
+  }
+
+  @override
+  String get exam_finish => 'Завершить экзамен';
+
+  @override
+  String get exam_passed => 'Экзамен сдан!';
+
+  @override
+  String get exam_failed => 'Почти получилось';
+
+  @override
+  String get exam_your_score => 'Твой результат';
+
+  @override
+  String get exam_advice_title => 'Что повторить';
+
+  @override
+  String get exam_advice_all_good =>
+      'Отличный результат! Ты уверенно владеешь материалом.';
+
+  @override
+  String get exam_retake => 'Пройти заново';
+
+  @override
+  String get exam_back_to_course => 'Назад к курсу';
+
+  @override
+  String exam_last_result(int score, int total) {
+    return 'Последний результат: $score/$total';
+  }
+
+  @override
+  String get exam_locked_hint => 'Экзамен доступен после открытия курса';
 }

@@ -593,5 +593,20 @@
   "course_locked_lesson_title": "Урок закрыт",
   "course_locked_lesson_desc": "Этот урок — часть премиум-курса. Открой курс, чтобы пройти его.",
   "course_preview_label": "Что внутри (превью)",
-  "course_locked_screen_hint": "Чтобы открыть этот урок, сначала разблокируй курс."
+  "course_locked_screen_hint": "Чтобы открыть этот урок, сначала разблокируй курс.",
+  "exam_title": "Финальный экзамен",
+  "exam_intro_sub": "Проверь себя по всему курсу",
+  "exam_questions_count": "{count} вопросов",
+  "exam_start": "Начать экзамен",
+  "exam_question_progress": "Вопрос {n}/{total}",
+  "exam_finish": "Завершить экзамен",
+  "exam_passed": "Экзамен сдан!",
+  "exam_failed": "Почти получилось",
+  "exam_your_score": "Твой результат",
+  "exam_advice_title": "Что повторить",
+  "exam_advice_all_good": "Отличный результат! Ты уверенно владеешь материалом.",
+  "exam_retake": "Пройти заново",
+  "exam_back_to_course": "Назад к курсу",
+  "exam_last_result": "Последний результат: {score}/{total}",
+  "exam_locked_hint": "Экзамен доступен после открытия курса"
 }

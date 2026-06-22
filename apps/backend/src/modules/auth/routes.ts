@@ -217,6 +217,15 @@ export async function authRoutes(app: FastifyInstance) {
         'update users set bonus_balance = bonus_balance + $1, referral_count = referral_count + 1 where id = $2',
         [REFERRER_BONUS_TG, ref.rows[0]!.id],
       );
+      // Бонус леджерге жазамыз (монетизация дашборды үшін).
+      await c.query(
+        "insert into bonus_transactions (user_id, type, amount, ref) values ($1, 'referral', $2, $3)",
+        [req.userId, PROMO_BONUS_TG, `promo:${code}`],
+      );
+      await c.query(
+        "insert into bonus_transactions (user_id, type, amount, ref) values ($1, 'referral', $2, $3)",
+        [ref.rows[0]!.id, REFERRER_BONUS_TG, `invite:${req.userId}`],
+      );
     });
     return { ok: true, bonus: PROMO_BONUS_TG };
   });
@@ -226,10 +235,19 @@ export async function authRoutes(app: FastifyInstance) {
     const Body = z.object({ amount: z.number().int().min(1).max(100000) });
     const parsed = Body.safeParse(req.body);
     if (!parsed.success) return reply.code(400).send({ error: 'bad_request' });
-    const { rows } = await query<{ bonus_balance: number }>(
-      'update users set bonus_balance = bonus_balance + $1 where id = $2 returning bonus_balance',
-      [parsed.data.amount, req.userId],
-    );
-    return { ok: true, bonus_balance: rows[0]?.bonus_balance ?? 0 };
+    const amount = parsed.data.amount;
+    const balance = await tx(async (c) => {
+      const r = await c.query<{ bonus_balance: number }>(
+        'update users set bonus_balance = bonus_balance + $1 where id = $2 returning bonus_balance',
+        [amount, req.userId],
+      );
+      // Топ-ап = Kaspi кірісі (1 бонус = 1 ₸). Монетизация дашбордына жазамыз.
+      await c.query(
+        "insert into bonus_transactions (user_id, type, amount, ref) values ($1, 'topup', $2, 'kaspi')",
+        [req.userId, amount],
+      );
+      return r.rows[0]?.bonus_balance ?? 0;
+    });
+    return { ok: true, bonus_balance: balance };
   });
 }

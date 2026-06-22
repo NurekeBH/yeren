@@ -149,6 +149,11 @@ export async function signalsRoutes(app: FastifyInstance) {
       const payable = price - bonusUsed;
       if (bonusUsed > 0) {
         await c.query('update users set bonus_balance = bonus_balance - $1 where id = $2', [bonusUsed, req.userId]);
+        // Бонус леджерге шығыс ретінде жазамыз (монетизация дашборды).
+        await c.query(
+          "insert into bonus_transactions (user_id, type, amount, ref) values ($1, 'spend_signal', $2, $3)",
+          [req.userId, -bonusUsed, `signal:${id}`],
+        );
       }
       await c.query(
         'insert into signal_purchases (user_id, signal_id, price_tg, bonus_used) values ($1, $2, $3, $4)',

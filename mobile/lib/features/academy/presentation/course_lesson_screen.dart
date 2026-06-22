@@ -6,6 +6,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/course.dart';
+import '../../../core/network/api_service.dart';
 import '../data/courses_repository.dart';
 import 'course_unlock_sheet.dart';
 import 'widgets/course_interactives.dart';
@@ -162,6 +163,8 @@ class _CourseLessonScreenState extends ConsumerState<CourseLessonScreen> {
             }),
             onFinish: () {
               ref.read(courseProgressProvider.notifier).markDone(lesson.id);
+              // Backend синхрондау (best-effort).
+              ref.read(apiServiceProvider).completeLesson(course.id, lesson.id).catchError((_) {});
               if (next != null) {
                 // Келесі сабаққа — күйді тазалап ауысамыз.
                 context.pushReplacement('/academy/course/${course.id}/lesson/${next.id}');

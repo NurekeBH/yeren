@@ -1789,4 +1789,56 @@ class AppLocalizationsKk extends AppLocalizations {
   @override
   String get course_locked_screen_hint =>
       'Бұл сабақты көру үшін алдымен курсты ашыңыз.';
+
+  @override
+  String get exam_title => 'Финалдық емтихан';
+
+  @override
+  String get exam_intro_sub => 'Бүкіл курс бойынша өзіңді тексер';
+
+  @override
+  String exam_questions_count(int count) {
+    return '$count сұрақ';
+  }
+
+  @override
+  String get exam_start => 'Емтиханды бастау';
+
+  @override
+  String exam_question_progress(int n, int total) {
+    return 'Сұрақ $n/$total';
+  }
+
+  @override
+  String get exam_finish => 'Емтиханды аяқтау';
+
+  @override
+  String get exam_passed => 'Емтихан тапсырылды!';
+
+  @override
+  String get exam_failed => 'Сәл жетпеді';
+
+  @override
+  String get exam_your_score => 'Сіздің нәтижеңіз';
+
+  @override
+  String get exam_advice_title => 'Нені қайталау керек';
+
+  @override
+  String get exam_advice_all_good =>
+      'Тамаша нәтиже! Материалды сенімді меңгергенсіз.';
+
+  @override
+  String get exam_retake => 'Қайта тапсыру';
+
+  @override
+  String get exam_back_to_course => 'Курсқа оралу';
+
+  @override
+  String exam_last_result(int score, int total) {
+    return 'Соңғы нәтиже: $score/$total';
+  }
+
+  @override
+  String get exam_locked_hint => 'Емтихан курсты ашқаннан кейін қолжетімді';
 }

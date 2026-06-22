@@ -6,11 +6,7 @@ import { query } from '../../db/client.js';
 export async function adminRoutes(app: FastifyInstance) {
   // ── Жалпы статистика (overview) ──
   app.get('/admin/stats', { onRequest: [app.requireAdmin] }, async () => {
-    const { rows } = await query<{
-      users: string; blocked: string; traders: string; admins: string;
-      new_7d: string; providers: string; signals: string; events: string;
-      idea_sales: string; bonus_outstanding: string;
-    }>(`
+    const { rows } = await query<Record<string, string>>(`
       select
         (select count(*) from users)::text as users,
         (select count(*) from users where is_blocked)::text as blocked,
@@ -21,9 +17,42 @@ export async function adminRoutes(app: FastifyInstance) {
         (select count(*) from signals)::text as signals,
         (select count(*) from events)::text as events,
         (select count(*) from signal_purchases)::text as idea_sales,
-        (select coalesce(sum(bonus_balance),0) from users)::text as bonus_outstanding
+        (select coalesce(sum(bonus_balance),0) from users)::text as bonus_outstanding,
+        -- ── Монетизация (бонус = ₸, 1:1) ──
+        (select coalesce(sum(amount),0) from bonus_transactions where type = 'topup')::text as topup_total,
+        (select count(*) from bonus_transactions where type = 'topup')::text as topup_count,
+        (select coalesce(sum(amount),0) from bonus_transactions where type = 'topup' and created_at >= now() - interval '7 days')::text as topup_7d,
+        (select coalesce(sum(amount),0) from bonus_transactions where amount > 0 and type in ('referral','signup'))::text as bonus_issued,
+        (select count(*) from course_purchases)::text as course_sales,
+        (select coalesce(sum(bonus_used),0) from course_purchases)::text as course_bonus,
+        (select coalesce(sum(bonus_used),0) from signal_purchases)::text as signal_bonus,
+        (select count(*) from exam_results)::text as exams_taken,
+        (select count(*) from exam_results where passed)::text as exams_passed
     `);
     return { stats: rows[0] };
+  });
+
+  // ── Бонус транзакциялар журналы (соңғылары) ──
+  app.get('/admin/bonus/transactions', { onRequest: [app.requireAdmin] }, async (req) => {
+    const q = (req.query as { type?: string; limit?: string }) ?? {};
+    const limit = Math.min(Number(q.limit) || 60, 300);
+    const args: unknown[] = [];
+    let where = '';
+    if (q.type && q.type !== 'all') {
+      args.push(q.type);
+      where = `where t.type = $1`;
+    }
+    args.push(limit);
+    const { rows } = await query(
+      `select t.id, t.type, t.amount, t.ref, t.created_at, u.phone, u.name
+         from bonus_transactions t
+         join users u on u.id = t.user_id
+         ${where}
+        order by t.created_at desc
+        limit $${args.length}`,
+      args,
+    );
+    return { transactions: rows };
   });
 
   // ── Қолданушылар тізімі (іздеу + бет) ──

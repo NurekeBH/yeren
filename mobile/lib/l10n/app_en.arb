@@ -593,5 +593,20 @@
   "course_locked_lesson_title": "Lesson locked",
   "course_locked_lesson_desc": "This lesson is part of the premium course. Unlock it to continue.",
   "course_preview_label": "What's inside (preview)",
-  "course_locked_screen_hint": "Unlock the course first to open this lesson."
+  "course_locked_screen_hint": "Unlock the course first to open this lesson.",
+  "exam_title": "Final exam",
+  "exam_intro_sub": "Test yourself on the whole course",
+  "exam_questions_count": "{count} questions",
+  "exam_start": "Start exam",
+  "exam_question_progress": "Question {n}/{total}",
+  "exam_finish": "Finish exam",
+  "exam_passed": "Exam passed!",
+  "exam_failed": "Almost there",
+  "exam_your_score": "Your score",
+  "exam_advice_title": "What to review",
+  "exam_advice_all_good": "Great result! You've got a solid grasp of the material.",
+  "exam_retake": "Retake",
+  "exam_back_to_course": "Back to course",
+  "exam_last_result": "Last result: {score}/{total}",
+  "exam_locked_hint": "The exam unlocks after you open the course"
 }

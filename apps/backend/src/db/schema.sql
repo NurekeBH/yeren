@@ -455,3 +455,52 @@ create trigger trg_users_updated before update on users
 drop trigger if exists trg_notifs_updated on notification_prefs;
 create trigger trg_notifs_updated before update on notification_prefs
   for each row execute function set_updated_at();
+
+-- ─────────────────── АКАДЕМИЯ КУРСТАРЫ + БОНУС ЛЕДЖЕР ───────────────────
+-- Бонус транзакциялар журналы — монетизация дашбордының деректер көзі.
+-- amount: + кіріс (топ-ап, реферал), − шығыс (курс/идея ашу).
+create table if not exists bonus_transactions (
+  id         uuid primary key default uuid_generate_v4(),
+  user_id    uuid not null references users(id) on delete cascade,
+  type       text not null,             -- topup | spend_course | spend_signal | referral | signup
+  amount     integer not null,          -- бонус ұпай (+/−)
+  ref        text,                      -- 'course:<id>' | 'signal:<id>' | 'kaspi'
+  created_at timestamptz not null default now()
+);
+create index if not exists bonus_tx_user_idx on bonus_transactions(user_id, created_at desc);
+create index if not exists bonus_tx_type_idx on bonus_transactions(type, created_at desc);
+
+-- Курс сатып алулар (бонуспен ашу) — әр пайдаланушы әр курсты бір рет.
+create table if not exists course_purchases (
+  id         uuid primary key default uuid_generate_v4(),
+  user_id    uuid not null references users(id) on delete cascade,
+  course_id  text not null,
+  bonus_used integer not null default 0,
+  created_at timestamptz not null default now(),
+  unique(user_id, course_id)
+);
+create index if not exists course_purchases_user_idx on course_purchases(user_id);
+create index if not exists course_purchases_course_idx on course_purchases(course_id, created_at desc);
+
+-- Курс прогресі — өтілген (learned) сабақтар.
+create table if not exists course_progress (
+  user_id      uuid not null references users(id) on delete cascade,
+  course_id    text not null,
+  lesson_id    text not null,
+  completed_at timestamptz not null default now(),
+  primary key (user_id, course_id, lesson_id)
+);
+create index if not exists course_progress_user_idx on course_progress(user_id, course_id);
+
+-- Финалдық емтихан нәтижелері (курстан кейін).
+create table if not exists exam_results (
+  id          uuid primary key default uuid_generate_v4(),
+  user_id     uuid not null references users(id) on delete cascade,
+  course_id   text not null,
+  score       integer not null,         -- дұрыс жауап саны
+  total       integer not null,         -- сұрақ саны
+  passed      boolean not null default false,
+  per_module  jsonb not null default '{}'::jsonb,  -- {moduleIndex: {correct,total}}
+  created_at  timestamptz not null default now()
+);
+create index if not exists exam_results_user_idx on exam_results(user_id, course_id, created_at desc);

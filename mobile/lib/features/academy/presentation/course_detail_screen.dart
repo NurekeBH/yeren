@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/network/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
@@ -9,6 +10,7 @@ import '../../../shared/models/course.dart';
 import '../../profile/application/profile_controller.dart';
 import '../../profile/presentation/top_up_bonus_sheet.dart';
 import '../data/courses_repository.dart';
+import '../data/exam.dart';
 import 'course_unlock_sheet.dart';
 
 /// Курс деталі — модульдер мен сабақтар тізімі + paywall.
@@ -77,9 +79,11 @@ class CourseDetailScreen extends ConsumerWidget {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  if (unlocked)
-                    _GamifiedProgress(done: done, total: total, l: l)
-                  else
+                  if (unlocked) ...[
+                    _GamifiedProgress(done: done, total: total, l: l),
+                    const SizedBox(height: 12),
+                    _ExamCard(course: course, accent: accent),
+                  ] else
                     _UnlockBanner(course: course, accent: accent),
                   const SizedBox(height: 20),
                   Text(l.course_what_inside, style: AppTypography.h2()),
@@ -202,6 +206,57 @@ class _SellBullet extends StatelessWidget {
   }
 }
 
+/// Финалдық емтиханға кіру карточкасы (курс ашылғанда).
+class _ExamCard extends ConsumerWidget {
+  const _ExamCard({required this.course, required this.accent});
+  final Course course;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
+    final last = ref.watch(examResultsProvider)[course.id];
+    return GestureDetector(
+      onTap: () => context.push('/academy/course/${course.id}/exam'),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [accent, accent.withValues(alpha: 0.7)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            const Text('🏆', style: TextStyle(fontSize: 30)),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l.exam_title,
+                      style: AppTypography.bodyLarge(color: Colors.white).copyWith(fontWeight: FontWeight.w800)),
+                  const SizedBox(height: 2),
+                  Text(
+                    last != null
+                        ? l.exam_last_result(last.score, last.total)
+                        : '${l.exam_intro_sub} · ${l.exam_questions_count(30)}',
+                    style: AppTypography.label(color: Colors.white).copyWith(height: 1.25),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(Icons.arrow_forward, color: Colors.white, size: 20),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _UnlockBanner extends ConsumerStatefulWidget {
   const _UnlockBanner({required this.course, required this.accent});
   final Course course;
@@ -218,6 +273,7 @@ class _UnlockBannerState extends ConsumerState<_UnlockBanner> {
     setState(() => _busy = true);
     ref.read(profileControllerProvider.notifier).spendBonus(cost);
     ref.read(purchasedCoursesProvider.notifier).unlock(widget.course.id);
+    ref.read(apiServiceProvider).purchaseCourse(widget.course.id, cost).catchError((_) {});
     if (!mounted) return;
     setState(() => _busy = false);
     ScaffoldMessenger.of(context).showSnackBar(

@@ -157,6 +157,25 @@ class ApiService {
   Future<void> topUpBonus(int amount) =>
       _send('POST', '/bonus/topup', body: {'amount': amount});
 
+  // ─────────────── Академия курстары (backend синхрондау) ───────────────
+  /// Курсты бонуспен ашу (backend балансты шегеріп, леджерге жазады).
+  Future<void> purchaseCourse(String courseId, int bonusCost) =>
+      _send('POST', '/courses/$courseId/purchase', body: {'bonus_cost': bonusCost});
+
+  /// Сатып алынған курстардың id-лері.
+  Future<List<String>> purchasedCourses() async {
+    final list = (await _get('/courses/me'))['purchases'] as List? ?? const [];
+    return list.map((e) => (e as Map)['course_id'].toString()).toList();
+  }
+
+  /// Сабақты «өтілді» деп белгілеу.
+  Future<void> completeLesson(String courseId, String lessonId) =>
+      _send('POST', '/courses/$courseId/lessons/$lessonId/complete');
+
+  /// Финалдық емтихан нәтижесін сақтау.
+  Future<void> submitExam(String courseId, Map<String, dynamic> result) =>
+      _send('POST', '/courses/$courseId/exam', body: result);
+
   // ─────────────── Trader application (расталған трейдер өтінімі) ───────────────
   /// Расталған трейдер болуға өтінім жіберу (админ модерациясына түседі).
   Future<void> submitTraderApplication({required String about, String? years, String? proof}) =>

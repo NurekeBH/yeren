@@ -1790,4 +1790,56 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get course_locked_screen_hint =>
       'Unlock the course first to open this lesson.';
+
+  @override
+  String get exam_title => 'Final exam';
+
+  @override
+  String get exam_intro_sub => 'Test yourself on the whole course';
+
+  @override
+  String exam_questions_count(int count) {
+    return '$count questions';
+  }
+
+  @override
+  String get exam_start => 'Start exam';
+
+  @override
+  String exam_question_progress(int n, int total) {
+    return 'Question $n/$total';
+  }
+
+  @override
+  String get exam_finish => 'Finish exam';
+
+  @override
+  String get exam_passed => 'Exam passed!';
+
+  @override
+  String get exam_failed => 'Almost there';
+
+  @override
+  String get exam_your_score => 'Your score';
+
+  @override
+  String get exam_advice_title => 'What to review';
+
+  @override
+  String get exam_advice_all_good =>
+      'Great result! You\'ve got a solid grasp of the material.';
+
+  @override
+  String get exam_retake => 'Retake';
+
+  @override
+  String get exam_back_to_course => 'Back to course';
+
+  @override
+  String exam_last_result(int score, int total) {
+    return 'Last result: $score/$total';
+  }
+
+  @override
+  String get exam_locked_hint => 'The exam unlocks after you open the course';
 }
