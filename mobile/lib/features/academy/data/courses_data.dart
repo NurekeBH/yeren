@@ -481,24 +481,48 @@ CourseModule _module2() => CourseModule(
       code: '2.1',
       title: 'CPI и PPI: главное оружие против инфляции',
       blocks: [
-        _essence(
+        _essence(_L(
           'CPI (индекс потребительских цен) — это инфляция глазами обычного покупателя: '
           'насколько подорожала корзина из еды, бензина, аренды и услуг. PPI (индекс цен '
           'производителей) — оптовая инфляция на уровне заводов; он опережает CPI, потому что '
           'рост цен сначала бьёт по производителям, а потом доходит до полок магазинов.',
-        ),
-        _h('Почему рынок сходит с ума от двух цифр'),
-        _p('У ФРС (центробанка США) есть мандат: держать инфляцию около 2%. Когда CPI выше — '
-            'ФРС вынуждена «остужать» экономику высокой ставкой. Когда ниже — может смягчать '
-            'политику. Поэтому каждый выход CPI — это, по сути, голосование о том, что сделает '
-            'ФРС, а значит, куда пойдут доллар, золото и акции.'),
-        _rule(
+          'CPI (тұтыну бағасы индексі) — қарапайым сатып алушының көзімен инфляция: тамақ, '
+          'бензин, жалдау, қызмет себеті қаншаға қымбаттады. PPI (өндіруші бағасы индексі) — '
+          'зауыт деңгейіндегі көтерме инфляция; ол CPI-ден озады, өйткені баға өсімі алдымен '
+          'өндірушілерге тиіп, сосын дүкен сөресіне жетеді.',
+          'CPI (the Consumer Price Index) is inflation through the eyes of an ordinary buyer: '
+          'how much a basket of food, fuel, rent and services has risen. PPI (the Producer Price '
+          'Index) is wholesale inflation at the factory level; it leads CPI, because price rises '
+          'hit producers first and only later reach the shop shelves.',
+        )),
+        _h(_L('Почему рынок сходит с ума от двух цифр', 'Неге нарық екі саннан есінен танады', 'Why the market goes crazy over two numbers')),
+        _p(_L(
+          'У ФРС (центробанка США) есть мандат: держать инфляцию около 2%. Когда CPI выше — '
+          'ФРС вынуждена «остужать» экономику высокой ставкой. Когда ниже — может смягчать '
+          'политику. Поэтому каждый выход CPI — это, по сути, голосование о том, что сделает '
+          'ФРС, а значит, куда пойдут доллар, золото и акции.',
+          'ФРЖ-нің (АҚШ орталық банкі) мандаты бар: инфляцияны ~2% ұстау. CPI жоғары болса — '
+          'ФРЖ экономиканы жоғары ставкамен «суытуға» мәжбүр. Төмен болса — саясатты жұмсарта '
+          'алады. Сондықтан әрбір CPI шығуы — мәні бойынша ФРЖ не істейтіні туралы дауыс, демек '
+          'доллар, алтын және акциялар қайда баратыны.',
+          'The Fed (the US central bank) has a mandate: keep inflation near 2%. When CPI is '
+          'higher, the Fed must "cool" the economy with a high rate. When lower, it can ease. So '
+          'every CPI release is essentially a vote on what the Fed will do — and therefore where '
+          'the dollar, gold and stocks will go.',
+        )),
+        _rule(_L(
           'Рынок торгует НЕ саму цифру, а её ОТКЛОНЕНИЕ от прогноза (Forecast/Consensus). '
           'Ожидания уже «вшиты» в цену заранее. Двигает рынок именно сюрприз: насколько факт '
           'разошёлся с тем, что все ждали.',
-          title: 'Главный принцип новостной торговли',
+          'Нарық санның ӨЗІН емес, оның болжамнан (Forecast/Consensus) АУЫТҚУЫН саудалайды. '
+          'Күтулер бағаға алдын ала «тігілген». Нарықты дәл сюрприз қозғайды: факт күткеннен '
+          'қаншалық алшақтады.',
+          'The market trades NOT the number itself, but its DEVIATION from the forecast '
+          '(consensus). Expectations are already "priced in" beforehand. What moves the market is '
+          'the surprise: how far the actual diverged from what everyone expected.'),
+          title: _L('Главный принцип новостной торговли', 'Жаңалық саудасының басты қағидасы', 'The core principle of news trading'),
         ),
-        _formula(
+        _formula(_Lf(
           [
             'CPI/PPI ВЫШЕ прогноза (Actual > Forecast):',
             '  инфляция горячее ожиданий → ФРС жёстче →',
@@ -508,34 +532,75 @@ CourseModule _module2() => CourseModule(
             '  инфляция остывает → ФРС мягче →',
             '  доллар ↓ → золото ↑',
           ],
-          title: 'Формула реакции',
-        ),
-        _fact(
+          [
+            'CPI/PPI болжамнан ЖОҒАРЫ (Actual > Forecast):',
+            '  инфляция күткеннен ыстық → ФРЖ қатаңырақ →',
+            '  доллар (DXY) ↑ → алтын (XAUUSD) ↓',
+            '',
+            'CPI/PPI болжамнан ТӨМЕН (Actual < Forecast):',
+            '  инфляция суынады → ФРЖ жұмсағырақ →',
+            '  доллар ↓ → алтын ↑',
+          ],
+          [
+            'CPI/PPI ABOVE forecast (Actual > Forecast):',
+            '  inflation hotter than expected → Fed tighter →',
+            '  dollar (DXY) ↑ → gold (XAUUSD) ↓',
+            '',
+            'CPI/PPI BELOW forecast (Actual < Forecast):',
+            '  inflation cooling → Fed softer →',
+            '  dollar ↓ → gold ↑',
+          ],
+        ), title: _L('Формула реакции', 'Реакция формуласы', 'Reaction formula')),
+        _fact(_L(
           'Существует «Core CPI» (базовый) — без еды и энергии. Кажется странным выкидывать '
           'самое важное, но именно еда и бензин самые волатильные, и ФРС больше смотрит на '
           'базовый индекс, чтобы видеть устойчивый тренд инфляции. Профи следят за Core CPI '
           'даже внимательнее, чем за общим.',
-        ),
-        _story(
+          '«Core CPI» (базалық) бар — тамақ пен энергиясыз. Ең маңыздыны алып тастау оғаш '
+          'көрінеді, бірақ дәл тамақ пен бензин ең құбылмалы, ал ФРЖ инфляцияның тұрақты '
+          'трендін көру үшін базалық индекске көбірек қарайды. Кәсіпқойлар Core CPI-ді жалпыдан '
+          'да мұқият бақылайды.',
+          'There is "Core CPI" (the core index) — excluding food and energy. It seems odd to '
+          'throw out the most important items, but food and fuel are the most volatile, and the '
+          'Fed looks more at the core index to see the steady inflation trend. Pros watch Core CPI '
+          'even more closely than the headline.',
+        )),
+        _story(_L(
           'Реальный день: выходит CPI, отклонение от прогноза всего на 0.2 процентного пункта. '
           'Казалось бы, мелочь. Но золото за 5 минут пролетело ~400 пунктов, выбив стопы у тех, '
           'кто стоял против. Эти 0.2% перевернули ожидания рынка по будущей ставке ФРС — и этого '
           'хватило для лавины.',
-        ),
+          'Нақты күн: CPI шығады, болжамнан ауытқу небәрі 0.2 пайыздық тармақ. Болмашы көрінеді. '
+          'Бірақ алтын 5 минутта ~400 пункт ұшып, қарсы тұрғандардың стоптарын ұшырды. Осы 0.2% '
+          'ФРЖ-нің болашақ ставкасы бойынша нарық күтулерін аударып тастады — лавинаға осы жетті.',
+          'A real day: CPI comes out, the deviation from forecast is just 0.2 percentage points. '
+          'Seems trivial. But gold flew ~400 points in 5 minutes, taking out the stops of those on '
+          'the wrong side. Those 0.2% flipped the market\'s expectations for the Fed\'s future '
+          'rate — and that was enough for an avalanche.',
+        )),
         _interactive('cpi_trainer', title: 'Тренажёр календаря: CPI'),
       ],
-      quiz: const QuizQuestion(
-        question: 'CPI вышел ВЫШЕ прогноза. Какая реакция наиболее вероятна?',
+      quiz: QuizQuestion(
+        question: _L(
+          'CPI вышел ВЫШЕ прогноза. Какая реакция наиболее вероятна?',
+          'CPI болжамнан ЖОҒАРЫ шықты. Қандай реакция ықтимал?',
+          'CPI came out ABOVE forecast. What is the most likely reaction?',
+        ),
         options: [
-          'Доллар падает, золото растёт',
-          'Доллар растёт, золото падает',
-          'Реакции не будет',
-          'Растут и доллар, и золото',
+          _L('Доллар падает, золото растёт', 'Доллар түседі, алтын өседі', 'Dollar falls, gold rises'),
+          _L('Доллар растёт, золото падает', 'Доллар өседі, алтын түседі', 'Dollar rises, gold falls'),
+          _L('Реакции не будет', 'Реакция болмайды', 'There will be no reaction'),
+          _L('Растут и доллар, и золото', 'Доллар да, алтын да өседі', 'Both dollar and gold rise'),
         ],
         correctIndex: 1,
-        explanation:
-            'CPI выше прогноза = инфляция выше ожиданий → ФРС склонна держать/повышать ставку → '
-            'доллар укрепляется → золото дешевеет.',
+        explanation: _L(
+          'CPI выше прогноза = инфляция выше ожиданий → ФРС склонна держать/повышать ставку → '
+          'доллар укрепляется → золото дешевеет.',
+          'CPI болжамнан жоғары = инфляция күткеннен жоғары → ФРЖ ставканы ұстауға/көтеруге '
+          'бейім → доллар нығаяды → алтын арзандайды.',
+          'CPI above forecast = inflation above expectations → the Fed leans to hold/raise the '
+          'rate → the dollar strengthens → gold gets cheaper.',
+        ),
       ),
     ),
     CourseLesson(
@@ -543,17 +608,31 @@ CourseModule _module2() => CourseModule(
       code: '2.2',
       title: 'Non-Farm Payrolls (NFP) и безработица: пульс рынка труда США',
       blocks: [
-        _essence(
+        _essence(_L(
           'NFP — количество новых рабочих мест вне сельского хозяйства за месяц. Вместе с '
           'уровнем безработицы это пульс американской экономики. Сильный рынок труда '
           '«развязывает руки» ФРС: можно держать ставку высокой, не боясь спровоцировать '
           'рецессию.',
-        ),
-        _h('Почему именно первая пятница месяца'),
-        _p('NFP выходит в первую пятницу каждого месяца в 15:30 по времени Астаны (8:30 EST). '
-            'Это, пожалуй, самая ожидаемая регулярная новость на рынке. Перед ней объёмы часто '
-            'замирают — крупные игроки ждут цифру, чтобы не попасть под случайный импульс.'),
-        _formula(
+          'NFP — айына ауыл шаруашылығынан тыс жаңа жұмыс орындарының саны. Жұмыссыздық '
+          'деңгейімен бірге бұл американ экономикасының тамыры. Күшті еңбек нарығы ФРЖ-нің '
+          '«қолын босатады»: рецессиядан қорықпай ставканы жоғары ұстауға болады.',
+          'NFP is the number of new non-farm jobs per month. Together with the unemployment rate '
+          'it is the pulse of the US economy. A strong labour market "unties the Fed\'s hands": it '
+          'can keep the rate high without fearing a recession.',
+        )),
+        _h(_L('Почему именно первая пятница месяца', 'Неге дәл айдың бірінші жұмасы', 'Why the first Friday of the month')),
+        _p(_L(
+          'NFP выходит в первую пятницу каждого месяца в 15:30 по времени Астаны (8:30 EST). '
+          'Это, пожалуй, самая ожидаемая регулярная новость на рынке. Перед ней объёмы часто '
+          'замирают — крупные игроки ждут цифру, чтобы не попасть под случайный импульс.',
+          'NFP әр айдың бірінші жұмасында Астана уақытымен 15:30-да (8:30 EST) шығады. Бұл, '
+          'бәлкім, нарықтағы ең күтілетін тұрақты жаңалық. Оның алдында көлемдер жиі қатып '
+          'қалады — ірі ойыншылар кездейсоқ импульске түспеу үшін санды күтеді.',
+          'NFP comes out on the first Friday of each month at 15:30 Astana time (8:30 EST). It is '
+          'arguably the most anticipated regular news on the market. Before it volumes often '
+          'freeze — big players wait for the number so as not to be caught by a random impulse.',
+        )),
+        _formula(_Lf(
           [
             'Сильный NFP (Actual > Forecast) + низкая безработица:',
             '  экономика сильная → ФРС жёстче → доллар ↑ → золото ↓',
@@ -561,40 +640,85 @@ CourseModule _module2() => CourseModule(
             'Слабый NFP (Actual < Forecast) + рост безработицы:',
             '  риск рецессии → ФРС мягче → доллар ↓ → золото ↑',
           ],
-          title: 'Формула реакции',
-        ),
-        _warn(
+          [
+            'Күшті NFP (Actual > Forecast) + төмен жұмыссыздық:',
+            '  экономика күшті → ФРЖ қатаңырақ → доллар ↑ → алтын ↓',
+            '',
+            'Әлсіз NFP (Actual < Forecast) + жұмыссыздық өсімі:',
+            '  рецессия қаупі → ФРЖ жұмсағырақ → доллар ↓ → алтын ↑',
+          ],
+          [
+            'Strong NFP (Actual > Forecast) + low unemployment:',
+            '  strong economy → Fed tighter → dollar ↑ → gold ↓',
+            '',
+            'Weak NFP (Actual < Forecast) + rising unemployment:',
+            '  recession risk → Fed softer → dollar ↓ → gold ↑',
+          ],
+        ), title: _L('Формула реакции', 'Реакция формуласы', 'Reaction formula')),
+        _warn(_L(
           'Первая пятница — это «вертолёты»: в первые секунды цена дёргается в обе стороны, '
           'спред расширяется, стопы выбивает в обоих направлениях. Новичкам входить в момент '
           'выхода NFP — почти гарантированный способ потерять деньги. Профи либо ждут, пока '
           'осядет пыль (15–30 минут), либо вообще не торгуют этот момент.',
-        ),
-        _fact(
+          'Бірінші жұма — «тікұшақтар»: алғашқы секундтарда баға екі жаққа жұлқынады, спред '
+          'кеңейеді, стоптар екі бағытта да ұшады. Жаңадан бастаушыға NFP шыққан сәтте кіру — '
+          'ақша жоғалтудың кепілді жолы. Кәсіпқойлар не шаң басылғанша (15–30 мин) күтеді, не '
+          'бұл сәтте мүлде саудаламайды.',
+          'The first Friday means "helicopters": in the first seconds price jerks both ways, the '
+          'spread widens, stops are hit in both directions. For beginners, entering at the NFP '
+          'release is an almost guaranteed way to lose money. Pros either wait for the dust to '
+          'settle (15–30 min) or simply do not trade that moment.',
+        )),
+        _fact(_L(
           'NFP — это оценка по опросу ~120 000 компаний, и её ПОСТОЯННО пересматривают в '
           'следующие месяцы, иногда на сотни тысяч рабочих мест. То есть рынок бурно реагирует '
           'на цифру, которая через месяц может оказаться совсем другой. Рынок торгует ожидания, '
           'а не истину.',
-        ),
-        _example(
+          'NFP — ~120 000 компанияны сұрау бойынша баға, оны келесі айларда ҮНЕМІ қайта '
+          'қарайды, кейде жүздеген мың жұмыс орнына. Яғни нарық бір айдан кейін мүлде басқа '
+          'болуы мүмкін санға қатты реакция береді. Нарық ақиқатты емес, күтулерді саудалайды.',
+          'NFP is an estimate from a survey of ~120,000 companies, and it is CONSTANTLY revised '
+          'in later months, sometimes by hundreds of thousands of jobs. So the market reacts '
+          'violently to a number that may look completely different a month later. The market '
+          'trades expectations, not the truth.',
+        )),
+        _example(_L(
           'Кейс «Двойной капкан»: NFP вышел сильным (+280k при прогнозе +180k), но уровень '
           'безработицы при этом ВЫРОС. Данные противоречат друг другу. Рынок сначала мечется, '
           'а затем выбирает ту цифру, на которой сейчас сфокусирована ФРС. Главный навык — '
           'не реагировать на один заголовок, а сопоставлять весь блок данных.',
-        ),
+          '«Қос қақпан» кейсі: NFP күшті шықты (+280k, болжам +180k), бірақ жұмыссыздық деңгейі '
+          'сонымен қатар ӨСТІ. Деректер бір-біріне қайшы. Нарық алдымен сенделеді, сосын ФРЖ '
+          'қазір назар аударған санды таңдайды. Басты дағды — бір тақырыпқа реакция беру емес, '
+          'бүкіл дерек блогын салыстыру.',
+          'The "double trap" case: NFP came out strong (+280k vs +180k expected), but the '
+          'unemployment rate ALSO ROSE. The data contradict each other. The market first thrashes '
+          'around, then picks the number the Fed is currently focused on. The key skill is not '
+          'reacting to a single headline, but comparing the whole block of data.',
+        )),
         _interactive('nfp_trap', title: 'Кейс «Двойной капкан»'),
       ],
-      quiz: const QuizQuestion(
-        question: 'NFP вышел слабым, безработица выросла. Что вероятнее с золотом?',
+      quiz: QuizQuestion(
+        question: _L(
+          'NFP вышел слабым, безработица выросла. Что вероятнее с золотом?',
+          'NFP әлсіз шықты, жұмыссыздық өсті. Алтынмен не ықтимал?',
+          'NFP came out weak and unemployment rose. What is more likely for gold?',
+        ),
         options: [
-          'Золото падает',
-          'Золото растёт (риск рецессии → мягкая ФРС)',
-          'Золото не двигается',
-          'Доллар укрепляется, золото растёт одновременно',
+          _L('Золото падает', 'Алтын түседі', 'Gold falls'),
+          _L('Золото растёт (риск рецессии → мягкая ФРС)', 'Алтын өседі (рецессия қаупі → жұмсақ ФРЖ)', 'Gold rises (recession risk → dovish Fed)'),
+          _L('Золото не двигается', 'Алтын қозғалмайды', 'Gold does not move'),
+          _L('Доллар укрепляется, золото растёт одновременно', 'Доллар нығаяды, алтын қатар өседі', 'The dollar strengthens and gold rises at the same time'),
         ],
         correctIndex: 1,
-        explanation:
-            'Слабый рынок труда = риск замедления экономики → ФРС склонна смягчать политику → '
-            'доллар слабеет → золото растёт.',
+        explanation: _L(
+          'Слабый рынок труда = риск замедления экономики → ФРС склонна смягчать политику → '
+          'доллар слабеет → золото растёт.',
+          'Әлсіз еңбек нарығы = экономика баяулау қаупі → ФРЖ саясатты жұмсартуға бейім → '
+          'доллар әлсірейді → алтын өседі.',
+          'A weak labour market = risk of a slowing economy → the Fed leans to ease → the dollar '
+          'weakens → gold rises.',
+        ),
       ),
     ),
     CourseLesson(
@@ -602,60 +726,122 @@ CourseModule _module2() => CourseModule(
       code: '2.3',
       title: 'Внутри головы Джерома Пауэлла: что делает ФРС при инфляции и дефляции?',
       blocks: [
-        _essence(
+        _essence(_L(
           'ФРС (Федеральная резервная система) — это центральный банк США и, по сути, '
           'дирижёр всех мировых рынков. У неё два главных рычага: процентная ставка и баланс '
           '(программы QE/QT). Понимать логику ФРС важнее, чем любой технический индикатор.',
-        ),
-        _h('Два рычага власти'),
-        _p('1. Ставка (Fed Funds Rate) — цена денег. Повышают → кредиты дорожают → экономика '
-            'остывает → инфляция падает. Снижают → деньги дешевеют → экономика разгоняется.'),
-        _p('2. QE/QT — «печатный станок» против «пылесоса». QE (количественное смягчение): ФРС '
-            'покупает облигации, вливая в систему свеженапечатанные деньги. QT (ужесточение): '
-            'ФРС изымает ликвидность, сокращая баланс.'),
-        _rule(
+          'ФРЖ (Федералды резервтік жүйе) — АҚШ орталық банкі әрі, мәні бойынша, бүкіл әлемдік '
+          'нарықтардың дирижёры. Оның екі басты тұтқасы бар: пайыздық ставка және баланс '
+          '(QE/QT бағдарламалары). ФРЖ логикасын түсіну кез келген техникалық индикатордан маңызды.',
+          'The Fed (Federal Reserve System) is the US central bank and, in essence, the conductor '
+          'of all world markets. It has two main levers: the interest rate and the balance sheet '
+          '(QE/QT programs). Understanding the Fed\'s logic matters more than any technical indicator.',
+        )),
+        _h(_L('Два рычага власти', 'Биліктің екі тұтқасы', 'Two levers of power')),
+        _p(_L(
+          '1. Ставка (Fed Funds Rate) — цена денег. Повышают → кредиты дорожают → экономика '
+          'остывает → инфляция падает. Снижают → деньги дешевеют → экономика разгоняется.',
+          '1. Ставка (Fed Funds Rate) — ақшаның бағасы. Көтерсе → несие қымбаттайды → экономика '
+          'суынады → инфляция түседі. Төмендетсе → ақша арзандайды → экономика жеделдейді.',
+          '1. The rate (Fed Funds Rate) is the price of money. Raise it → credit gets dearer → the '
+          'economy cools → inflation falls. Cut it → money gets cheaper → the economy accelerates.',
+        )),
+        _p(_L(
+          '2. QE/QT — «печатный станок» против «пылесоса». QE (количественное смягчение): ФРС '
+          'покупает облигации, вливая в систему свеженапечатанные деньги. QT (ужесточение): '
+          'ФРС изымает ликвидность, сокращая баланс.',
+          '2. QE/QT — «баспа станогы» мен «шаңсорғыш». QE (сандық жұмсарту): ФРЖ облигация '
+          'сатып алып, жүйеге жаңа басылған ақша құяды. QT (қатаңдату): ФРЖ балансты қысқартып, '
+          'өтімділікті алып тастайды.',
+          '2. QE/QT — the "printing press" versus the "vacuum cleaner". QE (quantitative easing): '
+          'the Fed buys bonds, pouring freshly printed money into the system. QT (tightening): the '
+          'Fed drains liquidity by shrinking its balance sheet.',
+        )),
+        _rule(_L(
           '«Hawkish» (ястребиная) риторика = настрой на ужесточение (высокая ставка, QT) — '
           'плохо для золота. «Dovish» (голубиная) = настрой на смягчение (низкая ставка, QE) — '
           'хорошо для золота. Иногда сами СЛОВА Пауэлла на пресс-конференции двигают рынок '
           'сильнее, чем фактическое решение по ставке.',
-          title: 'Ястребы и голуби',
+          '«Hawkish» (қаршыға) риторикасы = қатаңдатуға бағыт (жоғары ставка, QT) — алтынға '
+          'жаман. «Dovish» (көгершін) = жұмсартуға бағыт (төмен ставка, QE) — алтынға жақсы. '
+          'Кейде Пауэллдің пресс-конференциядағы СӨЗДЕРІ нарықты нақты ставка шешімінен де '
+          'қатты қозғайды.',
+          '"Hawkish" rhetoric = a stance toward tightening (high rate, QT) — bad for gold. '
+          '"Dovish" = a stance toward easing (low rate, QE) — good for gold. Sometimes Powell\'s '
+          'WORDS at the press conference move the market more than the actual rate decision.'),
+          title: _L('Ястребы и голуби', 'Қаршығалар мен көгершіндер', 'Hawks and doves'),
         ),
-        _mechanic(
+        _mechanic(_L(
           'Инфляция → ФРС включает «ястреба»: повышает ставку, изымает ликвидность (QT) → '
           'деньги дорожают → рынки падают, золото под давлением (т.к. растёт реальная доходность '
           'облигаций — конкурента золота).\n\n'
           'Дефляция/рецессия → ФРС включает «голубя»: снижает ставку к нулю, запускает '
           'печатный станок (QE) → система заливается дешёвыми деньгами → золото и акции взлетают.',
-          title: 'Механика',
+          'Инфляция → ФРЖ «қаршығаны» қосады: ставканы көтереді, өтімділікті алады (QT) → ақша '
+          'қымбаттайды → нарықтар түседі, алтын қысымда (өйткені облигацияның — алтын бәсекелесінің '
+          '— нақты табыстылығы өседі).\n\n'
+          'Дефляция/рецессия → ФРЖ «көгершінді» қосады: ставканы нөлге түсіреді, баспа станогын '
+          '(QE) іске қосады → жүйе арзан ақшаға толады → алтын мен акциялар ұшады.',
+          'Inflation → the Fed turns on the "hawk": raises the rate, drains liquidity (QT) → money '
+          'gets dearer → markets fall, gold is under pressure (because the real yield of bonds — '
+          'gold\'s rival — rises).\n\n'
+          'Deflation/recession → the Fed turns on the "dove": cuts the rate toward zero, fires up '
+          'the printing press (QE) → the system floods with cheap money → gold and stocks soar.'),
+          title: _L('Механика', 'Механика', 'The mechanics'),
         ),
-        _story(
+        _story(_L(
           'Март 2020: пандемия, рынки в свободном падении. ФРС за считанные дни обрушила '
           'ставку до 0–0.25% и объявила QE «в неограниченном объёме» (unlimited QE). За '
           'несколько месяцев баланс ФРС вырос на триллионы. Итог: акции устроили мощнейшее '
           'ралли, а золото улетело к историческим максимумам выше \$2000 за унцию. Когда ФРС '
           'печатает — реальные активы дорожают.',
-          title: 'Базука 2020 года',
+          '2020 наурыз: пандемия, нарықтар еркін құлдырауда. ФРЖ санаулы күнде ставканы '
+          '0–0.25%-ке түсіріп, «шексіз» QE (unlimited QE) жариялады. Бірнеше айда ФРЖ балансы '
+          'триллиондарға өсті. Нәтиже: акциялар қуатты ралли жасады, ал алтын унциясы \$2000-нан '
+          'асып, тарихи шыңға ұшты. ФРЖ басып шығарғанда — нақты активтер қымбаттайды.',
+          'March 2020: pandemic, markets in free fall. Within days the Fed slashed the rate to '
+          '0–0.25% and announced "unlimited" QE. In a few months the Fed\'s balance sheet grew by '
+          'trillions. The result: stocks staged a massive rally, and gold flew to record highs '
+          'above \$2,000 per ounce. When the Fed prints, real assets get more expensive.'),
+          title: _L('Базука 2020 года', '2020 жылғы базука', 'The 2020 bazooka'),
         ),
-        _fact(
+        _fact(_L(
           'Существует целая «индустрия» расшифровки слов ФРС. Аналитики считают, сколько раз '
           'Пауэлл сказал «инфляция» против «рост», и даже анализируют тон голоса. Есть термин '
           '«Fedspeak» — намеренно туманный язык, которым центробанкиры говорят так, чтобы '
           'ничего конкретно не пообещать и не обрушить рынки.',
-        ),
+          'ФРЖ сөздерін талдаудың тұтас «индустриясы» бар. Талдаушылар Пауэлл «инфляция» мен '
+          '«өсу» сөздерін неше рет айтқанын санайды, тіпті дауыс ырғағын талдайды. «Fedspeak» '
+          'деген термин бар — орталық банкирлер нақты ештеңе уәде етпей, нарықты құлатпай '
+          'сөйлейтін әдейі бұлыңғыр тіл.',
+          'There is a whole "industry" of decoding the Fed\'s words. Analysts count how many times '
+          'Powell said "inflation" versus "growth" and even analyse his tone of voice. There is a '
+          'term, "Fedspeak" — the deliberately vague language central bankers use to promise '
+          'nothing specific and not crash the markets.',
+        )),
         _interactive('fed_panel', title: 'Симуляция: ФРС, инфляция и золото'),
       ],
-      quiz: const QuizQuestion(
-        question: 'Что означает «голубиная» (dovish) риторика ФРС?',
+      quiz: QuizQuestion(
+        question: _L(
+          'Что означает «голубиная» (dovish) риторика ФРС?',
+          'ФРЖ-нің «көгершін» (dovish) риторикасы нені білдіреді?',
+          'What does "dovish" Fed rhetoric mean?',
+        ),
         options: [
-          'Повышение ставки и изъятие ликвидности',
-          'Смягчение политики: низкая ставка, QE',
-          'Отказ от любых действий',
-          'Запрет на торговлю золотом',
+          _L('Повышение ставки и изъятие ликвидности', 'Ставканы көтеру және өтімділікті алу', 'Raising the rate and draining liquidity'),
+          _L('Смягчение политики: низкая ставка, QE', 'Саясатты жұмсарту: төмен ставка, QE', 'Easing policy: low rate, QE'),
+          _L('Отказ от любых действий', 'Кез келген әрекеттен бас тарту', 'Refusing to act at all'),
+          _L('Запрет на торговлю золотом', 'Алтын саудасына тыйым', 'A ban on trading gold'),
         ],
         correctIndex: 1,
-        explanation:
-            'Dovish = мягкая политика: низкие ставки и вливание ликвидности (QE). Это обычно '
-            'позитив для золота и рисковых активов. Hawkish — наоборот, ужесточение.',
+        explanation: _L(
+          'Dovish = мягкая политика: низкие ставки и вливание ликвидности (QE). Это обычно '
+          'позитив для золота и рисковых активов. Hawkish — наоборот, ужесточение.',
+          'Dovish = жұмсақ саясат: төмен ставка және өтімділік құю (QE). Бұл әдетте алтын мен '
+          'тәуекелді активтерге оң. Hawkish — керісінше, қатаңдату.',
+          'Dovish = soft policy: low rates and liquidity injection (QE). This is usually positive '
+          'for gold and risk assets. Hawkish is the opposite — tightening.',
+        ),
       ),
     ),
   ],
