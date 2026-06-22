@@ -12,7 +12,7 @@ import 'courses_data.dart';
 /// ЕСКЕРТУ: сабақ ДЕНЕСІ (blocks) әзірге тек RU (келесі кезеңде аударылады).
 final coursesProvider = Provider<List<Course>>((ref) {
   final locale = ref.watch(localeControllerProvider).languageCode;
-  return buildCourses().map((c) => _applyMeta(c, locale)).toList();
+  return buildCourses(locale).map((c) => _applyMeta(c, locale)).toList();
 });
 
 /// Курсқа маркетинг метасын + таңдалған тіл қабығын қолданады.
