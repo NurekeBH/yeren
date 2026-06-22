@@ -144,6 +144,16 @@ class ApiService {
       (await _send('POST', '/trades', body: body))['trade'] as Map<String, dynamic>? ?? const {};
   Future<void> deleteTrade(String id) => _send('DELETE', '/trades/$id');
 
+  // ─────────────── Брокер аккаунттары (synced) ───────────────
+  Future<List<dynamic>> brokers() async =>
+      (await _get('/brokers'))['accounts'] as List? ?? const [];
+  Future<Map<String, dynamic>> linkBrokerMt(Map<String, dynamic> body) async =>
+      (await _send('POST', '/brokers/mt', body: body))['account'] as Map<String, dynamic>? ?? const {};
+  Future<Map<String, dynamic>> linkBrokerCtrader(Map<String, dynamic> body) async =>
+      (await _send('POST', '/brokers/ctrader', body: body))['account'] as Map<String, dynamic>? ?? const {};
+  Future<void> syncBroker(String id) => _send('POST', '/brokers/$id/sync');
+  Future<void> removeBroker(String id) => _send('DELETE', '/brokers/$id');
+
   // ─────────────── Support (қолдау хабары → админ-панель) ───────────────
   Future<void> sendSupportMessage(String text) =>
       _send('POST', '/support', body: {'text': text});

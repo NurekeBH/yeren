@@ -4,16 +4,31 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/locale/locale_controller.dart';
+import '../../../core/network/api_service.dart';
 import '../../../shared/models/broker_account.dart';
 
 const _brokersKey = 'broker_accounts_v1';
 
-/// In-app store — SharedPreferences-те JSON. Backend дайын болғанда HTTP-ге ауысады.
+/// Брокер аккаунттар store: жергілікті (SharedPreferences) + backend синхрон.
+/// Online болса backend ақиқат көзі (/brokers); offline болса жергілікті кэш.
 /// TZ §16.3: investor password backend-те AES-256 шифрленеді, client-те тек masked.
 class BrokersController extends StateNotifier<List<BrokerAccount>> {
-  BrokersController(this._prefs) : super(_loadInitial(_prefs));
+  BrokersController(this._prefs, this._ref) : super(_loadInitial(_prefs)) {
+    _pullRemote();
+  }
 
   final SharedPreferences _prefs;
+  final Ref _ref;
+
+  /// Backend-тен нақты аккаунттарды тартып аламыз (best-effort).
+  Future<void> _pullRemote() async {
+    try {
+      final list = await _ref.read(apiServiceProvider).brokers();
+      _set(list.map((e) => _fromApi(e as Map<String, dynamic>)).toList());
+    } catch (_) {
+      // Offline — жергілікті кэш қалады.
+    }
+  }
 
   static List<BrokerAccount> _loadInitial(SharedPreferences prefs) {
     final raw = prefs.getString(_brokersKey);
@@ -67,7 +82,22 @@ class BrokersController extends StateNotifier<List<BrokerAccount>> {
     required String server,
     required String investorPassword,
   }) async {
-    await Future<void>.delayed(const Duration(milliseconds: 400));
+    // Backend-ке жалғаймыз (investor password сонда AES-256 шифрленеді).
+    try {
+      final acc = await _ref.read(apiServiceProvider).linkBrokerMt({
+        'broker_name': _brokerToApi(broker),
+        'platform': platform == TradingPlatform.mt4 ? 'mt4' : 'mt5',
+        'account_number': accountNumber.trim(),
+        'server': server.trim(),
+        'investor_password': investorPassword,
+      });
+      if (acc.isNotEmpty) {
+        _set([...state, _fromApi(acc)]);
+        return;
+      }
+    } catch (_) {
+      // Offline — оптимистік жергілікті қосу.
+    }
     final masked = investorPassword.length <= 2
         ? '••'
         : '••••••${investorPassword.substring(investorPassword.length - 2)}';
@@ -88,7 +118,18 @@ class BrokersController extends StateNotifier<List<BrokerAccount>> {
   }
 
   Future<void> linkCTrader({required BrokerName broker, required String accountNumber}) async {
-    await Future<void>.delayed(const Duration(milliseconds: 400));
+    try {
+      final acc = await _ref.read(apiServiceProvider).linkBrokerCtrader({
+        'broker_name': _brokerToApi(broker),
+        'account_number': accountNumber.trim(),
+      });
+      if (acc.isNotEmpty) {
+        _set([...state, _fromApi(acc)]);
+        return;
+      }
+    } catch (_) {
+      // Offline fallback.
+    }
     _set([
       ...state,
       BrokerAccount(
@@ -105,10 +146,12 @@ class BrokersController extends StateNotifier<List<BrokerAccount>> {
   }
 
   void remove(String id) {
+    _ref.read(apiServiceProvider).removeBroker(id).catchError((_) {});
     _set(state.where((a) => a.id != id).toList());
   }
 
   void sync(String id) {
+    _ref.read(apiServiceProvider).syncBroker(id).catchError((_) {});
     _set(state
         .map((a) => a.id == id
             ? BrokerAccount(
@@ -160,9 +203,51 @@ class BrokersController extends StateNotifier<List<BrokerAccount>> {
         linkedAt: j['linkedAt'] == null ? null : DateTime.parse(j['linkedAt'] as String),
         syncedAt: j['syncedAt'] == null ? null : DateTime.parse(j['syncedAt'] as String),
       );
+
+  // ── Backend ↔ модель түрлендіру (enum snake_case-пен) ──
+  static String _brokerToApi(BrokerName b) => switch (b) {
+        BrokerName.exness => 'exness',
+        BrokerName.icMarkets => 'ic_markets',
+        BrokerName.xm => 'xm',
+        BrokerName.pepperstone => 'pepperstone',
+        BrokerName.oanda => 'oanda',
+        BrokerName.fxPro => 'fxpro',
+        BrokerName.other => 'other',
+      };
+
+  static BrokerName _brokerFromApi(String s) => switch (s) {
+        'exness' => BrokerName.exness,
+        'ic_markets' => BrokerName.icMarkets,
+        'xm' => BrokerName.xm,
+        'pepperstone' => BrokerName.pepperstone,
+        'oanda' => BrokerName.oanda,
+        'fxpro' => BrokerName.fxPro,
+        _ => BrokerName.other,
+      };
+
+  static TradingPlatform _platformFromApi(String s) => switch (s) {
+        'mt4' => TradingPlatform.mt4,
+        'mt5' => TradingPlatform.mt5,
+        _ => TradingPlatform.cTrader,
+      };
+
+  /// Backend жауабын (/brokers shape) модельге айналдырады.
+  static BrokerAccount _fromApi(Map<String, dynamic> j) => BrokerAccount(
+        id: j['id'].toString(),
+        broker: _brokerFromApi((j['broker_name'] ?? 'other').toString()),
+        platform: _platformFromApi((j['platform'] ?? 'mt5').toString()),
+        accountNumber: (j['account_number'] ?? '').toString(),
+        server: j['server'] as String?,
+        investorPasswordMasked: j['investor_password_masked'] as String?,
+        balance: (j['balance'] as num?)?.toDouble() ?? 0,
+        currency: (j['currency'] ?? 'USD').toString(),
+        isOAuth: j['is_oauth'] == true,
+        linkedAt: j['linked_at'] == null ? null : DateTime.tryParse('${j['linked_at']}'),
+        syncedAt: j['synced_at'] == null ? null : DateTime.tryParse('${j['synced_at']}'),
+      );
 }
 
 final brokersControllerProvider =
     StateNotifierProvider<BrokersController, List<BrokerAccount>>(
-  (ref) => BrokersController(ref.watch(sharedPreferencesProvider)),
+  (ref) => BrokersController(ref.watch(sharedPreferencesProvider), ref),
 );
