@@ -1082,13 +1082,21 @@ CourseModule _module4() => CourseModule(
       code: '4.1',
       title: 'Математическое ожидание (+EV): как измерять выгоду в неизвестности',
       blocks: [
-        _essence(
+        _essence(_L(
           'Главная ошибка новичка: оценивать решение по результату. Выиграл — значит решение '
           'было хорошим? Нет. В мире вероятностей плохое решение может случайно принести деньги, '
           'а хорошее — временно убыток. Качество решения измеряется математическим ожиданием '
           '(EV) на длинной дистанции, а не итогом одной сделки.',
-        ),
-        _formula(
+          'Жаңадан бастаушының басты қателігі: шешімді нәтиже бойынша бағалау. Ұттың — демек '
+          'шешім жақсы ма? Жоқ. Ықтималдық әлемінде нашар шешім кездейсоқ ақша әкелуі мүмкін, ал '
+          'жақсысы — уақытша зиян. Шешім сапасы бір мәмілемен емес, ұзақ дистанциядағы '
+          'математикалық күтіммен (EV) өлшенеді.',
+          'A beginner\'s main mistake: judging a decision by its result. You won — so the decision '
+          'was good? No. In a world of probabilities a bad decision can win money by chance, and a '
+          'good one can lose temporarily. The quality of a decision is measured by expected value '
+          '(EV) over a long run, not by the outcome of a single trade.',
+        )),
+        _formula(_Lf(
           [
             'EV = (P_win × Profit) − (P_loss × Loss)',
             '',
@@ -1098,40 +1106,88 @@ CourseModule _module4() => CourseModule(
             'Альтернатива — гарантированные \$1,000:',
             'EV = \$1,000',
           ],
-          title: 'Формула',
-        ),
-        _rule(
+          [
+            'EV = (P_жеңіс × Пайда) − (P_жеңіліс × Зиян)',
+            '',
+            'Ставка: \$3,000 ұтудың 50% мүмкіндігі:',
+            'EV = 0.5 × 3000 − 0.5 × 0 = \$1,500',
+            '',
+            'Балама — кепілді \$1,000:',
+            'EV = \$1,000',
+          ],
+          [
+            'EV = (P_win × Profit) − (P_loss × Loss)',
+            '',
+            'Bet: a 50% chance to win \$3,000:',
+            'EV = 0.5 × 3000 − 0.5 × 0 = \$1,500',
+            '',
+            'Alternative — a guaranteed \$1,000:',
+            'EV = \$1,000',
+          ],
+        ), title: _L('Формула', 'Формула', 'The formula')),
+        _rule(_L(
           'Профессиональный покерист и трейдер мыслят одинаково: они отделяют качество РЕШЕНИЯ '
           'от качества РЕЗУЛЬТАТА. Это называется «resulting» — ошибка оценивать решение по '
           'исходу. Можно сыграть идеально и проиграть; можно сыграть глупо и выиграть.',
-          title: 'Решение ≠ результат',
+          'Кәсіби покершы мен трейдер бірдей ойлайды: олар ШЕШІМ сапасын НӘТИЖЕ сапасынан '
+          'ажыратады. Бұл «resulting» деп аталады — шешімді нәтиже бойынша бағалау қателігі. '
+          'Мінсіз ойнап ұтылуға болады; ақымақ ойнап ұтуға болады.',
+          'A pro poker player and a trader think alike: they separate the quality of the DECISION '
+          'from the quality of the RESULT. This is called "resulting" — the error of judging a '
+          'decision by its outcome. You can play perfectly and lose; you can play stupidly and win.'),
+          title: _L('Решение ≠ результат', 'Шешім ≠ нәтиже', 'Decision ≠ result'),
         ),
-        _example(
+        _example(_L(
           'Большинство людей выберут «синицу в руках» — гарантированную \$1,000, потому что '
           'мозг панически боится потерять. Но математик выберет ставку с EV \$1,500. На дистанции '
           'в 1000 повторений выбор математика принесёт примерно в 1.5 раза больше. Эмоция '
           'выбирает комфорт, математика выбирает прибыль.',
-        ),
-        _fact(
+          'Көпшілік «қолдағы торғайды» — кепілді \$1,000-ды таңдайды, өйткені ми жоғалтудан '
+          'үрейленеді. Бірақ математик EV \$1,500 ставканы таңдайды. 1000 қайталау дистанциясында '
+          'математиктің таңдауы шамамен 1.5 есе көп әкеледі. Эмоция жайлылықты, математика пайданы '
+          'таңдайды.',
+          'Most people choose "a bird in the hand" — a guaranteed \$1,000 — because the brain '
+          'panics at losing. But the mathematician picks the bet with EV \$1,500. Over a run of '
+          '1,000 repetitions the mathematician\'s choice yields about 1.5× more. Emotion chooses '
+          'comfort; mathematics chooses profit.',
+        )),
+        _fact(_L(
           'Нобелевские лауреаты Канеман и Тверски доказали: боль от потери \$100 примерно в '
           '2–2.5 раза сильнее, чем радость от выигрыша тех же \$100. Это «неприятие потерь» '
           '(loss aversion). Именно из-за него трейдеры рано фиксируют прибыль и слишком долго '
           'держат убыток — действуя строго против математики.',
-        ),
+          'Нобель лауреаттары Канеман мен Тверски дәлелдеді: \$100 жоғалту ауыруы сол \$100-ды '
+          'ұту қуанышынан шамамен 2–2.5 есе күшті. Бұл «жоғалтуды жек көру» (loss aversion). Дәл '
+          'содан трейдерлер пайданы ерте бекітіп, зиянды тым ұзақ ұстайды — математикаға қарсы '
+          'әрекет етеді.',
+          'Nobel laureates Kahneman and Tversky proved: the pain of losing \$100 is about 2–2.5× '
+          'stronger than the joy of winning the same \$100. This is "loss aversion". It is exactly '
+          'why traders take profit too early and hold losses too long — acting strictly against the '
+          'maths.',
+        )),
         _interactive('ev_choice', title: 'Интерактив: выбор по EV'),
       ],
-      quiz: const QuizQuestion(
-        question: 'Что важнее для оценки качества торгового решения?',
+      quiz: QuizQuestion(
+        question: _L(
+          'Что важнее для оценки качества торгового решения?',
+          'Сауда шешімінің сапасын бағалауда не маңызды?',
+          'What matters most for judging the quality of a trading decision?',
+        ),
         options: [
-          'Результат одной конкретной сделки',
-          'Положительное мат. ожидание (+EV) на длинной дистанции',
-          'Сколько денег принесла сделка сегодня',
-          'Мнение других трейдеров',
+          _L('Результат одной конкретной сделки', 'Бір нақты мәміленің нәтижесі', 'The result of one specific trade'),
+          _L('Положительное мат. ожидание (+EV) на длинной дистанции', 'Ұзақ дистанциядағы оң мат. күтім (+EV)', 'Positive expected value (+EV) over the long run'),
+          _L('Сколько денег принесла сделка сегодня', 'Бүгін мәміле қанша ақша әкелді', 'How much money the trade made today'),
+          _L('Мнение других трейдеров', 'Басқа трейдерлердің пікірі', 'The opinion of other traders'),
         ],
         correctIndex: 1,
-        explanation:
-            'Одна сделка может выиграть случайно. Качество стратегии определяется знаком '
-            'математического ожидания на дистанции: +EV выживает, −EV разоряет.',
+        explanation: _L(
+          'Одна сделка может выиграть случайно. Качество стратегии определяется знаком '
+          'математического ожидания на дистанции: +EV выживает, −EV разоряет.',
+          'Бір мәміле кездейсоқ ұтуы мүмкін. Стратегия сапасы дистанциядағы математикалық '
+          'күтім таңбасымен анықталады: +EV аман қалады, −EV банкротқа ұшыратады.',
+          'A single trade can win by chance. A strategy\'s quality is set by the sign of its '
+          'expected value over the run: +EV survives, −EV ruins you.',
+        ),
       ),
     ),
     CourseLesson(
@@ -1139,13 +1195,21 @@ CourseModule _module4() => CourseModule(
       code: '4.2',
       title: 'Винрейт против Risk-to-Reward: главный секрет выживания депозита',
       blocks: [
-        _essence(
+        _essence(_L(
           'Новички гоняются за высоким процентом прибыльных сделок (винрейтом), думая, что в '
           'этом секрет. Это ловушка. Можно иметь 90% прибыльных сделок и слить депозит, а можно '
           'иметь 35% и стабильно богатеть. Всё решает связка винрейта и Risk-to-Reward (RR) — '
           'отношения тейк-профита к стоп-лоссу.',
-        ),
-        _formula(
+          'Жаңадан бастаушылар жоғары пайдалы мәміле пайызын (винрейт) қуады, құпия осында деп '
+          'ойлап. Бұл тұзақ. 90% пайдалы мәмілемен депозитті құртуға болады, ал 35%-бен тұрақты '
+          'байуға болады. Бәрін винрейт пен Risk-to-Reward (RR) — тейк-профиттің стоп-лосқа '
+          'қатынасы шешеді.',
+          'Beginners chase a high percentage of winning trades (win rate), thinking that is the '
+          'secret. It is a trap. You can have 90% winning trades and blow the account, or have 35% '
+          'and steadily get rich. Everything is decided by the pairing of win rate and '
+          'Risk-to-Reward (RR) — the ratio of take-profit to stop-loss.',
+        )),
+        _formula(_Lf(
           [
             'EV сделки = WinRate × RR − (1 − WinRate) × 1',
             '',
@@ -1155,34 +1219,76 @@ CourseModule _module4() => CourseModule(
             'Пример B: WinRate 90%, RR 1:0.1',
             'EV = 0.90 × 0.1 − 0.10 × 1 = −0.01R ❌ убыточно',
           ],
-          title: 'Винрейт обманчив',
-        ),
-        _warn(
+          [
+            'Мәміле EV = WinRate × RR − (1 − WinRate) × 1',
+            '',
+            'Мысал A: WinRate 40%, RR 1:3',
+            'EV = 0.40 × 3 − 0.60 × 1 = +0.6R ✅ пайдалы',
+            '',
+            'Мысал B: WinRate 90%, RR 1:0.1',
+            'EV = 0.90 × 0.1 − 0.10 × 1 = −0.01R ❌ зиянды',
+          ],
+          [
+            'Trade EV = WinRate × RR − (1 − WinRate) × 1',
+            '',
+            'Example A: WinRate 40%, RR 1:3',
+            'EV = 0.40 × 3 − 0.60 × 1 = +0.6R ✅ profitable',
+            '',
+            'Example B: WinRate 90%, RR 1:0.1',
+            'EV = 0.90 × 0.1 − 0.10 × 1 = −0.01R ❌ unprofitable',
+          ],
+        ), title: _L('Винрейт обманчив', 'Винрейт алдамшы', 'Win rate is deceptive')),
+        _warn(_L(
           'Высокий винрейт — самая опасная иллюзия в трейдинге. Стратегия «беру маленькую '
           'прибыль, но не ставлю стоп» даёт 95% выигрышных сделок и ощущение гениальности... '
           'до тех пор, пока одна сделка без стопа не сожрёт все 95% побед разом. Так умирают '
           'депозиты «успешных» новичков.',
-        ),
-        _example(
+          'Жоғары винрейт — трейдингтегі ең қауіпті елес. «Кіші пайда аламын, бірақ стоп '
+          'қоймаймын» стратегиясы 95% жеңісті мәміле мен данышпандық сезімін береді... бір '
+          'стопсыз мәміле 95% жеңісті бір-ақ жұтқанша. «Табысты» жаңадан бастаушылардың '
+          'депозиттері осылай өледі.',
+          'A high win rate is the most dangerous illusion in trading. The "take a small profit but '
+          'set no stop" strategy gives 95% winning trades and a feeling of genius... until one '
+          'stop-less trade eats all 95% of the wins at once. That is how the accounts of '
+          '"successful" beginners die.',
+        )),
+        _example(_L(
           'Знаменитые трейдеры-трендовики (turtle traders) имели винрейт всего ~35%. Они '
           'теряли деньги в 2 случаях из 3! Но их выигрышные сделки были в разы крупнее '
           'убыточных (RR 1:5 и выше), и на дистанции это сделало их миллионерами. Большой RR '
           'прощает низкий винрейт; маленький RR не спасёт даже высокий.',
-        ),
+          'Атақты тренд трейдерлерінің (turtle traders) винрейті небәрі ~35% болды. Олар 3-тің '
+          '2-сінде ақша жоғалтты! Бірақ жеңісті мәмілелері зияндыдан бірнеше есе ірі еді (RR 1:5 '
+          'және жоғары), бұл дистанцияда оларды миллионер етті. Үлкен RR төмен винрейтті кешіреді; '
+          'кіші RR жоғарысын да құтқармайды.',
+          'The famous trend-following "turtle traders" had a win rate of just ~35%. They lost '
+          'money in 2 out of 3 cases! But their winning trades were many times larger than the '
+          'losers (RR 1:5 and up), and over the run that made them millionaires. A big RR forgives '
+          'a low win rate; a small RR will not save even a high one.',
+        )),
         _interactive('winrate_rr', title: 'Симулятор: Win Rate × RR (500 сделок)'),
       ],
-      quiz: const QuizQuestion(
-        question: 'Win Rate 40%, RR 1:3. Система прибыльна на дистанции?',
+      quiz: QuizQuestion(
+        question: _L(
+          'Win Rate 40%, RR 1:3. Система прибыльна на дистанции?',
+          'Win Rate 40%, RR 1:3. Жүйе дистанцияда пайдалы ма?',
+          'Win Rate 40%, RR 1:3. Is the system profitable over the run?',
+        ),
         options: [
-          'Нет, ведь 60% сделок убыточны',
-          'Да: 0.4×3 − 0.6×1 = +0.6R на сделку',
-          'Зависит только от удачи',
-          'Невозможно определить',
+          _L('Нет, ведь 60% сделок убыточны', 'Жоқ, өйткені 60% мәміле зиянды', 'No, because 60% of trades lose'),
+          _L('Да: 0.4×3 − 0.6×1 = +0.6R на сделку', 'Иә: 0.4×3 − 0.6×1 = +0.6R әр мәмілеге', 'Yes: 0.4×3 − 0.6×1 = +0.6R per trade'),
+          _L('Зависит только от удачи', 'Тек сәттілікке байланысты', 'It depends only on luck'),
+          _L('Невозможно определить', 'Анықтау мүмкін емес', 'Impossible to determine'),
         ],
         correctIndex: 1,
-        explanation:
-            'Положительный RR компенсирует низкий винрейт. 0.4×3 − 0.6×1 = +0.6R — каждая сделка '
-            'в среднем приносит 0.6 риска прибыли. Большой RR важнее высокого винрейта.',
+        explanation: _L(
+          'Положительный RR компенсирует низкий винрейт. 0.4×3 − 0.6×1 = +0.6R — каждая сделка '
+          'в среднем приносит 0.6 риска прибыли. Большой RR важнее высокого винрейта.',
+          'Оң RR төмен винрейтті өтейді. 0.4×3 − 0.6×1 = +0.6R — әр мәміле орташа 0.6 тәуекел '
+          'пайда әкеледі. Үлкен RR жоғары винрейттен маңызды.',
+          'A positive RR compensates for a low win rate. 0.4×3 − 0.6×1 = +0.6R — each trade brings '
+          'on average 0.6 of risk in profit. A big RR matters more than a high win rate.',
+        ),
       ),
     ),
     CourseLesson(
