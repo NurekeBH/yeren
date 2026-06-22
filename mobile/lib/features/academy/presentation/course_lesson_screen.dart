@@ -30,10 +30,22 @@ class _CourseLessonScreenState extends ConsumerState<CourseLessonScreen> {
   int? _selected;
   bool _submitted = false;
 
+  // Слайдтарды кэштейміз — әр свайп сайын (setState) қайта топтамас үшін.
+  List<List<LessonBlock>>? _slidesCache;
+  String? _slidesForLesson;
+
   @override
   void dispose() {
     _pc.dispose();
     super.dispose();
+  }
+
+  /// Кэштелген слайдтар (сабақ ауысса ғана қайта есептеледі).
+  List<List<LessonBlock>> _slidesFor(CourseLesson lesson) {
+    if (_slidesForLesson == lesson.id && _slidesCache != null) return _slidesCache!;
+    _slidesCache = _groupSlides(lesson.blocks);
+    _slidesForLesson = lesson.id;
+    return _slidesCache!;
   }
 
   /// Блоктарды слайдтарға топтайды: қатарынан келген мәтін (Heading/Paragraph)
@@ -83,7 +95,7 @@ class _CourseLessonScreenState extends ConsumerState<CourseLessonScreen> {
       return _LockedLessonView(course: course, lesson: lesson, accent: accent);
     }
 
-    final slides = _groupSlides(lesson.blocks);
+    final slides = _slidesFor(lesson);
     final pageCount = slides.length + 1; // +тест
     final isQuiz = _page == slides.length;
 
@@ -284,6 +296,7 @@ class _BlockView extends StatelessWidget {
     if (b is CalloutBlock) return _Callout(block: b);
     if (b is FormulaBlock) return _FormulaView(block: b);
     if (b is CardsBlock) return _CardsView(block: b);
+    if (b is MediaRecBlock) return _MediaRecView(block: b);
     if (b is InteractiveBlock) return buildCourseInteractive(b.key);
     return const SizedBox.shrink();
   }
@@ -411,6 +424,56 @@ class _CardsView extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Тақырып бойынша фильм/сериал/кітап ұсынысы.
+class _MediaRecView extends StatelessWidget {
+  const _MediaRecView({required this.block});
+  final MediaRecBlock block;
+
+  @override
+  Widget build(BuildContext context) {
+    final (icon, label, color) = switch (block.kind) {
+      MediaKind.film => (Icons.movie_outlined, '🎬 Фильм по теме', AppColors.oilRed),
+      MediaKind.series => (Icons.live_tv_outlined, '📺 Сериал по теме', AppColors.purple),
+      MediaKind.book => (Icons.menu_book_outlined, '📖 Книга по теме', AppColors.dxyBlue),
+      MediaKind.doc => (Icons.videocam_outlined, '🎥 Документалка по теме', AppColors.profitGreen),
+    };
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [color.withValues(alpha: 0.12), color.withValues(alpha: 0.04)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: color.withValues(alpha: 0.35)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 16, color: color),
+              const SizedBox(width: 6),
+              Text(label,
+                  style: AppTypography.label(color: color).copyWith(fontWeight: FontWeight.w800, letterSpacing: 0.5)),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(block.title, style: AppTypography.bodyLarge().copyWith(fontWeight: FontWeight.w800, height: 1.2)),
+          if (block.meta != null) ...[
+            const SizedBox(height: 2),
+            Text(block.meta!, style: AppTypography.label(color: AppColors.textMuted)),
+          ],
+          const SizedBox(height: 8),
+          Text(block.note, style: AppTypography.bodyMedium(color: AppColors.textPrimary).copyWith(height: 1.45)),
+        ],
+      ),
     );
   }
 }

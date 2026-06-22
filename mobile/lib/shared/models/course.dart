@@ -159,6 +159,21 @@ class CardItem {
   final String text;
 }
 
+enum MediaKind { film, series, book, doc }
+
+/// Тақырыпқа қатысты фильм/сериал/кітап ұсынысы («Тақырып бойынша көру/оқу»).
+class MediaRecBlock extends LessonBlock {
+  const MediaRecBlock({required this.kind, required this.title, required this.note, this.meta});
+  final MediaKind kind;
+  final String title;
+
+  /// Қысқа сипаттама — неге осы тақырыпқа қатысты.
+  final String note;
+
+  /// Қосымша мета (жыл, режиссёр, автор).
+  final String? meta;
+}
+
 class QuizQuestion {
   const QuizQuestion({
     required this.question,

@@ -504,3 +504,21 @@ create table if not exists exam_results (
   created_at  timestamptz not null default now()
 );
 create index if not exists exam_results_user_idx on exam_results(user_id, course_id, created_at desc);
+
+-- ─────────────────── ОПТИМИЗАЦИЯ: ҚОСЫМША ИНДЕКСТЕР ───────────────────
+-- Барлығы idempotent (if not exists) — миграцияда қайта қосуға қауіпсіз.
+-- Админ тізімі/санағы + жаңа қолданушылар (created_at сұрыптау/сүзгі).
+create index if not exists users_created_at_idx on users(created_at desc);
+-- Провайдерге жазылғандар: хабарландыру тарату + жазылушылар саны.
+create index if not exists prov_subs_provider_idx on provider_subscriptions(provider_id);
+-- Идея сатып алуды тез тексеру (user_id + signal_id).
+create index if not exists signal_purchases_user_signal_idx on signal_purchases(user_id, signal_id);
+-- Қолданушының іс-шара өтінімдері.
+create index if not exists event_apps_user_idx on event_applications(user_id);
+-- Баға ескертулерін фонда тексеру: тек белсенді ескертулер (poller бүкіл базаны
+-- сканерлемейді).
+create index if not exists price_alerts_active_idx on price_alerts(instrument) where active;
+-- Календарь push еске салуы: жіберілмеген оқиғалар ғана.
+create index if not exists calendar_reminder_idx on calendar_events(scheduled_at) where not reminder_sent;
+-- Курс/идея сатылым есебі (админ дашборды) + емтихан статистикасы.
+create index if not exists exam_results_course_idx on exam_results(course_id, created_at desc);
