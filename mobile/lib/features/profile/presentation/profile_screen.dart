@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../core/network/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
@@ -18,12 +19,19 @@ import 'trader_application_sheet.dart';
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
+  /// Аватар суреті: тұрақты URL (Supabase) болса — желіден, әйтпесе жергілікті файл.
+  ImageProvider _avatarImage(String path) =>
+      path.startsWith('http') ? NetworkImage(path) : FileImage(File(path));
+
   Future<void> _pickAvatar(WidgetRef ref) async {
     final picker = ImagePicker();
     final file = await picker.pickImage(source: ImageSource.gallery, imageQuality: 80, maxWidth: 600);
-    if (file != null) {
-      ref.read(profileControllerProvider.notifier).setAvatar(file.path);
-    }
+    if (file == null) return;
+    // Бірден жергілікті жолды көрсетеміз (тез әрі офлайн), сосын Supabase-ке
+    // жүктеп көреміз — сәтті болса тұрақты URL-ге ауыстырамыз.
+    ref.read(profileControllerProvider.notifier).setAvatar(file.path);
+    final url = await ref.read(apiServiceProvider).uploadImage(file.path);
+    if (url != null) ref.read(profileControllerProvider.notifier).setAvatar(url);
   }
 
   @override
@@ -63,7 +71,7 @@ class ProfileScreen extends ConsumerWidget {
                             CircleAvatar(
                               radius: 36,
                               backgroundColor: AppColors.gold,
-                              backgroundImage: profile.avatarPath != null ? FileImage(File(profile.avatarPath!)) : null,
+                              backgroundImage: profile.avatarPath != null ? _avatarImage(profile.avatarPath!) : null,
                               child: profile.avatarPath == null
                                   ? Text(
                                       (profile.name.isEmpty ? '?' : profile.name[0]).toUpperCase(),

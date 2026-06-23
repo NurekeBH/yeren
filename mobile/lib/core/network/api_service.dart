@@ -45,6 +45,20 @@ class ApiService {
     }
   }
 
+  /// Суретті backend арқылы Supabase Storage-қа жүктеп, public URL қайтарады.
+  /// Сәтсіз болса (сторадж бапталмаған/офлайн) null — клиент жергілікті жолды қалдырады.
+  Future<String?> uploadImage(String filePath) async {
+    try {
+      final form = FormData.fromMap({'file': await MultipartFile.fromFile(filePath)});
+      final res = await _dio.post<dynamic>('/uploads', data: form);
+      _ensureOk(res);
+      final data = res.data;
+      return data is Map ? data['url'] as String? : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
   // ─────────────── Auth ───────────────
   Future<Map<String, dynamic>> register(String phone, String password) =>
       _send('POST', '/auth/register', body: {'phone': phone, 'password': password});

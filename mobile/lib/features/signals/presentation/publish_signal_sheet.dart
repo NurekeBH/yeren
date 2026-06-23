@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../core/network/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
@@ -57,6 +58,13 @@ class _PublishSheetState extends ConsumerState<_PublishSheet> {
     }
     setState(() => _busy = true);
     final name = ref.read(profileControllerProvider).name;
+    // Скриншотты Supabase-ке жүктеп көреміз — сәтті болса тұрақты URL, әйтпесе
+    // жергілікті жол (офлайн көрінеді).
+    var shot = _photoPath ?? '';
+    if (shot.isNotEmpty && !shot.startsWith('http')) {
+      final url = await ref.read(apiServiceProvider).uploadImage(shot);
+      if (url != null) shot = url;
+    }
     final now = DateTime.now();
     final signal = Signal(
       id: 'my-${now.microsecondsSinceEpoch}',
@@ -65,7 +73,7 @@ class _PublishSheetState extends ConsumerState<_PublishSheet> {
       // Деңгейлер мәтінде — сандық өрістер 0 (hasLevels=false).
       entryFrom: 0, entryTo: 0, tp1: 0, tp2: 0, tp3: 0, sl: 0,
       rr: 0, confidence: Signal.confidenceForRisk(_risk),
-      screenshotUrl: _photoPath ?? '',
+      screenshotUrl: shot,
       analysis: text,
       status: SignalStatus.active,
       publishedAt: now,

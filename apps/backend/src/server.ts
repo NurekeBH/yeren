@@ -22,6 +22,7 @@ import { supportRoutes } from './modules/support/routes.js';
 import { adminRoutes } from './modules/admin/routes.js';
 import { traderAppsRoutes } from './modules/trader_apps/routes.js';
 import { coursesRoutes } from './modules/courses/routes.js';
+import { uploadsRoutes } from './modules/uploads/routes.js';
 import { ensureAdmin } from './services/bootstrap_admin.js';
 import { ingestNews } from './services/news.js';
 import { ingestCalendar } from './services/calendar.js';
@@ -67,6 +68,7 @@ await app.register(async (api) => {
   await adminRoutes(api);
   await traderAppsRoutes(api);
   await coursesRoutes(api);
+  await uploadsRoutes(api);
 }, { prefix: '/api/v1' });
 
 const shutdown = async (signal: string) => {
