@@ -4,14 +4,14 @@ import '../../../shared/models/course.dart';
 String _loc = 'ru';
 
 /// Мәтінді тіл бойынша таңдау. kk/en берілмесе RU-ға қайтады (әлі аударылмаған).
-String _L(String ru, [String? kk, String? en]) => switch (_loc) {
+String _lt(String ru, [String? kk, String? en]) => switch (_loc) {
       'kk' => kk ?? ru,
       'en' => en ?? ru,
       _ => ru,
     };
 
-/// Формула жолдары (List<String>) үшін тіл таңдау.
-List<String> _Lf(List<String> ru, [List<String>? kk, List<String>? en]) => switch (_loc) {
+// Формула жолдары (List<String>) үшін тіл таңдау.
+List<String> _lf(List<String> ru, [List<String>? kk, List<String>? en]) => switch (_loc) {
       'kk' => kk ?? ru,
       'en' => en ?? ru,
       _ => ru,
@@ -36,7 +36,7 @@ LessonBlock _interactive(String key, {String? title}) =>
     InteractiveBlock(key, title: title);
 
 /// Қолданбадағы барлық премиум-курстар каталогы. Тіл бойынша мазмұн құрылады
-/// (сабақ денесі _L() арқылы аударылады; тақырып/субтитр repository-де meta-дан).
+/// (сабақ денесі _lt() арқылы аударылады; тақырып/субтитр repository-де meta-дан).
 List<Course> buildCourses([String locale = 'ru']) {
   _loc = locale;
   return [_master()];
@@ -84,7 +84,7 @@ CourseModule _module1() => CourseModule(
       code: '1.1',
       title: 'Великий обман цивилизации: зачем человечеству деньги?',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Деньги — это не богатство, а технология учёта доверия. Сами по себе бумажка или '
           'цифра на счёте бесполезны: их ценность держится только на общей вере, что завтра '
           'их примут в обмен на реальные товары. Вся мировая финансовая система — это '
@@ -98,8 +98,8 @@ CourseModule _module1() => CourseModule(
           'tomorrow it will be accepted in exchange for real goods. The entire global financial '
           'system is one grand agreement about trust.',
         )),
-        _h(_L('Зачем вообще придумали деньги', 'Ақша неге ойлап табылды', 'Why money was invented at all')),
-        _p(_L(
+        _h(_lt('Зачем вообще придумали деньги', 'Ақша неге ойлап табылды', 'Why money was invented at all')),
+        _p(_lt(
           'Представь мир без денег — чистый бартер. Ты сапожник и хочешь хлеба. Но пекарю '
           'не нужны сапоги — ему нужна рыба. Значит, тебе сначала надо найти рыбака, которому '
           'нужны сапоги, обменять сапоги на рыбу, и только потом рыбу на хлеб. Это называется '
@@ -113,7 +113,7 @@ CourseModule _module1() => CourseModule(
           'who needs shoes, trade shoes for fish, and only then fish for bread. This is called '
           'the "double coincidence of wants" problem, and it paralyses an economy.',
         )),
-        _p(_L(
+        _p(_lt(
           'Деньги решили эту проблему: они стали универсальным посредником, который примет '
           'каждый. Деньги выполняют три функции: средство обмена, мера стоимости и средство '
           'накопления.',
@@ -122,8 +122,8 @@ CourseModule _module1() => CourseModule(
           'Money solved this: it became a universal intermediary that everyone accepts. Money '
           'has three functions: a medium of exchange, a measure of value and a store of value.',
         )),
-        _h(_L('Три эпохи денег', 'Ақшаның үш дәуірі', 'Three eras of money')),
-        _p(_L(
+        _h(_lt('Три эпохи денег', 'Ақшаның үш дәуірі', 'Three eras of money')),
+        _p(_lt(
           '1. Товарные деньги: ракушки каури, скот, соль, зерно. Само латинское слово '
           '«salarium» (зарплата) происходит от соли, которой платили римским солдатам — '
           'отсюда английское «salary».',
@@ -132,7 +132,7 @@ CourseModule _module1() => CourseModule(
           '1. Commodity money: cowrie shells, cattle, salt, grain. The Latin word "salarium" '
           '(salary) comes from the salt paid to Roman soldiers — hence the English "salary".',
         )),
-        _p(_L(
+        _p(_lt(
           '2. Золотой стандарт: бумажные банкноты были «расписками» на золото в хранилище. '
           'До 1971 года доллар официально менялся на золото по фиксированному курсу '
           '\$35 за унцию.',
@@ -141,7 +141,7 @@ CourseModule _module1() => CourseModule(
           '2. The gold standard: paper banknotes were "receipts" for gold in a vault. Until '
           '1971 the dollar was officially exchanged for gold at a fixed rate of \$35 per ounce.',
         )),
-        _p(_L(
+        _p(_lt(
           '3. Фиатные деньги (с 1971 г.): «fiat» на латыни — «да будет так». Деньги обеспечены '
           'только указом и доверием к государству. Печатать их можно практически без предела.',
           '3. Фиат ақша (1971 жылдан): латынша «fiat» — «солай болсын». Ақша тек жарлықпен '
@@ -149,7 +149,7 @@ CourseModule _module1() => CourseModule(
           '3. Fiat money (since 1971): "fiat" is Latin for "let it be done". Money is backed only '
           'by decree and trust in the state. It can be printed almost without limit.',
         )),
-        _fact(_L(
+        _fact(_lt(
           '15 августа 1971 года президент Никсон в воскресном телеобращении «временно» отменил '
           'обмен доллара на золото («Никсоновский шок»). Это «временно» длится уже более 50 лет. '
           'С того дня ни одна валюта мира не обеспечена золотом — мы все живём в эпохе чистого фиата.',
@@ -162,7 +162,7 @@ CourseModule _module1() => CourseModule(
           'over 50 years. Since that day no currency on earth is backed by gold — we all live in '
           'the era of pure fiat.',
         )),
-        _rule(_L(
+        _rule(_lt(
           'Ликвидность — это лёгкость, с которой актив превращается в деньги без потери цены. '
           'Наличные абсолютно ликвидны. Квартиру можно продать за месяцы и с торгом — она '
           'неликвидна. Рынки живут и дышат ликвидностью: когда центробанки её добавляют — '
@@ -175,9 +175,9 @@ CourseModule _module1() => CourseModule(
           'is perfectly liquid. A flat takes months to sell and with haggling — it is illiquid. '
           'Markets live and breathe liquidity: when central banks add it, asset prices rise; when '
           'they drain it, crashes happen.'),
-          title: _L('Что такое ликвидность', 'Өтімділік дегеніміз не', 'What liquidity is'),
+          title: _lt('Что такое ликвидность', 'Өтімділік дегеніміз не', 'What liquidity is'),
         ),
-        _story(_L(
+        _story(_lt(
           'Веймарская Германия, 1923 год. Чтобы платить репарации после Первой мировой, '
           'правительство включило печатный станок. Инфляция достигла такого уровня, что цены '
           'удваивались каждые ~2 дня. Люди получали зарплату дважды в день и бежали тратить её '
@@ -196,24 +196,24 @@ CourseModule _module1() => CourseModule(
           'for heat — cheaper than buying firewood. Children built toy houses out of stacks of '
           'cash. In Zimbabwe in 2008 a 100-trillion-dollar note was printed. That is how faith in '
           'fiat turns to dust.'),
-          title: _L('Когда деньги стали мусором', 'Ақша қоқысқа айналғанда', 'When money became trash'),
+          title: _lt('Когда деньги стали мусором', 'Ақша қоқысқа айналғанда', 'When money became trash'),
         ),
         _interactive('emission', title: 'Симулятор «Эмиссия»'),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Чем обеспечены современные фиатные деньги (например, доллар)?',
           'Қазіргі фиат ақша (мысалы, доллар) немен қамтамасыз етілген?',
           'What backs modern fiat money (for example, the dollar)?',
         ),
         options: [
-          _L('Золотым запасом страны', 'Елдің алтын қорымен', 'The country\'s gold reserves'),
-          _L('Доверием к государству и его экономике', 'Мемлекетке және оның экономикасына деген сеніммен', 'Trust in the state and its economy'),
-          _L('Запасами нефти', 'Мұнай қорымен', 'Oil reserves'),
-          _L('Серебром в центральном банке', 'Орталық банктегі күміспен', 'Silver in the central bank'),
+          _lt('Золотым запасом страны', 'Елдің алтын қорымен', 'The country\'s gold reserves'),
+          _lt('Доверием к государству и его экономике', 'Мемлекетке және оның экономикасына деген сеніммен', 'Trust in the state and its economy'),
+          _lt('Запасами нефти', 'Мұнай қорымен', 'Oil reserves'),
+          _lt('Серебром в центральном банке', 'Орталық банктегі күміспен', 'Silver in the central bank'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'С 1971 года (Никсоновский шок, отмена золотого стандарта) фиатные деньги не '
           'обеспечены физическим активом — только доверием к эмитенту. Поэтому чрезмерная '
           'эмиссия разрушает их покупательную способность.',
@@ -231,7 +231,7 @@ CourseModule _module1() => CourseModule(
       code: '1.2',
       title: 'Долларовая гегемония: почему USD сильнее всех при гигантском госдолге?',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'США должны больше \$34 триллионов, печатают деньги десятилетиями — но доллар '
           'остаётся королём. Парадокс? Нет. Доллар — мировая резервная валюта: в нём торгуют '
           'нефтью, хранят золотовалютные резервы и заключают международные контракты. '
@@ -248,8 +248,8 @@ CourseModule _module1() => CourseModule(
           'dollars lets the US export its own inflation to the whole world — this is called the '
           '"exorbitant privilege".',
         )),
-        _h(_L('Как доллар захватил мир', 'Доллар әлемді қалай жаулады', 'How the dollar conquered the world')),
-        _p(_L(
+        _h(_lt('Как доллар захватил мир', 'Доллар әлемді қалай жаулады', 'How the dollar conquered the world')),
+        _p(_lt(
           'Бреттон-Вудс (1944): пока в Европе ещё шла война, 44 страны договорились привязать '
           'свои валюты к доллару, а доллар — к золоту. США тогда владели ~70% мирового золота, '
           'так что выбор был логичным.',
@@ -260,7 +260,7 @@ CourseModule _module1() => CourseModule(
           'currencies to the dollar, and the dollar to gold. The US then held ~70% of the world\'s '
           'gold, so the choice was logical.',
         )),
-        _p(_L(
+        _p(_lt(
           'Ямайская система (1976): после Никсоновского шока золотую привязку официально '
           'похоронили. Валюты стали «плавающими» — их курс определяет рынок.',
           'Ямайка жүйесі (1976): Никсон шогынан кейін алтын байламы ресми түрде жерленді. '
@@ -268,7 +268,7 @@ CourseModule _module1() => CourseModule(
           'The Jamaica system (1976): after the Nixon Shock the gold peg was officially buried. '
           'Currencies became "floating" — their rate is set by the market.',
         )),
-        _p(_L(
+        _p(_lt(
           'Нефтедоллар (1970-е): США договорились с Саудовской Аравией, что нефть будет '
           'продаваться только за доллары, а нефтедоллары будут вкладываться в гособлигации '
           'США. Это создало вечный мировой спрос на доллар: нужна нефть — нужны доллары.',
@@ -279,7 +279,7 @@ CourseModule _module1() => CourseModule(
           'for dollars, and petrodollars would be invested in US Treasuries. This created eternal '
           'global demand for the dollar: need oil — need dollars.',
         )),
-        _fact(_L(
+        _fact(_lt(
           'Около 60% всех мировых валютных резервов и ~88% всех валютных сделок в мире '
           'приходятся на доллар, хотя экономика США — лишь ~25% мирового ВВП. Доллар '
           'непропорционально доминирует именно из-за статуса резервной валюты.',
@@ -290,7 +290,7 @@ CourseModule _module1() => CourseModule(
           'dollars, although the US economy is only ~25% of world GDP. The dollar dominates '
           'disproportionately precisely because of its reserve-currency status.',
         )),
-        _rule(_L(
+        _rule(_lt(
           'DXY (индекс доллара) — главный барометр трейдера золота. Это сила доллара против '
           'корзины из 6 валют (евро ~58%, иена, фунт, канадский доллар, крона, франк). '
           'Для золота работает устойчивая обратная корреляция: золото номинировано в долларах, '
@@ -303,9 +303,9 @@ CourseModule _module1() => CourseModule(
           'strength against a basket of 6 currencies (euro ~58%, yen, pound, Canadian dollar, '
           'krona, franc). A stable inverse correlation works for gold: gold is priced in dollars, '
           'so when the dollar rises, gold in dollars gets cheaper.'),
-          title: _L('Индекс доллара DXY', 'Доллар индексі DXY', 'The dollar index DXY'),
+          title: _lt('Индекс доллара DXY', 'Доллар индексі DXY', 'The dollar index DXY'),
         ),
-        _example(_L(
+        _example(_lt(
           'Парадокс «тихой гавани»: в кризис 2008 года эпицентром был именно американский '
           'ипотечный рынок — но инвесторы со всего мира побежали... в доллар и гособлигации '
           'США. Почему? Потому что в момент паники все ищут самый ликвидный и «безопасный» '
@@ -322,19 +322,19 @@ CourseModule _module1() => CourseModule(
         _interactive('dxy', title: 'Интерактив: обратная корреляция DXY'),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'DXY (индекс доллара) резко пошёл вверх. Что вероятнее всего с золотом?',
           'DXY (доллар индексі) күрт өсті. Алтынмен не болуы ықтимал?',
           'DXY (the dollar index) jumped sharply. What is most likely for gold?',
         ),
         options: [
-          _L('Золото тоже растёт вместе с долларом', 'Алтын да доллармен бірге өседі', 'Gold rises together with the dollar'),
-          _L('Золото обычно падает (обратная корреляция)', 'Алтын әдетте түседі (кері корреляция)', 'Gold usually falls (inverse correlation)'),
-          _L('Золото не реагирует на DXY', 'Алтын DXY-ге реакция бермейді', 'Gold does not react to DXY'),
-          _L('Золото всегда повторяет движение DXY', 'Алтын әрдайым DXY қозғалысын қайталайды', 'Gold always mirrors DXY'),
+          _lt('Золото тоже растёт вместе с долларом', 'Алтын да доллармен бірге өседі', 'Gold rises together with the dollar'),
+          _lt('Золото обычно падает (обратная корреляция)', 'Алтын әдетте түседі (кері корреляция)', 'Gold usually falls (inverse correlation)'),
+          _lt('Золото не реагирует на DXY', 'Алтын DXY-ге реакция бермейді', 'Gold does not react to DXY'),
+          _lt('Золото всегда повторяет движение DXY', 'Алтын әрдайым DXY қозғалысын қайталайды', 'Gold always mirrors DXY'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Золото номинировано в долларах. Сильный доллар делает золото дороже для остального '
           'мира и снижает спрос → цена падает. DXY вверх → золото вниз, и наоборот.',
           'Алтын доллармен бағаланады. Күшті доллар алтынды басқа әлем үшін қымбаттатып, '
@@ -349,7 +349,7 @@ CourseModule _module1() => CourseModule(
       code: '1.3',
       title: 'Анатомия бирж и механика ликвидности: где крупный игрок оставляет следы?',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Цена двигается не «сама по себе» и не из-за линий на графике. Она двигается, когда '
           'кто-то агрессивно забирает ликвидность из стакана заявок (order book). Понять, как '
           'устроена эта «кухня», — значит перестать верить в магию и увидеть реальные потоки '
@@ -362,8 +362,8 @@ CourseModule _module1() => CourseModule(
           'aggressively takes liquidity out of the order book. Understanding how this "kitchen" '
           'works means dropping belief in magic and seeing the real flows of money.',
         )),
-        _h(_L('Где торгуется золото', 'Алтын қайда саудаланады', 'Where gold is traded')),
-        _p(_L(
+        _h(_lt('Где торгуется золото', 'Алтын қайда саудаланады', 'Where gold is traded')),
+        _p(_lt(
           'Спотовый рынок (LBMA в Лондоне) — поставка золота «здесь и сейчас». Фьючерсы '
           '(COMEX/CME в США) — контракты на поставку в будущем; именно фьючерсы во многом '
           'формируют ту цену XAU/USD, которую ты видишь в терминале.',
@@ -374,7 +374,7 @@ CourseModule _module1() => CourseModule(
           '(COMEX/CME in the US) are contracts for future delivery; it is largely futures that '
           'shape the XAU/USD price you see in the terminal.',
         )),
-        _p(_L(
+        _p(_lt(
           'Розничный трейдер торгует через брокера CFD — контракт на разницу цен, без реальной '
           'поставки металла. Важно понимать: твой ордер сначала проходит через брокера и '
           'провайдера ликвидности, прежде чем повлиять на «настоящий» рынок.',
@@ -385,7 +385,7 @@ CourseModule _module1() => CourseModule(
           'delivery of metal. Important: your order first passes through the broker and a '
           'liquidity provider before it touches the "real" market.',
         )),
-        _rule(_L(
+        _rule(_lt(
           'Маркетмейкеры выставляют заявки на покупку (bid) и продажу (ask) одновременно, '
           'обеспечивая ликвидность и зарабатывая на спреде. Когда стакан «толстый» (много '
           'заявок), цена двигается плавно. Когда стакан «тонкий» (заявок мало — например, '
@@ -399,9 +399,9 @@ CourseModule _module1() => CourseModule(
           'liquidity and earning on the spread. When the book is "thick" (many orders) price moves '
           'smoothly. When the book is "thin" (few orders — e.g. at night or before news), even a '
           'medium order moves price sharply. Hence impulses and slippage.'),
-          title: _L('Маркетмейкеры и стакан', 'Маркетмейкерлер мен стакан', 'Market makers and the order book'),
+          title: _lt('Маркетмейкеры и стакан', 'Маркетмейкерлер мен стакан', 'Market makers and the order book'),
         ),
-        _story(_L(
+        _story(_lt(
           '6 мая 2010 года, «Flash Crash». В 14:42 по Нью-Йорку индекс Dow Jones за считанные '
           'минуты рухнул почти на 1000 пунктов (~9%) — около триллиона долларов капитализации '
           'испарилось. Причина: крупный алгоритм начал агрессивно продавать фьючерсы на пустеющем '
@@ -421,9 +421,9 @@ CourseModule _module1() => CourseModule(
           'and high-frequency robots picked up the cascade. Accenture shares momentarily cost 1 '
           'cent, and Apple — \$100,000. About 20 minutes later the market almost fully bounced '
           'back. The lesson: liquidity vanishes instantly, and at that moment price does anything.'),
-          title: _L('Триллион долларов за 5 минут', 'Бес минутта триллион доллар', 'A trillion dollars in 5 minutes'),
+          title: _lt('Триллион долларов за 5 минут', 'Бес минутта триллион доллар', 'A trillion dollars in 5 minutes'),
         ),
-        _fact(_L(
+        _fact(_lt(
           'Более 70% объёма торгов на американских биржах генерируют не люди, а '
           'высокочастотные алгоритмы (HFT). Некоторые из них держат позицию микросекунды. '
           'Фирмы платят миллионы, чтобы поставить сервер физически ближе к бирже — выигрыш '
@@ -440,19 +440,19 @@ CourseModule _module1() => CourseModule(
         _interactive('orderbook', title: 'Симулятор биржевого стакана (Order Book)'),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Почему крупный ордер на «тонком» стакане вызывает резкий скачок цены?',
           'Неге «жұқа» стакандағы ірі ордер бағаны күрт секіртеді?',
           'Why does a large order on a "thin" book cause a sharp price jump?',
         ),
         options: [
-          _L('Биржа специально наказывает крупных игроков', 'Биржа ірі ойыншыларды әдейі жазалайды', 'The exchange deliberately punishes big players'),
-          _L('Не хватает встречной ликвидности, ордер «съедает» дальние уровни', 'Қарсы өтімділік жетпейді, ордер алыс деңгейлерді «жейді»', 'There is not enough opposing liquidity; the order "eats" far levels'),
-          _L('Цена меняется случайно, без причины', 'Баға себепсіз, кездейсоқ өзгереді', 'Price changes randomly, without cause'),
-          _L('Маркетмейкеры повышают комиссию', 'Маркетмейкерлер комиссияны көтереді', 'Market makers raise the commission'),
+          _lt('Биржа специально наказывает крупных игроков', 'Биржа ірі ойыншыларды әдейі жазалайды', 'The exchange deliberately punishes big players'),
+          _lt('Не хватает встречной ликвидности, ордер «съедает» дальние уровни', 'Қарсы өтімділік жетпейді, ордер алыс деңгейлерді «жейді»', 'There is not enough opposing liquidity; the order "eats" far levels'),
+          _lt('Цена меняется случайно, без причины', 'Баға себепсіз, кездейсоқ өзгереді', 'Price changes randomly, without cause'),
+          _lt('Маркетмейкеры повышают комиссию', 'Маркетмейкерлер комиссияны көтереді', 'Market makers raise the commission'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Если в стакане мало встречных заявок, крупный рыночный ордер исполняется по всё '
           'более далёким ценам (проскальзывание), резко двигая котировку. Это и есть импульс.',
           'Стаканда қарсы өтінім аз болса, ірі нарықтық ордер барған сайын алыс бағалармен '
@@ -481,7 +481,7 @@ CourseModule _module2() => CourseModule(
       code: '2.1',
       title: 'CPI и PPI: главное оружие против инфляции',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'CPI (индекс потребительских цен) — это инфляция глазами обычного покупателя: '
           'насколько подорожала корзина из еды, бензина, аренды и услуг. PPI (индекс цен '
           'производителей) — оптовая инфляция на уровне заводов; он опережает CPI, потому что '
@@ -495,8 +495,8 @@ CourseModule _module2() => CourseModule(
           'Index) is wholesale inflation at the factory level; it leads CPI, because price rises '
           'hit producers first and only later reach the shop shelves.',
         )),
-        _h(_L('Почему рынок сходит с ума от двух цифр', 'Неге нарық екі саннан есінен танады', 'Why the market goes crazy over two numbers')),
-        _p(_L(
+        _h(_lt('Почему рынок сходит с ума от двух цифр', 'Неге нарық екі саннан есінен танады', 'Why the market goes crazy over two numbers')),
+        _p(_lt(
           'У ФРС (центробанка США) есть мандат: держать инфляцию около 2%. Когда CPI выше — '
           'ФРС вынуждена «остужать» экономику высокой ставкой. Когда ниже — может смягчать '
           'политику. Поэтому каждый выход CPI — это, по сути, голосование о том, что сделает '
@@ -510,7 +510,7 @@ CourseModule _module2() => CourseModule(
           'every CPI release is essentially a vote on what the Fed will do — and therefore where '
           'the dollar, gold and stocks will go.',
         )),
-        _rule(_L(
+        _rule(_lt(
           'Рынок торгует НЕ саму цифру, а её ОТКЛОНЕНИЕ от прогноза (Forecast/Consensus). '
           'Ожидания уже «вшиты» в цену заранее. Двигает рынок именно сюрприз: насколько факт '
           'разошёлся с тем, что все ждали.',
@@ -520,9 +520,9 @@ CourseModule _module2() => CourseModule(
           'The market trades NOT the number itself, but its DEVIATION from the forecast '
           '(consensus). Expectations are already "priced in" beforehand. What moves the market is '
           'the surprise: how far the actual diverged from what everyone expected.'),
-          title: _L('Главный принцип новостной торговли', 'Жаңалық саудасының басты қағидасы', 'The core principle of news trading'),
+          title: _lt('Главный принцип новостной торговли', 'Жаңалық саудасының басты қағидасы', 'The core principle of news trading'),
         ),
-        _formula(_Lf(
+        _formula(_lf(
           [
             'CPI/PPI ВЫШЕ прогноза (Actual > Forecast):',
             '  инфляция горячее ожиданий → ФРС жёстче →',
@@ -550,8 +550,8 @@ CourseModule _module2() => CourseModule(
             '  inflation cooling → Fed softer →',
             '  dollar ↓ → gold ↑',
           ],
-        ), title: _L('Формула реакции', 'Реакция формуласы', 'Reaction formula')),
-        _fact(_L(
+        ), title: _lt('Формула реакции', 'Реакция формуласы', 'Reaction formula')),
+        _fact(_lt(
           'Существует «Core CPI» (базовый) — без еды и энергии. Кажется странным выкидывать '
           'самое важное, но именно еда и бензин самые волатильные, и ФРС больше смотрит на '
           'базовый индекс, чтобы видеть устойчивый тренд инфляции. Профи следят за Core CPI '
@@ -565,7 +565,7 @@ CourseModule _module2() => CourseModule(
           'Fed looks more at the core index to see the steady inflation trend. Pros watch Core CPI '
           'even more closely than the headline.',
         )),
-        _story(_L(
+        _story(_lt(
           'Реальный день: выходит CPI, отклонение от прогноза всего на 0.2 процентного пункта. '
           'Казалось бы, мелочь. Но золото за 5 минут пролетело ~400 пунктов, выбив стопы у тех, '
           'кто стоял против. Эти 0.2% перевернули ожидания рынка по будущей ставке ФРС — и этого '
@@ -581,19 +581,19 @@ CourseModule _module2() => CourseModule(
         _interactive('cpi_trainer', title: 'Тренажёр календаря: CPI'),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'CPI вышел ВЫШЕ прогноза. Какая реакция наиболее вероятна?',
           'CPI болжамнан ЖОҒАРЫ шықты. Қандай реакция ықтимал?',
           'CPI came out ABOVE forecast. What is the most likely reaction?',
         ),
         options: [
-          _L('Доллар падает, золото растёт', 'Доллар түседі, алтын өседі', 'Dollar falls, gold rises'),
-          _L('Доллар растёт, золото падает', 'Доллар өседі, алтын түседі', 'Dollar rises, gold falls'),
-          _L('Реакции не будет', 'Реакция болмайды', 'There will be no reaction'),
-          _L('Растут и доллар, и золото', 'Доллар да, алтын да өседі', 'Both dollar and gold rise'),
+          _lt('Доллар падает, золото растёт', 'Доллар түседі, алтын өседі', 'Dollar falls, gold rises'),
+          _lt('Доллар растёт, золото падает', 'Доллар өседі, алтын түседі', 'Dollar rises, gold falls'),
+          _lt('Реакции не будет', 'Реакция болмайды', 'There will be no reaction'),
+          _lt('Растут и доллар, и золото', 'Доллар да, алтын да өседі', 'Both dollar and gold rise'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'CPI выше прогноза = инфляция выше ожиданий → ФРС склонна держать/повышать ставку → '
           'доллар укрепляется → золото дешевеет.',
           'CPI болжамнан жоғары = инфляция күткеннен жоғары → ФРЖ ставканы ұстауға/көтеруге '
@@ -608,7 +608,7 @@ CourseModule _module2() => CourseModule(
       code: '2.2',
       title: 'Non-Farm Payrolls (NFP) и безработица: пульс рынка труда США',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'NFP — количество новых рабочих мест вне сельского хозяйства за месяц. Вместе с '
           'уровнем безработицы это пульс американской экономики. Сильный рынок труда '
           '«развязывает руки» ФРС: можно держать ставку высокой, не боясь спровоцировать '
@@ -620,8 +620,8 @@ CourseModule _module2() => CourseModule(
           'it is the pulse of the US economy. A strong labour market "unties the Fed\'s hands": it '
           'can keep the rate high without fearing a recession.',
         )),
-        _h(_L('Почему именно первая пятница месяца', 'Неге дәл айдың бірінші жұмасы', 'Why the first Friday of the month')),
-        _p(_L(
+        _h(_lt('Почему именно первая пятница месяца', 'Неге дәл айдың бірінші жұмасы', 'Why the first Friday of the month')),
+        _p(_lt(
           'NFP выходит в первую пятницу каждого месяца в 15:30 по времени Астаны (8:30 EST). '
           'Это, пожалуй, самая ожидаемая регулярная новость на рынке. Перед ней объёмы часто '
           'замирают — крупные игроки ждут цифру, чтобы не попасть под случайный импульс.',
@@ -632,7 +632,7 @@ CourseModule _module2() => CourseModule(
           'arguably the most anticipated regular news on the market. Before it volumes often '
           'freeze — big players wait for the number so as not to be caught by a random impulse.',
         )),
-        _formula(_Lf(
+        _formula(_lf(
           [
             'Сильный NFP (Actual > Forecast) + низкая безработица:',
             '  экономика сильная → ФРС жёстче → доллар ↑ → золото ↓',
@@ -654,8 +654,8 @@ CourseModule _module2() => CourseModule(
             'Weak NFP (Actual < Forecast) + rising unemployment:',
             '  recession risk → Fed softer → dollar ↓ → gold ↑',
           ],
-        ), title: _L('Формула реакции', 'Реакция формуласы', 'Reaction formula')),
-        _warn(_L(
+        ), title: _lt('Формула реакции', 'Реакция формуласы', 'Reaction formula')),
+        _warn(_lt(
           'Первая пятница — это «вертолёты»: в первые секунды цена дёргается в обе стороны, '
           'спред расширяется, стопы выбивает в обоих направлениях. Новичкам входить в момент '
           'выхода NFP — почти гарантированный способ потерять деньги. Профи либо ждут, пока '
@@ -669,7 +669,7 @@ CourseModule _module2() => CourseModule(
           'release is an almost guaranteed way to lose money. Pros either wait for the dust to '
           'settle (15–30 min) or simply do not trade that moment.',
         )),
-        _fact(_L(
+        _fact(_lt(
           'NFP — это оценка по опросу ~120 000 компаний, и её ПОСТОЯННО пересматривают в '
           'следующие месяцы, иногда на сотни тысяч рабочих мест. То есть рынок бурно реагирует '
           'на цифру, которая через месяц может оказаться совсем другой. Рынок торгует ожидания, '
@@ -682,7 +682,7 @@ CourseModule _module2() => CourseModule(
           'violently to a number that may look completely different a month later. The market '
           'trades expectations, not the truth.',
         )),
-        _example(_L(
+        _example(_lt(
           'Кейс «Двойной капкан»: NFP вышел сильным (+280k при прогнозе +180k), но уровень '
           'безработицы при этом ВЫРОС. Данные противоречат друг другу. Рынок сначала мечется, '
           'а затем выбирает ту цифру, на которой сейчас сфокусирована ФРС. Главный навык — '
@@ -699,19 +699,19 @@ CourseModule _module2() => CourseModule(
         _interactive('nfp_trap', title: 'Кейс «Двойной капкан»'),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'NFP вышел слабым, безработица выросла. Что вероятнее с золотом?',
           'NFP әлсіз шықты, жұмыссыздық өсті. Алтынмен не ықтимал?',
           'NFP came out weak and unemployment rose. What is more likely for gold?',
         ),
         options: [
-          _L('Золото падает', 'Алтын түседі', 'Gold falls'),
-          _L('Золото растёт (риск рецессии → мягкая ФРС)', 'Алтын өседі (рецессия қаупі → жұмсақ ФРЖ)', 'Gold rises (recession risk → dovish Fed)'),
-          _L('Золото не двигается', 'Алтын қозғалмайды', 'Gold does not move'),
-          _L('Доллар укрепляется, золото растёт одновременно', 'Доллар нығаяды, алтын қатар өседі', 'The dollar strengthens and gold rises at the same time'),
+          _lt('Золото падает', 'Алтын түседі', 'Gold falls'),
+          _lt('Золото растёт (риск рецессии → мягкая ФРС)', 'Алтын өседі (рецессия қаупі → жұмсақ ФРЖ)', 'Gold rises (recession risk → dovish Fed)'),
+          _lt('Золото не двигается', 'Алтын қозғалмайды', 'Gold does not move'),
+          _lt('Доллар укрепляется, золото растёт одновременно', 'Доллар нығаяды, алтын қатар өседі', 'The dollar strengthens and gold rises at the same time'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Слабый рынок труда = риск замедления экономики → ФРС склонна смягчать политику → '
           'доллар слабеет → золото растёт.',
           'Әлсіз еңбек нарығы = экономика баяулау қаупі → ФРЖ саясатты жұмсартуға бейім → '
@@ -726,7 +726,7 @@ CourseModule _module2() => CourseModule(
       code: '2.3',
       title: 'Внутри головы Джерома Пауэлла: что делает ФРС при инфляции и дефляции?',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'ФРС (Федеральная резервная система) — это центральный банк США и, по сути, '
           'дирижёр всех мировых рынков. У неё два главных рычага: процентная ставка и баланс '
           '(программы QE/QT). Понимать логику ФРС важнее, чем любой технический индикатор.',
@@ -737,8 +737,8 @@ CourseModule _module2() => CourseModule(
           'of all world markets. It has two main levers: the interest rate and the balance sheet '
           '(QE/QT programs). Understanding the Fed\'s logic matters more than any technical indicator.',
         )),
-        _h(_L('Два рычага власти', 'Биліктің екі тұтқасы', 'Two levers of power')),
-        _p(_L(
+        _h(_lt('Два рычага власти', 'Биліктің екі тұтқасы', 'Two levers of power')),
+        _p(_lt(
           '1. Ставка (Fed Funds Rate) — цена денег. Повышают → кредиты дорожают → экономика '
           'остывает → инфляция падает. Снижают → деньги дешевеют → экономика разгоняется.',
           '1. Ставка (Fed Funds Rate) — ақшаның бағасы. Көтерсе → несие қымбаттайды → экономика '
@@ -746,7 +746,7 @@ CourseModule _module2() => CourseModule(
           '1. The rate (Fed Funds Rate) is the price of money. Raise it → credit gets dearer → the '
           'economy cools → inflation falls. Cut it → money gets cheaper → the economy accelerates.',
         )),
-        _p(_L(
+        _p(_lt(
           '2. QE/QT — «печатный станок» против «пылесоса». QE (количественное смягчение): ФРС '
           'покупает облигации, вливая в систему свеженапечатанные деньги. QT (ужесточение): '
           'ФРС изымает ликвидность, сокращая баланс.',
@@ -757,7 +757,7 @@ CourseModule _module2() => CourseModule(
           'the Fed buys bonds, pouring freshly printed money into the system. QT (tightening): the '
           'Fed drains liquidity by shrinking its balance sheet.',
         )),
-        _rule(_L(
+        _rule(_lt(
           '«Hawkish» (ястребиная) риторика = настрой на ужесточение (высокая ставка, QT) — '
           'плохо для золота. «Dovish» (голубиная) = настрой на смягчение (низкая ставка, QE) — '
           'хорошо для золота. Иногда сами СЛОВА Пауэлла на пресс-конференции двигают рынок '
@@ -769,9 +769,9 @@ CourseModule _module2() => CourseModule(
           '"Hawkish" rhetoric = a stance toward tightening (high rate, QT) — bad for gold. '
           '"Dovish" = a stance toward easing (low rate, QE) — good for gold. Sometimes Powell\'s '
           'WORDS at the press conference move the market more than the actual rate decision.'),
-          title: _L('Ястребы и голуби', 'Қаршығалар мен көгершіндер', 'Hawks and doves'),
+          title: _lt('Ястребы и голуби', 'Қаршығалар мен көгершіндер', 'Hawks and doves'),
         ),
-        _mechanic(_L(
+        _mechanic(_lt(
           'Инфляция → ФРС включает «ястреба»: повышает ставку, изымает ликвидность (QT) → '
           'деньги дорожают → рынки падают, золото под давлением (т.к. растёт реальная доходность '
           'облигаций — конкурента золота).\n\n'
@@ -787,9 +787,9 @@ CourseModule _module2() => CourseModule(
           'gold\'s rival — rises).\n\n'
           'Deflation/recession → the Fed turns on the "dove": cuts the rate toward zero, fires up '
           'the printing press (QE) → the system floods with cheap money → gold and stocks soar.'),
-          title: _L('Механика', 'Механика', 'The mechanics'),
+          title: _lt('Механика', 'Механика', 'The mechanics'),
         ),
-        _story(_L(
+        _story(_lt(
           'Март 2020: пандемия, рынки в свободном падении. ФРС за считанные дни обрушила '
           'ставку до 0–0.25% и объявила QE «в неограниченном объёме» (unlimited QE). За '
           'несколько месяцев баланс ФРС вырос на триллионы. Итог: акции устроили мощнейшее '
@@ -803,9 +803,9 @@ CourseModule _module2() => CourseModule(
           '0–0.25% and announced "unlimited" QE. In a few months the Fed\'s balance sheet grew by '
           'trillions. The result: stocks staged a massive rally, and gold flew to record highs '
           'above \$2,000 per ounce. When the Fed prints, real assets get more expensive.'),
-          title: _L('Базука 2020 года', '2020 жылғы базука', 'The 2020 bazooka'),
+          title: _lt('Базука 2020 года', '2020 жылғы базука', 'The 2020 bazooka'),
         ),
-        _fact(_L(
+        _fact(_lt(
           'Существует целая «индустрия» расшифровки слов ФРС. Аналитики считают, сколько раз '
           'Пауэлл сказал «инфляция» против «рост», и даже анализируют тон голоса. Есть термин '
           '«Fedspeak» — намеренно туманный язык, которым центробанкиры говорят так, чтобы '
@@ -822,19 +822,19 @@ CourseModule _module2() => CourseModule(
         _interactive('fed_panel', title: 'Симуляция: ФРС, инфляция и золото'),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Что означает «голубиная» (dovish) риторика ФРС?',
           'ФРЖ-нің «көгершін» (dovish) риторикасы нені білдіреді?',
           'What does "dovish" Fed rhetoric mean?',
         ),
         options: [
-          _L('Повышение ставки и изъятие ликвидности', 'Ставканы көтеру және өтімділікті алу', 'Raising the rate and draining liquidity'),
-          _L('Смягчение политики: низкая ставка, QE', 'Саясатты жұмсарту: төмен ставка, QE', 'Easing policy: low rate, QE'),
-          _L('Отказ от любых действий', 'Кез келген әрекеттен бас тарту', 'Refusing to act at all'),
-          _L('Запрет на торговлю золотом', 'Алтын саудасына тыйым', 'A ban on trading gold'),
+          _lt('Повышение ставки и изъятие ликвидности', 'Ставканы көтеру және өтімділікті алу', 'Raising the rate and draining liquidity'),
+          _lt('Смягчение политики: низкая ставка, QE', 'Саясатты жұмсарту: төмен ставка, QE', 'Easing policy: low rate, QE'),
+          _lt('Отказ от любых действий', 'Кез келген әрекеттен бас тарту', 'Refusing to act at all'),
+          _lt('Запрет на торговлю золотом', 'Алтын саудасына тыйым', 'A ban on trading gold'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Dovish = мягкая политика: низкие ставки и вливание ликвидности (QE). Это обычно '
           'позитив для золота и рисковых активов. Hawkish — наоборот, ужесточение.',
           'Dovish = жұмсақ саясат: төмен ставка және өтімділік құю (QE). Бұл әдетте алтын мен '
@@ -863,7 +863,7 @@ CourseModule _module3() => CourseModule(
       code: '3.1',
       title: 'Почему золото — это «анти-доллар» и реальные деньги?',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Золото — это деньги, которые нельзя напечатать. За 5000 лет человечество добыло '
           'всего около 210 000 тонн золота — всё оно поместилось бы в куб со стороной ~22 метра '
           '(примерно три олимпийских бассейна). Эта физическая ограниченность делает золото '
@@ -877,8 +877,8 @@ CourseModule _module3() => CourseModule(
           'three Olympic pools). This physical scarcity makes gold an eternal hedge against the '
           'debasement of paper currencies.',
         )),
-        _h(_L('Главный конкурент золота — облигации', 'Алтынның басты бәсекелесі — облигациялар', 'Gold\'s main rival — bonds')),
-        _p(_L(
+        _h(_lt('Главный конкурент золота — облигации', 'Алтынның басты бәсекелесі — облигациялар', 'Gold\'s main rival — bonds')),
+        _p(_lt(
           'У золота есть «недостаток»: оно не платит процентов. Поэтому его главный соперник — '
           'гособлигации США (Treasuries), которые проценты платят. Выбор инвестора всегда '
           'между «бесполезным» золотом и облигацией с доходностью.',
@@ -889,7 +889,7 @@ CourseModule _module3() => CourseModule(
           '(Treasuries), which do pay interest. An investor\'s choice is always between "useless" '
           'gold and a yielding bond.',
         )),
-        _rule(_L(
+        _rule(_lt(
           'Реальная доходность = доходность облигаций − инфляция.\n'
           'Когда реальная доходность РАСТЁТ → облигации привлекательнее (платят больше, чем '
           'съедает инфляция) → золото падает.\n'
@@ -905,9 +905,9 @@ CourseModule _module3() => CourseModule(
           '→ gold falls.\n'
           'When real yield goes NEGATIVE (inflation above the rate) → holding bonds is '
           'unprofitable → gold becomes king.'),
-          title: _L('Железное правило золота', 'Алтынның темір ережесі', 'The iron rule of gold'),
+          title: _lt('Железное правило золота', 'Алтынның темір ережесі', 'The iron rule of gold'),
         ),
-        _fact(_L(
+        _fact(_lt(
           'Золото настолько инертно и вечно, что почти всё когда-либо добытое золото '
           'существует до сих пор — в слитках, монетах, украшениях, зубах и электронике. '
           'Обручальное кольцо твоей бабушки может содержать атомы золота из Древнего Рима или '
@@ -920,7 +920,7 @@ CourseModule _module3() => CourseModule(
           'coins, jewellery, teeth and electronics. Your grandmother\'s wedding ring may contain '
           'gold atoms from Ancient Rome or from Inca treasures. Gold does not rust or decay.',
         )),
-        _example(_L(
+        _example(_lt(
           'Геополитические шоки: при новостях о войнах, терактах, банковских кризисах золото '
           'взлетает за секунды, игнорируя любые технические уровни. В момент паники работает '
           'древний инстинкт: бежать в то, что было ценным тысячи лет. Ни один индикатор не '
@@ -937,19 +937,19 @@ CourseModule _module3() => CourseModule(
         _interactive('fear_greed', title: 'Индекс страха и жадности'),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Реальная доходность гособлигаций США уходит глубоко в минус. Что с золотом?',
           'АҚШ облигацияларының нақты табыстылығы терең минусқа кетеді. Алтынмен не болады?',
           'The real yield of US Treasuries goes deeply negative. What happens to gold?',
         ),
         options: [
-          _L('Золото падает — облигации привлекательнее', 'Алтын түседі — облигация тартымдырақ', 'Gold falls — bonds are more attractive'),
-          _L('Золото растёт — у облигаций нет преимущества', 'Алтын өседі — облигацияның артықшылығы жоқ', 'Gold rises — bonds have no edge'),
-          _L('Золото не реагирует', 'Алтын реакция бермейді', 'Gold does not react'),
-          _L('Золото повторяет движение доходности', 'Алтын табыстылық қозғалысын қайталайды', 'Gold mirrors the yield'),
+          _lt('Золото падает — облигации привлекательнее', 'Алтын түседі — облигация тартымдырақ', 'Gold falls — bonds are more attractive'),
+          _lt('Золото растёт — у облигаций нет преимущества', 'Алтын өседі — облигацияның артықшылығы жоқ', 'Gold rises — bonds have no edge'),
+          _lt('Золото не реагирует', 'Алтын реакция бермейді', 'Gold does not react'),
+          _lt('Золото повторяет движение доходности', 'Алтын табыстылық қозғалысын қайталайды', 'Gold mirrors the yield'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Отрицательная реальная доходность означает, что облигации не защищают от инфляции. '
           'Тогда золото — лучший выбор для сохранения капитала, и оно растёт.',
           'Теріс нақты табыстылық облигация инфляциядан қорғамайтынын білдіреді. Сонда алтын — '
@@ -964,7 +964,7 @@ CourseModule _module3() => CourseModule(
       code: '3.2',
       title: 'Чёрное золото и жёлтое золото: как нефть влияет на рынки и золото?',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Нефть (WTI/Brent) — кровь мировой промышленности. Почти всё, что ты покупаешь, '
           'содержит в цене стоимость нефти: транспорт, пластик, удобрения, электричество. '
           'Поэтому цена нефти — это фундаментальный двигатель инфляции, а значит и золота.',
@@ -975,8 +975,8 @@ CourseModule _module3() => CourseModule(
           'cost of oil in its price: transport, plastics, fertiliser, electricity. So the price of '
           'oil is a fundamental driver of inflation — and therefore of gold.',
         )),
-        _h(_L('Межрыночный анализ', 'Нарықаралық талдау', 'Intermarket analysis')),
-        _p(_L(
+        _h(_lt('Межрыночный анализ', 'Нарықаралық талдау', 'Intermarket analysis')),
+        _p(_lt(
           'Профи смотрят не на один график, а на связи между рынками (intermarket analysis): '
           'нефть → инфляция → ставки → доллар → золото → акции. Всё переплетено, и сильное '
           'движение в одном активе расходится волнами по остальным.',
@@ -987,7 +987,7 @@ CourseModule _module3() => CourseModule(
           'oil → inflation → rates → dollar → gold → stocks. Everything is intertwined, and a '
           'strong move in one asset ripples out to the others.',
         )),
-        _formula(_Lf(
+        _formula(_lf(
           [
             'Рост нефти →',
             '  рост себестоимости товаров и логистики →',
@@ -1009,8 +1009,8 @@ CourseModule _module3() => CourseModule(
             '  demand for gold rises (inflation hedge) →',
             '  the Fed responds (raises the rate) to cool it',
           ],
-        ), title: _L('Цепочка взаимосвязи', 'Байланыс тізбегі', 'The chain of links')),
-        _fact(_L(
+        ), title: _lt('Цепочка взаимосвязи', 'Байланыс тізбегі', 'The chain of links')),
+        _fact(_lt(
           'В апреле 2020 года цена фьючерса на нефть WTI впервые в истории ушла в '
           'ОТРИЦАТЕЛЬНУЮ зону — до −\$37 за баррель. Спрос рухнул из-за локдаунов, хранилища '
           'переполнились, и держателям фьючерсов пришлось ДОПЛАЧИВАТЬ, лишь бы кто-то забрал '
@@ -1024,7 +1024,7 @@ CourseModule _module3() => CourseModule(
           'futures holders had to PAY EXTRA just for someone to take oil they had nowhere to put. '
           'The seller paid to be bought from — market surrealism.',
         )),
-        _example(_L(
+        _example(_lt(
           'Энергетический шок 1970-х: арабское нефтяное эмбарго взвинтило цены на нефть в '
           '4 раза. Результат — «стагфляция» (инфляция + застой) в США и одно из величайших '
           'ралли золота в истории: с \$35 в 1971 до \$850 в 1980. Дорогая нефть → высокая '
@@ -1041,19 +1041,19 @@ CourseModule _module3() => CourseModule(
         _interactive('intermarket', title: 'Карта межрыночных связей (домино)'),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Как устойчивый рост цен на нефть в итоге влияет на золото?',
           'Мұнай бағасының тұрақты өсуі ақыр соңында алтынға қалай әсер етеді?',
           'How does a sustained rise in oil prices ultimately affect gold?',
         ),
         options: [
-          _L('Золото падает — нефть забирает спрос', 'Алтын түседі — мұнай сұранысты алады', 'Gold falls — oil takes the demand'),
-          _L('Золото растёт — нефть разгоняет инфляцию, золото как хедж', 'Алтын өседі — мұнай инфляцияны үдетеді, алтын хедж', 'Gold rises — oil drives inflation, gold is a hedge'),
-          _L('Никак не влияет', 'Еш әсер етпейді', 'It has no effect'),
-          _L('Золото всегда движется против нефти', 'Алтын әрдайым мұнайға қарсы қозғалады', 'Gold always moves opposite to oil'),
+          _lt('Золото падает — нефть забирает спрос', 'Алтын түседі — мұнай сұранысты алады', 'Gold falls — oil takes the demand'),
+          _lt('Золото растёт — нефть разгоняет инфляцию, золото как хедж', 'Алтын өседі — мұнай инфляцияны үдетеді, алтын хедж', 'Gold rises — oil drives inflation, gold is a hedge'),
+          _lt('Никак не влияет', 'Еш әсер етпейді', 'It has no effect'),
+          _lt('Золото всегда движется против нефти', 'Алтын әрдайым мұнайға қарсы қозғалады', 'Gold always moves opposite to oil'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Дорогая нефть → выше себестоимость → выше инфляция. Золото традиционно используют '
           'как защиту от инфляции, поэтому спрос на него растёт.',
           'Қымбат мұнай → жоғары өзіндік құн → жоғары инфляция. Алтынды дәстүрлі түрде '
@@ -1082,7 +1082,7 @@ CourseModule _module4() => CourseModule(
       code: '4.1',
       title: 'Математическое ожидание (+EV): как измерять выгоду в неизвестности',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Главная ошибка новичка: оценивать решение по результату. Выиграл — значит решение '
           'было хорошим? Нет. В мире вероятностей плохое решение может случайно принести деньги, '
           'а хорошее — временно убыток. Качество решения измеряется математическим ожиданием '
@@ -1096,7 +1096,7 @@ CourseModule _module4() => CourseModule(
           'good one can lose temporarily. The quality of a decision is measured by expected value '
           '(EV) over a long run, not by the outcome of a single trade.',
         )),
-        _formula(_Lf(
+        _formula(_lf(
           [
             'EV = (P_win × Profit) − (P_loss × Loss)',
             '',
@@ -1124,8 +1124,8 @@ CourseModule _module4() => CourseModule(
             'Alternative — a guaranteed \$1,000:',
             'EV = \$1,000',
           ],
-        ), title: _L('Формула', 'Формула', 'The formula')),
-        _rule(_L(
+        ), title: _lt('Формула', 'Формула', 'The formula')),
+        _rule(_lt(
           'Профессиональный покерист и трейдер мыслят одинаково: они отделяют качество РЕШЕНИЯ '
           'от качества РЕЗУЛЬТАТА. Это называется «resulting» — ошибка оценивать решение по '
           'исходу. Можно сыграть идеально и проиграть; можно сыграть глупо и выиграть.',
@@ -1135,9 +1135,9 @@ CourseModule _module4() => CourseModule(
           'A pro poker player and a trader think alike: they separate the quality of the DECISION '
           'from the quality of the RESULT. This is called "resulting" — the error of judging a '
           'decision by its outcome. You can play perfectly and lose; you can play stupidly and win.'),
-          title: _L('Решение ≠ результат', 'Шешім ≠ нәтиже', 'Decision ≠ result'),
+          title: _lt('Решение ≠ результат', 'Шешім ≠ нәтиже', 'Decision ≠ result'),
         ),
-        _example(_L(
+        _example(_lt(
           'Большинство людей выберут «синицу в руках» — гарантированную \$1,000, потому что '
           'мозг панически боится потерять. Но математик выберет ставку с EV \$1,500. На дистанции '
           'в 1000 повторений выбор математика принесёт примерно в 1.5 раза больше. Эмоция '
@@ -1151,7 +1151,7 @@ CourseModule _module4() => CourseModule(
           '1,000 repetitions the mathematician\'s choice yields about 1.5× more. Emotion chooses '
           'comfort; mathematics chooses profit.',
         )),
-        _fact(_L(
+        _fact(_lt(
           'Нобелевские лауреаты Канеман и Тверски доказали: боль от потери \$100 примерно в '
           '2–2.5 раза сильнее, чем радость от выигрыша тех же \$100. Это «неприятие потерь» '
           '(loss aversion). Именно из-за него трейдеры рано фиксируют прибыль и слишком долго '
@@ -1168,19 +1168,19 @@ CourseModule _module4() => CourseModule(
         _interactive('ev_choice', title: 'Интерактив: выбор по EV'),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Что важнее для оценки качества торгового решения?',
           'Сауда шешімінің сапасын бағалауда не маңызды?',
           'What matters most for judging the quality of a trading decision?',
         ),
         options: [
-          _L('Результат одной конкретной сделки', 'Бір нақты мәміленің нәтижесі', 'The result of one specific trade'),
-          _L('Положительное мат. ожидание (+EV) на длинной дистанции', 'Ұзақ дистанциядағы оң мат. күтім (+EV)', 'Positive expected value (+EV) over the long run'),
-          _L('Сколько денег принесла сделка сегодня', 'Бүгін мәміле қанша ақша әкелді', 'How much money the trade made today'),
-          _L('Мнение других трейдеров', 'Басқа трейдерлердің пікірі', 'The opinion of other traders'),
+          _lt('Результат одной конкретной сделки', 'Бір нақты мәміленің нәтижесі', 'The result of one specific trade'),
+          _lt('Положительное мат. ожидание (+EV) на длинной дистанции', 'Ұзақ дистанциядағы оң мат. күтім (+EV)', 'Positive expected value (+EV) over the long run'),
+          _lt('Сколько денег принесла сделка сегодня', 'Бүгін мәміле қанша ақша әкелді', 'How much money the trade made today'),
+          _lt('Мнение других трейдеров', 'Басқа трейдерлердің пікірі', 'The opinion of other traders'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Одна сделка может выиграть случайно. Качество стратегии определяется знаком '
           'математического ожидания на дистанции: +EV выживает, −EV разоряет.',
           'Бір мәміле кездейсоқ ұтуы мүмкін. Стратегия сапасы дистанциядағы математикалық '
@@ -1195,7 +1195,7 @@ CourseModule _module4() => CourseModule(
       code: '4.2',
       title: 'Винрейт против Risk-to-Reward: главный секрет выживания депозита',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Новички гоняются за высоким процентом прибыльных сделок (винрейтом), думая, что в '
           'этом секрет. Это ловушка. Можно иметь 90% прибыльных сделок и слить депозит, а можно '
           'иметь 35% и стабильно богатеть. Всё решает связка винрейта и Risk-to-Reward (RR) — '
@@ -1209,7 +1209,7 @@ CourseModule _module4() => CourseModule(
           'and steadily get rich. Everything is decided by the pairing of win rate and '
           'Risk-to-Reward (RR) — the ratio of take-profit to stop-loss.',
         )),
-        _formula(_Lf(
+        _formula(_lf(
           [
             'EV сделки = WinRate × RR − (1 − WinRate) × 1',
             '',
@@ -1237,8 +1237,8 @@ CourseModule _module4() => CourseModule(
             'Example B: WinRate 90%, RR 1:0.1',
             'EV = 0.90 × 0.1 − 0.10 × 1 = −0.01R ❌ unprofitable',
           ],
-        ), title: _L('Винрейт обманчив', 'Винрейт алдамшы', 'Win rate is deceptive')),
-        _warn(_L(
+        ), title: _lt('Винрейт обманчив', 'Винрейт алдамшы', 'Win rate is deceptive')),
+        _warn(_lt(
           'Высокий винрейт — самая опасная иллюзия в трейдинге. Стратегия «беру маленькую '
           'прибыль, но не ставлю стоп» даёт 95% выигрышных сделок и ощущение гениальности... '
           'до тех пор, пока одна сделка без стопа не сожрёт все 95% побед разом. Так умирают '
@@ -1252,7 +1252,7 @@ CourseModule _module4() => CourseModule(
           'stop-less trade eats all 95% of the wins at once. That is how the accounts of '
           '"successful" beginners die.',
         )),
-        _example(_L(
+        _example(_lt(
           'Знаменитые трейдеры-трендовики (turtle traders) имели винрейт всего ~35%. Они '
           'теряли деньги в 2 случаях из 3! Но их выигрышные сделки были в разы крупнее '
           'убыточных (RR 1:5 и выше), и на дистанции это сделало их миллионерами. Большой RR '
@@ -1269,19 +1269,19 @@ CourseModule _module4() => CourseModule(
         _interactive('winrate_rr', title: 'Симулятор: Win Rate × RR (500 сделок)'),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Win Rate 40%, RR 1:3. Система прибыльна на дистанции?',
           'Win Rate 40%, RR 1:3. Жүйе дистанцияда пайдалы ма?',
           'Win Rate 40%, RR 1:3. Is the system profitable over the run?',
         ),
         options: [
-          _L('Нет, ведь 60% сделок убыточны', 'Жоқ, өйткені 60% мәміле зиянды', 'No, because 60% of trades lose'),
-          _L('Да: 0.4×3 − 0.6×1 = +0.6R на сделку', 'Иә: 0.4×3 − 0.6×1 = +0.6R әр мәмілеге', 'Yes: 0.4×3 − 0.6×1 = +0.6R per trade'),
-          _L('Зависит только от удачи', 'Тек сәттілікке байланысты', 'It depends only on luck'),
-          _L('Невозможно определить', 'Анықтау мүмкін емес', 'Impossible to determine'),
+          _lt('Нет, ведь 60% сделок убыточны', 'Жоқ, өйткені 60% мәміле зиянды', 'No, because 60% of trades lose'),
+          _lt('Да: 0.4×3 − 0.6×1 = +0.6R на сделку', 'Иә: 0.4×3 − 0.6×1 = +0.6R әр мәмілеге', 'Yes: 0.4×3 − 0.6×1 = +0.6R per trade'),
+          _lt('Зависит только от удачи', 'Тек сәттілікке байланысты', 'It depends only on luck'),
+          _lt('Невозможно определить', 'Анықтау мүмкін емес', 'Impossible to determine'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Положительный RR компенсирует низкий винрейт. 0.4×3 − 0.6×1 = +0.6R — каждая сделка '
           'в среднем приносит 0.6 риска прибыли. Большой RR важнее высокого винрейта.',
           'Оң RR төмен винрейтті өтейді. 0.4×3 − 0.6×1 = +0.6R — әр мәміле орташа 0.6 тәуекел '
@@ -1296,7 +1296,7 @@ CourseModule _module4() => CourseModule(
       code: '4.3',
       title: 'Почему мастера решений — байесианцы? (Теорема Байеса на пальцах)',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Твоё мнение о рынке — это не флаг, который надо защищать, а вероятность, которую '
           'надо постоянно пересчитывать. Байесовское мышление: у тебя есть начальная оценка '
           '(prior), приходят новые данные — ты обновляешь оценку (posterior). Упрямство в '
@@ -1308,7 +1308,7 @@ CourseModule _module4() => CourseModule(
           'recompute. Bayesian thinking: you have an initial estimate (prior), new data arrives — '
           'you update the estimate (posterior). Stubbornness in trading is fatal.',
         )),
-        _rule(_L(
+        _rule(_lt(
           'Алгоритм байесианца:\n'
           '1. Сформулируй стартовую вероятность («думаю, золото вырастет — 60%»).\n'
           '2. Получи новые данные (вышел горячий CPI).\n'
@@ -1324,9 +1324,9 @@ CourseModule _module4() => CourseModule(
           '2. Get new data (a hot CPI came out).\n'
           '3. Recompute: "now the probability of a rise is 30%".\n'
           '4. Act on the new probability, not the old plan.'),
-          title: _L('Теорема Байеса в действии', 'Байес теоремасы іс жүзінде', 'Bayes\' theorem in action'),
+          title: _lt('Теорема Байеса в действии', 'Байес теоремасы іс жүзінде', 'Bayes\' theorem in action'),
         ),
-        _fact(_L(
+        _fact(_lt(
           'Теорему Байеса сформулировал в XVIII веке английский священник Томас Байес, и '
           'опубликована она была лишь после его смерти. Сегодня эта формула — фундамент '
           'спам-фильтров, медицинской диагностики, искусственного интеллекта и систем '
@@ -1339,7 +1339,7 @@ CourseModule _module4() => CourseModule(
           'spam filters, medical diagnostics, artificial intelligence and the risk systems of the '
           'largest hedge funds.',
         )),
-        _example(_L(
+        _example(_lt(
           'Профессионал, увидев, что условия изменились, мгновенно фиксирует микро-убыток и '
           'разворачивается — для него это не «поражение», а обновление вероятностей. Новичок '
           '«надеется», добавляет к убыточной позиции («усредняется») и держится за своё '
@@ -1355,19 +1355,19 @@ CourseModule _module4() => CourseModule(
         )),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Вышли новые данные, противоречащие вашему плану. Действие байесианца?',
           'Жоспарыңызға қайшы жаңа дерек шықты. Байесшінің әрекеті?',
           'New data came out contradicting your plan. The Bayesian\'s move?',
         ),
         options: [
-          _L('Игнорировать данные, держаться плана', 'Деректі елемеу, жоспарды ұстау', 'Ignore the data, stick to the plan'),
-          _L('Пересчитать вероятности и скорректировать решение', 'Ықтималдықты қайта есептеп, шешімді түзету', 'Recompute the probabilities and adjust the decision'),
-          _L('Удвоить позицию против тренда', 'Трендке қарсы позицияны екі еселеу', 'Double the position against the trend'),
-          _L('Закрыть терминал до завтра', 'Терминалды ертеңге дейін жабу', 'Close the terminal until tomorrow'),
+          _lt('Игнорировать данные, держаться плана', 'Деректі елемеу, жоспарды ұстау', 'Ignore the data, stick to the plan'),
+          _lt('Пересчитать вероятности и скорректировать решение', 'Ықтималдықты қайта есептеп, шешімді түзету', 'Recompute the probabilities and adjust the decision'),
+          _lt('Удвоить позицию против тренда', 'Трендке қарсы позицияны екі еселеу', 'Double the position against the trend'),
+          _lt('Закрыть терминал до завтра', 'Терминалды ертеңге дейін жабу', 'Close the terminal until tomorrow'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Байесовский подход требует обновлять оценку вероятностей при новой информации. '
           'Гибкость, а не упрямство — признак мастера решений.',
           'Байес тәсілі жаңа ақпаратта ықтималдық бағасын жаңартуды талап етеді. Қыңырлық емес, '
@@ -1382,7 +1382,7 @@ CourseModule _module4() => CourseModule(
       code: '4.4',
       title: 'Формула Келли: как рассчитать размер лота, чтобы не обнулиться',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Формула Келли отвечает на вопрос, который игнорируют 99% новичков: «какую долю '
           'капитала ставить?» Она находит оптимальный размер риска, при котором капитал растёт '
           'максимально быстро, но риск разорения остаётся под контролем.',
@@ -1393,7 +1393,7 @@ CourseModule _module4() => CourseModule(
           'capital to bet?" It finds the optimal risk size at which capital grows as fast as '
           'possible while the risk of ruin stays under control.',
         )),
-        _formula(_Lf(
+        _formula(_lf(
           [
             'f* = W − (1 − W) / R',
             '',
@@ -1424,8 +1424,8 @@ CourseModule _module4() => CourseModule(
             '',
             'In practice use ¼ Kelly → ~10% — safer',
           ],
-        ), title: _L('Формула Келли', 'Келли формуласы', 'The Kelly formula')),
-        _warn(_L(
+        ), title: _lt('Формула Келли', 'Келли формуласы', 'The Kelly formula')),
+        _warn(_lt(
           'Полный Келли математически оптимален, но эмоционально невыносим: он допускает '
           'просадки 50%+. Поэтому профи используют «дробный Келли» (¼ или ½), жертвуя частью '
           'скорости роста ради спокойного сна и защиты от серии неудач.',
@@ -1437,7 +1437,7 @@ CourseModule _module4() => CourseModule(
           '50%+. So pros use "fractional Kelly" (¼ or ½), sacrificing some growth speed for calm '
           'sleep and protection against a losing streak.',
         )),
-        _fact(_L(
+        _fact(_lt(
           'Формулу вывел Джон Келли в 1956 году, работая в Bell Labs — изначально для задач '
           'передачи сигнала, а не для денег. Её взял на вооружение математик Эд Торп, который '
           'сначала обыграл казино в блэкджек (его выгнали из Лас-Вегаса!), а затем применил '
@@ -1451,7 +1451,7 @@ CourseModule _module4() => CourseModule(
           'first beat the casino at blackjack (he was banned from Las Vegas!) and then applied the '
           'same approach on Wall Street, creating one of the first quantitative hedge funds.',
         )),
-        _example(_L(
+        _example(_lt(
           'Даже с отличной стратегией (60% винрейт) риск 20% на сделку = гарантированное '
           'разорение. Серия из 5 убытков подряд при таком риске случается регулярно и почти '
           'обнуляет депозит. Не стратегия убивает трейдера, а завышенный размер позиции.',
@@ -1465,19 +1465,19 @@ CourseModule _module4() => CourseModule(
         _interactive('drawdown', title: 'Математика просадки'),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Зачем нужна формула Келли?',
           'Келли формуласы не үшін керек?',
           'What is the Kelly formula for?',
         ),
         options: [
-          _L('Чтобы предсказать направление цены', 'Баға бағытын болжау үшін', 'To predict the direction of price'),
-          _L('Чтобы определить оптимальный размер риска и избежать разорения', 'Оңтайлы тәуекел мөлшерін анықтап, банкроттықтан аулақ болу үшін', 'To set the optimal risk size and avoid ruin'),
-          _L('Чтобы выбрать брокера', 'Брокер таңдау үшін', 'To choose a broker'),
-          _L('Чтобы рассчитать спред', 'Спредті есептеу үшін', 'To calculate the spread'),
+          _lt('Чтобы предсказать направление цены', 'Баға бағытын болжау үшін', 'To predict the direction of price'),
+          _lt('Чтобы определить оптимальный размер риска и избежать разорения', 'Оңтайлы тәуекел мөлшерін анықтап, банкроттықтан аулақ болу үшін', 'To set the optimal risk size and avoid ruin'),
+          _lt('Чтобы выбрать брокера', 'Брокер таңдау үшін', 'To choose a broker'),
+          _lt('Чтобы рассчитать спред', 'Спредті есептеу үшін', 'To calculate the spread'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Келли отвечает на вопрос «сколько ставить», а не «куда». Она балансирует рост '
           'капитала и риск разорения. На практике используют дробную долю Келли.',
           'Келли «қанша қою» сұрағына жауап береді, «қайда» емес. Ол капитал өсуі мен банкроттық '
@@ -1492,7 +1492,7 @@ CourseModule _module4() => CourseModule(
       code: '4.5',
       title: 'Восьмое чудо света: как правильно запустить сложный процент',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Сложный процент — это когда ты зарабатываешь процент не только на вложенное, но и '
           'на ранее заработанное. Капитал начинает расти по экспоненте — сначала незаметно, '
           'а потом взрывообразно. Эйнштейну приписывают слова: «Сложный процент — восьмое чудо '
@@ -1502,7 +1502,7 @@ CourseModule _module4() => CourseModule(
           'мынау сөз телінеді: «Күрделі пайыз — әлемнің сегізінші кереметі. Оны түсінген — '
           'табады, түсінбеген — төлейді».',
         )),
-        _formula(_Lf(
+        _formula(_lf(
           [
             'Капитал = Депозит × (1 + r)^n',
             '',
@@ -1521,8 +1521,8 @@ CourseModule _module4() => CourseModule(
             'Сол 8%, бірақ 5 жыл (60 ай):',
             '1000 × 1.08^60 ≈ \$101,257',
           ],
-        ), title: _L('Сила экспоненты', 'Экспонента күші')),
-        _fact(_L(
+        ), title: _lt('Сила экспоненты', 'Экспонента күші')),
+        _fact(_lt(
           'Притча о шахматной доске: мудрец попросил у султана награду — 1 зерно на первую '
           'клетку, 2 на вторую, 4 на третью, удваивая на каждой. Султан посмеялся над '
           '«скромностью»... пока не выяснил, что на 64 клетках нужно ~18 квинтиллионов зёрен — '
@@ -1532,7 +1532,7 @@ CourseModule _module4() => CourseModule(
           '«қарапайымдылыққа» күлді... 64 шаршыға ~18 квинтиллион дән керегін білгенше — оны '
           'адамзат бүкіл тарихта өсіргеннен көп. Экспонента деген осы.',
         )),
-        _warn(_L(
+        _warn(_lt(
           'Ловушка нетерпения: главный убийца сложного процента — жадность. Попытка разогнать '
           'депозит в 2–3 раза за месяц = огромный риск = неизбежная крупная просадка, которая '
           'обнуляет всё накопленное. Спокойные 5–10% в месяц на дистанции в годы превращают '
@@ -1545,18 +1545,18 @@ CourseModule _module4() => CourseModule(
         _interactive('compound', title: 'Симулятор сложного процента'),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'В чём главная сила сложного процента?',
           'Күрделі пайыздың басты күші неде?',
         ),
         options: [
-          _L('В быстром удвоении депозита за месяц', 'Депозитті айына жылдам екі еселеуде'),
-          _L('В реинвестировании прибыли — экспоненциальный рост на дистанции', 'Пайданы қайта салуда — дистанциядағы экспоненциалды өсу'),
-          _L('В использовании максимального плеча', 'Максималды иық қолдануда'),
-          _L('В частых выводах прибыли', 'Пайданы жиі шығаруда'),
+          _lt('В быстром удвоении депозита за месяц', 'Депозитті айына жылдам екі еселеуде'),
+          _lt('В реинвестировании прибыли — экспоненциальный рост на дистанции', 'Пайданы қайта салуда — дистанциядағы экспоненциалды өсу'),
+          _lt('В использовании максимального плеча', 'Максималды иық қолдануда'),
+          _lt('В частых выводах прибыли', 'Пайданы жиі шығаруда'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Сложный процент работает за счёт реинвестирования: процент начисляется на растущую '
           'базу. Магия проявляется на длинной дистанции, а не за один месяц.',
           'Күрделі пайыз қайта салу есебінен жұмыс істейді: пайыз өсіп жатқан базаға есептеледі. '
@@ -1569,7 +1569,7 @@ CourseModule _module4() => CourseModule(
       code: '4.6',
       title: 'Ловушка казино: почему ты не победишь дилера на его поле?',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'В казино всё построено на отрицательном математическом ожидании для игрока (House '
           'Edge) и законе больших чисел. Игрок может выиграть вечером, но на дистанции тысяч '
           'ставок математика неумолимо заберёт его деньги. Трейдер без преимущества — это '
@@ -1579,7 +1579,7 @@ CourseModule _module4() => CourseModule(
           'математика оның ақшасын аяусыз алады. Артықшылығы жоқ трейдер — казино ойыншысы. '
           '+EV жүйесі бар трейдер — казиноның өзі.',
         )),
-        _rule(_L(
+        _rule(_lt(
           'Чтобы оказаться «на стороне казино», нужно: (1) иметь реальное статистическое '
           'преимущество (+EV), (2) играть малым процентом капитала на ставку, (3) повторять '
           'это много раз с железной дисциплиной. Тогда закон больших чисел работает на тебя, '
@@ -1587,9 +1587,9 @@ CourseModule _module4() => CourseModule(
           '«Казино жағында» болу үшін: (1) нақты статистикалық артықшылық (+EV) болуы керек, '
           '(2) ставкаға капиталдың кіші пайызын қою, (3) мұны темір тәртіппен көп рет қайталау. '
           'Сонда үлкен сандар заңы саған қарсы емес, сен үшін жұмыс істейді.'),
-          title: _L('Стань казино', 'Казино бол'),
+          title: _lt('Стань казино', 'Казино бол'),
         ),
-        _fact(_L(
+        _fact(_lt(
           'Преимущество казино в европейской рулетке — всего ~2.7% (из-за зеро). Этого '
           'крошечного перевеса достаточно, чтобы строить миллиардные отели Лас-Вегаса. '
           'Вдумайся: перевес менее 3%, помноженный на миллионы ставок, = неисчерпаемая '
@@ -1599,7 +1599,7 @@ CourseModule _module4() => CourseModule(
           '3%-дан кем басымдық миллиондаған ставкаға көбейтілсе = таусылмас пайда. Трейдингте де '
           'кіші, бірақ тұрақты +EV дистанцияда = байлық.',
         )),
-        _example(_L(
+        _example(_lt(
           'Эд Торп научно вычислил, как считать карты в блэкджеке, и превратил House Edge в '
           'свою пользу. Казино так испугались, что начали тасовать колоды чаще и пожизненно '
           'банить «счётчиков». Вывод: даже на поле казино можно победить — но только с '
@@ -1611,18 +1611,18 @@ CourseModule _module4() => CourseModule(
         )),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Как трейдеру оказаться «на стороне казино», а не игрока?',
           'Трейдер «казино жағында» болу үшін не істеу керек, ойыншы емес?',
         ),
         options: [
-          _L('Торговать на эмоциях и интуиции', 'Эмоция мен интуициямен саудалау'),
-          _L('Иметь системное преимущество (+EV) и повторять его дисциплинированно', 'Жүйелік артықшылық (+EV) болып, оны тәртіппен қайталау'),
-          _L('Делать крупные ставки редко', 'Ірі ставкаларды сирек жасау'),
-          _L('Полагаться на удачу в серии сделок', 'Мәмілелер тізбегінде сәттілікке сену'),
+          _lt('Торговать на эмоциях и интуиции', 'Эмоция мен интуициямен саудалау'),
+          _lt('Иметь системное преимущество (+EV) и повторять его дисциплинированно', 'Жүйелік артықшылық (+EV) болып, оны тәртіппен қайталау'),
+          _lt('Делать крупные ставки редко', 'Ірі ставкаларды сирек жасау'),
+          _lt('Полагаться на удачу в серии сделок', 'Мәмілелер тізбегінде сәттілікке сену'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Казино выигрывает за счёт устойчивого +EV и закона больших чисел. Трейдер должен '
           'построить такое же статистическое преимущество и исполнять его системно.',
           'Казино тұрақты +EV мен үлкен сандар заңы есебінен ұтады. Трейдер дәл сондай '
@@ -1635,7 +1635,7 @@ CourseModule _module4() => CourseModule(
       code: '4.7',
       title: 'Антихрупкость: как использовать хаос, чтобы становиться сильнее',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Нассим Талеб ввёл понятие «антихрупкость» — свойство систем не просто выдерживать '
           'удары, а УСИЛИВАТЬСЯ от них. Хрупкое ломается от стресса (стакан). Устойчивое его '
           'игнорирует (камень). Антихрупкое — растёт от него (мышца от нагрузки). Лучшие '
@@ -1645,16 +1645,16 @@ CourseModule _module4() => CourseModule(
           'Антисынғыш — одан өседі (бұлшықет жүктемеден). Ең жақсы сауда стратегиялары — '
           'антисынғыш.',
         )),
-        _rule(_L(
+        _rule(_lt(
           'Структура антихрупкости в трейдинге — асимметрия: много маленьких ограниченных '
           'убытков (стоп-лоссы как страховка) + редкие, но огромные прибыли (прибыль не '
           'ограничиваем). Ты ограничиваешь риск снизу и оставляешь потенциал открытым сверху.',
           'Трейдингтегі антисынғыштық құрылымы — асимметрия: көп кіші шектеулі зиян (стоп-лосс '
           'сақтандыру ретінде) + сирек, бірақ орасан пайда (пайданы шектемейміз). Сен тәуекелді '
           'төменнен шектеп, әлеуетті жоғарыдан ашық қалдырасың.'),
-          title: _L('Принцип асимметрии', 'Асимметрия қағидасы'),
+          title: _lt('Принцип асимметрии', 'Асимметрия қағидасы'),
         ),
-        _fact(_L(
+        _fact(_lt(
           'Талеб не теоретик — он заработал состояние именно на этой философии. Его фонд '
           'покупал «дешёвую страховку» (опционы), которая почти всегда сгорала по мелочи, но '
           'в редкий день обвала (например, «Чёрный понедельник» 1987 или 2008) приносила '
@@ -1664,7 +1664,7 @@ CourseModule _module4() => CourseModule(
           'сирек құлдырау күнінде (мысалы, 1987 «Қара дүйсенбі» немесе 2008) мыңдаған пайыз '
           'әкелді. Кіші зияндар — алып пайдаға билеттің бағасы.',
         )),
-        _example(_L(
+        _example(_lt(
           '«Чёрный лебедь» — редкое, непредсказуемое событие с колоссальными последствиями '
           '(пандемия, обвал, война). Хрупкий трейдер с большим плечом и без стопов на нём '
           'разоряется. Антихрупкий — зарабатывает состояние, потому что заранее построил '
@@ -1675,18 +1675,18 @@ CourseModule _module4() => CourseModule(
         )),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Что делает торговую стратегию антихрупкой?',
           'Сауда стратегиясын антисынғыш ететін не?',
         ),
         options: [
-          _L('Большие убытки и маленькие прибыли', 'Үлкен зиян мен кіші пайда'),
-          _L('Маленькие ограниченные убытки и редкие огромные прибыли', 'Кіші шектеулі зиян мен сирек орасан пайда'),
-          _L('Полное отсутствие убытков', 'Зиянның мүлде болмауы'),
-          _L('Максимальное плечо на каждой сделке', 'Әр мәмілеге максималды иық'),
+          _lt('Большие убытки и маленькие прибыли', 'Үлкен зиян мен кіші пайда'),
+          _lt('Маленькие ограниченные убытки и редкие огромные прибыли', 'Кіші шектеулі зиян мен сирек орасан пайда'),
+          _lt('Полное отсутствие убытков', 'Зиянның мүлде болмауы'),
+          _lt('Максимальное плечо на каждой сделке', 'Әр мәмілеге максималды иық'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Антихрупкость = асимметрия: ограничь убытки (стопы), оставь прибыль открытой. '
           'Тогда редкие крупные движения рынка работают на тебя.',
           'Антисынғыштық = асимметрия: зиянды шекте (стоп), пайданы ашық қалдыр. Сонда нарықтың '
@@ -1699,7 +1699,7 @@ CourseModule _module4() => CourseModule(
       code: '4.8',
       title: 'Островки определённости посреди хаоса: жёсткая система правил',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Будущее не знает никто — ни ты, ни гуру из телеграма, ни аналитики банков. Карта '
           'рынка — это карта вероятностей, а не пророчеств. Принять это страшно, но именно '
           'отсюда рождается сила: вместо поиска «грааля-предсказателя» ты строишь систему '
@@ -1709,7 +1709,7 @@ CourseModule _module4() => CourseModule(
           'осыдан күш туады: «болжаушы-грааль» іздеудің орнына белгісіздікте жұмыс істейтін '
           'ережелер жүйесін құрасың.',
         )),
-        _rule(_L(
+        _rule(_lt(
           'Три якоря определённости в хаосе:\n'
           '1. Чек-лист входа — сделка только при выполнении ВСЕХ условий, без исключений.\n'
           '2. Риск-менеджмент — фиксированный % риска на сделку (0.5–2%).\n'
@@ -1719,9 +1719,9 @@ CourseModule _module4() => CourseModule(
           '1. Кіру чек-лист — мәміле тек БАРЛЫҚ шарт орындалғанда, ерекшеліксіз.\n'
           '2. Тәуекел-менеджмент — мәмілеге бекітілген тәуекел %-ы (0.5–2%).\n'
           '3. Сауда жоспары — TP, SL, жаңалық, күмән кезінде не істеу алдын ала жазылған.'),
-          title: _L('Убираем хаос из дня', 'Күннен хаосты аламыз'),
+          title: _lt('Убираем хаос из дня', 'Күннен хаосты аламыз'),
         ),
-        _fact(_L(
+        _fact(_lt(
           'Хирурги с многолетним опытом совершают меньше ошибок, когда используют простой '
           'чек-лист перед операцией (исследование Атула Гаванде). Внедрение чек-листов в '
           'операционных снизило смертность на ~40%. Если чек-лист спасает жизни даже у '
@@ -1731,7 +1731,7 @@ CourseModule _module4() => CourseModule(
           'азайтты. Чек-лист данышпан хирургтардың да өмірін сақтаса — ол сенің депозитіңді де '
           'сақтайды.',
         )),
-        _example(_L(
+        _example(_lt(
           'Трейдер без правил каждое утро принимает решения «с чистого листа», устаёт от '
           'постоянного выбора и выгорает за месяцы. Трейдер с системой исполняет чек-лист почти '
           'механически — мозг не тратит силы на муки выбора, и хаос рынка перестаёт пугать. '
@@ -1743,18 +1743,18 @@ CourseModule _module4() => CourseModule(
         )),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Зачем трейдеру чек-листы и жёсткий риск-менеджмент?',
           'Трейдерге чек-лист пен қатаң тәуекел-менеджмент не үшін керек?',
         ),
         options: [
-          _L('Чтобы предсказывать будущее точно', 'Болашақты дәл болжау үшін'),
-          _L('Чтобы убрать хаос и эмоции из принятия решений', 'Шешім қабылдаудан хаос пен эмоцияны алып тастау үшін'),
-          _L('Чтобы торговать чаще', 'Жиірек саудалау үшін'),
-          _L('Чтобы избежать любых убытков', 'Кез келген зияннан аулақ болу үшін'),
+          _lt('Чтобы предсказывать будущее точно', 'Болашақты дәл болжау үшін'),
+          _lt('Чтобы убрать хаос и эмоции из принятия решений', 'Шешім қабылдаудан хаос пен эмоцияны алып тастау үшін'),
+          _lt('Чтобы торговать чаще', 'Жиірек саудалау үшін'),
+          _lt('Чтобы избежать любых убытков', 'Кез келген зияннан аулақ болу үшін'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Правила не предсказывают рынок — они структурируют твоё поведение. Это островки '
           'определённости, которые защищают от хаотичных эмоциональных решений.',
           'Ережелер нарықты болжамайды — олар сенің мінез-құлқыңды құрылымдайды. Бұл хаосты '
@@ -1767,7 +1767,7 @@ CourseModule _module4() => CourseModule(
       code: '4.9',
       title: 'Как принимать решения, чтобы не сожалеть? (Фреймворк Безоса)',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Regret Minimization Framework Джеффа Безоса: при важном выборе спроецируй себя в '
           'возраст 80 лет и спроси — о чём я буду жалеть, оглядываясь назад? Этот приём '
           'отключает сиюминутный страх и показывает, что действительно важно в масштабе жизни.',
@@ -1775,16 +1775,16 @@ CourseModule _module4() => CourseModule(
           'жобалап, сұра — артқа қарағанда неге өкінемін? Бұл тәсіл сәттік қорқынышты өшіріп, '
           'өмір ауқымында шынымен не маңызды екенін көрсетеді.',
         )),
-        _rule(_L(
+        _rule(_lt(
           'Применяй фреймворк к СТРАТЕГИЧЕСКИМ решениям (сменить профессию, начать обучение, '
           'войти в крупную долгосрочную инвестицию), а не к каждой мелкой сделке. Цель — '
           'минимизировать долгосрочное сожаление, а не краткосрочный дискомфорт.',
           'Фреймворкті СТРАТЕГИЯЛЫҚ шешімдерге қолдан (мамандық ауыстыру, оқуды бастау, ірі '
           'ұзақмерзімді инвестицияға кіру), әр ұсақ мәмілеге емес. Мақсат — қысқамерзімді '
           'жайсыздықты емес, ұзақмерзімді өкінішті азайту.'),
-          title: _L('Как применять', 'Қалай қолдану'),
+          title: _lt('Как применять', 'Қалай қолдану'),
         ),
-        _story(_L(
+        _story(_lt(
           'В 1994 году Безос работал на престижной высокооплачиваемой должности в хедж-фонде. '
           'Идея интернет-магазина была безумной авантюрой. Он спросил себя: «В 80 лет я буду '
           'жалеть, что ушёл с хорошей работы и попробовал? Или что НЕ попробовал?» Ответ был '
@@ -1794,22 +1794,22 @@ CourseModule _module4() => CourseModule(
           'идеясы есалаң авантюра еді. Ол өзіне сұрақ қойды: «80 жаста жақсы жұмыстан кетіп, '
           'байқап көргеніме өкінемін бе? Әлде БАЙҚАП КӨРМЕГЕНІМЕ ме?» Жауап анық еді — ол жұмыстан '
           'кетіп, гаражда Amazon-ды құрды. Байқап көрмегенге өкіну сәтсіздікке өкінуден ауыр.'),
-          title: _L('Гараж, который стал триллионом', 'Триллионға айналған гараж'),
+          title: _lt('Гараж, который стал триллионом', 'Триллионға айналған гараж'),
         ),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Суть Regret Minimization Framework Безоса?',
           'Безостың Regret Minimization Framework-інің мәні?',
         ),
         options: [
-          _L('Принимать решения ради быстрой выгоды', 'Жылдам пайда үшін шешім қабылдау'),
-          _L('Минимизировать будущее сожаление, глядя на выбор из возраста 80 лет', '80 жас тұрғысынан таңдауға қарап, болашақ өкінішті азайту'),
-          _L('Всегда выбирать наименее рискованный путь', 'Әрдайым ең аз тәуекелді жолды таңдау'),
-          _L('Спрашивать совета у большинства', 'Көпшіліктен кеңес сұрау'),
+          _lt('Принимать решения ради быстрой выгоды', 'Жылдам пайда үшін шешім қабылдау'),
+          _lt('Минимизировать будущее сожаление, глядя на выбор из возраста 80 лет', '80 жас тұрғысынан таңдауға қарап, болашақ өкінішті азайту'),
+          _lt('Всегда выбирать наименее рискованный путь', 'Әрдайым ең аз тәуекелді жолды таңдау'),
+          _lt('Спрашивать совета у большинства', 'Көпшіліктен кеңес сұрау'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Фреймворк проецирует тебя в старость и минимизирует сожаление, а не сиюминутный '
           'страх. Это инструмент для крупных стратегических решений.',
           'Фреймворк сені қартайған шаққа жобалап, сәттік қорқынышты емес, өкінішті азайтады. '
@@ -1822,7 +1822,7 @@ CourseModule _module4() => CourseModule(
       code: '4.10',
       title: 'Относительное преимущество против абсолютного: твоя специализация',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Закон сравнительного преимущества Давида Рикардо (1817) — одна из самых '
           'контринтуитивных идей экономики. Суть: выгоднее сфокусироваться на том, что ты '
           'делаешь ОТНОСИТЕЛЬНО лучше всего, и отсечь остальное — даже если в абсолюте кто-то '
@@ -1832,7 +1832,7 @@ CourseModule _module4() => CourseModule(
           'шоғырланып, қалғанын кесіп тастаған тиімді — тіпті абсолютте біреу оны сенен жақсы '
           'істесе де.',
         )),
-        _rule(_L(
+        _rule(_lt(
           'В трейдинге: не пытайся торговать 40 инструментов и 10 стратегий одновременно. '
           'Выбери одну-две связки (например, золото на откатах в сессию США) и доведи до '
           'мастерства. Глубина бьёт ширину. Узкий специалист всегда обыграет «мастера на все '
@@ -1840,9 +1840,9 @@ CourseModule _module4() => CourseModule(
           'Трейдингте: 40 құрал мен 10 стратегияны қатар саудаламақ болма. Бір-екі байланысты '
           '(мысалы, АҚШ сессиясындағы откаттарда алтын) таңдап, шеберлікке жеткіз. Тереңдік '
           'енді жеңеді. Тар маман әрдайым «бәрін істейтін шеберді» ұтады.'),
-          title: _L('Специализация', 'Мамандану'),
+          title: _lt('Специализация', 'Мамандану'),
         ),
-        _fact(_L(
+        _fact(_lt(
           'Рикардо был не только экономистом, но и одним из самых успешных биржевых '
           'спекулянтов своего времени. Он сделал состояние на государственных облигациях во '
           'время битвы при Ватерлоо в 1815 году, поняв исход раньше рынка. Его правило: '
@@ -1853,7 +1853,7 @@ CourseModule _module4() => CourseModule(
           'мемлекеттік облигацияларда байлық тапты. Оның ережесі: «Зиянды кес, пайданы ағызып '
           'жібер» — 200 жыл бұрын биржада шынымен байыған адамның аузынан шыққан.',
         )),
-        _example(_L(
+        _example(_lt(
           'Трейдер, который «понемногу знает всё» — про крипту, акции, форекс, опционы — '
           'проигрывает узкому специалисту по одному сетапу на одном инструменте. Распыление '
           'внимания = посредственность везде. Фокус = преимущество в одном месте.',
@@ -1863,18 +1863,18 @@ CourseModule _module4() => CourseModule(
         )),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Что советует закон сравнительного преимущества трейдеру?',
           'Салыстырмалы артықшылық заңы трейдерге нені кеңес береді?',
         ),
         options: [
-          _L('Торговать максимум инструментов сразу', 'Бірден барынша көп құрал саудалау'),
-          _L('Сфокусироваться на 1–2 стратегиях и довести их до мастерства', '1–2 стратегияға шоғырланып, оларды шеберлікке жеткізу'),
-          _L('Копировать чужие сделки', 'Бөгде мәмілелерді көшіру'),
-          _L('Менять стратегию каждую неделю', 'Әр апта сайын стратегияны ауыстыру'),
+          _lt('Торговать максимум инструментов сразу', 'Бірден барынша көп құрал саудалау'),
+          _lt('Сфокусироваться на 1–2 стратегиях и довести их до мастерства', '1–2 стратегияға шоғырланып, оларды шеберлікке жеткізу'),
+          _lt('Копировать чужие сделки', 'Бөгде мәмілелерді көшіру'),
+          _lt('Менять стратегию каждую неделю', 'Әр апта сайын стратегияны ауыстыру'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Сравнительное преимущество = фокус на том, что получается лучше всего. Узкая '
           'специализация даёт глубину и устойчивое преимущество.',
           'Салыстырмалы артықшылық = ең жақсы шығатынға фокус. Тар мамандану тереңдік пен '
@@ -1887,7 +1887,7 @@ CourseModule _module4() => CourseModule(
       code: '4.11',
       title: 'Серое восприятие, чёрно-белое решение',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Профессионала отличает умение переключать два режима мышления. Этап АНАЛИЗА должен '
           'быть «серым»: ты обязан видеть все риски, контраргументы и альтернативные сценарии. '
           'Но этап ИСПОЛНЕНИЯ — «чёрно-белый»: решение принято, нажал кнопку и следуй плану '
@@ -1897,7 +1897,7 @@ CourseModule _module4() => CourseModule(
           'ОРЫНДАУ кезеңі — «ақ-қара»: шешім қабылданды, батырманы бастың да, күмәнсіз жоспарға '
           'ер.',
         )),
-        _rule(_L(
+        _rule(_lt(
           'Две фазы — два разных мозга:\n'
           '• Анализ (серый): сомневайся, ищи, почему сделка может НЕ сработать, взвешивай '
           'вероятности. Здесь скепсис — твой друг.\n'
@@ -1908,9 +1908,9 @@ CourseModule _module4() => CourseModule(
           'ықтималдықты өлше. Мұнда скепсис — досың.\n'
           '• Орындау (ақ-қара): жоспар бар — механикалық әрекет ет. Мұнда күмән — жауың, ол '
           'стоп жылжытуға және дүрбелеңге апарады.'),
-          title: _L('Две фазы', 'Екі фаза'),
+          title: _lt('Две фазы', 'Екі фаза'),
         ),
-        _fact(_L(
+        _fact(_lt(
           'Военные лётчики и спецназ тренируют ровно это разделение: на брифинге они часами '
           'разбирают все варианты провала (серая фаза), но в бою действуют по отработанному '
           'протоколу без раздумий (чёрно-белая фаза). Колебание в момент исполнения стоит '
@@ -1920,7 +1920,7 @@ CourseModule _module4() => CourseModule(
           'хаттамамен әрекет етеді (ақ-қара фаза). Орындау сәтіндегі тартыншақтық — ұрыста өмірге, '
           'трейдингте ақшаға түседі.',
         )),
-        _example(_L(
+        _example(_lt(
           'Трейдер, который сомневается на этапе анализа и отказывается от слабой сделки — '
           'мудр. Трейдер, который вошёл по плану, а потом начал «передумывать», двигать стоп '
           'и закрывать руками из страха — теряет деньги на эмоциях, разрушая собственную '
@@ -1931,18 +1931,18 @@ CourseModule _module4() => CourseModule(
         )),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Когда уместны сомнения и поиск контраргументов?',
           'Күмән мен қарсы дәлел іздеу қашан орынды?',
         ),
         options: [
-          _L('Во время исполнения уже открытой сделки', 'Ашылған мәмілені орындау кезінде'),
-          _L('На этапе анализа, до входа («серая» фаза)', 'Талдау кезеңінде, кіргенге дейін («сұр» фаза)'),
-          _L('Никогда — сомнения вредны', 'Ешқашан — күмән зиянды'),
-          _L('Только после закрытия сделки', 'Тек мәмілені жапқаннан кейін'),
+          _lt('Во время исполнения уже открытой сделки', 'Ашылған мәмілені орындау кезінде'),
+          _lt('На этапе анализа, до входа («серая» фаза)', 'Талдау кезеңінде, кіргенге дейін («сұр» фаза)'),
+          _lt('Никогда — сомнения вредны', 'Ешқашан — күмән зиянды'),
+          _lt('Только после закрытия сделки', 'Тек мәмілені жапқаннан кейін'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Сомневайся на этапе анализа (видь все риски). Но как только вошёл — исполняй план '
           'чётко, без метаний. Анализ серый, исполнение чёрно-белое.',
           'Талдау кезеңінде күмәндан (барлық тәуекелді көр). Бірақ кіргеннен кейін — жоспарды '
@@ -1969,7 +1969,7 @@ CourseModule _module5() => CourseModule(
       code: '5.1',
       title: 'США: капитализм на стероидах, экспорт долга и пузыри',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'США — крупнейшая экономика мира (~25% мирового ВВП), построенная на потреблении, '
           'гигантском внутреннем рынке, инновациях и уникальном статусе доллара как мировой '
           'валюты. Это позволяет Америке жить в долг так, как не может ни одна другая страна.',
@@ -1977,7 +1977,7 @@ CourseModule _module5() => CourseModule(
           'нарыққа, инновацияға және доллардың әлемдік валюта мәртебесіне құрылған. Бұл Америкаға '
           'басқа ешбір ел жасай алмайтындай қарызбен өмір сүруге мүмкіндік береді.',
         )),
-        _p(_L(
+        _p(_lt(
           'Взлёт: после двух мировых войн США оказались единственной крупной экономикой без '
           'разрушений на своей территории. Они создали Бреттон-Вудскую и нефтедолларовую '
           'системы, закрепив доллар в центре мира.',
@@ -1985,19 +1985,19 @@ CourseModule _module5() => CourseModule(
           'экономика болды. Олар Бреттон-Вудс және мұнайдоллар жүйелерін құрып, долларды әлем '
           'орталығына бекітті.',
         )),
-        _p(_L(
+        _p(_lt(
           'Особенность: культура потребления и предпринимательства, Кремниевая долина, '
           'венчурный капитал, статус USD как «всемирного кошелька».',
           'Ерекшелігі: тұтыну мен кәсіпкерлік мәдениеті, Кремний алқабы, венчурлік капитал, '
           'доллардың «бүкіләлемдік әмиян» мәртебесі.',
         )),
-        CardsBlock(_L('4 секрета американского успеха', 'Америка табысының 4 құпиясы'), [
-          CardItem('🔬', _L('Инновации', 'Инновация'), _L('Эдисон, Форд, Джобс, Маск. США — магнит для лучших умов мира.', 'Эдисон, Форд, Джобс, Маск. АҚШ — әлемнің ең үздік ақылдарының магниті.')),
-          CardItem('🌍', _L('Иммиграция талантов', 'Таланттар иммиграциясы'), _L('Google основал россиянин Сергей Брин, Yahoo — тайванец Джерри Янг.', 'Google-ды ресейлік Сергей Брин, Yahoo-ны тайвандық Джерри Янг құрды.')),
-          CardItem('⚖️', _L('Верховенство права', 'Заң үстемдігі'), _L('Защита собственности и контрактов. Бизнес доверяет системе.', 'Меншік пен келісімдерді қорғау. Бизнес жүйеге сенеді.')),
-          CardItem('💵', _L('Сила доллара', 'Доллар күші'), _L('Мировая резервная валюта — Америка занимает у всего мира.', 'Әлемдік резервтік валюта — Америка бүкіл әлемнен қарыз алады.')),
+        CardsBlock(_lt('4 секрета американского успеха', 'Америка табысының 4 құпиясы'), [
+          CardItem('🔬', _lt('Инновации', 'Инновация'), _lt('Эдисон, Форд, Джобс, Маск. США — магнит для лучших умов мира.', 'Эдисон, Форд, Джобс, Маск. АҚШ — әлемнің ең үздік ақылдарының магниті.')),
+          CardItem('🌍', _lt('Иммиграция талантов', 'Таланттар иммиграциясы'), _lt('Google основал россиянин Сергей Брин, Yahoo — тайванец Джерри Янг.', 'Google-ды ресейлік Сергей Брин, Yahoo-ны тайвандық Джерри Янг құрды.')),
+          CardItem('⚖️', _lt('Верховенство права', 'Заң үстемдігі'), _lt('Защита собственности и контрактов. Бизнес доверяет системе.', 'Меншік пен келісімдерді қорғау. Бизнес жүйеге сенеді.')),
+          CardItem('💵', _lt('Сила доллара', 'Доллар күші'), _lt('Мировая резервная валюта — Америка занимает у всего мира.', 'Әлемдік резервтік валюта — Америка бүкіл әлемнен қарыз алады.')),
         ]),
-        _fact(_L(
+        _fact(_lt(
           'Госдолг США превысил \$34 триллиона — это более \$100 000 на каждого американца, '
           'включая младенцев. Проценты по этому долгу уже сопоставимы с военным бюджетом. '
           'Но пока мир готов покупать американские облигации как «самый безопасный актив», '
@@ -2007,7 +2007,7 @@ CourseModule _module5() => CourseModule(
           'Бірақ әлем американдық облигацияларды «ең қауіпсіз актив» ретінде сатып алуға дайын '
           'болғанша, машина жұмыс істей береді.',
         )),
-        _warn(_L(
+        _warn(_lt(
           'Уязвимости: хронический дефицит бюджета, экспоненциальный рост госдолга, '
           'политическая поляризация и риск, что однажды мир усомнится в долларе. Тот день '
           'станет величайшим финансовым событием века.',
@@ -2017,18 +2017,18 @@ CourseModule _module5() => CourseModule(
         )),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Главная структурная уязвимость экономики США?',
           'АҚШ экономикасының басты құрылымдық осалдығы?',
         ),
         options: [
-          _L('Нехватка внутреннего рынка', 'Ішкі нарықтың жетіспеуі'),
-          _L('Гигантский госдолг и риск потери доверия к доллару', 'Алып мемлекеттік қарыз және долларға сенімнен айырылу қаупі'),
-          _L('Отсутствие технологий', 'Технологияның жоқтығы'),
-          _L('Слабая валюта', 'Әлсіз валюта'),
+          _lt('Нехватка внутреннего рынка', 'Ішкі нарықтың жетіспеуі'),
+          _lt('Гигантский госдолг и риск потери доверия к доллару', 'Алып мемлекеттік қарыз және долларға сенімнен айырылу қаупі'),
+          _lt('Отсутствие технологий', 'Технологияның жоқтығы'),
+          _lt('Слабая валюта', 'Әлсіз валюта'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Сила США — мировой статус доллара. Но обратная сторона — растущий госдолг и '
           'хронический дефицит, что создаёт долгосрочный риск доверия к USD.',
           'АҚШ күші — доллардың әлемдік мәртебесі. Бірақ кері жағы — өсіп жатқан мемлекеттік '
@@ -2041,7 +2041,7 @@ CourseModule _module5() => CourseModule(
       code: '5.2',
       title: 'Япония: от пепла до роботов и ловушка «потерянных десятилетий»',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Послевоенное японское чудо — образец дисциплины и качества. Из руин 1945 года '
           'Япония за 40 лет стала второй экономикой мира, грозой американского автопрома и '
           'электроники. Но затем последовал самый поучительный для трейдера крах в истории.',
@@ -2049,14 +2049,14 @@ CourseModule _module5() => CourseModule(
           'Жапония 40 жылда әлемнің екінші экономикасына, америка автопромы мен электроникасының '
           'үрейіне айналды. Бірақ сосын трейдер үшін тарихтағы ең тағылымды күйреу болды.',
         )),
-        _p(_L(
+        _p(_lt(
           'Взлёт: восстановление с помощью США, корпорации-кейрецу, культ качества (Toyota, '
           'Sony), фокус на технологии и экспорт. В 1980-е казалось, что Япония скупит весь мир.',
           'Көтерілу: АҚШ көмегімен қалпына келу, кейрецу корпорациялары, сапа культі (Toyota, '
           'Sony), технология мен экспортқа фокус. 1980-ші жылдары Жапония бүкіл әлемді сатып '
           'алатындай көрінді.',
         )),
-        _fact(_L(
+        _fact(_lt(
           'На пике пузыря в 1989 году земля под императорским дворцом в Токио стоила, по '
           'оценкам, дороже ВСЕЙ недвижимости штата Калифорния. А территория Японии — дороже '
           'всех Соединённых Штатов. Это была самая грандиозная переоценка активов в истории.',
@@ -2064,7 +2064,7 @@ CourseModule _module5() => CourseModule(
           'бойынша, БҮКІЛ Калифорния штатының жылжымайтын мүлкінен қымбат тұрды. Ал Жапония '
           'аумағы — бүкіл Құрама Штаттардан қымбат. Бұл тарихтағы ең ұлы актив қайта бағалануы еді.',
         )),
-        _story(_L(
+        _story(_lt(
           'Японский индекс Nikkei на пике 1989 года достиг почти 39 000 пунктов. Затем пузырь '
           'недвижимости и акций лопнул. Последовали «потерянные десятилетия» — стагнация и '
           'дефляция. Nikkei вернулся к тем уровням лишь спустя ~34 года, в 2024-м! Целое '
@@ -2073,18 +2073,18 @@ CourseModule _module5() => CourseModule(
           'мүлік пен акция көпіршігі жарылды. «Жоғалған ондаған жылдар» — тоқырау мен дефляция '
           'келді. Nikkei сол деңгейге тек ~34 жылдан кейін, 2024-те оралды! «Шыңда» сатып алған '
           'бүкіл бір буын инвестор бүкіл өмірінде пайда көрмеді.'),
-          title: _L('34 года, чтобы вернуться в ноль', 'Нөлге оралуға 34 жыл'),
+          title: _lt('34 года, чтобы вернуться в ноль', 'Нөлге оралуға 34 жыл'),
         ),
-        _rule(_L(
+        _rule(_lt(
           'Главный урок Японии для трейдера: миф «рынок всегда восстанавливается быстро» — '
           'ложь. Рынок может не расти ДЕСЯТИЛЕТИЯМИ. Поэтому слепое «купи и держи» без '
           'риск-менеджмента может стоить тебе целой жизни ожидания.',
           'Жапонияның трейдерге басты сабағы: «нарық әрдайым тез қалпына келеді» мифі — өтірік. '
           'Нарық ОНДАҒАН ЖЫЛ өспеуі мүмкін. Сондықтан тәуекел-менеджментсіз соқыр «сатып ал да '
           'ұста» саған бүкіл өмірлік күтуге түсуі мүмкін.'),
-          title: _L('Урок из Японии', 'Жапониядан сабақ'),
+          title: _lt('Урок из Японии', 'Жапониядан сабақ'),
         ),
-        _warn(_L(
+        _warn(_lt(
           'Уязвимости сегодня: рекордное старение населения, гигантский госдолг (>250% ВВП) и '
           'десятилетия около-нулевых ставок.',
           'Бүгінгі осалдықтар: халықтың рекордты қартаюы, алып мемлекеттік қарыз (ЖІӨ-нің >250%) '
@@ -2092,18 +2092,18 @@ CourseModule _module5() => CourseModule(
         )),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Какой главный урок для трейдера несёт история Японии после 1990?',
           '1990-нан кейінгі Жапония тарихы трейдерге қандай басты сабақ береді?',
         ),
         options: [
-          _L('Рынки всегда растут в долгосроке', 'Нарықтар ұзақмерзімде әрдайым өседі'),
-          _L('Рынки могут не расти десятилетиями (стагнация возможна)', 'Нарықтар ондаған жыл өспеуі мүмкін (тоқырау ықтимал)'),
-          _L('Недвижимость не падает', 'Жылжымайтын мүлік түспейді'),
-          _L('Технологии гарантируют рост рынка', 'Технология нарық өсуіне кепілдік береді'),
+          _lt('Рынки всегда растут в долгосроке', 'Нарықтар ұзақмерзімде әрдайым өседі'),
+          _lt('Рынки могут не расти десятилетиями (стагнация возможна)', 'Нарықтар ондаған жыл өспеуі мүмкін (тоқырау ықтимал)'),
+          _lt('Недвижимость не падает', 'Жылжымайтын мүлік түспейді'),
+          _lt('Технологии гарантируют рост рынка', 'Технология нарық өсуіне кепілдік береді'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'После краха пузыря 1990 года японский рынок стагнировал ~34 года. Это опровергает '
           'миф, что «рынок всегда восстанавливается быстро».',
           '1990 жылғы көпіршік күйреуінен кейін жапон нарығы ~34 жыл тоқырады. Бұл «нарық әрдайым '
@@ -2116,7 +2116,7 @@ CourseModule _module5() => CourseModule(
       code: '5.3',
       title: 'Сингапур: из третьего мира в первый за одно поколение',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Сингапур — главное доказательство того, что не ресурсы делают страну богатой, а '
           'институты и решения. Крошечный остров без природных богатств, без своей воды и даже '
           'без песка для строительства стал одним из богатейших государств планеты за ~30 лет.',
@@ -2124,14 +2124,14 @@ CourseModule _module5() => CourseModule(
           'Табиғи байлығы жоқ, өз суы, тіпті құрылысқа құмы жоқ кішкентай арал ~30 жылда '
           'планетаның ең бай мемлекеттерінің біріне айналды.',
         )),
-        _p(_L(
+        _p(_lt(
           'Взлёт: гений Ли Куан Ю, который превратил коррумпированный портовый город в '
           'финансовую столицу Азии. Ставка на образование, верховенство закона и '
           'привлечение мирового капитала.',
           'Көтерілу: жемқор порт қаласын Азияның қаржы астанасына айналдырған Ли Куан Юдың '
           'данышпандығы. Білімге, заң үстемдігіне және әлемдік капиталды тартуға бағыт.',
         )),
-        _fact(_L(
+        _fact(_lt(
           'Сингапуру приходится ИМПОРТИРОВАТЬ питьевую воду и даже песок для расширения '
           'территории. При этом по ВВП на душу населения он обогнал бывшую метрополию — '
           'Великобританию. Чистый интеллект и правильные институты победили отсутствие '
@@ -2140,7 +2140,7 @@ CourseModule _module5() => CourseModule(
           'басына шаққандағы ЖІӨ бойынша бұрынғы метрополия — Ұлыбританияны басып озды. Таза '
           'интеллект пен дұрыс институттар ресурс жоқтығын жеңді.',
         )),
-        _warn(_L(
+        _warn(_lt(
           'Уязвимости: полная зависимость от здоровья мировой торговли. Как только в мире '
           'кризис и торговые потоки сжимаются — Сингапур, живущий на транзите и финансах, '
           'штормит одним из первых.',
@@ -2150,18 +2150,18 @@ CourseModule _module5() => CourseModule(
         )),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Что стало фундаментом экономического чуда Сингапура?',
           'Сингапур экономикалық кереметінің іргетасы не болды?',
         ),
         options: [
-          _L('Богатые природные ресурсы', 'Бай табиғи ресурстар'),
-          _L('Верховенство закона, борьба с коррупцией, открытость для капитала', 'Заң үстемдігі, жемқорлықпен күрес, капиталға ашықтық'),
-          _L('Большое население', 'Үлкен халық саны'),
-          _L('Военная мощь', 'Әскери қуат'),
+          _lt('Богатые природные ресурсы', 'Бай табиғи ресурстар'),
+          _lt('Верховенство закона, борьба с коррупцией, открытость для капитала', 'Заң үстемдігі, жемқорлықпен күрес, капиталға ашықтық'),
+          _lt('Большое население', 'Үлкен халық саны'),
+          _lt('Военная мощь', 'Әскери қуат'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'У Сингапура не было ресурсов. Успех построен на институтах: законность, нулевая '
           'коррупция и привлекательность для мирового капитала.',
           'Сингапурдың ресурсы болмады. Табыс институттарға құрылды: заңдылық, нөлдік жемқорлық '
@@ -2174,7 +2174,7 @@ CourseModule _module5() => CourseModule(
       code: '5.4',
       title: 'Китай: фабрика планеты и госкапитализм',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Китай совершил самый быстрый и массовый экономический рывок в истории человечества: '
           'за 40 лет более 800 миллионов человек вышли из нищеты. Уникальная модель — '
           'коммунистический политический контроль в связке с диким рыночным капитализмом.',
@@ -2182,13 +2182,13 @@ CourseModule _module5() => CourseModule(
           '40 жылда 800 миллионнан астам адам кедейліктен шықты. Бірегей модель — коммунистік '
           'саяси бақылау мен жабайы нарықтық капитализмнің тұтасуы.',
         )),
-        _p(_L(
+        _p(_lt(
           'Взлёт: реформы Дэн Сяопина с 1978 года, свободные экономические зоны, дешёвая '
           'рабочая сила и государственная стратегия «стать фабрикой мира».',
           'Көтерілу: Дэн Сяопиннің 1978 жылдан реформалары, еркін экономикалық аймақтар, арзан '
           'жұмыс күші және «әлем фабрикасы болу» мемлекеттік стратегиясы.',
         )),
-        _fact(_L(
+        _fact(_lt(
           'За три года (2011–2013) Китай использовал больше цемента, чем США за весь XX век. '
           'Масштаб строительства и индустриализации был настолько колоссальным, что менял '
           'мировые цены на сырьё — железную руду, медь, уголь — и кормил экономики целых '
@@ -2197,13 +2197,13 @@ CourseModule _module5() => CourseModule(
           'Құрылыс пен индустрияландыру ауқымы сонша зор болды — ол шикізатқа (темір кені, мыс, '
           'көмір) әлемдік бағаны өзгертіп, тұтас экспорттаушы елдердің экономикасын асырады.',
         )),
-        _p(_L(
+        _p(_lt(
           'Особенность: долгие годы Китай искусственно удерживал курс юаня заниженным, чтобы '
           'его товары были дешёвыми на мировых рынках и захватывали долю за долей.',
           'Ерекшелігі: Қытай ұзақ жылдар юань бағамын жасанды түрде төмен ұстады — тауарлары '
           'әлемдік нарықта арзан болып, үлесті бірте-бірте жаулап алу үшін.',
         )),
-        _warn(_L(
+        _warn(_lt(
           'Уязвимости: кризис закредитованности сектора недвижимости (история Evergrande), '
           'стремительное старение населения как наследие политики «одна семья — один ребёнок», '
           'и нарастающие торговые войны с США.',
@@ -2213,18 +2213,18 @@ CourseModule _module5() => CourseModule(
         )),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Как Китай долго стимулировал свой экспорт?',
           'Қытай экспортын ұзақ уақыт қалай ынталандырды?',
         ),
         options: [
-          _L('Укреплял юань', 'Юаньды нығайтты'),
-          _L('Искусственно удерживал курс юаня дешёвым', 'Юань бағамын жасанды түрде арзан ұстады'),
-          _L('Повышал зарплаты рабочим', 'Жұмысшылардың жалақысын көтерді'),
-          _L('Запрещал иностранные инвестиции', 'Шетел инвестицияларына тыйым салды'),
+          _lt('Укреплял юань', 'Юаньды нығайтты'),
+          _lt('Искусственно удерживал курс юаня дешёвым', 'Юань бағамын жасанды түрде арзан ұстады'),
+          _lt('Повышал зарплаты рабочим', 'Жұмысшылардың жалақысын көтерді'),
+          _lt('Запрещал иностранные инвестиции', 'Шетел инвестицияларына тыйым салды'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Дешёвый юань делал китайские товары конкурентными на мировых рынках. Это ключевой '
           'инструмент экспортной модели Китая.',
           'Арзан юань қытай тауарларын әлемдік нарықта бәсекеге қабілетті етті. Бұл — Қытайдың '
@@ -2237,7 +2237,7 @@ CourseModule _module5() => CourseModule(
       code: '5.5',
       title: 'Германия: дисциплина, локомотив Европы и культ «Ordnung»',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Германия — экономический мотор Европы, построенный на инженерной точности, качестве '
           'и порядке («Ordnung»). После полного разрушения во Второй мировой она восстала за '
           'десятилетие — это назвали «немецким экономическим чудом» (Wirtschaftswunder).',
@@ -2245,14 +2245,14 @@ CourseModule _module5() => CourseModule(
           'экономикалық моторы. Екінші дүниежүзілік соғыстағы толық қираудан кейін ол он жылда '
           'қайта көтерілді — мұны «неміс экономикалық кереметі» (Wirtschaftswunder) деп атады.',
         )),
-        _p(_L(
+        _p(_lt(
           'Взлёт: чудо 1950-х, план Маршалла, денежная реформа и культура труда. Германия '
           'стала главным экспортёром Евросоюза и одной из ведущих промышленных держав мира.',
           'Көтерілу: 1950-ші жылдар кереметі, Маршалл жоспары, ақша реформасы және еңбек '
           'мәдениеті. Германия Еуроодақтың басты экспорттаушысы әрі әлемнің жетекші өнеркәсіп '
           'державаларының біріне айналды.',
         )),
-        _fact(_L(
+        _fact(_lt(
           'Секретное оружие Германии — Mittelstand: тысячи семейных средних компаний, о '
           'которых никто не слышал, но которые являются мировыми монополистами в узких '
           'нишах. Их называют «скрытыми чемпионами» (hidden champions) — например, компания, '
@@ -2262,7 +2262,7 @@ CourseModule _module5() => CourseModule(
           '(hidden champions) дейді — мысалы, әлемдік қаптама машиналарының немесе арнайы '
           'станоктардың 70%-ын жасайтын компания.',
         )),
-        _warn(_L(
+        _warn(_lt(
           'Уязвимости: критическая зависимость от импорта дешёвой энергии (что больно ударило '
           'в энергокризис), тяжёлая бюрократия и роль «спонсора», который вынужден на своих '
           'плечах вытягивать экономически слабые страны Еврозоны.',
@@ -2272,18 +2272,18 @@ CourseModule _module5() => CourseModule(
         )),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Что такое немецкий Mittelstand?',
           'Неміс Mittelstand дегеніміз не?',
         ),
         options: [
-          _L('Государственные гиганты-монополисты', 'Мемлекеттік алып монополистер'),
-          _L('Семейный высокотехнологичный средний бизнес — лидеры узких ниш', 'Отбасылық жоғары технологиялық орта бизнес — тар сала көшбасшылары'),
-          _L('Сеть розничных магазинов', 'Бөлшек дүкендер желісі'),
-          _L('Банковский картель', 'Банк картелі'),
+          _lt('Государственные гиганты-монополисты', 'Мемлекеттік алып монополистер'),
+          _lt('Семейный высокотехнологичный средний бизнес — лидеры узких ниш', 'Отбасылық жоғары технологиялық орта бизнес — тар сала көшбасшылары'),
+          _lt('Сеть розничных магазинов', 'Бөлшек дүкендер желісі'),
+          _lt('Банковский картель', 'Банк картелі'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Mittelstand — костяк немецкой экономики: средние семейные компании, доминирующие '
           'в узких высокотехнологичных нишах мирового рынка («скрытые чемпионы»).',
           'Mittelstand — неміс экономикасының тірегі: әлемдік нарықтың тар жоғары технологиялық '
@@ -2296,7 +2296,7 @@ CourseModule _module5() => CourseModule(
       code: '5.6',
       title: 'Казахстан: наш путь и наш потенциал',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Казахстан — 9-я по территории страна мира с огромными природными богатствами и '
           'молодой нацией. Мы стоим на перекрёстке между Китаем, Россией и Европой. Понимать '
           'свою экономику — значит видеть и риски, и реальные возможности для роста капитала.',
@@ -2304,28 +2304,28 @@ CourseModule _module5() => CourseModule(
           'Біз Қытай, Ресей және Еуропа арасындағы тоғыспада тұрмыз. Өз экономикаңды түсіну — '
           'тәуекелдерді де, капитал өсуінің нақты мүмкіндіктерін де көру деген сөз.',
         )),
-        CardsBlock(_L('4 опоры экономики Казахстана', 'Қазақстан экономикасының 4 тірегі'), [
-          CardItem('🛢️', _L('Ресурсы', 'Ресурстар'), _L('Нефть, газ, уран (№1 в мире!), медь, золото. Сырьевой фундамент.', 'Мұнай, газ, уран (әлемде №1!), мыс, алтын. Шикізат іргетасы.')),
-          CardItem('🚉', _L('Транзит', 'Транзит'), _L('Мост между Китаем и Европой — Новый Шёлковый путь идёт через нас.', 'Қытай мен Еуропа арасындағы көпір — Жаңа Жібек жолы біз арқылы өтеді.')),
-          CardItem('🌾', _L('Агро', 'Агро'), _L('Один из крупнейших экспортёров пшеницы в мире.', 'Әлемдегі ең ірі бидай экспорттаушыларының бірі.')),
-          CardItem('🧑‍💻', _L('Молодёжь', 'Жастар'), _L('Молодая нация, рост IT (Astana Hub) и финтеха (Kaspi).', 'Жас ұлт, IT (Astana Hub) және финтех (Kaspi) өсімі.')),
+        CardsBlock(_lt('4 опоры экономики Казахстана', 'Қазақстан экономикасының 4 тірегі'), [
+          CardItem('🛢️', _lt('Ресурсы', 'Ресурстар'), _lt('Нефть, газ, уран (№1 в мире!), медь, золото. Сырьевой фундамент.', 'Мұнай, газ, уран (әлемде №1!), мыс, алтын. Шикізат іргетасы.')),
+          CardItem('🚉', _lt('Транзит', 'Транзит'), _lt('Мост между Китаем и Европой — Новый Шёлковый путь идёт через нас.', 'Қытай мен Еуропа арасындағы көпір — Жаңа Жібек жолы біз арқылы өтеді.')),
+          CardItem('🌾', _lt('Агро', 'Агро'), _lt('Один из крупнейших экспортёров пшеницы в мире.', 'Әлемдегі ең ірі бидай экспорттаушыларының бірі.')),
+          CardItem('🧑‍💻', _lt('Молодёжь', 'Жастар'), _lt('Молодая нация, рост IT (Astana Hub) и финтеха (Kaspi).', 'Жас ұлт, IT (Astana Hub) және финтех (Kaspi) өсімі.')),
         ]),
-        _fact(_L(
+        _fact(_lt(
           'Казахстан — мировой лидер по добыче урана: около 40% всего урана планеты добывается '
           'у нас. Топливо для каждой пятой атомной электростанции в мире — родом из казахстанской степи.',
           'Қазақстан — уран өндіруде әлем көшбасшысы: планета ураны­ның шамамен 40%-ы бізде '
           'өндіріледі. Әлемдегі әр бесінші атом электр станциясының отыны — қазақ даласынан.',
         )),
-        _rule(_L(
+        _rule(_lt(
           'Главный вызов — «ресурсное проклятие»: когда экономика зависит от цен на нефть, она '
           'растёт в годы дорогого сырья и страдает в годы дешёвого. Путь вперёд — диверсификация: '
           'переработка, технологии, человеческий капитал, а не только продажа сырья.',
           'Басты сын-қатер — «ресурс қарғысы»: экономика мұнай бағасына тәуелді болғанда, ол '
           'шикізат қымбат жылдары өсіп, арзан жылдары зардап шегеді. Алға жол — әртараптандыру: '
           'қайта өңдеу, технология, адами капитал, тек шикізат сату емес.'),
-          title: _L('Ресурсное проклятие', 'Ресурс қарғысы'),
+          title: _lt('Ресурсное проклятие', 'Ресурс қарғысы'),
         ),
-        _warn(_L(
+        _warn(_lt(
           'Уязвимости: зависимость от цен на нефть и от соседей (логистика экспорта), '
           'необходимость диверсифицировать экономику и развивать собственную переработку и '
           'технологии, а не только экспортировать сырьё.',
@@ -2333,7 +2333,7 @@ CourseModule _module5() => CourseModule(
           'экономиканы әртараптандыру және тек шикізат экспорттамай, өз қайта өңдеуі мен '
           'технологиясын дамыту қажеттігі.',
         )),
-        _p(_L(
+        _p(_lt(
           'Возможность для тебя: финансовая грамотность и инвестиции — это и есть личная '
           'диверсификация. Понимая глобальные рынки и золото, ты защищаешь свой капитал от '
           'локальных рисков — независимо от цены на нефть.',
@@ -2343,18 +2343,18 @@ CourseModule _module5() => CourseModule(
         )),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'В чём суть «ресурсного проклятия» для экономики Казахстана?',
           'Қазақстан экономикасы үшін «ресурс қарғысының» мәні неде?',
         ),
         options: [
-          _L('Слишком мало природных ресурсов', 'Табиғи ресурс тым аз'),
-          _L('Зависимость от цен на сырьё делает экономику уязвимой; нужна диверсификация', 'Шикізат бағасына тәуелділік экономиканы осал етеді; әртараптандыру керек'),
-          _L('Ресурсы быстро заканчиваются за год', 'Ресурстар бір жылда тез таусылады'),
-          _L('Ресурсы запрещено экспортировать', 'Ресурстарды экспорттауға тыйым салынған'),
+          _lt('Слишком мало природных ресурсов', 'Табиғи ресурс тым аз'),
+          _lt('Зависимость от цен на сырьё делает экономику уязвимой; нужна диверсификация', 'Шикізат бағасына тәуелділік экономиканы осал етеді; әртараптандыру керек'),
+          _lt('Ресурсы быстро заканчиваются за год', 'Ресурстар бір жылда тез таусылады'),
+          _lt('Ресурсы запрещено экспортировать', 'Ресурстарды экспорттауға тыйым салынған'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Когда экономика держится на экспорте сырья, она зависит от мировых цен на нефть. '
           'Защита — диверсификация: переработка, технологии и человеческий капитал.',
           'Экономика шикізат экспортына сүйенгенде, ол әлемдік мұнай бағасына тәуелді. Қорғаныс '
@@ -2381,7 +2381,7 @@ CourseModule _module6() => CourseModule(
       code: '6.1',
       title: 'Древний мозг против рынка: почему миндалина саботирует твои сделки',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Твой мозг создавался миллионы лет для выживания в саванне, а не для торговли '
           'золотом. На любую угрозу деньгам он реагирует так же, как на тигра: выбросом '
           'кортизола, паникой и режимом «бей или беги». Проблема в том, что на рынке эти '
@@ -2391,8 +2391,8 @@ CourseModule _module6() => CourseModule(
           'кортизол шығарып, дүрбелеңмен, «соқ не қаш» режимімен. Мәселе мынада: нарықта осы '
           'ежелгі инстинкттер сені тура банкроттыққа жетелейді.',
         )),
-        _h(_L('Три мозга в одной голове', 'Бір бастағы үш ми', 'Three brains in one head')),
-        _p(_L(
+        _h(_lt('Три мозга в одной голове', 'Бір бастағы үш ми', 'Three brains in one head')),
+        _p(_lt(
           'Рептильный мозг — выживание, инстинкты. Лимбическая система (миндалина/амигдала) — '
           'эмоции, страх. Неокортекс — логика, планирование. В момент стресса миндалина '
           'буквально «перехватывает управление» (amygdala hijack), отключая логику.',
@@ -2400,16 +2400,16 @@ CourseModule _module6() => CourseModule(
           'қорқыныш. Неокортекс — логика, жоспарлау. Стресс сәтінде амигдала логиканы өшіріп, '
           'басқаруды тура «тартып алады» (amygdala hijack).',
         )),
-        _mechanic(_L(
+        _mechanic(_lt(
           'Видишь убыток → миндалина видит «угрозу жизни» → выброс кортизола → логика '
           'отключается → ты закрываешь хорошую сделку из страха или, наоборот, замираешь и '
           'смотришь, как растёт убыток. Это не слабость характера — это древняя биология.',
           'Зиянды көресің → амигдала «өмірге қауіп» көреді → кортизол шығады → логика өшеді → '
           'қорқыныштан жақсы мәмілені жабасың немесе керісінше қатып қалып, зиянның өскенін '
           'қарап отырасың. Бұл мінез әлсіздігі емес — ежелгі биология.'),
-          title: _L('Механика захвата мозга', 'Миды басып алу механикасы'),
+          title: _lt('Механика захвата мозга', 'Миды басып алу механикасы'),
         ),
-        _fact(_L(
+        _fact(_lt(
           'Дофамин — гормон не удовольствия, а ПРЕДВКУШЕНИЯ. Он выбрасывается перед '
           'потенциальной наградой. Поэтому открытие сделки даёт дофаминовый «приход» — мозг '
           'подсаживается на сам процесс торговли, как на азартную игру. Именно так трейдинг '
@@ -2418,29 +2418,29 @@ CourseModule _module6() => CourseModule(
           'мәміле ашу дофаминдік «лап ету» береді — ми сауда процесінің өзіне құмар ойындай '
           'тәуелді болады. Трейдинг дәл осылай жұмысқа емес, тәуелділікке айналады.',
         )),
-        _rule(_L(
+        _rule(_lt(
           'Ты не можешь отключить древний мозг, но можешь его обойти: заранее прописанный план '
           'и автоматические стоп-лоссы принимают решения ЗА тебя, пока миндалина в панике. '
           'Система — это твой неокортекс, записанный на бумаге.',
           'Ежелгі миды өшіре алмайсың, бірақ оны айналып өтуге болады: алдын ала жазылған '
           'жоспар мен автоматты стоп-лосстар амигдала дүрбелеңде тұрғанда шешімді сенің ОРНЫҢА '
           'қабылдайды. Жүйе — қағазға жазылған сенің неокортексің.'),
-          title: _L('Как победить биологию', 'Биологияны қалай жеңу керек'),
+          title: _lt('Как победить биологию', 'Биологияны қалай жеңу керек'),
         ),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Почему логика «отключается» в момент крупного убытка?',
           'Неге ірі зиян сәтінде логика «өшеді»?',
         ),
         options: [
-          _L('Из-за недостатка опыта', 'Тәжірибе жетіспегендіктен'),
-          _L('Миндалина (амигдала) перехватывает управление в режиме «бей или беги»', 'Амигдала «соқ не қаш» режимінде басқаруды тартып алады'),
-          _L('Из-за плохого интернета', 'Нашар интернеттен'),
-          _L('Потому что рынок манипулирует мозгом напрямую', 'Себебі нарық миды тікелей басқарады'),
+          _lt('Из-за недостатка опыта', 'Тәжірибе жетіспегендіктен'),
+          _lt('Миндалина (амигдала) перехватывает управление в режиме «бей или беги»', 'Амигдала «соқ не қаш» режимінде басқаруды тартып алады'),
+          _lt('Из-за плохого интернета', 'Нашар интернеттен'),
+          _lt('Потому что рынок манипулирует мозгом напрямую', 'Себебі нарық миды тікелей басқарады'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Стресс активирует миндалину (amygdala hijack), выбрасывается кортизол, и '
           'рациональный неокортекс временно теряет контроль. Защита — заранее заготовленный '
           'план и автоматические стопы.',
@@ -2455,7 +2455,7 @@ CourseModule _module6() => CourseModule(
       code: '6.2',
       title: 'Страх и жадность: два всадника апокалипсиса депозита',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Весь рынок, по сути, колеблется между двумя эмоциями толпы: страхом и жадностью. '
           'Жадность надувает пузыри на вершинах, страх обваливает рынки на дне. Трейдер, '
           'который понимает свои эмоции, может торговать ПРОТИВ толпы — а это и есть путь к '
@@ -2464,29 +2464,29 @@ CourseModule _module6() => CourseModule(
           'ашкөздік. Ашкөздік шыңдарда көпіршік үрлейді, қорқыныш түбінде нарықты құлатады. Өз '
           'эмоциясын түсінетін трейдер тобырға ҚАРСЫ саудалай алады — бұл пайда жолы.',
         )),
-        _h(_L('Как они убивают депозит', 'Олар депозитті қалай өлтіреді', 'How they kill a deposit')),
-        _p(_L(
+        _h(_lt('Как они убивают депозит', 'Олар депозитті қалай өлтіреді', 'How they kill a deposit')),
+        _p(_lt(
           'Жадность: не фиксируешь прибыль, надеясь на «ещё чуть-чуть», входишь без плана на '
           'FOMO (страх упустить движение), увеличиваешь плечо после серии побед.',
           'Ашкөздік: «тағы сәл» деп үміттеніп пайданы бекітпейсің, FOMO-мен (қозғалысты жіберіп '
           'алу қорқынышы) жоспарсыз кіресің, жеңіс тізбегінен кейін иықты үлкейтесің.',
         )),
-        _p(_L(
+        _p(_lt(
           'Страх: рано закрываешь прибыльную сделку, боишься войти в идеальный сетап, '
           'передвигаешь стоп от страха потери и в итоге теряешь больше.',
           'Қорқыныш: пайдалы мәмілені ерте жабасың, мінсіз сетапқа кіруден қорқасың, жоғалту '
           'қорқынышынан стопты жылжытасың да ақыры көбірек жоғалтасың.',
         )),
-        _rule(_L(
+        _rule(_lt(
           'Знаменитое правило Уоррена Баффета: «Бойся, когда другие жадничают, и будь жадным, '
           'когда другие боятся». Лучшие покупки делаются в момент всеобщей паники, лучшие '
           'продажи — в момент всеобщей эйфории. Иди против эмоций толпы.',
           'Уоррен Баффеттің атақты ережесі: «Басқалар ашкөздік қылғанда қорық, басқалар '
           'қорыққанда ашкөз бол». Ең жақсы сатып алулар жалпы дүрбелең сәтінде, ең жақсы сатулар '
           '— жалпы эйфория сәтінде жасалады. Тобыр эмоциясына қарсы жүр.'),
-          title: _L('Правило Баффета', 'Баффет ережесі'),
+          title: _lt('Правило Баффета', 'Баффет ережесі'),
         ),
-        _fact(_L(
+        _fact(_lt(
           'Существует официальный «Индекс страха и жадности» (CNN Fear & Greed Index), который '
           'измеряет настроение рынка от 0 (крайний страх) до 100 (крайняя жадность). Истори­чески '
           'отметки «крайнего страха» часто совпадали с отличными моментами для покупки, а '
@@ -2496,7 +2496,7 @@ CourseModule _module6() => CourseModule(
           'тұрғыда «шектен тыс қорқыныш» белгілері сатып алудың тамаша сәттерімен, ал «шектен тыс '
           'ашкөздік» — түзетуге дейінгі шыңдармен жиі сәйкес келген.',
         )),
-        _story(_L(
+        _story(_lt(
           'Существует «индикатор чистильщика обуви». Перед крахом 1929 года Джозеф Кеннеди '
           '(отец будущего президента) продал все акции после того, как чистильщик обуви начал '
           'давать ему советы по бирже. Его логика: если даже чистильщики покупают акции — '
@@ -2505,7 +2505,7 @@ CourseModule _module6() => CourseModule(
           'президенттің әкесі) етік тазалаушы оған биржа бойынша кеңес бере бастаған соң барлық '
           'акцияны сатты. Логикасы: етік тазалаушылар да акция сатып алса — сатып алатын ешкім '
           'қалмады, нарық шыңда. «Бәрі» ашкөздік қылғанда — қорқатын кез.'),
-          title: _L('Индикатор чистильщика обуви', 'Етік тазалаушы индикаторы'),
+          title: _lt('Индикатор чистильщика обуви', 'Етік тазалаушы индикаторы'),
         ),
         _interactive('fear_greed', title: 'Индекс страха и жадности'),
       ],
@@ -2528,7 +2528,7 @@ CourseModule _module6() => CourseModule(
       code: '6.3',
       title: 'Тильт: как одна сделка превращается в слив депозита',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           '«Тильт» — термин из покера: состояние, когда после убытка эмоции берут верх и ты '
           'начинаешь играть безрассудно, пытаясь «отыграться». В трейдинге тильт уничтожает '
           'больше депозитов, чем любые ошибки в анализе. Один проигрыш → месть рынку → каскад '
@@ -2537,16 +2537,16 @@ CourseModule _module6() => CourseModule(
           'абайсыз ойнай бастайтын күй. Трейдингте тильт талдау қателіктерінен де көп депозитті '
           'жояды. Бір жеңіліс → нарыққа кек → импульсивті мәмілелер каскады → нөл.',
         )),
-        _h(_L('Анатомия тильта', 'Тильт анатомиясы')),
-        _p(_L('1. Убыточная сделка (особенно несправедливая — выбило стопом и развернулось).',
+        _h(_lt('Анатомия тильта', 'Тильт анатомиясы')),
+        _p(_lt('1. Убыточная сделка (особенно несправедливая — выбило стопом и развернулось).',
           '1. Зиянды мәміле (әсіресе әділетсіз — стоппен ұшырып, бұрылып кетті).')),
-        _p(_L('2. Злость и желание немедленно вернуть деньги («месть рынку», revenge trading).',
+        _p(_lt('2. Злость и желание немедленно вернуть деньги («месть рынку», revenge trading).',
           '2. Ашу мен ақшаны бірден қайтару ниеті («нарыққа кек», revenge trading).')),
-        _p(_L('3. Вход без сетапа, с увеличенным объёмом, чтобы «отыграться быстрее».',
+        _p(_lt('3. Вход без сетапа, с увеличенным объёмом, чтобы «отыграться быстрее».',
           '3. «Тезірек қайтарып алу» үшін сетапсыз, ұлғайтылған көлеммен кіру.')),
-        _p(_L('4. Новый убыток → ещё больше злости → ещё больше объём. Спираль смерти.',
+        _p(_lt('4. Новый убыток → ещё больше злости → ещё больше объём. Спираль смерти.',
           '4. Жаңа зиян → одан да көп ашу → одан да көп көлем. Өлім спиралі.')),
-        _warn(_L(
+        _warn(_lt(
           'Revenge trading (торговля из мести) — самый дорогой эмоциональный сбой. Рынку всё '
           'равно, сколько ты потерял; он не «должен» тебе отдать. Попытка силой вернуть деньги '
           'превращает контролируемый убыток в катастрофу.',
@@ -2554,7 +2554,7 @@ CourseModule _module6() => CourseModule(
           'бәрібір; ол саған «қайтаруға міндетті» емес. Ақшаны күшпен қайтару әрекеті '
           'бақыланатын зиянды апатқа айналдырады.',
         )),
-        _rule(_L(
+        _rule(_lt(
           'Правило «стоп-дня»: установи дневной лимит убытка (например, −3% от депозита). '
           'Достиг его — выключаешь терминал до завтра, без исключений. Также правило «двух '
           'убытков подряд»: после двух минусов делаешь паузу 30+ минут. Это разрывает спираль '
@@ -2562,9 +2562,9 @@ CourseModule _module6() => CourseModule(
           '«Стоп-күн» ережесі: күндік зиян лимитін қой (мысалы, депозиттің −3%-ы). Жеттің бе — '
           'терминалды ертеңге дейін өшір, ерекшеліксіз. Сондай-ақ «қатарынан екі зиян» ережесі: '
           'екі минустан кейін 30+ минут үзіліс жаса. Бұл тильт спиралін механикалық үзеді.'),
-          title: _L('Как разорвать спираль', 'Спиральді қалай үзу керек'),
+          title: _lt('Как разорвать спираль', 'Спиральді қалай үзу керек'),
         ),
-        _fact(_L(
+        _fact(_lt(
           'Профессиональные трейдеры в проп-фирмах работают под жёсткими правилами: дневной '
           'лимит убытка автоматически закрывает их доступ к терминалу. Это не недоверие — это '
           'признание того, что даже у профи бывает тильт, и от него нужна защита на уровне '
@@ -2575,18 +2575,18 @@ CourseModule _module6() => CourseModule(
         )),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Что такое «revenge trading» (торговля из мести)?',
           '«Revenge trading» (кек саудасы) дегеніміз не?',
         ),
         options: [
-          _L('Стратегия торговли против тренда', 'Трендке қарсы сауда стратегиясы'),
-          _L('Импульсивные сделки после убытка с целью быстро отыграться', 'Тез қайтарып алу мақсатында зияннан кейінгі импульсивті мәмілелер'),
-          _L('Торговля по новостям', 'Жаңалықтар бойынша сауда'),
-          _L('Закрытие всех позиций перед выходными', 'Демалыс алдында барлық позицияны жабу'),
+          _lt('Стратегия торговли против тренда', 'Трендке қарсы сауда стратегиясы'),
+          _lt('Импульсивные сделки после убытка с целью быстро отыграться', 'Тез қайтарып алу мақсатында зияннан кейінгі импульсивті мәмілелер'),
+          _lt('Торговля по новостям', 'Жаңалықтар бойынша сауда'),
+          _lt('Закрытие всех позиций перед выходными', 'Демалыс алдында барлық позицияны жабу'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Revenge trading — попытка эмоционально «вернуть» потерянное, входя без сетапа и с '
           'повышенным объёмом. Это спираль тильта. Защита — стоп-день и паузы после убытков.',
           'Revenge trading — жоғалтқанды эмоциямен «қайтару» әрекеті, сетапсыз әрі ұлғайтылған '
@@ -2599,7 +2599,7 @@ CourseModule _module6() => CourseModule(
       code: '6.4',
       title: 'Когнитивные искажения трейдера: баги в прошивке мозга',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Наш мозг использует «быстрые шаблоны» (эвристики) для экономии энергии. В обычной '
           'жизни они полезны, но на рынке превращаются в систематические ошибки — когнитивные '
           'искажения. Зная их в лицо, ты перестаёшь быть их жертвой.',
@@ -2607,14 +2607,14 @@ CourseModule _module6() => CourseModule(
           'Күнделікті өмірде олар пайдалы, бірақ нарықта жүйелі қателіктерге — танымдық '
           'бұрмалауларға айналады. Оларды бетпе-бет танысаң, олардың құрбаны болуды қоясың.',
         )),
-        CardsBlock(_L('5 ловушек мышления', 'Ойлаудың 5 тұзағы'), [
-          CardItem('🔍', _L('Confirmation bias', 'Confirmation bias'), _L('Ищешь инфо, что подтверждает сделку, игнорируя противоречащую.', 'Мәмілені растайтын ақпаратты іздеп, қайшысын елемейсің.')),
-          CardItem('💔', _L('Loss aversion', 'Loss aversion'), _L('Боль потери в 2 раза сильнее радости. Держишь убытки, рано режешь прибыль.', 'Жоғалту ауыруы қуаныштан 2 есе күшті. Зиянды ұстап, пайданы ерте кесесің.')),
-          CardItem('⚓', _L('Anchoring', 'Anchoring'), _L('Цепляешься за цену входа как «справедливую». Рынку на неё плевать.', 'Кіру бағасына «әділ» деп жабысасың. Нарыққа ол бәрібір.')),
-          CardItem('🕳️', _L('Sunk cost', 'Sunk cost'), _L('«Я уже столько потерял, нельзя выходить» — и теряешь ещё больше.', '«Сонша жоғалттым, шығуға болмайды» — да көбірек жоғалтасың.')),
-          CardItem('🆕', _L('Recency bias', 'Recency bias'), _L('Три победы подряд → «я гений» → завышаешь риск.', 'Қатарынан үш жеңіс → «мен данышпан» → тәуекелді асырасың.')),
+        CardsBlock(_lt('5 ловушек мышления', 'Ойлаудың 5 тұзағы'), [
+          CardItem('🔍', _lt('Confirmation bias', 'Confirmation bias'), _lt('Ищешь инфо, что подтверждает сделку, игнорируя противоречащую.', 'Мәмілені растайтын ақпаратты іздеп, қайшысын елемейсің.')),
+          CardItem('💔', _lt('Loss aversion', 'Loss aversion'), _lt('Боль потери в 2 раза сильнее радости. Держишь убытки, рано режешь прибыль.', 'Жоғалту ауыруы қуаныштан 2 есе күшті. Зиянды ұстап, пайданы ерте кесесің.')),
+          CardItem('⚓', _lt('Anchoring', 'Anchoring'), _lt('Цепляешься за цену входа как «справедливую». Рынку на неё плевать.', 'Кіру бағасына «әділ» деп жабысасың. Нарыққа ол бәрібір.')),
+          CardItem('🕳️', _lt('Sunk cost', 'Sunk cost'), _lt('«Я уже столько потерял, нельзя выходить» — и теряешь ещё больше.', '«Сонша жоғалттым, шығуға болмайды» — да көбірек жоғалтасың.')),
+          CardItem('🆕', _lt('Recency bias', 'Recency bias'), _lt('Три победы подряд → «я гений» → завышаешь риск.', 'Қатарынан үш жеңіс → «мен данышпан» → тәуекелді асырасың.')),
         ]),
-        _fact(_L(
+        _fact(_lt(
           'Эффект Даннинга-Крюгера: новички с минимальным опытом часто переоценивают свои '
           'навыки сильнее всего — «пик глупости». Именно поэтому многие сливают депозит на '
           'волне первой удачной серии, искренне веря, что разгадали рынок. Истинная экспертиза '
@@ -2624,29 +2624,29 @@ CourseModule _module6() => CourseModule(
           'толқынында, нарықты түсіндім деп шынайы сеніп, депозитті құртады. Шынайы біліктілік '
           'сау күмәнмен бірге келеді.',
         )),
-        _rule(_L(
+        _rule(_lt(
           'Лучшее лекарство от искажений — торговый журнал. Когда ты записываешь причину '
           'входа ДО сделки и сверяешь с результатом, мозгу становится негде спрятать свои '
           'самообманы. Журнал — это зеркало, которое не льстит.',
           'Бұрмалаулардан ең жақсы дәрі — сауда журналы. Кіру себебін мәміле АЛДЫНДА жазып, '
           'нәтижемен салыстырғанда, миға өз өзін алдауын жасыратын жер қалмайды. Журнал — '
           'жағымпазданбайтын айна.'),
-          title: _L('Противоядие', 'Қарсы дәрі'),
+          title: _lt('Противоядие', 'Қарсы дәрі'),
         ),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Трейдер держит убыточную сделку, думая «я уже столько потерял, нельзя выходить». Какое это искажение?',
           'Трейдер «сонша жоғалттым, шығуға болмайды» деп зиянды мәмілені ұстайды. Бұл қандай бұрмалау?',
         ),
         options: [
-          _L('Confirmation bias (подтверждение)', 'Confirmation bias (растау)'),
-          _L('Sunk cost (невозвратные затраты)', 'Sunk cost (қайтарымсыз шығын)'),
-          _L('Recency bias (свежесть)', 'Recency bias (жаңалық)'),
-          _L('Anchoring (якорение)', 'Anchoring (зәкірлеу)'),
+          _lt('Confirmation bias (подтверждение)', 'Confirmation bias (растау)'),
+          _lt('Sunk cost (невозвратные затраты)', 'Sunk cost (қайтарымсыз шығын)'),
+          _lt('Recency bias (свежесть)', 'Recency bias (жаңалық)'),
+          _lt('Anchoring (якорение)', 'Anchoring (зәкірлеу)'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Это ошибка невозвратных затрат: прошлые потери не должны влиять на текущее решение. '
           'Рационально оценивать сделку «с нуля», а не цепляться за уже потерянное.',
           'Бұл қайтарымсыз шығын қателігі: өткен жоғалтулар ағымдағы шешімге әсер етпеуі керек. '
@@ -2659,7 +2659,7 @@ CourseModule _module6() => CourseModule(
       code: '6.5',
       title: 'Дисциплина как мышца: ритуалы профессионалов',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Дисциплина — это не врождённый дар «железных людей», а навык, который тренируется '
           'как мышца. Профессиональные трейдеры не полагаются на силу воли (она кончается к '
           'вечеру) — они строят систему ритуалов и среды, которая делает правильное поведение '
@@ -2668,20 +2668,20 @@ CourseModule _module6() => CourseModule(
           'Кәсіби трейдерлер ерік-жігерге сүйенбейді (ол кешке таусылады) — олар дұрыс мінез-'
           'құлықты автоматты ететін рәсімдер мен орта жүйесін құрады.',
         )),
-        _h(_L('Ритуалы профи', 'Кәсіпқой рәсімдері')),
-        _p(_L('• Пре-маркет рутина: анализ перед сессией, отметка ключевых уровней и новостей. '
+        _h(_lt('Ритуалы профи', 'Кәсіпқой рәсімдері')),
+        _p(_lt('• Пре-маркет рутина: анализ перед сессией, отметка ключевых уровней и новостей. '
             'Решения принимаются на холодную голову, ДО открытия позиций.',
           '• Пре-маркет рутина: сессия алдында талдау, негізгі деңгейлер мен жаңалықтарды '
           'белгілеу. Шешімдер салқынқандылықпен, позиция АШҚАНҒА дейін қабылданады.')),
-        _p(_L('• Чек-лист входа: сделка только при галочке по всем пунктам. Нет галочки — нет '
+        _p(_lt('• Чек-лист входа: сделка только при галочке по всем пунктам. Нет галочки — нет '
             'сделки, без «ну почти».',
           '• Кіру чек-листі: мәміле тек барлық тармаққа белгі қойылғанда. Белгі жоқ — мәміле '
           'жоқ, «жуықтап» деген жоқ.')),
-        _p(_L('• Пост-маркет разбор: запись сделок в журнал, анализ ошибок, без эмоций.',
+        _p(_lt('• Пост-маркет разбор: запись сделок в журнал, анализ ошибок, без эмоций.',
           '• Пост-маркет талдау: мәмілелерді журналға жазу, қателерді талдау, эмоциясыз.')),
-        _p(_L('• Физика: сон, спорт, отсутствие торговли в усталости или на эмоциях.',
+        _p(_lt('• Физика: сон, спорт, отсутствие торговли в усталости или на эмоциях.',
           '• Физика: ұйқы, спорт, шаршағанда немесе эмоцияда саудаламау.')),
-        _fact(_L(
+        _fact(_lt(
           'Исследования показывают, что сила воли — исчерпаемый ресурс («истощение эго»). '
           'Судьи по УДО выносили заметно более суровые решения перед обедом, когда были '
           'голодны и уставшими. Вывод для трейдера: не полагайся на «соберись» — полагайся на '
@@ -2691,7 +2691,7 @@ CourseModule _module6() => CourseModule(
           'шешім шығарған. Трейдерге қорытынды: «жина өзіңді» дегенге емес, ерік-жігер жоқта да '
           'жұмыс істейтін ережелер мен режимге сүйен.',
         )),
-        _rule(_L(
+        _rule(_lt(
           'Золотое правило дисциплины: сделай правильное поведение лёгким, а неправильное — '
           'трудным. Автостопы (правильное легко), удаление торгового приложения с телефона на '
           'ночь (импульс труден), фиксированный риск в настройках. Дизайн среды побеждает '
@@ -2699,9 +2699,9 @@ CourseModule _module6() => CourseModule(
           'Тәртіптің алтын ережесі: дұрыс мінез-құлықты жеңіл, дұрыс еместі қиын ет. Автостоптар '
           '(дұрысы жеңіл), түнге телефоннан сауда қосымшасын өшіру (импульс қиын), баптауда '
           'бекітілген тәуекел. Орта дизайны ерік-жігерді жеңеді.'),
-          title: _L('Дизайн вместо силы воли', 'Ерік-жігердің орнына дизайн'),
+          title: _lt('Дизайн вместо силы воли', 'Ерік-жігердің орнына дизайн'),
         ),
-        _story(_L(
+        _story(_lt(
           'Легендарный трейдер Пол Тюдор Джонс держал на стене фразу «Losers average losers» '
           '(неудачники усредняют убытки) — как постоянное напоминание не добавлять к минусовым '
           'позициям. Простой визуальный ритуал, защищающий от главной ошибки даже в моменты '
@@ -2710,22 +2710,22 @@ CourseModule _module6() => CourseModule(
           '(жеңілгендер зиянды орташалайды) фразасын ұстады — минустық позицияларға қоспауға '
           'тұрақты еске салғыш ретінде. Әлсіздік сәтінде де басты қателіктен қорғайтын қарапайым '
           'визуалды рәсім.'),
-          title: _L('Напоминание на стене', 'Қабырғадағы еске салғыш'),
+          title: _lt('Напоминание на стене', 'Қабырғадағы еске салғыш'),
         ),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Почему профи строят систему ритуалов, а не полагаются на силу воли?',
           'Неге кәсіпқойлар ерік-жігерге сүйенбей, рәсімдер жүйесін құрады?',
         ),
         options: [
-          _L('Ритуалы выглядят профессионально', 'Рәсімдер кәсіби көрінеді'),
-          _L('Сила воли — исчерпаемый ресурс; система делает правильное поведение автоматическим', 'Ерік-жігер — таусылатын ресурс; жүйе дұрыс мінез-құлықты автоматты етеді'),
-          _L('Так требуют брокеры', 'Брокерлер солай талап етеді'),
-          _L('Чтобы торговать чаще', 'Жиірек саудалау үшін'),
+          _lt('Ритуалы выглядят профессионально', 'Рәсімдер кәсіби көрінеді'),
+          _lt('Сила воли — исчерпаемый ресурс; система делает правильное поведение автоматическим', 'Ерік-жігер — таусылатын ресурс; жүйе дұрыс мінез-құлықты автоматты етеді'),
+          _lt('Так требуют брокеры', 'Брокерлер солай талап етеді'),
+          _lt('Чтобы торговать чаще', 'Жиірек саудалау үшін'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Сила воли истощается за день. Ритуалы, чек-листы и дизайн среды делают дисциплину '
           'автоматической, не завися от сиюминутной мотивации.',
           'Ерік-жігер күн ішінде сарқылады. Рәсімдер, чек-листтер және орта дизайны тәртіпті '
@@ -2752,7 +2752,7 @@ CourseModule _module7() => CourseModule(
       code: '7.1',
       title: 'Структура рынка: язык, на котором говорит цена',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Прежде чем рисовать индикаторы, нужно понять структуру рынка — самый базовый и '
           'честный язык цены. Рынок всегда находится в одном из трёх состояний: восходящий '
           'тренд, нисходящий тренд или флэт (диапазон). Всё остальное — детали.',
@@ -2760,29 +2760,29 @@ CourseModule _module7() => CourseModule(
           'керек. Нарық әрдайым үш күйдің бірінде: өрлеу тренді, құлдырау тренді немесе флэт '
           '(диапазон). Қалғаны — бөлшектер.',
         )),
-        _h(_L('Алфавит структуры', 'Құрылым әліпбиі')),
-        _p(_L(
+        _h(_lt('Алфавит структуры', 'Құрылым әліпбиі')),
+        _p(_lt(
           'Восходящий тренд = последовательность повышающихся максимумов (HH) и повышающихся '
           'минимумов (HL). Нисходящий = понижающиеся максимумы (LH) и минимумы (LL).',
           'Өрлеу тренді = өсіп жатқан максимумдар (HH) мен өсіп жатқан минимумдар (HL) тізбегі. '
           'Құлдырау = төмендейтін максимумдар (LH) мен минимумдар (LL).',
         )),
-        _p(_L(
+        _p(_lt(
           'BOS (Break of Structure) — пробой структуры в сторону тренда: тренд продолжается. '
           'CHoCH (Change of Character) — слом характера: первый признак, что тренд может '
           'развернуться.',
           'BOS (Break of Structure) — құрылымды тренд бағытында бұзу: тренд жалғасады. '
           'CHoCH (Change of Character) — мінез сынуы: тренд бұрылуы мүмкіндігінің алғашқы белгісі.',
         )),
-        _rule(_L(
+        _rule(_lt(
           'Торгуй ПО структуре, а не против неё. В восходящем тренде ищи покупки на откатах к '
           'повышающимся минимумам. Не пытайся ловить вершину — «тренд твой друг, пока он не '
           'сломался» (пока нет CHoCH).',
           'Құрылым БОЙЫНША саудала, оған қарсы емес. Өрлеу трендінде өсіп жатқан минимумдарға '
           'откаттарда сатып алу ізде. Шыңды ұстамақ болма — «тренд сынғанша досың» (CHoCH болмаса).'),
-          title: _L('Главное правило структуры', 'Құрылымның басты ережесі'),
+          title: _lt('Главное правило структуры', 'Құрылымның басты ережесі'),
         ),
-        _fact(_L(
+        _fact(_lt(
           'Концепция структуры рынка старше всех индикаторов. Ещё в начале XX века Чарльз Доу '
           '(основатель Wall Street Journal и индекса Dow Jones) сформулировал «теорию Доу», в '
           'основе которой — те же повышающиеся/понижающиеся максимумы и минимумы. Современный '
@@ -2795,18 +2795,18 @@ CourseModule _module7() => CourseModule(
         _interactive('liquidity_grab', title: 'Охота за ликвидностью'),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Что сигнализирует CHoCH (Change of Character)?',
           'CHoCH (Change of Character) нені білдіреді?',
         ),
         options: [
-          _L('Продолжение текущего тренда', 'Ағымдағы трендтің жалғасуын'),
-          _L('Первый признак возможного разворота тренда', 'Тренд бұрылуы мүмкіндігінің алғашқы белгісі'),
-          _L('Выход важной новости', 'Маңызды жаңалықтың шығуы'),
-          _L('Расширение спреда', 'Спредтің кеңеюі'),
+          _lt('Продолжение текущего тренда', 'Ағымдағы трендтің жалғасуын'),
+          _lt('Первый признак возможного разворота тренда', 'Тренд бұрылуы мүмкіндігінің алғашқы белгісі'),
+          _lt('Выход важной новости', 'Маңызды жаңалықтың шығуы'),
+          _lt('Расширение спреда', 'Спредтің кеңеюі'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'CHoCH — слом характера движения, первый намёк на смену тренда. BOS, наоборот, '
           'подтверждает продолжение тренда.',
           'CHoCH — қозғалыс мінезінің сынуы, тренд ауысуының алғашқы белгісі. BOS, керісінше, '
@@ -2819,7 +2819,7 @@ CourseModule _module7() => CourseModule(
       code: '7.2',
       title: 'Ликвидность: где лежат стопы и почему цена идёт за ними',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Крупному игроку (банку, фонду) нужно исполнить ОГРОМНЫЙ ордер. Но если он просто '
           'купит по рынку, цена улетит вверх раньше, чем он наберёт позицию. Ему нужна '
           'встречная ликвидность — чужие ордера. И он точно знает, где их искать: там, где '
@@ -2829,8 +2829,8 @@ CourseModule _module7() => CourseModule(
           '— бөгде ордерлер керек. Әрі оны қайдан іздеуді ол дәл біледі: тобыр стоп-лосс қойған '
           'жерден.',
         )),
-        _h(_L('Где лежит ликвидность', 'Өтімділік қайда жатыр')),
-        _p(_L(
+        _h(_lt('Где лежит ликвидность', 'Өтімділік қайда жатыр')),
+        _p(_lt(
           'Под очевидными минимумами и над очевидными максимумами. За круглыми уровнями '
           '(\$2000, \$2050). За «двойными вершинами/днами», которые видят все. Чем очевиднее '
           'уровень для толпы — тем больше там стопов, тем вкуснее он для крупного игрока.',
@@ -2838,25 +2838,25 @@ CourseModule _module7() => CourseModule(
           'артында (\$2000, \$2050). Бәрі көретін «қос шыңдар/түптердің» артында. Деңгей тобырға '
           'неғұрлым айқын — сонша көп стоп, ірі ойыншыға сонша дәмді.',
         )),
-        _mechanic(_L(
+        _mechanic(_lt(
           'Liquidity grab (снятие ликвидности): цена резко прокалывает уровень, выбивает стопы '
           'толпы (это даёт крупному игроку нужные встречные ордера), а затем разворачивается. '
           'Новичков выбило «по стопу у самого дна», а умные деньги набрали позицию.',
           'Liquidity grab (өтімділікті алу): баға деңгейді күрт тесіп, тобырдың стоптарын ұшырады '
           '(бұл ірі ойыншыға керек қарсы ордерлер береді), сосын бұрылады. Жаңадан бастаушыларды '
           '«дәл түпте стоппен» ұшырды, ал ақылды ақша позиция жинады.'),
-          title: _L('Stop hunt в действии', 'Stop hunt іс жүзінде'),
+          title: _lt('Stop hunt в действии', 'Stop hunt іс жүзінде'),
         ),
-        _rule(_L(
+        _rule(_lt(
           'Переверни мышление: стоп-лосс под очевидным минимумом — это не «защита», а мишень. '
           'Профи ставят стопы чуть ДАЛЬШE толпы или входят ПОСЛЕ снятия ликвидности, когда '
           'цена уже выбила слабые руки и развернулась.',
           'Ойлауды аудар: айқын минимум астындағы стоп-лосс — «қорғаныс» емес, нысана. '
           'Кәсіпқойлар стопты тобырдан сәл АЛЫСЫРАҚ қояды немесе өтімділік алынғаннан КЕЙІН, баға '
           'әлсіз қолдарды ұшырып, бұрылғанда кіреді.'),
-          title: _L('Не будь ликвидностью', 'Өтімділік болма'),
+          title: _lt('Не будь ликвидностью', 'Өтімділік болма'),
         ),
-        _fact(_L(
+        _fact(_lt(
           'Термин «stop hunt» долго считали теорией заговора, пока регуляторы не оштрафовали '
           'крупнейшие банки на миллиарды долларов за манипуляции на рынке золота и форекса '
           '(дело о манипуляциях с лондонским фиксингом золота). Оказалось, охота за стопами — '
@@ -2869,18 +2869,18 @@ CourseModule _module7() => CourseModule(
         _interactive('liquidity_grab', title: 'Охота за ликвидностью (Stop Hunt)'),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Зачем крупный игрок «снимает ликвидность» под минимумом перед разворотом вверх?',
           'Ірі ойыншы жоғары бұрылу алдында минимум астында «өтімділікті» не үшін алады?',
         ),
         options: [
-          _L('Чтобы напугать новичков ради забавы', 'Жаңадан бастаушыларды қызық үшін қорқыту үшін'),
-          _L('Чтобы получить встречные ордера (стопы толпы) для набора крупной позиции', 'Ірі позиция жинауға қарсы ордерлер (тобыр стоптары) алу үшін'),
-          _L('Это случайное движение без причины', 'Бұл себепсіз кездейсоқ қозғалыс'),
-          _L('Чтобы расширить спред', 'Спредті кеңейту үшін'),
+          _lt('Чтобы напугать новичков ради забавы', 'Жаңадан бастаушыларды қызық үшін қорқыту үшін'),
+          _lt('Чтобы получить встречные ордера (стопы толпы) для набора крупной позиции', 'Ірі позиция жинауға қарсы ордерлер (тобыр стоптары) алу үшін'),
+          _lt('Это случайное движение без причины', 'Бұл себепсіз кездейсоқ қозғалыс'),
+          _lt('Чтобы расширить спред', 'Спредті кеңейту үшін'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Крупному ордеру нужна встречная ликвидность. Выбивая стопы толпы под минимумом, '
           'игрок получает достаточно встречных ордеров, чтобы набрать позицию, после чего '
           'цена разворачивается.',
@@ -2894,7 +2894,7 @@ CourseModule _module7() => CourseModule(
       code: '7.3',
       title: 'Order Blocks и Fair Value Gaps: отпечатки крупного капитала',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Когда крупный игрок входит в рынок, он оставляет следы — зоны, откуда начался '
           'мощный импульс. Эти зоны (ордер-блоки) и разрывы в цене (имбалансы) часто '
           'выступают магнитами и уровнями, к которым цена возвращается.',
@@ -2902,8 +2902,8 @@ CourseModule _module7() => CourseModule(
           'аймақтар (ордер-блоктар) мен бағадағы үзілістер (имбаланстар) баға қайта оралатын '
           'магнит әрі деңгей ретінде жиі әрекет етеді.',
         )),
-        _h(_L('Два ключевых понятия', 'Екі негізгі ұғым')),
-        _p(_L(
+        _h(_lt('Два ключевых понятия', 'Екі негізгі ұғым')),
+        _p(_lt(
           'Order Block (ордер-блок) — последняя свеча перед сильным импульсным движением. '
           'Считается, что именно здесь крупный игрок набрал позицию. Когда цена возвращается '
           'в эту зону — часто следует реакция (отскок).',
@@ -2911,7 +2911,7 @@ CourseModule _module7() => CourseModule(
           'ірі ойыншы позиция жинады деп саналады. Баға осы аймаққа қайта оралғанда — жиі реакция '
           '(секіру) болады.',
         )),
-        _p(_L(
+        _p(_lt(
           'Fair Value Gap / Imbalance (FVG) — разрыв, образованный тремя свечами, когда цена '
           'двигалась так быстро, что оставила «пустоту» без полноценной торговли. Рынок '
           'часто возвращается, чтобы «закрыть» этот разрыв.',
@@ -2919,16 +2919,16 @@ CourseModule _module7() => CourseModule(
           '«бостық» қалдырғанда үш шамнан құралатын үзіліс. Нарық бұл үзілісті «жабу» үшін жиі '
           'қайта оралады.',
         )),
-        _rule(_L(
+        _rule(_lt(
           'Имбаланс — это «незавершённое дело» рынка. Резкое движение без отката оставляет FVG, '
           'и цена с высокой вероятностью вернётся заполнить его, прежде чем продолжить путь. '
           'Это даёт точки входа с хорошим RR.',
           'Имбаланс — нарықтың «аяқталмаған ісі». Откатсыз күрт қозғалыс FVG қалдырады, әрі баға '
           'жолын жалғастырмас бұрын оны толтыруға жоғары ықтималдықпен қайта оралады. Бұл жақсы '
           'RR бар кіру нүктелерін береді.'),
-          title: _L('Рынок не любит пустоту', 'Нарық бостықты ұнатпайды'),
+          title: _lt('Рынок не любит пустоту', 'Нарық бостықты ұнатпайды'),
         ),
-        _warn(_L(
+        _warn(_lt(
           'Не превращай график в кашу из десятков ордер-блоков и FVG. Эти концепции работают '
           'в КОНТЕКСТЕ структуры и ликвидности, а не сами по себе. Один валидный ордер-блок на '
           'старшем таймфрейме ценнее двадцати на минутках.',
@@ -2936,7 +2936,7 @@ CourseModule _module7() => CourseModule(
           'емес, құрылым мен өтімділік КОНТЕКСТІНДЕ жұмыс істейді. Үлкен таймфреймдегі бір '
           'валидті ордер-блок минуттықтағы жиырмадан құнды.',
         )),
-        _fact(_L(
+        _fact(_lt(
           'Большая часть терминологии Smart Money (SMC/ICT) — это переосмысление того, что '
           'институциональные трейдеры делали десятилетиями под другими названиями: ордер-блок '
           'это, по сути, зона спроса/предложения, а имбаланс — разновидность гэпа. Суть важнее '
@@ -2947,18 +2947,18 @@ CourseModule _module7() => CourseModule(
         )),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Что такое Fair Value Gap (имбаланс)?',
           'Fair Value Gap (имбаланс) дегеніміз не?',
         ),
         options: [
-          _L('Комиссия брокера', 'Брокер комиссиясы'),
-          _L('Ценовой разрыв от быстрого движения, который рынок часто возвращается «закрыть»', 'Жылдам қозғалыстан болған баға үзілісі, оны нарық жиі «жабуға» оралады'),
-          _L('Уровень поддержки на дневном графике', 'Күндік графиктегі қолдау деңгейі'),
-          _L('Индикатор объёма', 'Көлем индикаторы'),
+          _lt('Комиссия брокера', 'Брокер комиссиясы'),
+          _lt('Ценовой разрыв от быстрого движения, который рынок часто возвращается «закрыть»', 'Жылдам қозғалыстан болған баға үзілісі, оны нарық жиі «жабуға» оралады'),
+          _lt('Уровень поддержки на дневном графике', 'Күндік графиктегі қолдау деңгейі'),
+          _lt('Индикатор объёма', 'Көлем индикаторы'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'FVG — «пустота», оставленная резким движением цены. Рынок не любит дисбаланс и '
           'часто возвращается заполнить разрыв, что даёт точки входа.',
           'FVG — баға күрт қозғалысынан қалған «бостық». Нарық дисбалансты ұнатпайды әрі үзілісті '
@@ -2971,7 +2971,7 @@ CourseModule _module7() => CourseModule(
       code: '7.4',
       title: 'Торговые сессии и киллзоны: время — это всё',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Рынок золота торгуется почти круглосуточно, но не все часы равны. Объёмы, '
           'волатильность и «честность» движения сильно зависят от того, какая сессия активна. '
           'Торговать в мёртвый час — всё равно что ловить рыбу в пустом пруду.',
@@ -2979,27 +2979,27 @@ CourseModule _module7() => CourseModule(
           'құбылмалылық және қозғалыстың «адалдығы» қай сессия белсенді екеніне қатты тәуелді. '
           'Өлі сағатта саудалау — бос тоғаннан балық аулағанмен бірдей.',
         )),
-        _h(_L('Три сессии', 'Үш сессия')),
-        _p(_L('Азиатская (Токио): обычно спокойная, узкие диапазоны, накопление ликвидности.',
+        _h(_lt('Три сессии', 'Үш сессия')),
+        _p(_lt('Азиатская (Токио): обычно спокойная, узкие диапазоны, накопление ликвидности.',
           'Азиялық (Токио): әдетте тыныш, тар диапазондар, өтімділік жинақтау.')),
-        _p(_L('Лондонская: открытие в ~13:00 по Астане — взрыв волатильности, часто задаёт '
+        _p(_lt('Лондонская: открытие в ~13:00 по Астане — взрыв волатильности, часто задаёт '
             'направление дня.',
           'Лондондық: Астана уақытымен ~13:00-де ашылу — құбылмалылық жарылысы, күн бағытын жиі '
           'белгілейді.')),
-        _p(_L('Нью-Йоркская: ~18:30 по Астане, перекрытие с Лондоном (London/NY overlap) — '
+        _p(_lt('Нью-Йоркская: ~18:30 по Астане, перекрытие с Лондоном (London/NY overlap) — '
             'пик ликвидности и самые сильные движения, особенно на новостях США.',
           'Нью-Йорктік: Астана уақытымен ~18:30, Лондонмен қабаттасу (London/NY overlap) — '
           'өтімділік шыңы әрі ең күшті қозғалыстар, әсіресе АҚШ жаңалықтарында.')),
-        _rule(_L(
+        _rule(_lt(
           '«Киллзоны» (ICT killzones) — это окна повышенной активности (открытие Лондона, '
           'открытие Нью-Йорка), когда крупный капитал наиболее активен. Большинство чистых '
           'движений и снятий ликвидности происходят именно в эти окна.',
           '«Киллзоналар» (ICT killzones) — ірі капитал ең белсенді жоғары белсенділік терезелері '
           '(Лондон ашылуы, Нью-Йорк ашылуы). Таза қозғалыстар мен өтімділік алулардың көбі дәл '
           'осы терезелерде болады.'),
-          title: _L('Киллзоны', 'Киллзоналар'),
+          title: _lt('Киллзоны', 'Киллзоналар'),
         ),
-        _fact(_L(
+        _fact(_lt(
           'Существует статистически заметный «эффект перекрытия»: когда Лондон и Нью-Йорк '
           'работают одновременно (примерно 18:30–21:00 по Астане), на рынок приходится '
           'наибольший объём торгов за сутки. Для золота это самое «рабочее» время дня.',
@@ -3007,7 +3007,7 @@ CourseModule _module7() => CourseModule(
           'жұмыс істегенде (Астанамен шамамен 18:30–21:00), нарыққа тәулік ішіндегі ең көп сауда '
           'көлемі келеді. Алтын үшін бұл — күннің ең «жұмыс» уақыты.',
         )),
-        _warn(_L(
+        _warn(_lt(
           'Азиатская сессия и поздняя ночь — время узких диапазонов и ложных движений. '
           'Новичок, торгующий в 3 часа ночи на скуке, чаще всего просто кормит спред брокеру. '
           'Качество входов важнее количества часов у экрана.',
@@ -3017,18 +3017,18 @@ CourseModule _module7() => CourseModule(
         )),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Когда обычно происходят самые сильные движения по золоту?',
           'Алтын бойынша ең күшті қозғалыстар әдетте қашан болады?',
         ),
         options: [
-          _L('В азиатскую сессию ночью', 'Түнде азиялық сессияда'),
-          _L('В перекрытие Лондона и Нью-Йорка (пик ликвидности)', 'Лондон мен Нью-Йорк қабаттасуында (өтімділік шыңы)'),
-          _L('В выходные дни', 'Демалыс күндері'),
-          _L('Время суток не имеет значения', 'Тәулік уақыты маңызды емес'),
+          _lt('В азиатскую сессию ночью', 'Түнде азиялық сессияда'),
+          _lt('В перекрытие Лондона и Нью-Йорка (пик ликвидности)', 'Лондон мен Нью-Йорк қабаттасуында (өтімділік шыңы)'),
+          _lt('В выходные дни', 'Демалыс күндері'),
+          _lt('Время суток не имеет значения', 'Тәулік уақыты маңызды емес'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Перекрытие London/NY — пик объёма и волатильности. Крупный капитал наиболее '
           'активен в эти «киллзоны», там и рождаются основные движения.',
           'London/NY қабаттасуы — көлем мен құбылмалылық шыңы. Ірі капитал осы «киллзоналарда» '
@@ -3041,7 +3041,7 @@ CourseModule _module7() => CourseModule(
       code: '7.5',
       title: 'Объём и подтверждение: почему свеча без объёма врёт',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Цена показывает, ЧТО произошло, а объём — НАСКОЛЬКО это серьёзно. Движение на '
           'большом объёме означает участие крупного капитала и склонно к продолжению. '
           'Движение на низком объёме — часто ловушка, ложный пробой, за которым следует '
@@ -3050,16 +3050,16 @@ CourseModule _module7() => CourseModule(
           'қозғалыс ірі капиталдың қатысуын білдіреді әрі жалғасуға бейім. Төмен көлемдегі '
           'қозғалыс — жиі тұзақ, артынан бұрылыс келетін жалған пробив.',
         )),
-        _rule(_L(
+        _rule(_lt(
           'Пробой уровня на РАСТУЩЕМ объёме — вероятно настоящий (крупные деньги участвуют). '
           'Пробой на ПАДАЮЩЕМ объёме — подозрителен, часто это ложный пробой (fakeout), '
           'созданный, чтобы выбить стопы.',
           'Деңгейді ӨCІП ЖАТҚАН көлемде бұзу — шынайы болуы ықтимал (ірі ақша қатысады). '
           'ТҮСІП ЖАТҚАН көлемде бұзу — күмәнді, жиі стоптарды ұшыру үшін жасалған жалған пробив '
           '(fakeout).'),
-          title: _L('Объём подтверждает движение', 'Көлем қозғалысты растайды'),
+          title: _lt('Объём подтверждает движение', 'Көлем қозғалысты растайды'),
         ),
-        _p(_L(
+        _p(_lt(
           'На спотовом форексе и CFD «настоящего» биржевого объёма нет — брокер показывает '
           'лишь тиковый объём (число изменений цены). Для золота более показателен объём '
           'фьючерсов COMEX. Но даже тиковый объём помогает отличить импульс от вялого '
@@ -3068,7 +3068,7 @@ CourseModule _module7() => CourseModule(
           'өзгерістерінің саны) көрсетеді. Алтын үшін COMEX фьючерстерінің көлемі көрнекілеу. '
           'Бірақ тиктік көлем де импульсті солғын қозғалыстан ажыратуға көмектеседі.',
         )),
-        _fact(_L(
+        _fact(_lt(
           'Принцип «объём предшествует цене» лежит в основе метода Ричарда Вайкоффа, '
           'разработанного ещё в 1910-х годах. Вайкофф учил «читать ленту» — видеть в потоке '
           'сделок действия крупного оператора. Современный анализ объёмов (VSA) — прямой '
@@ -3078,7 +3078,7 @@ CourseModule _module7() => CourseModule(
           'әрекетін көруді үйретті. Қазіргі көлем талдауы (VSA) — оның ғасырлық идеяларының тікелей '
           'мұрагері.',
         )),
-        _warn(_L(
+        _warn(_lt(
           'Ложный пробой (fakeout) на низком объёме — классическая ловушка. Толпа видит '
           '«пробой важного уровня», запрыгивает в сделку, и тут цена разворачивается, выбивая '
           'их стопы. Всегда спрашивай: есть ли за этим движением объём?',
@@ -3088,18 +3088,18 @@ CourseModule _module7() => CourseModule(
         )),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Пробой важного уровня произошёл на ПАДАЮЩЕМ объёме. О чём это говорит?',
           'Маңызды деңгей ТҮСІП ЖАТҚАН көлемде бұзылды. Бұл не туралы айтады?',
         ),
         options: [
-          _L('Пробой надёжный, можно смело входить', 'Пробив сенімді, батыл кіруге болады'),
-          _L('Пробой подозрителен — вероятен ложный пробой (fakeout)', 'Пробив күмәнді — жалған пробив (fakeout) ықтимал'),
-          _L('Объём не важен для пробоев', 'Пробив үшін көлем маңызды емес'),
-          _L('Это сигнал на немедленную покупку', 'Бұл дереу сатып алу сигналы'),
+          _lt('Пробой надёжный, можно смело входить', 'Пробив сенімді, батыл кіруге болады'),
+          _lt('Пробой подозрителен — вероятен ложный пробой (fakeout)', 'Пробив күмәнді — жалған пробив (fakeout) ықтимал'),
+          _lt('Объём не важен для пробоев', 'Пробив үшін көлем маңызды емес'),
+          _lt('Это сигнал на немедленную покупку', 'Бұл дереу сатып алу сигналы'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Настоящий пробой подтверждается ростом объёма (участие крупных денег). Пробой на '
           'низком объёме часто оказывается ложным и служит для выбивания стопов.',
           'Нағыз пробив көлем өсуімен расталады (ірі ақша қатысады). Төмен көлемдегі пробив жиі '
@@ -3125,7 +3125,7 @@ CourseModule _module8() => CourseModule(
       code: '8.1',
       title: 'Дродаун и психология ямы: почему −50% требует +100%',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Дродаун (drawdown) — это просадка капитала от пика. Главная контринтуитивная '
           'правда трейдинга: убытки и прибыль НЕ симметричны. Чем глубже яма, тем '
           'непропорционально труднее из неё выбраться.',
@@ -3133,7 +3133,7 @@ CourseModule _module8() => CourseModule(
           'шындығы: зиян мен пайда СИММЕТРИЯЛЫ ЕМЕС. Шұңқыр неғұрлым терең — одан шығу сонша '
           'пропорциясыз қиын.',
         )),
-        _formula(_Lf(
+        _formula(_lf(
           [
             'Восстановление = Убыток / (100 − Убыток) × 100',
             '',
@@ -3150,16 +3150,16 @@ CourseModule _module8() => CourseModule(
             '−50% → +100% керек (екі еселену!)',
             '−90% → +900% керек',
           ],
-        ), title: _L('Математика просадки', 'Просадка математикасы')),
-        _rule(_L(
+        ), title: _lt('Математика просадки', 'Просадка математикасы')),
+        _rule(_lt(
           'Главная задача трейдера — не заработать побольше, а НЕ ПОТЕРЯТЬ много. Маленькие '
           'просадки восстанавливаются легко; глубокие — почти никогда. Защита капитала '
           'важнее погони за прибылью.',
           'Трейдердің басты міндеті — көбірек табу емес, КӨП ЖОҒАЛТПАУ. Кіші просадкалар оңай '
           'қалпына келеді; терең — дерлік ешқашан. Капиталды қорғау пайда қууынан маңызды.'),
-          title: _L('Защита прежде всего', 'Алдымен қорғаныс'),
+          title: _lt('Защита прежде всего', 'Алдымен қорғаныс'),
         ),
-        _fact(_L(
+        _fact(_lt(
           'Помимо математики, есть психологическая яма: после просадки −50% большинство '
           'трейдеров уже не способны торговать спокойно. Страх и желание «отыграться» '
           'разрушают дисциплину, и реальное восстановление становится ещё менее вероятным, '
@@ -3171,18 +3171,18 @@ CourseModule _module8() => CourseModule(
         _interactive('drawdown', title: 'Математика просадки'),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Депозит просел на 50%. Сколько нужно заработать, чтобы вернуться к началу?',
           'Депозит 50%-ға түсті. Бастапқы деңгейге оралу үшін қанша табу керек?',
         ),
         options: [
-          _L('+50%', '+50%'),
-          _L('+100% (удвоиться)', '+100% (екі еселену)'),
-          _L('+25%', '+25%'),
-          _L('+75%', '+75%'),
+          _lt('+50%', '+50%'),
+          _lt('+100% (удвоиться)', '+100% (екі еселену)'),
+          _lt('+25%', '+25%'),
+          _lt('+75%', '+75%'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Убыток и восстановление несимметричны: 50/(100−50)×100 = +100%. Потеряв половину, '
           'нужно удвоить остаток. Поэтому глубокие просадки так опасны.',
           'Зиян мен қалпына келу симметриялы емес: 50/(100−50)×100 = +100%. Жартысын жоғалтып, '
@@ -3195,7 +3195,7 @@ CourseModule _module8() => CourseModule(
       code: '8.2',
       title: 'Размер позиции и корреляции: не клади все яйца в одну корзину',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Размер позиции — это решение №1 в каждой сделке, важнее точки входа. Профессионал '
           'сначала определяет, сколько он готов потерять (риск), и только потом из этого '
           'вычисляет объём. Новичок делает наоборот: «хочу заработать побольше» → ставит '
@@ -3204,17 +3204,17 @@ CourseModule _module8() => CourseModule(
           'қанша жоғалтуға дайын екенін (тәуекел) анықтайды, содан кейін ғана көлемді есептейді. '
           'Жаңадан бастаушы керісінше: «көбірек табайын» → үлкен көлем қояды → банкротқа ұшырайды.',
         )),
-        _rule(_L(
+        _rule(_lt(
           'Правило фиксированного риска: рискуй одним и тем же малым процентом депозита на '
           'каждую сделку (обычно 0.5–2%). Размер позиции = (Депозит × Риск%) / Размер стопа. '
           'Объём подстраивается под стоп, а не наоборот.',
           'Бекітілген тәуекел ережесі: әр мәмілеге депозиттің бірдей кіші пайызымен тәуекел ет '
           '(әдетте 0.5–2%). Позиция мөлшері = (Депозит × Тәуекел%) / Стоп мөлшері. Көлем стопқа '
           'бейімделеді, керісінше емес.'),
-          title: _L('Фиксированный фракционный риск', 'Бекітілген фракциялық тәуекел'),
+          title: _lt('Фиксированный фракционный риск', 'Бекітілген фракциялық тәуекел'),
         ),
-        _h(_L('Скрытая ловушка корреляций', 'Корреляцияның жасырын тұзағы')),
-        _p(_L(
+        _h(_lt('Скрытая ловушка корреляций', 'Корреляцияның жасырын тұзағы')),
+        _p(_lt(
           'Если ты открыл лонг по золоту, шорт по доллару (DXY) и лонг по серебру — кажется, '
           'что у тебя три разные сделки. На деле это ОДНА ставка против доллара. Если доллар '
           'резко вырастет, все три позиции уйдут в минус одновременно. Твой реальный риск в '
@@ -3223,7 +3223,7 @@ CourseModule _module8() => CourseModule(
           'сияқты. Шын мәнінде бұл долларға қарсы БІР ставка. Доллар күрт өссе, үш позиция да '
           'қатар минусқа кетеді. Сенің нақты тәуекелің ойлағаннан 3 есе көп.',
         )),
-        _warn(_L(
+        _warn(_lt(
           'Коррелированные позиции маскируют истинный риск. Считай не количество сделок, а '
           'количество независимых «ставок». Несколько позиций по одному драйверу (доллар, '
           'ставки) — это одна большая позиция.',
@@ -3231,7 +3231,7 @@ CourseModule _module8() => CourseModule(
           '«ставкалар» санын есепте. Бір драйвер бойынша (доллар, ставка) бірнеше позиция — бұл '
           'бір үлкен позиция.',
         )),
-        _fact(_L(
+        _fact(_lt(
           'Гарри Марковиц получил Нобелевскую премию за «современную портфельную теорию», '
           'математически доказав ценность диверсификации. Её часто называют «единственным '
           'бесплатным обедом в инвестициях»: правильно подобранные некоррелированные активы '
@@ -3262,7 +3262,7 @@ CourseModule _module8() => CourseModule(
       code: '8.3',
       title: 'Торговый журнал: твой личный детектор лжи',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Без журнала ты не трейдер, а игрок, который помнит только удачи и забывает провалы. '
           'Торговый журнал — единственный инструмент, который показывает ПРАВДУ о твоей '
           'торговле, без прикрас и самообмана. Это разница между «мне кажется» и «я знаю».',
@@ -3271,22 +3271,22 @@ CourseModule _module8() => CourseModule(
           'алдаусыз көрсететін жалғыз құрал. Бұл «маған солай көрінеді» мен «мен білемін» '
           'арасындағы айырмашылық.',
         )),
-        _h(_L('Что записывать', 'Нені жазу керек')),
-        _p(_L('• Скриншот графика на входе и выходе.', '• Кіру мен шығудағы график скриншоты.')),
-        _p(_L('• Причину входа (какой сетап, по чек-листу ли).', '• Кіру себебі (қандай сетап, чек-лист бойынша ма).')),
-        _p(_L('• Размер риска, стоп, тейк, RR.', '• Тәуекел мөлшері, стоп, тейк, RR.')),
-        _p(_L('• Эмоциональное состояние (спокоен / на тильте / FOMO).', '• Эмоциялық күй (тыныш / тильтте / FOMO).')),
-        _p(_L('• Результат и — главное — соблюдал ли ты план (независимо от результата).', '• Нәтиже және — ең бастысы — жоспарды сақтадың ба (нәтижеге тәуелсіз).')),
-        _rule(_L(
+        _h(_lt('Что записывать', 'Нені жазу керек')),
+        _p(_lt('• Скриншот графика на входе и выходе.', '• Кіру мен шығудағы график скриншоты.')),
+        _p(_lt('• Причину входа (какой сетап, по чек-листу ли).', '• Кіру себебі (қандай сетап, чек-лист бойынша ма).')),
+        _p(_lt('• Размер риска, стоп, тейк, RR.', '• Тәуекел мөлшері, стоп, тейк, RR.')),
+        _p(_lt('• Эмоциональное состояние (спокоен / на тильте / FOMO).', '• Эмоциялық күй (тыныш / тильтте / FOMO).')),
+        _p(_lt('• Результат и — главное — соблюдал ли ты план (независимо от результата).', '• Нәтиже және — ең бастысы — жоспарды сақтадың ба (нәтижеге тәуелсіз).')),
+        _rule(_lt(
           'Оценивай сделку по соблюдению ПЛАНА, а не по результату. Сделка по плану, '
           'закрывшаяся в минус, — хорошая сделка. Сделка против плана, случайно вышедшая в '
           'плюс, — плохая сделка (ты поощряешь вредную привычку). Журнал ловит именно это.',
           'Мәмілені нәтиже бойынша емес, ЖОСПАРДЫ сақтау бойынша бағала. Жоспармен жасалып, '
           'минуспен жабылған мәміле — жақсы мәміле. Жоспарға қарсы, кездейсоқ плюске шыққан '
           'мәміле — нашар мәміле (зиянды әдетті көтермелейсің). Журнал дәл осыны ұстайды.'),
-          title: _L('Что на самом деле оценивать', 'Шын мәнінде нені бағалау керек'),
+          title: _lt('Что на самом деле оценивать', 'Шын мәнінде нені бағалау керек'),
         ),
-        _fact(_L(
+        _fact(_lt(
           'Многие профессиональные фонды нанимают отдельных людей и психологов для анализа '
           'журналов трейдеров — они ищут паттерны: в какое время суток, в каком настроении и '
           'на каких инструментах трейдер теряет деньги. Часто оказывается, что 80% убытков '
@@ -3296,7 +3296,7 @@ CourseModule _module8() => CourseModule(
           'құралда ақша жоғалтады. Жиі 80% зиянды тек журналда көрінетін 1–2 қайталанатын қате '
           'әкелетіні анықталады.',
         )),
-        _example(_L(
+        _example(_lt(
           'Трейдер был уверен, что его стратегия убыточна. Журнал показал обратное: сама '
           'стратегия прибыльна, но все потери приходят от импульсивных сделок «вне системы» '
           'по пятницам вечером. Решение оказалось простым — не торговать в это время. Без '
@@ -3308,18 +3308,18 @@ CourseModule _module8() => CourseModule(
         )),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Сделка была исполнена строго по плану, но закрылась в убыток. Как её оценить?',
           'Мәміле қатаң жоспармен орындалды, бірақ зиянмен жабылды. Оны қалай бағалау керек?',
         ),
         options: [
-          _L('Плохая сделка — ведь убыток', 'Нашар мәміле — өйткені зиян'),
-          _L('Хорошая сделка — план соблюдён, убыток здесь нормальная часть статистики', 'Жақсы мәміле — жоспар сақталды, зиян мұнда статистиканың қалыпты бөлігі'),
-          _L('Нейтральная, не имеет значения', 'Бейтарап, маңызы жоқ'),
-          _L('Нужно срочно менять стратегию', 'Стратегияны тез ауыстыру керек'),
+          _lt('Плохая сделка — ведь убыток', 'Нашар мәміле — өйткені зиян'),
+          _lt('Хорошая сделка — план соблюдён, убыток здесь нормальная часть статистики', 'Жақсы мәміле — жоспар сақталды, зиян мұнда статистиканың қалыпты бөлігі'),
+          _lt('Нейтральная, не имеет значения', 'Бейтарап, маңызы жоқ'),
+          _lt('Нужно срочно менять стратегию', 'Стратегияны тез ауыстыру керек'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Качество оценивается по соблюдению плана, а не по результату одной сделки. Убытки '
           'по системе неизбежны и нормальны; важно, что ты следовал правилам.',
           'Сапа бір мәміленің нәтижесі бойынша емес, жоспарды сақтау бойынша бағаланады. Жүйе '
@@ -3332,7 +3332,7 @@ CourseModule _module8() => CourseModule(
       code: '8.4',
       title: 'Бэктест и форвард-тест: как не обмануть самого себя',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Прежде чем рисковать деньгами, стратегию нужно проверить. Бэктест — прогон '
           'стратегии на исторических данных. Форвард-тест — проверка на новых данных в '
           'реальном времени (демо или малый объём). Без проверки ты торгуешь на вере, а вера '
@@ -3342,7 +3342,7 @@ CourseModule _module8() => CourseModule(
           '(демо немесе кіші көлем). Тексеріссіз сен сеніммен саудалайсың, ал сенім нарықта '
           'қымбатқа түседі.',
         )),
-        _warn(_L(
+        _warn(_lt(
           'Главная ловушка — переоптимизация (curve fitting). Можно так подогнать параметры '
           'под прошлое, что на истории система покажет 99% прибыльных сделок... и развалится '
           'на реальном рынке. Идеальный бэктест часто означает не гениальную систему, а '
@@ -3351,7 +3351,7 @@ CourseModule _module8() => CourseModule(
           'икемдеуге болады — тарихта жүйе 99% пайдалы мәміле көрсетеді... да нақты нарықта '
           'қирайды. Мінсіз бэктест жиі данышпан жүйені емес, өткен шуға икемдеуді білдіреді.',
         )),
-        _rule(_L(
+        _rule(_lt(
           'Признаки честного теста: достаточная выборка (сотни сделок, не 10), проверка на '
           'РАЗНЫХ периодах рынка (тренд, флэт, кризис), и обязательный форвард-тест на данных, '
           'которых система «не видела». Если стратегия работает только на одном идеальном '
@@ -3359,9 +3359,9 @@ CourseModule _module8() => CourseModule(
           'Адал тесттің белгілері: жеткілікті таңдама (10 емес, жүздеген мәміле), нарықтың '
           'ӘРТҮРЛІ кезеңдерінде тексеру (тренд, флэт, дағдарыс) және жүйе «көрмеген» деректердегі '
           'міндетті форвард-тест. Стратегия тек бір мінсіз кесіндіде жұмыс істесе — бұл елес.'),
-          title: _L('Как тестировать честно', 'Қалай адал тестілеу керек'),
+          title: _lt('Как тестировать честно', 'Қалай адал тестілеу керек'),
         ),
-        _fact(_L(
+        _fact(_lt(
           'Печально известный фонд LTCM, которым руководили два нобелевских лауреата, имел '
           'безупречные математические модели на исторических данных. В 1998 году реальность '
           '(дефолт России) преподнесла сценарий, которого «не было в истории», и фонд рухнул, '
@@ -3371,7 +3371,7 @@ CourseModule _module8() => CourseModule(
           'сценарий ұсынды, әрі қор қирап, әлемдік қаржы жүйесін құлатуға сәл қалды. Өткен '
           'болашаққа тең емес.',
         )),
-        _example(_L(
+        _example(_lt(
           'Трейдер строит систему, идеально работающую на бычьем рынке 2020–2021. Он в '
           'восторге и заходит на всю котлету. Но рынок 2022 года был медвежьим — система, '
           'не проверенная на падающем рынке, сливает депозит. Урок: тестируй на всех типах '
@@ -3382,18 +3382,18 @@ CourseModule _module8() => CourseModule(
         )),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Что такое переоптимизация (curve fitting)?',
           'Шамадан тыс оңтайландыру (curve fitting) дегеніміз не?',
         ),
         options: [
-          _L('Правильная настройка стратегии под рынок', 'Стратегияны нарыққа дұрыс баптау'),
-          _L('Подгонка параметров под прошлое так, что система не работает на новых данных', 'Параметрлерді өткенге икемдеу, нәтижесінде жүйе жаңа деректерде істемейді'),
-          _L('Метод увеличения плеча', 'Иықты үлкейту әдісі'),
-          _L('Способ ускорить бэктест', 'Бэктестті жылдамдату тәсілі'),
+          _lt('Правильная настройка стратегии под рынок', 'Стратегияны нарыққа дұрыс баптау'),
+          _lt('Подгонка параметров под прошлое так, что система не работает на новых данных', 'Параметрлерді өткенге икемдеу, нәтижесінде жүйе жаңа деректерде істемейді'),
+          _lt('Метод увеличения плеча', 'Иықты үлкейту әдісі'),
+          _lt('Способ ускорить бэктест', 'Бэктестті жылдамдату тәсілі'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Curve fitting — чрезмерная подгонка под исторический шум. Такая система блестит на '
           'бэктесте, но проваливается в реальности. Защита — форвард-тест и проверка на разных '
           'периодах.',
@@ -3407,7 +3407,7 @@ CourseModule _module8() => CourseModule(
       code: '8.5',
       title: 'Чек-лист и торговый план профессионала',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Торговый план — это конституция твоего трейдинга. Он превращает хаотичные решения '
           'в повторяемый процесс. Без письменного плана каждое решение принимается заново, на '
           'эмоциях, и статистика становится невозможной.',
@@ -3415,22 +3415,22 @@ CourseModule _module8() => CourseModule(
           'процеске айналдырады. Жазбаша жоспарсыз әр шешім қайтадан, эмоциямен қабылданады, әрі '
           'статистика мүмкін болмай қалады.',
         )),
-        _h(_L('Из чего состоит план', 'Жоспар неден тұрады')),
-        _p(_L('1. Какие инструменты и таймфреймы я торгую.', '1. Қандай құрал мен таймфреймді саудалаймын.')),
-        _p(_L('2. Мой сетап: конкретные условия входа (чек-лист).', '2. Менің сетапым: кірудің нақты шарттары (чек-лист).')),
-        _p(_L('3. Риск на сделку и максимальный дневной убыток (стоп-день).', '3. Мәмілеге тәуекел және максималды күндік зиян (стоп-күн).')),
-        _p(_L('4. Куда ставлю стоп и тейк, правила переноса в безубыток.', '4. Стоп пен тейкті қайда қоямын, шығынсыздыққа жылжыту ережелері.')),
-        _p(_L('5. Когда я НЕ торгую (новости, усталость, после серии убытков).', '5. Қашан саудаламаймын (жаңалық, шаршау, зиян тізбегінен кейін).')),
-        _rule(_L(
+        _h(_lt('Из чего состоит план', 'Жоспар неден тұрады')),
+        _p(_lt('1. Какие инструменты и таймфреймы я торгую.', '1. Қандай құрал мен таймфреймді саудалаймын.')),
+        _p(_lt('2. Мой сетап: конкретные условия входа (чек-лист).', '2. Менің сетапым: кірудің нақты шарттары (чек-лист).')),
+        _p(_lt('3. Риск на сделку и максимальный дневной убыток (стоп-день).', '3. Мәмілеге тәуекел және максималды күндік зиян (стоп-күн).')),
+        _p(_lt('4. Куда ставлю стоп и тейк, правила переноса в безубыток.', '4. Стоп пен тейкті қайда қоямын, шығынсыздыққа жылжыту ережелері.')),
+        _p(_lt('5. Когда я НЕ торгую (новости, усталость, после серии убытков).', '5. Қашан саудаламаймын (жаңалық, шаршау, зиян тізбегінен кейін).')),
+        _rule(_lt(
           'Чек-лист входа — сердце плана. Например: (1) есть тренд по структуре, (2) цена в '
           'зоне интереса (ордер-блок/уровень), (3) была снята ликвидность, (4) подтверждение '
           'на младшем ТФ, (5) RR минимум 1:2. Нет хотя бы одной галочки — нет сделки.',
           'Кіру чек-листі — жоспардың жүрегі. Мысалы: (1) құрылым бойынша тренд бар, (2) баға '
           'қызығушылық аймағында (ордер-блок/деңгей), (3) өтімділік алынды, (4) кіші ТФ-те '
           'растау, (5) RR кемінде 1:2. Бір белгі жоқ — мәміле жоқ.'),
-          title: _L('Чек-лист входа', 'Кіру чек-листі'),
+          title: _lt('Чек-лист входа', 'Кіру чек-листі'),
         ),
-        _fact(_L(
+        _fact(_lt(
           'В авиации чек-листы появились после катастрофы 1935 года: новейший бомбардировщик '
           'Boeing разбился из-за того, что пилот забыл снять блокировку рулей. Самолёт был '
           '«слишком сложен, чтобы держать всё в голове». Решение — простой чек-лист. С тех пор '
@@ -3441,28 +3441,28 @@ CourseModule _module8() => CourseModule(
           'күрделі» еді. Шешім — қарапайым чек-лист. Содан бері чек-листтер авиацияны ең '
           'қауіпсіз көлік түріне айналдырды. Трейдинг те стресте «ми үшін тым күрделі».',
         )),
-        _rule(_L(
+        _rule(_lt(
           'План бесполезен, если он в голове. Запиши его, распечатай, держи перед глазами. '
           'План на бумаге — это договор с самим собой, который нельзя незаметно нарушить в '
           'момент слабости.',
           'Жоспар басыңда болса пайдасыз. Оны жаз, басып шығар, көз алдыңда ұста. Қағаздағы '
           'жоспар — өзіңмен жасалған келісім, оны әлсіздік сәтінде байқатпай бұзуға болмайды.'),
-          title: _L('План должен быть написан', 'Жоспар жазылуы керек'),
+          title: _lt('План должен быть написан', 'Жоспар жазылуы керек'),
         ),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Зачем трейдеру письменный чек-лист входа?',
           'Трейдерге жазбаша кіру чек-листі не үшін керек?',
         ),
         options: [
-          _L('Для красоты и солидности', 'Әдемілік пен салмақтылық үшін'),
-          _L('Чтобы входить только при выполнении всех условий, убирая импульсивность', 'Барлық шарт орындалғанда ғана кіріп, импульсивтілікті жою үшін'),
-          _L('Чтобы торговать чаще', 'Жиірек саудалау үшін'),
-          _L('Этого требует брокер', 'Брокер солай талап етеді'),
+          _lt('Для красоты и солидности', 'Әдемілік пен салмақтылық үшін'),
+          _lt('Чтобы входить только при выполнении всех условий, убирая импульсивность', 'Барлық шарт орындалғанда ғана кіріп, импульсивтілікті жою үшін'),
+          _lt('Чтобы торговать чаще', 'Жиірек саудалау үшін'),
+          _lt('Этого требует брокер', 'Брокер солай талап етеді'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Чек-лист гарантирует, что каждая сделка соответствует системе. Нет всех галочек — '
           'нет входа. Это защита от импульсивных решений под действием эмоций.',
           'Чек-лист әр мәміленің жүйеге сәйкестігіне кепілдік береді. Барлық белгі жоқ — кіру '
@@ -3489,7 +3489,7 @@ CourseModule _module9() => CourseModule(
       code: '9.1',
       title: 'Долговой суперцикл Рэя Далио: как дышит кредитная машина',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Рэй Далио, основатель крупнейшего хедж-фонда мира Bridgewater, объясняет экономику '
           'через долговые циклы. Есть короткий цикл (~5–8 лет, обычные рецессии) и большой '
           'долговой суперцикл (~75–100 лет), который заканчивается грандиозной перестройкой '
@@ -3499,7 +3499,7 @@ CourseModule _module9() => CourseModule(
           'үлкен қарыз суперциклі (~75–100 жыл) бар, соңғысы бүкіл жүйенің ұлы қайта құрылуымен '
           'аяқталады. Оның пікірінше, біз қазір осындай суперциклдің соңындамыз.',
         )),
-        _mechanic(_L(
+        _mechanic(_lt(
           'Кредит — это топливо роста. Когда ты берёшь в долг, ты тратишь больше, чем '
           'зарабатываешь, разгоняя экономику. Но долг нужно отдавать — тогда ты тратишь меньше. '
           'Так рождаются циклы: кредитная экспансия → пузырь → пик → делевередж (сокращение '
@@ -3508,9 +3508,9 @@ CourseModule _module9() => CourseModule(
           'жеделдетесің. Бірақ қарызды қайтару керек — сонда азырақ жұмсайсың. Циклдар осылай '
           'туады: несие экспансиясы → көпіршік → шың → делевередж (қарызды қысқарту) → дағдарыс '
           '→ қайта іске қосу.'),
-          title: _L('Как работает машина', 'Машина қалай жұмыс істейді'),
+          title: _lt('Как работает машина', 'Машина қалай жұмыс істейді'),
         ),
-        _rule(_L(
+        _rule(_lt(
           'В конце большого цикла долги становятся неподъёмными. У государства есть выход: '
           'печатать деньги, чтобы обесценить долг (инфляция). Именно в этой фазе золото и '
           'реальные активы исторически показывают себя лучше всего, а держатели облигаций и '
@@ -3519,9 +3519,9 @@ CourseModule _module9() => CourseModule(
           'қарызды құнсыздандыру үшін ақша басу (инфляция). Дәл осы фазада алтын мен нақты '
           'активтер тарихи тұрғыда ең жақсы көрсеткіш береді, ал облигация мен қолма-қол ақша '
           'иелері жоғалтады.'),
-          title: _L('Где золото в цикле', 'Циклде алтын қайда'),
+          title: _lt('Где золото в цикле', 'Циклде алтын қайда'),
         ),
-        _fact(_L(
+        _fact(_lt(
           'Далио начинал с торговли в 12 лет, работая кедди на гольф-поле и слушая советы '
           'инвесторов. Сегодня его принципы радикальной прозрачности и изучения «машины» '
           'экономики через циклы изложены в книгах, которые он раздаёт бесплатно. Его видео '
@@ -3535,18 +3535,18 @@ CourseModule _module9() => CourseModule(
         _interactive('debt_cycle', title: 'Долговой суперцикл (фазы)'),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Как государство чаще всего «решает» проблему неподъёмного долга в конце цикла?',
           'Мемлекет цикл соңында көтерілмес қарыз мәселесін көбіне қалай «шешеді»?',
         ),
         options: [
-          _L('Полностью выплачивает его за счёт профицита', 'Профицит есебінен толық төлейді'),
-          _L('Печатает деньги, обесценивая долг через инфляцию', 'Ақша басып, қарызды инфляция арқылы құнсыздандырады'),
-          _L('Просто игнорирует долг навсегда', 'Қарызды мәңгілікке елемейді'),
-          _L('Запрещает гражданам иметь деньги', 'Азаматтарға ақша ұстауға тыйым салады'),
+          _lt('Полностью выплачивает его за счёт профицита', 'Профицит есебінен толық төлейді'),
+          _lt('Печатает деньги, обесценивая долг через инфляцию', 'Ақша басып, қарызды инфляция арқылы құнсыздандырады'),
+          _lt('Просто игнорирует долг навсегда', 'Қарызды мәңгілікке елемейді'),
+          _lt('Запрещает гражданам иметь деньги', 'Азаматтарға ақша ұстауға тыйым салады'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'В конце суперцикла долги обесценивают печатанием денег (инфляцией). В этой фазе '
           'золото и реальные активы выигрывают, а наличные и облигации теряют покупательную '
           'способность.',
@@ -3561,7 +3561,7 @@ CourseModule _module9() => CourseModule(
       code: '9.2',
       title: 'Валютные войны и закат резервных валют',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'История денег — это история сменяющих друг друга резервных валют. Ни одна не правила '
           'вечно. Голландский гульден, испанское песо, британский фунт — все были «мировыми '
           'деньгами» своей эпохи и все уступили трон. Доллар — текущий чемпион, но история '
@@ -3571,8 +3571,8 @@ CourseModule _module9() => CourseModule(
           'ақшасы» болып, бәрі тақтан түсті. Доллар — қазіргі чемпион, бірақ тарих үйретеді: '
           'чемпиондар ауысады.',
         )),
-        _h(_L('Цикл гегемонии валюты', 'Валюта гегемониясының циклі')),
-        _p(_L(
+        _h(_lt('Цикл гегемонии валюты', 'Валюта гегемониясының циклі')),
+        _p(_lt(
           'Страна-лидер выигрывает войну/торговлю → её валюта становится резервной → она '
           'получает «непомерную привилегию» жить в долг → накапливает долги и теряет '
           'конкурентоспособность → доверие к валюте падает → появляется новый претендент.',
@@ -3580,7 +3580,7 @@ CourseModule _module9() => CourseModule(
           'алып, қарызбен өмір сүреді → қарыз жинап, бәсекеге қабілеттілігін жоғалтады → валютаға '
           'сенім түседі → жаңа үміткер пайда болады.',
         )),
-        _p(_L(
+        _p(_lt(
           'Валютная война — это когда страны намеренно ослабляют свои валюты, чтобы сделать '
           'экспорт дешевле и захватить рынки. Все девальвируют наперегонки — а реальной '
           'твёрдой ценностью на этом фоне остаётся золото.',
@@ -3588,7 +3588,7 @@ CourseModule _module9() => CourseModule(
           'әлсіретеді. Бәрі жарыса девальвациялайды — ал бұл аяда нақты қатты құндылық болып '
           'алтын қалады.',
         )),
-        _fact(_L(
+        _fact(_lt(
           'Фунт стерлингов был мировой резервной валютой более 100 лет, на пике Британской '
           'империи. После двух мировых войн и потери колоний он уступил доллару. Переход '
           'занял десятилетия и сопровождался кризисами — смена гегемона никогда не бывает '
@@ -3598,29 +3598,29 @@ CourseModule _module9() => CourseModule(
           'Ауысу ондаған жылға созылып, дағдарыстармен жүрді — гегемон ауысуы ешқашан лезде әрі '
           'тыныш болмайды.',
         )),
-        _rule(_L(
+        _rule(_lt(
           'Для трейдера золота это ключевой долгосрочный контекст: чем больше сомнений в '
           'долларе и чем активнее валютные войны, тем сильнее структурный спрос на золото как '
           'на наднациональные «деньги без флага».',
           'Алтын трейдері үшін бұл негізгі ұзақмерзімді контекст: долларға күмән неғұрлым көп '
           'әрі валюталық соғыс неғұрлым белсенді — алтынға ұлтүстілік «тусыз ақша» ретіндегі '
           'құрылымдық сұраныс сонша күшті.'),
-          title: _L('Почему это важно для золота', 'Бұл алтын үшін неге маңызды'),
+          title: _lt('Почему это важно для золота', 'Бұл алтын үшін неге маңызды'),
         ),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Что история резервных валют говорит трейдеру золота?',
           'Резервтік валюталар тарихы алтын трейдеріне нені айтады?',
         ),
         options: [
-          _L('Доллар будет резервной валютой вечно', 'Доллар мәңгі резервтік валюта болады'),
-          _L('Резервные валюты сменяют друг друга; сомнения в долларе усиливают спрос на золото', 'Резервтік валюталар алмасады; долларға күмән алтынға сұранысты күшейтеді'),
-          _L('Золото не связано с валютами', 'Алтын валюталармен байланысты емес'),
-          _L('Валютные войны укрепляют все валюты сразу', 'Валюталық соғыстар барлық валютаны бірден нығайтады'),
+          _lt('Доллар будет резервной валютой вечно', 'Доллар мәңгі резервтік валюта болады'),
+          _lt('Резервные валюты сменяют друг друга; сомнения в долларе усиливают спрос на золото', 'Резервтік валюталар алмасады; долларға күмән алтынға сұранысты күшейтеді'),
+          _lt('Золото не связано с валютами', 'Алтын валюталармен байланысты емес'),
+          _lt('Валютные войны укрепляют все валюты сразу', 'Валюталық соғыстар барлық валютаны бірден нығайтады'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Ни одна резервная валюта не правила вечно. В периоды валютных войн и сомнений в '
           'долларе золото — «деньги без флага» — получает структурный спрос.',
           'Бірде-бір резервтік валюта мәңгі билемеді. Валюталық соғыс пен долларға күмән '
@@ -3633,7 +3633,7 @@ CourseModule _module9() => CourseModule(
       code: '9.3',
       title: 'Золото центробанков и де-долларизация',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Самые крупные покупатели золота сегодня — не частные инвесторы, а центральные банки '
           'государств. Они скупают физическое золото рекордными темпами, диверсифицируя '
           'резервы прочь от доллара. Это мощнейший фундаментальный фактор спроса на годы вперёд.',
@@ -3641,8 +3641,8 @@ CourseModule _module9() => CourseModule(
           'орталық банктері. Олар резервтерді доллардан әртараптандырып, физикалық алтынды '
           'рекордты қарқынмен сатып алуда. Бұл — жылдар бойғы сұраныстың ең қуатты іргелі факторы.',
         )),
-        _h(_L('Почему центробанки скупают золото', 'Неге орталық банктер алтын жинайды')),
-        _p(_L(
+        _h(_lt('Почему центробанки скупают золото', 'Неге орталық банктер алтын жинайды')),
+        _p(_lt(
           'Золото — единственный резервный актив, который не является чьим-то обязательством '
           'и который нельзя заморозить санкциями или обесценить чужим печатным станком. '
           'После заморозки резервов России в 2022 году многие страны осознали: долларовые '
@@ -3652,7 +3652,7 @@ CourseModule _module9() => CourseModule(
           'резервтері мұздатылғаннан кейін көп ел түсінді: долларлық резервті тартып алуға '
           'болады, ал өз қоймасындағы алтынды — жоқ.',
         )),
-        _fact(_L(
+        _fact(_lt(
           'В 2022–2023 годах центробанки мира покупали золото рекордными за полвека темпами — '
           'более 1000 тонн в год. Лидеры скупки — Китай, Индия, Турция и другие развивающиеся '
           'страны, активно снижающие долю доллара в резервах.',
@@ -3660,7 +3660,7 @@ CourseModule _module9() => CourseModule(
           'жылына 1000 тоннадан астам — сатып алды. Сатып алу көшбасшылары — Қытай, Үндістан, '
           'Түркия және резервтегі доллар үлесін белсенді азайтып жатқан басқа дамушы елдер.',
         )),
-        _p(_L(
+        _p(_lt(
           'Де-долларизация — постепенный процесс снижения роли доллара в мировой торговле и '
           'резервах. Страны БРИКС обсуждают расчёты в национальных валютах и идеи валюты, '
           'частично обеспеченной золотом. Даже если доллар не свергнут завтра, сам тренд '
@@ -3670,29 +3670,29 @@ CourseModule _module9() => CourseModule(
           'қамтамасыз етілген валюта идеясын талқылауда. Доллар ертең құламаса да, тренд алтынды '
           'қолдайды.',
         )),
-        _rule(_L(
+        _rule(_lt(
           'Покупки золота центробанками — это «пол» под ценой: крупный, нечувствительный к '
           'цене и долгосрочный покупатель. Это меняет фундаментальную картину рынка золота на '
           'годы, а не на дни.',
           'Орталық банктердің алтын сатып алуы — баға астындағы «еден»: ірі, бағаға сезімтал '
           'емес, ұзақмерзімді сатып алушы. Бұл алтын нарығының іргелі бейнесін күндерге емес, '
           'жылдарға өзгертеді.'),
-          title: _L('Структурный спрос', 'Құрылымдық сұраныс'),
+          title: _lt('Структурный спрос', 'Құрылымдық сұраныс'),
         ),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'Почему центробанки наращивают золотые резервы вместо долларовых?',
           'Неге орталық банктер долларлық емес, алтын резервін арттырады?',
         ),
         options: [
-          _L('Золото приносит высокие проценты', 'Алтын жоғары пайыз әкеледі'),
-          _L('Золото нельзя заморозить санкциями или обесценить чужой эмиссией', 'Алтынды санкциямен мұздатуға немесе бөгде эмиссиямен құнсыздандыруға болмайды'),
-          _L('Золото проще хранить, чем доллары', 'Алтынды доллардан сақтау оңайырақ'),
-          _L('Доллар запрещён международными правилами', 'Доллар халықаралық ережелермен тыйым салынған'),
+          _lt('Золото приносит высокие проценты', 'Алтын жоғары пайыз әкеледі'),
+          _lt('Золото нельзя заморозить санкциями или обесценить чужой эмиссией', 'Алтынды санкциямен мұздатуға немесе бөгде эмиссиямен құнсыздандыруға болмайды'),
+          _lt('Золото проще хранить, чем доллары', 'Алтынды доллардан сақтау оңайырақ'),
+          _lt('Доллар запрещён международными правилами', 'Доллар халықаралық ережелермен тыйым салынған'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Золото — актив, не являющийся чьим-то обязательством. Его нельзя заморозить или '
           'напечатать. После заморозки резервов это стало ключевым аргументом для '
           'де-долларизации.',
@@ -3707,7 +3707,7 @@ CourseModule _module9() => CourseModule(
       code: '9.4',
       title: 'Реальные активы против бумаги: товарный суперцикл',
       blocks: [
-        _essence(_L(
+        _essence(_lt(
           'Капитал в мире циклически перетекает между «бумажными» активами (акции, облигации) '
           'и «реальными» (сырьё, металлы, энергия, золото). Эти большие приливы и отливы — '
           'товарные суперциклы — длятся по 10–20 лет и определяют, где делаются состояния '
@@ -3717,8 +3717,8 @@ CourseModule _module9() => CourseModule(
           'тауар суперциклдары — 10–20 жылға созылып, тұтас бір ұрпақтың байлығы қайда '
           'жасалатынын анықтайды.',
         )),
-        _h(_L('Логика суперцикла', 'Суперцикл логикасы')),
-        _p(_L(
+        _h(_lt('Логика суперцикла', 'Суперцикл логикасы')),
+        _p(_lt(
           'Долгие годы недоинвестирования в добычу → дефицит сырья → рост цен на годы → бум '
           'инвестиций в добычу → перепроизводство → падение цен → снова недоинвестирование. '
           'Цикл повторяется десятилетиями.',
@@ -3726,16 +3726,16 @@ CourseModule _module9() => CourseModule(
           'өндіруге инвестиция бумы → артық өндіріс → баға түсуі → қайтадан аз инвестиция. Цикл '
           'ондаған жыл қайталанады.',
         )),
-        _rule(_L(
+        _rule(_lt(
           'В эпоху высокой инфляции и обесценивания валют реальные активы (которые нельзя '
           'напечатать) исторически обгоняют бумажные. Золото — флагман этого класса: оно и '
           'реальный актив, и денежный, что делает его особенно сильным в такие периоды.',
           'Жоғары инфляция мен валюта құнсыздану дәуірінде нақты активтер (басып шығаруға '
           'келмейтін) тарихи тұрғыда қағаздан озады. Алтын — осы кластың флагманы: ол әрі нақты, '
           'әрі ақшалай актив, бұл оны осындай кезеңдерде ерекше күшті етеді.'),
-          title: _L('Когда реальное бьёт бумагу', 'Нақты қағазды қашан жеңеді'),
+          title: _lt('Когда реальное бьёт бумагу', 'Нақты қағазды қашан жеңеді'),
         ),
-        _fact(_L(
+        _fact(_lt(
           'В 1980 году, на пике товарного суперцикла и инфляции, акции были настолько '
           'непопулярны, что журнал BusinessWeek вышел с обложкой «Смерть акций» (The Death of '
           'Equities). Это оказалось почти точным дном перед величайшим бычьим рынком акций в '
@@ -3745,7 +3745,7 @@ CourseModule _module9() => CourseModule(
           'Бұл тарихтағы ең ұлы акция бұқа нарығының алдындағы дерлік нақты түп болып шықты. Нақты '
           'активтер эйфория шыңында болғанда — маятник кері тербелуге дайын.',
         )),
-        _example(_L(
+        _example(_lt(
           'Каждый суперцикл рождает свою «звезду»: нефть в 1970-х, японские акции в 1980-х, '
           'доткомы в 1990-х, сырьё и золото в 2000-х. Понимание, в какой фазе большого цикла '
           'мы находимся, важнее любого внутридневного сигнала.',
@@ -3755,18 +3755,18 @@ CourseModule _module9() => CourseModule(
         )),
       ],
       quiz: QuizQuestion(
-        question: _L(
+        question: _lt(
           'В какие периоды реальные активы (сырьё, золото) обычно обгоняют бумажные?',
           'Нақты активтер (шикізат, алтын) қай кезеңдерде қағазды әдетте озады?',
         ),
         options: [
-          _L('В периоды низкой инфляции и крепких валют', 'Төмен инфляция мен мықты валюта кезеңдерінде'),
-          _L('В периоды высокой инфляции и обесценивания валют', 'Жоғары инфляция мен валюта құнсыздану кезеңдерінде'),
-          _L('Реальные активы всегда отстают от акций', 'Нақты активтер әрдайым акциядан қалады'),
-          _L('Это никак не связано с инфляцией', 'Бұл инфляциямен еш байланысты емес'),
+          _lt('В периоды низкой инфляции и крепких валют', 'Төмен инфляция мен мықты валюта кезеңдерінде'),
+          _lt('В периоды высокой инфляции и обесценивания валют', 'Жоғары инфляция мен валюта құнсыздану кезеңдерінде'),
+          _lt('Реальные активы всегда отстают от акций', 'Нақты активтер әрдайым акциядан қалады'),
+          _lt('Это никак не связано с инфляцией', 'Бұл инфляциямен еш байланысты емес'),
         ],
         correctIndex: 1,
-        explanation: _L(
+        explanation: _lt(
           'Когда валюты обесцениваются (высокая инфляция), реальные активы, которые нельзя '
           'напечатать, сохраняют ценность лучше бумажных. Золото — флагман этого класса.',
           'Валюталар құнсызданғанда (жоғары инфляция), басып шығаруға келмейтін нақты активтер '
@@ -3793,49 +3793,74 @@ CourseModule _module10() => CourseModule(
       code: '10.1',
       title: 'Великая депрессия 1929: как лопнул крупнейший пузырь',
       blocks: [
-        _essence(
+        _essence(_lt(
           'Крах 1929 года — архетип всех биржевых катастроф. В 1920-е акции росли как на '
           'дрожжах, обычные люди влезали в долги, чтобы покупать акции с плечом 1:10. Когда '
           'пузырь лопнул, маржин-коллы превратили коррекцию в апокалипсис, а за ним пришла '
           'Великая депрессия.',
-        ),
-        _h('Анатомия пузыря'),
-        _p('Эйфория и вера в «новую эру» → массовый вход неопытной толпы → покупки на огромное '
-            'кредитное плечо → цены отрываются от реальности → первая трещина → маржин-коллы → '
-            'принудительные распродажи → каскадный обвал.'),
-        _story(
+          '1929 жылғы күйреу — барлық биржа апатының архетипі. 1920-ші жылдары акциялар ашытқыдай '
+          'өсті, қарапайым адамдар 1:10 иықпен акция сатып алу үшін қарызға батты. Көпіршік '
+          'жарылғанда, маржин-коллдар түзетуді апокалипсиске айналдырды, артынан Ұлы депрессия келді.',
+        )),
+        _h(_lt('Анатомия пузыря', 'Көпіршік анатомиясы')),
+        _p(_lt(
+          'Эйфория и вера в «новую эру» → массовый вход неопытной толпы → покупки на огромное '
+          'кредитное плечо → цены отрываются от реальности → первая трещина → маржин-коллы → '
+          'принудительные распродажи → каскадный обвал.',
+          'Эйфория мен «жаңа дәуірге» сену → тәжірибесіз тобырдың жаппай кіруі → орасан иықпен '
+          'сатып алу → бағаның шындықтан алшақтауы → алғашқы жарық → маржин-коллдар → мәжбүрлі '
+          'сатылымдар → каскадты құлдырау.',
+        )),
+        _story(_lt(
           'В «Чёрный вторник» 29 октября 1929 года рынок рухнул так, что лента тикера '
           'отставала на часы. Люди, купившие акции с плечом, получили маржин-коллы и потеряли '
           'всё за дни. Индекс Dow восстановился до уровня 1929 года только через 25 лет — в '
           '1954-м. Целое поколение запомнило акции как зло.',
-          title: '25 лет до восстановления',
+          '«Қара сейсенбіде» 1929 жылы 29 қазанда нарық сонша құлады — тикер лентасы сағаттап '
+          'кешікті. Иықпен акция сатып алғандар маржин-колл алып, бәрін бірнеше күнде жоғалтты. '
+          'Dow индексі 1929 деңгейіне тек 25 жылдан кейін — 1954-те қайта оралды. Тұтас бір ұрпақ '
+          'акцияны жамандық деп есте сақтады.'),
+          title: _lt('25 лет до восстановления', 'Қалпына келуге 25 жыл'),
         ),
-        _fact(
+        _fact(_lt(
           'Перед крахом виднейший экономист Ирвинг Фишер публично заявил: «Цены акций достигли '
           'постоянного высокого плато». Через несколько дней рынок рухнул. Даже величайшие умы '
           'эпохи не видели пузыря изнутри — потому что были его частью. Когда «эксперты» '
           'отрицают риск, риск максимален.',
-        ),
-        _rule(
+          'Күйреу алдында көрнекті экономист Ирвинг Фишер: «Акция бағасы тұрақты жоғары платоға '
+          'жетті» деп жария мәлімдеді. Бірнеше күннен кейін нарық құлады. Дәуірдің ең ұлы ақылдары '
+          'да көпіршікті іштен көрмеді — өйткені оның бөлігі еді. «Сарапшылар» тәуекелді жоққа '
+          'шығарғанда — тәуекел ең жоғары.',
+        )),
+        _rule(_lt(
           'Уроки 1929 для трейдера: (1) кредитное плечо превращает коррекцию в катастрофу; '
           '(2) когда «все» уверены в вечном росте — пора осторожничать; (3) рынок может не '
           'восстанавливаться десятилетиями.',
-          title: 'Вечные уроки',
+          '1929 жылдың трейдерге сабақтары: (1) несие иығы түзетуді апатқа айналдырады; '
+          '(2) «бәрі» мәңгілік өсуге сенгенде — сақ болатын кез; (3) нарық ондаған жыл қалпына '
+          'келмеуі мүмкін.'),
+          title: _lt('Вечные уроки', 'Мәңгілік сабақтар'),
         ),
       ],
-      quiz: const QuizQuestion(
-        question: 'Что превратило коррекцию 1929 года в катастрофический обвал?',
+      quiz: QuizQuestion(
+        question: _lt(
+          'Что превратило коррекцию 1929 года в катастрофический обвал?',
+          '1929 жылғы түзетуді апатты құлдырауға не айналдырды?',
+        ),
         options: [
-          'Запрет на торговлю',
-          'Массовое кредитное плечо и каскад маржин-коллов',
-          'Слишком низкие цены акций',
-          'Отсутствие интернета',
+          _lt('Запрет на торговлю', 'Саудаға тыйым'),
+          _lt('Массовое кредитное плечо и каскад маржин-коллов', 'Жаппай несие иығы мен маржин-коллдар каскады'),
+          _lt('Слишком низкие цены акций', 'Акция бағасының тым төмендігі'),
+          _lt('Отсутствие интернета', 'Интернеттің жоқтығы'),
         ],
         correctIndex: 1,
-        explanation:
-            'Толпа покупала акции на большое плечо. Когда цены качнулись вниз, маржин-коллы '
-            'заставили принудительно продавать, что обрушило рынок каскадом. Плечо — ускоритель '
-            'катастроф.',
+        explanation: _lt(
+          'Толпа покупала акции на большое плечо. Когда цены качнулись вниз, маржин-коллы '
+          'заставили принудительно продавать, что обрушило рынок каскадом. Плечо — ускоритель '
+          'катастроф.',
+          'Тобыр акцияны үлкен иықпен сатып алды. Бағалар төмен тербелгенде, маржин-коллдар '
+          'мәжбүрлі сатуға итермеледі, бұл нарықты каскадпен құлатты. Иық — апаттардың үдеткіші.',
+        ),
       ),
     ),
     CourseLesson(
@@ -3843,50 +3868,76 @@ CourseModule _module10() => CourseModule(
       code: '10.2',
       title: 'Сорос против Банка Англии: \$1 млрд за один день',
       blocks: [
-        _essence(
+        _essence(_lt(
           'Иногда один трейдер может победить целое государство — если он прав и действует '
           'решительно. «Чёрная среда» 16 сентября 1992 года: Джордж Сорос сделал ставку '
           'против британского фунта и заработал около миллиарда долларов за день, войдя в '
           'историю как «человек, который сломал Банк Англии».',
-        ),
-        _h('Суть сделки'),
-        _p('Британия держала фунт в жёстком валютном механизме (ERM) по завышенному курсу. '
-            'Сорос понял: экономика не вытягивает такой курс, фунт переоценён, и удерживать '
-            'его искусственно невозможно бесконечно. Это была асимметричная ставка: риск '
-            'ограничен, потенциал огромен.'),
-        _story(
+          'Кейде бір трейдер тұтас мемлекетті жеңе алады — егер ол дұрыс әрі батыл әрекет етсе. '
+          '«Қара сәрсенбі» 1992 жылы 16 қыркүйек: Джордж Сорос британ фунтына қарсы ставка жасап, '
+          'бір күнде миллиард долларға жуық тауып, «Англия Банкін сындырған адам» болып тарихқа енді.',
+        )),
+        _h(_lt('Суть сделки', 'Мәміленің мәні')),
+        _p(_lt(
+          'Британия держала фунт в жёстком валютном механизме (ERM) по завышенному курсу. '
+          'Сорос понял: экономика не вытягивает такой курс, фунт переоценён, и удерживать '
+          'его искусственно невозможно бесконечно. Это была асимметричная ставка: риск '
+          'ограничен, потенциал огромен.',
+          'Британия фунтты қатаң валюта механизмінде (ERM) асырылған бағаммен ұстады. Сорос '
+          'түсінді: экономика мұндай бағамды көтермейді, фунт асыра бағаланған, әрі оны жасанды '
+          'түрде шексіз ұстау мүмкін емес. Бұл асимметриялы ставка еді: тәуекел шектеулі, әлеует '
+          'орасан.',
+        )),
+        _story(_lt(
           'Сорос поставил против фунта более \$10 млрд. Банк Англии отчаянно скупал фунты и '
           'поднимал ставку дважды за день, пытаясь удержать курс, — но против фундаментальной '
           'реальности и огромного капитала это было бессильно. К вечеру Британия вышла из ERM, '
           'фунт рухнул, а Сорос зафиксировал ~\$1 млрд прибыли.',
-          title: 'Как сломали Банк Англии',
+          'Сорос фунтқа қарсы \$10 млрд-тан астам қойды. Англия Банкі бағамды ұстамақ болып, '
+          'фунтты үмітсіз сатып алып, ставканы күніне екі рет көтерді — бірақ іргелі шындық пен '
+          'орасан капиталға қарсы бұл дәрменсіз болды. Кешке Британия ERM-нен шықты, фунт құлады, '
+          'ал Сорос ~\$1 млрд пайда бекітті.'),
+          title: _lt('Как сломали Банк Англии', 'Англия Банкі қалай сынды'),
         ),
-        _rule(
+        _rule(_lt(
           'Урок Сороса: лучшие сделки — асимметричные, где ты прав по фундаменту И рынок '
           'структурно уязвим. Когда у тебя сильная идея, по словам Сороса, «важно не то, прав '
           'ты или нет, а сколько ты зарабатываешь, когда прав, и сколько теряешь, когда не '
           'прав». Размер позиции под силу убеждённости.',
-          title: 'Асимметрия убеждённости',
+          'Соростың сабағы: ең жақсы мәмілелер — асимметриялы, мұнда сен іргетас бойынша '
+          'дұрыссың ӘРІ нарық құрылымдық осал. Күшті идеяң болғанда, Соростың сөзімен, «дұрыс '
+          'па, бұрыс па емес, дұрыс болғанда қанша табасың, бұрыс болғанда қанша жоғалтасың — '
+          'маңыздысы осы». Позиция мөлшері сенімділік деңгейіне сай.'),
+          title: _lt('Асимметрия убеждённости', 'Сенімділік асимметриясы'),
         ),
-        _fact(
+        _fact(_lt(
           'Сорос называет свою философию «теорией рефлексивности»: восприятие участников влияет '
           'на саму реальность рынка, создавая самоусиливающиеся циклы пузырей и крахов. Рынок '
           'не отражает реальность пассивно — он её формирует.',
-        ),
+          'Сорос өз философиясын «рефлексивтілік теориясы» дейді: қатысушылардың қабылдауы нарық '
+          'шындығының өзіне әсер етіп, көпіршіктер мен күйреулердің өзін-өзі күшейтетін циклдарын '
+          'тудырады. Нарық шындықты енжар бейнелемейді — ол оны қалыптастырады.',
+        )),
       ],
-      quiz: const QuizQuestion(
-        question: 'В чём была суть выигрышной ставки Сороса против фунта в 1992?',
+      quiz: QuizQuestion(
+        question: _lt(
+          'В чём была суть выигрышной ставки Сороса против фунта в 1992?',
+          '1992 жылы Соростың фунтқа қарсы ұтымды ставкасының мәні неде еді?',
+        ),
         options: [
-          'Он угадал случайно',
-          'Фунт был искусственно переоценён, и удерживать курс было фундаментально невозможно',
-          'Он подкупил Банк Англии',
-          'Он купил фунты в надежде на рост',
+          _lt('Он угадал случайно', 'Ол кездейсоқ тауып айтты'),
+          _lt('Фунт был искусственно переоценён, и удерживать курс было фундаментально невозможно', 'Фунт жасанды асыра бағаланды, әрі бағамды ұстау іргелі тұрғыда мүмкін емес еді'),
+          _lt('Он подкупил Банк Англии', 'Ол Англия Банкін сатып алды'),
+          _lt('Он купил фунты в надежде на рост', 'Ол өсуге үміттеніп фунт сатып алды'),
         ],
         correctIndex: 1,
-        explanation:
-            'Сорос увидел, что завышенный курс фунта в ERM не соответствует экономике и '
-            'неудержим. Это была асимметричная ставка против фундаментально уязвимой позиции '
-            'государства.',
+        explanation: _lt(
+          'Сорос увидел, что завышенный курс фунта в ERM не соответствует экономике и '
+          'неудержим. Это была асимметричная ставка против фундаментально уязвимой позиции '
+          'государства.',
+          'Сорос ERM-дегі асырылған фунт бағамы экономикаға сәйкес келмейтінін әрі ұсталмайтынын '
+          'көрді. Бұл мемлекеттің іргелі осал позициясына қарсы асимметриялы ставка еді.',
+        ),
       ),
     ),
     CourseLesson(
@@ -3894,50 +3945,77 @@ CourseModule _module10() => CourseModule(
       code: '10.3',
       title: '2008 и The Big Short: ставка против целой системы',
       blocks: [
-        _essence(
+        _essence(_lt(
           'Кризис 2008 года показал, как жадность Уолл-стрит едва не обрушила мир — и как '
           'горстка трейдеров, увидевших правду раньше всех, заработала состояния, ставя против '
           'системы, в которую верили все. Это история о том, как идти против толпы, когда '
           'толпа состоит из самых уважаемых банков планеты.',
-        ),
-        _h('Что произошло'),
-        _p('Банки выдавали ипотеку кому угодно, упаковывали эти токсичные кредиты в сложные '
-            'бумаги (CDO), а рейтинговые агентства штамповали им рейтинг ААА (надёжнейший). '
-            'Весь карточный домик держался на вере, что цены на жильё не падают. Когда они '
-            'упали — рухнуло всё.'),
-        _story(
+          '2008 дағдарысы Уолл-стрит ашкөздігі әлемді құлатуға сәл қалғанын — әрі шындықты '
+          'бәрінен бұрын көрген бір топ трейдер бәрі сенген жүйеге қарсы ставка жасап байлық '
+          'тапқанын көрсетті. Бұл — тобыр планетаның ең құрметті банктерінен тұрғанда оған қарсы '
+          'қалай жүру керегінің тарихы.',
+        )),
+        _h(_lt('Что произошло', 'Не болды')),
+        _p(_lt(
+          'Банки выдавали ипотеку кому угодно, упаковывали эти токсичные кредиты в сложные '
+          'бумаги (CDO), а рейтинговые агентства штамповали им рейтинг ААА (надёжнейший). '
+          'Весь карточный домик держался на вере, что цены на жильё не падают. Когда они '
+          'упали — рухнуло всё.',
+          'Банктер ипотеканы кез келгенге берді, осы уытты несиелерді күрделі қағаздарға (CDO) '
+          'орап, рейтинг агенттіктері оларға AAA (ең сенімді) рейтинг басып берді. Бүкіл карта '
+          'үйі баspaна бағасы түспейді деген сенімге сүйенді. Олар түскенде — бәрі құлады.',
+        )),
+        _story(_lt(
           'Майкл Бьюрри, врач с одним глазом и синдромом Аспергера, ставший управляющим фонда, '
           'месяцами изучал тысячи ипотечных кредитов и понял: система обречена. Он буквально '
           'заставил банки создать инструмент (CDS), чтобы поставить против ипотеки. Его '
           'инвесторы крутили пальцем у виска и требовали вернуть деньги — пока в 2008-м его '
           'ставка не принесла сотни процентов прибыли.',
-          title: 'Человек, который увидел пузырь',
+          'Майкл Бьюрри — бір көзі көрмейтін, Аспергер синдромы бар, қор басқарушысы болған '
+          'дәрігер — мыңдаған ипотека несиесін айлап зерттеп: жүйе құрдымға кетеді деп түсінді. Ол '
+          'банктерді ипотекаға қарсы ставка жасау үшін құрал (CDS) жасауға тура мәжбүрледі. '
+          'Инвесторлары басын шайқап, ақшаны қайтаруды талап етті — 2008-де оның ставкасы жүздеген '
+          'пайыз пайда әкелгенше.'),
+          title: _lt('Человек, который увидел пузырь', 'Көпіршікті көрген адам'),
         ),
-        _fact(
+        _fact(_lt(
           'Когда Бьюрри открыл свои «короткие» позиции, он терпел убытки больше года, и '
           'инвесторы яростно требовали закрыть «безумную» ставку. Быть правым слишком рано '
           'неотличимо от ошибки — пока рынок не догонит реальность. Выдержка под давлением '
           'оказалась важнее самой идеи.',
-        ),
-        _rule(
+          'Бьюрри «қысқа» позицияларын ашқанда, ол бір жылдан астам зиян шекті, инвесторлар '
+          '«есалаң» ставканы жабуды ашына талап етті. Тым ерте дұрыс болу — нарық шындыққа '
+          'жеткенше — қателіктен айырғысыз. Қысым астындағы төзім идеяның өзінен маңызды болып '
+          'шықты.',
+        )),
+        _rule(_lt(
           'Уроки 2008: (1) сложность часто скрывает риск, а не убирает его; (2) рейтинги и '
           '«авторитеты» могут ошибаться все разом; (3) быть правым мало — нужно пережить '
           'период, пока рынок осознаёт правду.',
-          title: 'Вечные уроки',
+          '2008 сабақтары: (1) күрделілік тәуекелді жоймайды, жиі жасырады; (2) рейтингтер мен '
+          '«беделділер» бәрі бірден қателесуі мүмкін; (3) дұрыс болу аз — нарық шындықты '
+          'түсінгенше кезеңнен өту керек.'),
+          title: _lt('Вечные уроки', 'Мәңгілік сабақтар'),
         ),
       ],
-      quiz: const QuizQuestion(
-        question: 'Какой ключевой психологический вызов стоял перед теми, кто ставил против ипотеки в 2008?',
+      quiz: QuizQuestion(
+        question: _lt(
+          'Какой ключевой психологический вызов стоял перед теми, кто ставил против ипотеки в 2008?',
+          '2008 жылы ипотекаға қарсы ставка жасағандар алдында қандай негізгі психологиялық сын тұрды?',
+        ),
         options: [
-          'Нехватка капитала',
-          'Они были правы «слишком рано» и терпели убытки и давление, пока рынок не догнал реальность',
-          'Отсутствие торговых терминалов',
-          'Запрет коротких позиций',
+          _lt('Нехватка капитала', 'Капитал жетіспеуі'),
+          _lt('Они были правы «слишком рано» и терпели убытки и давление, пока рынок не догнал реальность', 'Олар «тым ерте» дұрыс болды әрі нарық шындыққа жеткенше зиян мен қысымға төзді'),
+          _lt('Отсутствие торговых терминалов', 'Сауда терминалдарының жоқтығы'),
+          _lt('Запрет коротких позиций', 'Қысқа позицияларға тыйым'),
         ],
         correctIndex: 1,
-        explanation:
-            'Идея была верной, но рынок осознавал реальность медленно. Месяцами трейдеры терпели '
-            'убытки и давление инвесторов. Выдержка, пока рынок догоняет правду, — отдельный навык.',
+        explanation: _lt(
+          'Идея была верной, но рынок осознавал реальность медленно. Месяцами трейдеры терпели '
+          'убытки и давление инвесторов. Выдержка, пока рынок догоняет правду, — отдельный навык.',
+          'Идея дұрыс еді, бірақ нарық шындықты баяу түсінді. Айлап трейдерлер зиян мен инвестор '
+          'қысымына төзді. Нарық шындыққа жеткенше төзім — бөлек дағды.',
+        ),
       ),
     ),
     CourseLesson(
@@ -3945,48 +4023,74 @@ CourseModule _module10() => CourseModule(
       code: '10.4',
       title: 'COVID-крах 2020: самое быстрое падение и V-восстановление',
       blocks: [
-        _essence(
+        _essence(_lt(
           'Март 2020 — уникальный кризис: рынки рухнули с рекордной скоростью на панике вокруг '
           'пандемии, а затем так же стремительно развернулись благодаря беспрецедентному '
           'вмешательству центробанков. Это живой учебник о том, что ликвидность от ФРС сильнее '
           'любой плохой новости.',
-        ),
-        _h('Хроника'),
-        _p('Февраль–март: осознание масштаба пандемии → паническая распродажа всего → за ~33 '
-            'дня индекс S&P 500 рухнул на ~34%, быстрее, чем в 1929 и 2008. Даже золото '
-            'кратко падало — в панике продают всё, чтобы получить наличные доллары.'),
-        _story(
+          '2020 наурыз — бірегей дағдарыс: нарықтар пандемия дүрбелеңінде рекордты жылдамдықпен '
+          'құлап, сосын орталық банктердің бұрын-соңды болмаған араласуының арқасында дәл солай '
+          'жылдам бұрылды. Бұл — ФРЖ өтімділігі кез келген жаман жаңалықтан күшті екенінің тірі '
+          'оқулығы.',
+        )),
+        _h(_lt('Хроника', 'Хроника')),
+        _p(_lt(
+          'Февраль–март: осознание масштаба пандемии → паническая распродажа всего → за ~33 '
+          'дня индекс S&P 500 рухнул на ~34%, быстрее, чем в 1929 и 2008. Даже золото '
+          'кратко падало — в панике продают всё, чтобы получить наличные доллары.',
+          'Ақпан–наурыз: пандемия ауқымын түсіну → бәрін дүрбелеңмен сату → ~33 күнде S&P 500 '
+          'индексі ~34%-ға құлады, 1929 бен 2008-ден жылдам. Тіпті алтын қысқа уақыт түсті — '
+          'дүрбелеңде қолма-қол доллар алу үшін бәрін сатады.',
+        )),
+        _story(_lt(
           'В разгар обвала ФРС за считанные дни обнулила ставку и объявила «неограниченное QE». '
           'Правительство раздавало деньги напрямую гражданам. Рынок развернулся на дне и за '
           'несколько месяцев переписал максимумы — классическая V-образная форма. Те, кто '
           'паниковал и продавал на дне, остались за бортом ралли.',
-          title: 'Деньги печатают — рынки растут',
+          'Құлдыраудың дәл ортасында ФРЖ санаулы күнде ставканы нөлдеп, «шексіз QE» жариялады. '
+          'Үкімет ақшаны азаматтарға тікелей таратты. Нарық түпте бұрылып, бірнеше айда '
+          'максимумдарды қайта жазды — классикалық V-пішін. Дүрбелеңдеп, түпте сатқандар ралли '
+          'тысында қалды.'),
+          title: _lt('Деньги печатают — рынки растут', 'Ақша басылады — нарық өседі'),
         ),
-        _fact(
+        _fact(_lt(
           'Парадокс 2020: бушевала худшая пандемия за век, экономика стояла, безработица '
           'взлетела — а фондовый рынок ставил рекорды. Причина — океан напечатанной ликвидности. '
           'Это намертво вбило в головы трейдеров правило: «Don\'t fight the Fed» — не воюй '
           'против печатного станка ФРС.',
-        ),
-        _rule(
+          '2020 парадоксы: ғасырдағы ең нашар пандемия өршіді, экономика тоқтады, жұмыссыздық '
+          'шарықтады — ал қор нарығы рекорд орнатты. Себебі — басылған өтімділік мұхиты. Бұл '
+          'трейдерлердің санасына «Don\'t fight the Fed» — ФРЖ баспа станогына қарсы соғыспа '
+          'деген ережені мықтап сіңірді.',
+        )),
+        _rule(_lt(
           'Уроки COVID-краха: (1) в острой панике продают даже золото — это создаёт '
           'возможность; (2) ликвидность центробанков двигает рынки сильнее новостей; (3) самые '
           'резкие развороты случаются в момент максимального страха.',
-          title: 'Вечные уроки',
+          'COVID-құлдырауының сабақтары: (1) шұғыл дүрбелеңде тіпті алтынды сатады — бұл '
+          'мүмкіндік тудырады; (2) орталық банк өтімділігі нарықты жаңалықтан күшті қозғайды; '
+          '(3) ең күрт бұрылыстар ең жоғары қорқыныш сәтінде болады.'),
+          title: _lt('Вечные уроки', 'Мәңгілік сабақтар'),
         ),
       ],
-      quiz: const QuizQuestion(
-        question: 'Что развернуло рынки вверх после обвала марта 2020?',
+      quiz: QuizQuestion(
+        question: _lt(
+          'Что развернуло рынки вверх после обвала марта 2020?',
+          '2020 наурыз құлдырауынан кейін нарықты не жоғары бұрды?',
+        ),
         options: [
-          'Окончание пандемии',
-          'Беспрецедентная ликвидность от ФРС (нулевая ставка + неограниченное QE)',
-          'Запрет на продажи',
-          'Рост безработицы',
+          _lt('Окончание пандемии', 'Пандемияның аяқталуы'),
+          _lt('Беспрецедентная ликвидность от ФРС (нулевая ставка + неограниченное QE)', 'ФРЖ-нің бұрын-соңды болмаған өтімділігі (нөлдік ставка + шексіз QE)'),
+          _lt('Запрет на продажи', 'Сатуға тыйым'),
+          _lt('Рост безработицы', 'Жұмыссыздықтың өсуі'),
         ],
         correctIndex: 1,
-        explanation:
-            'Несмотря на бушующую пандемию, океан ликвидности от ФРС развернул рынки вверх. '
-            'Отсюда правило «Don\'t fight the Fed»: печатный станок сильнее плохих новостей.',
+        explanation: _lt(
+          'Несмотря на бушующую пандемию, океан ликвидности от ФРС развернул рынки вверх. '
+          'Отсюда правило «Don\'t fight the Fed»: печатный станок сильнее плохих новостей.',
+          'Өршіп тұрған пандемияға қарамастан, ФРЖ өтімділік мұхиты нарықты жоғары бұрды. Содан '
+          '«Don\'t fight the Fed» ережесі: баспа станогы жаман жаңалықтан күшті.',
+        ),
       ),
     ),
     CourseLesson(
@@ -3994,51 +4098,77 @@ CourseModule _module10() => CourseModule(
       code: '10.5',
       title: 'Анатомия пузыря: от тюльпанов до доткомов и крипты',
       blocks: [
-        _essence(
+        _essence(_lt(
           'Пузыри повторяются веками с пугающей точностью — меняются только объекты мании '
           '(тюльпаны, акции, доткомы, крипта), но психология толпы одинакова. Научившись '
           'распознавать стадии пузыря, ты сможешь не стать его последней жертвой.',
-        ),
-        _h('Пять стадий любого пузыря'),
-        _p('1. Скрытая фаза: умные деньги тихо покупают новый актив.'),
-        _p('2. Осознание: подключаются институционалы, цена уверенно растёт.'),
-        _p('3. Мания: входит толпа, СМИ трубят о «новой эре», цена параболит, все вокруг '
-            '«зарабатывают».'),
-        _p('4. Срыв: умные деньги выходят, появляется первая трещина.'),
-        _p('5. Паника и капитуляция: обвал, толпа продаёт на дне, проклиная актив.'),
-        _story(
+          'Көпіршіктер ғасырлар бойы үрейлі дәлдікпен қайталанады — тек мания нысандары '
+          '(қызғалдақ, акция, доткомдар, крипто) ауысады, бірақ тобыр психологиясы бірдей. '
+          'Көпіршік сатыларын тануды үйренсең, оның соңғы құрбаны болмайсың.',
+        )),
+        _h(_lt('Пять стадий любого пузыря', 'Кез келген көпіршіктің бес сатысы')),
+        _p(_lt('1. Скрытая фаза: умные деньги тихо покупают новый актив.',
+          '1. Жасырын фаза: ақылды ақша жаңа активті тыныш сатып алады.')),
+        _p(_lt('2. Осознание: подключаются институционалы, цена уверенно растёт.',
+          '2. Сезіну: институционалдар қосылады, баға сенімді өседі.')),
+        _p(_lt('3. Мания: входит толпа, СМИ трубят о «новой эре», цена параболит, все вокруг '
+            '«зарабатывают».',
+          '3. Мания: тобыр кіреді, БАҚ «жаңа дәуір» туралы жар салады, баға параболаға ұшады, '
+          'айналадағылардың бәрі «табады».')),
+        _p(_lt('4. Срыв: умные деньги выходят, появляется первая трещина.',
+          '4. Сыну: ақылды ақша шығады, алғашқы жарық пайда болады.')),
+        _p(_lt('5. Паника и капитуляция: обвал, толпа продаёт на дне, проклиная актив.',
+          '5. Дүрбелең мен капитуляция: құлдырау, тобыр түпте активті қарғап сатады.')),
+        _story(_lt(
           '«Тюльпаномания» в Голландии 1637 года — первый задокументированный пузырь. На пике '
           'одна луковица редкого тюльпана стоила как роскошный дом в Амстердаме. Люди продавали '
           'имущество ради луковиц. А потом за несколько дней цены рухнули в сотни раз, оставив '
           'тысячи разорёнными. Цветок. Дороже дома.',
-          title: 'Когда цветок стоил как дом',
+          '1637 жылғы Голландиядағы «Қызғалдақ маниясы» — алғашқы құжатталған көпіршік. Шыңда '
+          'сирек қызғалдақтың бір пиязшығы Амстердамдағы сәнді үймен бірдей тұрды. Адамдар '
+          'пиязшық үшін мүлкін сатты. Сосын бірнеше күнде бағалар жүздеген есе құлап, мыңдаған '
+          'адамды банкротқа қалдырды. Гүл. Үйден қымбат.'),
+          title: _lt('Когда цветок стоил как дом', 'Гүл үймен бірдей тұрғанда'),
         ),
-        _fact(
+        _fact(_lt(
           'Исаак Ньютон — гениальнейший ум человечества — потерял состояние на пузыре Компании '
           'Южных морей в 1720 году. Он вышел рано с прибылью, но потом, видя, как «все вокруг '
           'богатеют», вошёл снова на пике — и разорился. Его фраза: «Я могу рассчитать движение '
           'небесных тел, но не безумие людей».',
-        ),
-        _rule(
+          'Исаак Ньютон — адамзаттың ең данышпан ақылы — 1720 жылы Оңтүстік теңіз компаниясының '
+          'көпіршігінде байлығынан айырылды. Ол ерте, пайдамен шықты, бірақ «айналадағылардың '
+          'бәрі байып жатқанын» көріп, шыңда қайта кірді — әрі банкротқа ұшырады. Оның сөзі: '
+          '«Аспан денелерінің қозғалысын есептей аламын, бірақ адамдардың есалаңдығын — жоқ».',
+        )),
+        _rule(_lt(
           'Признаки мании: актив растёт по параболе, о нём говорят таксисты и соседи, '
           '«в этот раз всё по-другому», люди берут кредиты ради покупки, скептиков высмеивают. '
           'Когда «зарабатывают все» — выходить почти некому, и вершина близко.',
-          title: 'Как распознать пик',
+          'Мания белгілері: актив параболамен өседі, ол туралы таксистер мен көршілер айтады, '
+          '«бұл жолы бәрі басқаша», адамдар сатып алу үшін несие алады, скептиктерді келеке етеді. '
+          '«Бәрі табатын» кезде — шығатын дерлік ешкім жоқ, әрі шың жақын.'),
+          title: _lt('Как распознать пик', 'Шыңды қалай тану керек'),
         ),
       ],
-      quiz: const QuizQuestion(
-        question: 'Какой признак чаще всего указывает на финальную стадию (манию) пузыря?',
+      quiz: QuizQuestion(
+        question: _lt(
+          'Какой признак чаще всего указывает на финальную стадию (манию) пузыря?',
+          'Көпіршіктің соңғы сатысын (маниясын) көбіне қай белгі көрсетеді?',
+        ),
         options: [
-          'Актив тихо растёт, о нём мало кто знает',
-          'О нём говорят все вокруг, толпа берёт кредиты на покупку, скептиков высмеивают',
-          'Институционалы только начинают покупать',
-          'Цена медленно снижается',
+          _lt('Актив тихо растёт, о нём мало кто знает', 'Актив тыныш өседі, ол туралы аз адам біледі'),
+          _lt('О нём говорят все вокруг, толпа берёт кредиты на покупку, скептиков высмеивают', 'Ол туралы бәрі айтады, тобыр сатып алуға несие алады, скептиктерді келеке етеді'),
+          _lt('Институционалы только начинают покупать', 'Институционалдар енді ғана сатып ала бастайды'),
+          _lt('Цена медленно снижается', 'Баға баяу төмендейді'),
         ],
         correctIndex: 1,
-        explanation:
-            'Мания — это всеобщее участие толпы, параболический рост, кредиты ради покупки и '
-            'вера «в этот раз всё иначе». Когда покупают все, новых покупателей не остаётся — '
-            'вершина рядом.',
+        explanation: _lt(
+          'Мания — это всеобщее участие толпы, параболический рост, кредиты ради покупки и '
+          'вера «в этот раз всё иначе». Когда покупают все, новых покупателей не остаётся — '
+          'вершина рядом.',
+          'Мания — тобырдың жаппай қатысуы, параболалық өсу, сатып алуға несие және «бұл жолы '
+          'бәрі басқаша» сенімі. Бәрі сатып алғанда, жаңа сатып алушы қалмайды — шың жақын.',
+        ),
       ),
     ),
   ],
