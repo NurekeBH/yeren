@@ -118,34 +118,6 @@ class BrokersController extends StateNotifier<List<BrokerAccount>> {
     ]);
   }
 
-  Future<void> linkCTrader({required BrokerName broker, required String accountNumber}) async {
-    try {
-      final acc = await _ref.read(apiServiceProvider).linkBrokerCtrader({
-        'broker_name': _brokerToApi(broker),
-        'account_number': accountNumber.trim(),
-      });
-      if (acc.isNotEmpty) {
-        _set([...state, _fromApi(acc)]);
-        return;
-      }
-    } catch (_) {
-      // Offline fallback.
-    }
-    _set([
-      ...state,
-      BrokerAccount(
-        id: 'br-${DateTime.now().millisecondsSinceEpoch}',
-        broker: broker,
-        platform: TradingPlatform.cTrader,
-        accountNumber: accountNumber.trim(),
-        balance: 0,
-        isOAuth: true,
-        linkedAt: DateTime.now(),
-        syncedAt: DateTime.now(),
-      ),
-    ]);
-  }
-
   void remove(String id) {
     _ref.read(apiServiceProvider).removeBroker(id).catchError((_) {});
     _set(state.where((a) => a.id != id).toList());

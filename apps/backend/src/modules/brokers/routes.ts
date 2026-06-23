@@ -11,12 +11,6 @@ const LinkMt = z.object({
   investor_password: z.string().min(4).max(64),
 });
 
-const LinkCTrader = z.object({
-  broker_name: z.enum(['exness', 'ic_markets', 'xm', 'pepperstone', 'oanda', 'fxpro', 'other']),
-  account_number: z.string().min(1).max(40),
-  refresh_token: z.string().optional(), // OAuth callback арқылы келеді
-});
-
 interface BrokerRow {
   id: string; broker_name: string; platform: string; account_number: string;
   server: string | null; investor_password_cipher: Buffer | null;
@@ -67,24 +61,13 @@ export async function brokersRoutes(app: FastifyInstance) {
     return { account: shape(rows[0]!), password_masked: maskInvestor(d.investor_password) };
   });
 
-  app.post('/brokers/ctrader', { onRequest: [app.authenticate] }, async (req, reply) => {
-    const parsed = LinkCTrader.safeParse(req.body);
-    if (!parsed.success) return reply.code(400).send({ error: 'bad_request' });
-    const d = parsed.data;
-    const cipher = d.refresh_token ? encryptInvestor(d.refresh_token) : null;
-    const { rows } = await query<BrokerRow>(
-      `insert into broker_accounts (user_id, broker_name, platform, account_number, ctrader_refresh_cipher, is_oauth)
-       values ($1,$2,'ctrader',$3,$4,true)
-       returning id, broker_name, platform, account_number, server, investor_password_cipher,
-                 balance, currency, is_oauth, linked_at, synced_at`,
-      [req.userId, d.broker_name, d.account_number, cipher],
-    );
-    return { account: shape(rows[0]!) };
-  });
-
   app.post('/brokers/:id/sync', { onRequest: [app.authenticate] }, async (req, reply) => {
     const id = (req.params as { id: string }).id;
-    // TODO: MT EA-дан немесе cTrader API-ден сделкаларды импорттау.
+    // Қазір тек «соңғы тексеру» уақытын белгілейміз (synced_at).
+    // Нақты MT5 сделка импорты сыртқы инфрақұрылымды талап етеді: MetaApi
+    // (metaapi.cloud) investor password арқылы read-only тарихты береді —
+    // ол үшін METAAPI_TOKEN (ақылы), broker_accounts-та metaapi_account_id
+    // бағаны және деплой керек. Сол себепті бұл деплой-кезеңіне қалдырылды.
     const { rowCount } = await query(
       `update broker_accounts set synced_at = now() where id = $1 and user_id = $2 and removed_at is null`,
       [id, req.userId],
