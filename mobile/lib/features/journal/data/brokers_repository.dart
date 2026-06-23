@@ -56,10 +56,11 @@ class BrokersController extends StateNotifier<List<BrokerAccount>> {
         BrokerAccount(
           id: 'br-002',
           broker: BrokerName.icMarkets,
-          platform: TradingPlatform.cTrader,
+          platform: TradingPlatform.mt5,
           accountNumber: 'ICM-3401822',
+          server: 'ICMarkets-MT5',
+          investorPasswordMasked: '••••••19',
           balance: 1820.00,
-          isOAuth: true,
           linkedAt: DateTime.now().subtract(const Duration(days: 6)),
           syncedAt: DateTime.now().subtract(const Duration(minutes: 1)),
         ),

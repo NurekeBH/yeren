@@ -18,7 +18,8 @@ class LinkBrokerScreen extends ConsumerStatefulWidget {
 class _LinkBrokerScreenState extends ConsumerState<LinkBrokerScreen> {
   int _step = 0;
   BrokerName? _broker;
-  TradingPlatform? _platform;
+  // Тек MetaTrader 5 қолданылады (cTrader/MT4 алынып тасталды).
+  static const _platform = TradingPlatform.mt5;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,6 @@ class _LinkBrokerScreenState extends ConsumerState<LinkBrokerScreen> {
         children: [
           _StepIndicator(current: _step, titles: [
             l.broker_step_choose_broker,
-            l.broker_step_choose_platform,
             l.broker_step_credentials,
           ]),
           const Divider(height: 1),
@@ -42,18 +42,10 @@ class _LinkBrokerScreenState extends ConsumerState<LinkBrokerScreen> {
                     _step = 1;
                   }),
                 ),
-              1 => _StepChoosePlatform(
-                  selected: _platform,
-                  onSelect: (p) => setState(() {
-                    _platform = p;
-                    _step = 2;
-                  }),
-                  onBack: () => setState(() => _step = 0),
-                ),
               _ => _StepCredentials(
                   broker: _broker!,
-                  platform: _platform!,
-                  onBack: () => setState(() => _step = 1),
+                  platform: _platform,
+                  onBack: () => setState(() => _step = 0),
                   onLinked: () => context.pop(),
                 ),
             },
@@ -172,73 +164,7 @@ class _StepChooseBroker extends StatelessWidget {
   }
 }
 
-// ──────────────────────────── Step 2: platform ────────────────────────────
-
-class _StepChoosePlatform extends StatelessWidget {
-  const _StepChoosePlatform({required this.selected, required this.onSelect, required this.onBack});
-
-  final TradingPlatform? selected;
-  final ValueChanged<TradingPlatform> onSelect;
-  final VoidCallback onBack;
-
-  @override
-  Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context);
-    final items = [
-      (TradingPlatform.mt4, l.platform_mt4, l.platform_mt_subtitle, Icons.assessment_outlined),
-      (TradingPlatform.mt5, l.platform_mt5, l.platform_mt_subtitle, Icons.bar_chart),
-      (TradingPlatform.cTrader, l.platform_ctrader, l.platform_ctrader_subtitle, Icons.bolt),
-    ];
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
-      children: [
-        for (final (p, title, subtitle, icon) in items)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Card(
-              child: InkWell(
-                borderRadius: BorderRadius.circular(16),
-                onTap: () => onSelect(p),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: AppColors.dxyBlue.withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Icon(icon, color: AppColors.dxyBlue),
-                      ),
-                      const SizedBox(width: 14),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(title, style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w600)),
-                            const SizedBox(height: 2),
-                            Text(subtitle, style: AppTypography.bodySmall()),
-                          ],
-                        ),
-                      ),
-                      if (selected == p) const Icon(Icons.check_circle, color: AppColors.profitGreen),
-                      const Icon(Icons.chevron_right, color: AppColors.textMuted),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        const SizedBox(height: 8),
-        TextButton.icon(onPressed: onBack, icon: const Icon(Icons.arrow_back), label: Text(l.common_back)),
-      ],
-    );
-  }
-}
-
-// ──────────────────────────── Step 3: credentials ────────────────────────────
+// ──────────────────────────── Step 2: credentials (MT5) ────────────────────────────
 
 class _StepCredentials extends ConsumerStatefulWidget {
   const _StepCredentials({
@@ -295,48 +221,25 @@ class _StepCredentialsState extends ConsumerState<_StepCredentials> {
     }
   }
 
-  Future<void> _submitCTrader(AppLocalizations l) async {
-    setState(() => _busy = true);
-    try {
-      // TZ §9.4: cTrader OAuth flow. Backend дайын болғанда WebView-те ашылады.
-      await ref.read(brokersControllerProvider.notifier).linkCTrader(
-            broker: widget.broker,
-            accountNumber: _account.text.isEmpty ? 'cTrader OAuth' : _account.text,
-          );
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${widget.broker.displayName} ✓ OAuth')),
-        );
-        widget.onLinked();
-      }
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    final isCTrader = widget.platform == TradingPlatform.cTrader;
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
       children: [
         _SummaryHeader(broker: widget.broker, platform: widget.platform),
         const SizedBox(height: 16),
-        if (isCTrader)
-          _CTraderBlock(onSubmit: () => _submitCTrader(l), busy: _busy)
-        else
-          _MtForm(
-            formKey: _formKey,
-            account: _account,
-            server: _server,
-            password: _password,
-            obscure: _obscure,
-            onToggleObscure: () => setState(() => _obscure = !_obscure),
-            onSubmit: () => _submitMt(l),
-            busy: _busy,
-          ),
+        _MtForm(
+          formKey: _formKey,
+          account: _account,
+          server: _server,
+          password: _password,
+          obscure: _obscure,
+          onToggleObscure: () => setState(() => _obscure = !_obscure),
+          onSubmit: () => _submitMt(l),
+          busy: _busy,
+        ),
         const SizedBox(height: 16),
         TextButton.icon(
           onPressed: widget.onBack,
@@ -471,30 +374,6 @@ class _MtForm extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _CTraderBlock extends StatelessWidget {
-  const _CTraderBlock({required this.onSubmit, required this.busy});
-
-  final VoidCallback onSubmit;
-  final bool busy;
-
-  @override
-  Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _InfoBanner(text: l.broker_link_ctrader_help, color: AppColors.dxyBlue, icon: Icons.shield_outlined),
-        const SizedBox(height: 16),
-        ElevatedButton.icon(
-          onPressed: busy ? null : onSubmit,
-          icon: const Icon(Icons.login),
-          label: Text(l.broker_link_ctrader),
-        ),
-      ],
     );
   }
 }
