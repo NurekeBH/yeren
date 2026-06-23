@@ -11,6 +11,7 @@
   "common_loading": "Loading…",
   "common_error": "Error",
   "common_retry": "Retry",
+  "common_undo": "Undo",
   "common_skip": "Skip",
   "common_next": "Next",
   "common_finish": "Finish",
@@ -72,6 +73,7 @@
   "idea_disclaimer": "This is only a recommendation and a personal opinion, not financial advice.",
   "alerts_title": "Price alerts",
   "alerts_empty": "No active alerts yet",
+  "alerts_deleted": "Alert deleted",
   "alerts_add": "Add alert",
   "alerts_notify": "Notify me",
   "alerts_mode_pips": "By pips",
@@ -305,6 +307,7 @@
   "intel_resistance": "Resistance",
   "intel_sl_recommendation": "Suggested SL",
   "intel_sentiment": "Sentiment",
+  "intel_empty": "No news yet. It will show up here as soon as the market moves.",
   "intel_bears": "Bears",
   "intel_bulls": "Bulls",
 
@@ -492,6 +495,7 @@
 
   "profile_avatar_pick": "Change avatar",
   "profile_edit": "Edit profile",
+  "profile_avatar_updated": "Profile photo updated",
   "profile_saved_toast": "Profile saved",
   "profile_about_me": "About me",
   "profile_preferred_sessions": "Preferred sessions",

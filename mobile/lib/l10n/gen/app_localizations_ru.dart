@@ -36,6 +36,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get common_retry => 'Повторить';
 
   @override
+  String get common_undo => 'Отменить';
+
+  @override
   String get common_skip => 'Пропустить';
 
   @override
@@ -211,6 +214,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get alerts_empty => 'Пока нет активных уведомлений';
+
+  @override
+  String get alerts_deleted => 'Уведомление удалено';
 
   @override
   String get alerts_add => 'Добавить уведомление';
@@ -922,6 +928,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get intel_sentiment => 'Sentiment';
 
   @override
+  String get intel_empty =>
+      'Пока нет новостей. Появятся здесь, как только рынок оживёт.';
+
+  @override
   String get intel_bears => 'Медведи';
 
   @override
@@ -1454,6 +1464,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get profile_edit => 'Редактировать профиль';
+
+  @override
+  String get profile_avatar_updated => 'Фото профиля обновлено';
 
   @override
   String get profile_saved_toast => 'Профиль сохранён';

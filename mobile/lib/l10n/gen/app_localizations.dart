@@ -154,6 +154,12 @@ abstract class AppLocalizations {
   /// **'Қайталау'**
   String get common_retry;
 
+  /// No description provided for @common_undo.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қайтару'**
+  String get common_undo;
+
   /// No description provided for @common_skip.
   ///
   /// In kk, this message translates to:
@@ -495,6 +501,12 @@ abstract class AppLocalizations {
   /// In kk, this message translates to:
   /// **'Әзірге белсенді ескерту жоқ'**
   String get alerts_empty;
+
+  /// No description provided for @alerts_deleted.
+  ///
+  /// In kk, this message translates to:
+  /// **'Ескерту жойылды'**
+  String get alerts_deleted;
 
   /// No description provided for @alerts_add.
   ///
@@ -1804,6 +1816,12 @@ abstract class AppLocalizations {
   /// **'Sentiment'**
   String get intel_sentiment;
 
+  /// No description provided for @intel_empty.
+  ///
+  /// In kk, this message translates to:
+  /// **'Әзірге жаңалық жоқ. Нарық тынышталғанда осында пайда болады.'**
+  String get intel_empty;
+
   /// No description provided for @intel_bears.
   ///
   /// In kk, this message translates to:
@@ -2811,6 +2829,12 @@ abstract class AppLocalizations {
   /// In kk, this message translates to:
   /// **'Профильді өңдеу'**
   String get profile_edit;
+
+  /// No description provided for @profile_avatar_updated.
+  ///
+  /// In kk, this message translates to:
+  /// **'Профиль суреті жаңартылды'**
+  String get profile_avatar_updated;
 
   /// No description provided for @profile_saved_toast.
   ///

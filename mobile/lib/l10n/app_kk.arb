@@ -11,6 +11,7 @@
   "common_loading": "Жүктелуде…",
   "common_error": "Қате",
   "common_retry": "Қайталау",
+  "common_undo": "Қайтару",
   "common_skip": "Өткізу",
   "common_next": "Әрі қарай",
   "common_finish": "Аяқтау",
@@ -72,6 +73,7 @@
   "idea_disclaimer": "Бұл тек ұсыныс әрі жеке пікір, қаржылық кеңес емес.",
   "alerts_title": "Баға ескертулері",
   "alerts_empty": "Әзірге белсенді ескерту жоқ",
+  "alerts_deleted": "Ескерту жойылды",
   "alerts_add": "Ескерту қосу",
   "alerts_notify": "Хабарлау",
   "alerts_mode_pips": "Пипспен",
@@ -310,6 +312,7 @@
   "intel_resistance": "Resistance",
   "intel_sl_recommendation": "SL ұсынылады",
   "intel_sentiment": "Sentiment",
+  "intel_empty": "Әзірге жаңалық жоқ. Нарық тынышталғанда осында пайда болады.",
   "intel_bears": "Аюлар",
   "intel_bulls": "Бұқалар",
 
@@ -497,6 +500,7 @@
 
   "profile_avatar_pick": "Аватарды өзгерту",
   "profile_edit": "Профильді өңдеу",
+  "profile_avatar_updated": "Профиль суреті жаңартылды",
   "profile_saved_toast": "Профиль сақталды",
   "profile_about_me": "Өзім туралы",
   "profile_preferred_sessions": "Қалаулы сессиялар",

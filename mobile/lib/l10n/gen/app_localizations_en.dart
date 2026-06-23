@@ -36,6 +36,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get common_retry => 'Retry';
 
   @override
+  String get common_undo => 'Undo';
+
+  @override
   String get common_skip => 'Skip';
 
   @override
@@ -211,6 +214,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get alerts_empty => 'No active alerts yet';
+
+  @override
+  String get alerts_deleted => 'Alert deleted';
 
   @override
   String get alerts_add => 'Add alert';
@@ -920,6 +926,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get intel_sentiment => 'Sentiment';
 
   @override
+  String get intel_empty =>
+      'No news yet. It will show up here as soon as the market moves.';
+
+  @override
   String get intel_bears => 'Bears';
 
   @override
@@ -1452,6 +1462,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profile_edit => 'Edit profile';
+
+  @override
+  String get profile_avatar_updated => 'Profile photo updated';
 
   @override
   String get profile_saved_toast => 'Profile saved';

@@ -18,13 +18,42 @@ class IntelScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(l.nav_intel)),
-      body: async.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('${l.common_error}: $e')),
-        data: (posts) => ListView.builder(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
-          itemCount: posts.length,
-          itemBuilder: (_, i) => _IntelCard(post: posts[i], l: l),
+      body: RefreshIndicator(
+        color: AppColors.gold,
+        onRefresh: () async {
+          ref.invalidate(intelListProvider);
+          await ref.read(intelListProvider.future);
+        },
+        child: async.when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (e, _) => ListView(
+            // Жаңартуға (pull-to-refresh) мүмкіндік қалу үшін скроллды сақтаймыз.
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height * 0.35),
+              Center(child: Text('${l.common_error}: $e')),
+            ],
+          ),
+          data: (posts) => posts.isEmpty
+              ? ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: [
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.28),
+                    const Icon(Icons.travel_explore, size: 48, color: AppColors.textMuted),
+                    const SizedBox(height: 12),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 40),
+                      child: Text(l.intel_empty,
+                          textAlign: TextAlign.center,
+                          style: AppTypography.bodyMedium(color: AppColors.textSecondary)),
+                    ),
+                  ],
+                )
+              : ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+                  itemCount: posts.length,
+                  itemBuilder: (_, i) => _IntelCard(post: posts[i], l: l),
+                ),
         ),
       ),
     );

@@ -23,7 +23,10 @@ class ProfileScreen extends ConsumerWidget {
   ImageProvider _avatarImage(String path) =>
       path.startsWith('http') ? NetworkImage(path) : FileImage(File(path));
 
-  Future<void> _pickAvatar(WidgetRef ref) async {
+  Future<void> _pickAvatar(BuildContext context, WidgetRef ref) async {
+    // Контекст-тәуелді нысандарды кез келген await-қа дейін ұстап аламыз.
+    final messenger = ScaffoldMessenger.of(context);
+    final msg = AppLocalizations.of(context).profile_avatar_updated;
     final picker = ImagePicker();
     final file = await picker.pickImage(source: ImageSource.gallery, imageQuality: 80, maxWidth: 600);
     if (file == null) return;
@@ -32,6 +35,7 @@ class ProfileScreen extends ConsumerWidget {
     ref.read(profileControllerProvider.notifier).setAvatar(file.path);
     final url = await ref.read(apiServiceProvider).uploadImage(file.path);
     if (url != null) ref.read(profileControllerProvider.notifier).setAvatar(url);
+    messenger.showSnackBar(SnackBar(content: Text(msg)));
   }
 
   @override
@@ -64,7 +68,7 @@ class ProfileScreen extends ConsumerWidget {
                   Row(
                     children: [
                       GestureDetector(
-                        onTap: () => _pickAvatar(ref),
+                        onTap: () => _pickAvatar(context, ref),
                         child: Stack(
                           alignment: Alignment.bottomRight,
                           children: [

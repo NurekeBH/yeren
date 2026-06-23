@@ -11,6 +11,7 @@
   "common_loading": "Загрузка…",
   "common_error": "Ошибка",
   "common_retry": "Повторить",
+  "common_undo": "Отменить",
   "common_skip": "Пропустить",
   "common_next": "Далее",
   "common_finish": "Завершить",
@@ -72,6 +73,7 @@
   "idea_disclaimer": "Это только рекомендация и личное мнение, а не финансовый совет.",
   "alerts_title": "Ценовые уведомления",
   "alerts_empty": "Пока нет активных уведомлений",
+  "alerts_deleted": "Уведомление удалено",
   "alerts_add": "Добавить уведомление",
   "alerts_notify": "Уведомить",
   "alerts_mode_pips": "По пунктам",
@@ -305,6 +307,7 @@
   "intel_resistance": "Resistance",
   "intel_sl_recommendation": "Рек. SL",
   "intel_sentiment": "Sentiment",
+  "intel_empty": "Пока нет новостей. Появятся здесь, как только рынок оживёт.",
   "intel_bears": "Медведи",
   "intel_bulls": "Быки",
 
@@ -492,6 +495,7 @@
 
   "profile_avatar_pick": "Сменить аватар",
   "profile_edit": "Редактировать профиль",
+  "profile_avatar_updated": "Фото профиля обновлено",
   "profile_saved_toast": "Профиль сохранён",
   "profile_about_me": "О себе",
   "profile_preferred_sessions": "Предпочитаемые сессии",

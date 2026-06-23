@@ -36,6 +36,9 @@ class AppLocalizationsKk extends AppLocalizations {
   String get common_retry => 'Қайталау';
 
   @override
+  String get common_undo => 'Қайтару';
+
+  @override
   String get common_skip => 'Өткізу';
 
   @override
@@ -211,6 +214,9 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get alerts_empty => 'Әзірге белсенді ескерту жоқ';
+
+  @override
+  String get alerts_deleted => 'Ескерту жойылды';
 
   @override
   String get alerts_add => 'Ескерту қосу';
@@ -919,6 +925,10 @@ class AppLocalizationsKk extends AppLocalizations {
   String get intel_sentiment => 'Sentiment';
 
   @override
+  String get intel_empty =>
+      'Әзірге жаңалық жоқ. Нарық тынышталғанда осында пайда болады.';
+
+  @override
   String get intel_bears => 'Аюлар';
 
   @override
@@ -1452,6 +1462,9 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get profile_edit => 'Профильді өңдеу';
+
+  @override
+  String get profile_avatar_updated => 'Профиль суреті жаңартылды';
 
   @override
   String get profile_saved_toast => 'Профиль сақталды';
