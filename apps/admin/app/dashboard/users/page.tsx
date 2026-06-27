@@ -101,7 +101,7 @@ export default function UsersPage() {
                 <td style={{ padding: 10 }}>{u.name || '—'}{u.city ? ` · ${u.city}` : ''}</td>
                 <td style={{ padding: 10 }}>
                   {u.is_admin && <span className="badge" style={{ background: '#7c3aed', color: '#fff' }}>admin</span>}{' '}
-                  {u.is_verified_trader && <span className="badge" style={{ background: '#2563eb', color: '#fff' }}>trader</span>}{' '}
+                  {u.is_verified_trader && <span className="badge" style={{ background: '#2563eb', color: '#fff' }}>провайдер</span>}{' '}
                   {u.is_blocked && <span className="badge" style={{ background: '#dc2626', color: '#fff' }}>blocked</span>}
                 </td>
                 <td style={{ padding: 10 }}>{u.bonus_balance}</td>
@@ -113,7 +113,7 @@ export default function UsersPage() {
                       disabled={busyId === u.id}
                       onClick={() => setRole(u, { is_verified_trader: !u.is_verified_trader })}
                     >
-                      {u.is_verified_trader ? '− trader' : '+ trader'}
+                      {u.is_verified_trader ? '− провайдер' : '+ провайдер'}
                     </button>
                     <button
                       className="ghost"

@@ -1,8 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/config/app_config.dart';
 import '../../../core/locale/locale_controller.dart';
-import '../../../core/mock/fixtures.dart';
 import '../../../core/network/api_service.dart';
 import '../../../shared/models/intel_post.dart';
 
@@ -33,12 +31,8 @@ class IntelRepository {
   final ApiService _api;
 
   Future<List<IntelPost>> fetchAll(String loc) async {
-    if (AppConfig.useRemoteApi) {
-      final list = await _api.intel();
-      return list.map((e) => intelFromJson((e as Map).cast<String, dynamic>())).toList();
-    }
-    await Future<void>.delayed(const Duration(milliseconds: 250));
-    return MockFixtures.intelPosts(loc);
+    final list = await _api.intel();
+    return list.map((e) => intelFromJson((e as Map).cast<String, dynamic>())).toList();
   }
 }
 

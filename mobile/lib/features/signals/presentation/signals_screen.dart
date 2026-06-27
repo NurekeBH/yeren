@@ -24,6 +24,12 @@ class SignalsScreen extends ConsumerWidget {
     final providers = ref.watch(signalProvidersProvider).valueOrNull ?? const [];
     final isTrader = ref.watch(profileControllerProvider).isVerifiedTrader;
 
+    Future<void> onRefresh() async {
+      ref.invalidate(signalProvidersProvider);
+      ref.invalidate(signalsListProvider);
+      await ref.read(signalsListProvider.future);
+    }
+
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -54,14 +60,18 @@ class SignalsScreen extends ConsumerWidget {
             final closed = all.where((s) => s.status != SignalStatus.active).toList();
             return TabBarView(
               children: [
-                _SignalsList(items: active, l: l, icon: Icons.bolt_outlined),
-                _SignalsList(items: closed, l: l, icon: Icons.history),
-                providers.isEmpty
-                    ? _EmptyState(icon: Icons.groups_outlined, label: l.signals_empty)
-                    : ListView(
-                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
-                        children: [for (final p in providers) ProviderCard(provider: p)],
-                      ),
+                _SignalsList(items: active, l: l, icon: Icons.bolt_outlined, onRefresh: onRefresh),
+                _SignalsList(items: closed, l: l, icon: Icons.history, onRefresh: onRefresh),
+                RefreshIndicator(
+                  onRefresh: onRefresh,
+                  child: providers.isEmpty
+                      ? _PullableEmpty(icon: Icons.groups_outlined, label: l.signals_empty)
+                      : ListView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+                          children: [for (final p in providers) ProviderCard(provider: p)],
+                        ),
+                ),
               ],
             );
           },
@@ -72,24 +82,28 @@ class SignalsScreen extends ConsumerWidget {
 }
 
 class _SignalsList extends StatelessWidget {
-  const _SignalsList({required this.items, required this.l, required this.icon});
+  const _SignalsList({required this.items, required this.l, required this.icon, required this.onRefresh});
 
   final List<Signal> items;
   final AppLocalizations l;
   final IconData icon;
+  final Future<void> Function() onRefresh;
 
   @override
   Widget build(BuildContext context) {
-    if (items.isEmpty) {
-      return _EmptyState(icon: icon, label: l.signals_empty);
-    }
-    return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
-      itemCount: items.length + 1,
-      itemBuilder: (context, i) {
-        if (i == 0) return _DisclaimerBanner(l: l);
-        return SignalCard(signal: items[i - 1]);
-      },
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: items.isEmpty
+          ? _PullableEmpty(icon: icon, label: l.signals_empty)
+          : ListView.builder(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
+              itemCount: items.length + 1,
+              itemBuilder: (context, i) {
+                if (i == 0) return _DisclaimerBanner(l: l);
+                return SignalCard(signal: items[i - 1]);
+              },
+            ),
     );
   }
 }
@@ -125,26 +139,37 @@ class _DisclaimerBanner extends StatelessWidget {
   }
 }
 
-/// Бос күй — иконка + хабар (жалаң мәтін орнына).
-class _EmptyState extends StatelessWidget {
-  const _EmptyState({required this.icon, required this.label});
+/// Бос күй — иконка + хабар. Scroll-мүмкін (AlwaysScrollable) болғандықтан
+/// бос табта да төмен тартып жаңартуға (pull-to-refresh) болады.
+class _PullableEmpty extends StatelessWidget {
+  const _PullableEmpty({required this.icon, required this.label});
   final IconData icon;
   final String label;
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
+    return LayoutBuilder(
+      builder: (context, constraints) => ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
         children: [
-          Container(
-            width: 72,
-            height: 72,
-            decoration: BoxDecoration(color: AppColors.surfaceMuted, shape: BoxShape.circle),
-            child: Icon(icon, size: 34, color: AppColors.textMuted),
+          SizedBox(
+            height: constraints.maxHeight,
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 72,
+                    height: 72,
+                    decoration: BoxDecoration(color: AppColors.surfaceMuted, shape: BoxShape.circle),
+                    child: Icon(icon, size: 34, color: AppColors.textMuted),
+                  ),
+                  const SizedBox(height: 14),
+                  Text(label, style: AppTypography.bodyMedium(color: AppColors.textSecondary)),
+                ],
+              ),
+            ),
           ),
-          const SizedBox(height: 14),
-          Text(label, style: AppTypography.bodyMedium(color: AppColors.textSecondary)),
         ],
       ),
     );

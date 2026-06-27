@@ -21,9 +21,15 @@ class CourseDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
-    final course = ref.watch(courseByIdProvider(courseId));
+    final courseAsync = ref.watch(courseByIdProvider(courseId));
+    final course = courseAsync.valueOrNull;
     if (course == null) {
-      return Scaffold(appBar: AppBar(), body: Center(child: Text(l.common_error)));
+      return Scaffold(
+        appBar: AppBar(),
+        body: Center(
+          child: courseAsync.isLoading ? const CircularProgressIndicator() : Text(l.common_error),
+        ),
+      );
     }
     final accent = Color(course.accent);
     final unlocked = ref.watch(purchasedCoursesProvider).contains(course.id);

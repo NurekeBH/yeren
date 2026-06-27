@@ -3,9 +3,7 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../core/config/app_config.dart';
 import '../../../core/locale/locale_controller.dart';
-import '../../../core/mock/trader_posts_fixtures.dart';
 import '../../../core/network/api_service.dart';
 import '../../../shared/models/trader_post.dart';
 
@@ -84,12 +82,8 @@ final traderPostsUserProvider =
   (ref) => TraderPostsController(ref.watch(sharedPreferencesProvider)),
 );
 
-/// Берілген провайдердің посттары. Remote режимде backend, mock режимде фикстура.
+/// Берілген провайдердің посттары — backend-тен (DB).
 final traderPostsProvider = FutureProvider.family<List<TraderPost>, String>((ref, providerId) async {
-  if (AppConfig.useRemoteApi) {
-    final list = await ref.watch(apiServiceProvider).providerPosts(providerId);
-    return list.map((e) => traderPostFromApi((e as Map).cast<String, dynamic>())).toList();
-  }
-  final loc = ref.watch(localeControllerProvider).languageCode;
-  return TraderPostsFixtures.forProvider(providerId, loc);
+  final list = await ref.watch(apiServiceProvider).providerPosts(providerId);
+  return list.map((e) => traderPostFromApi((e as Map).cast<String, dynamic>())).toList();
 });

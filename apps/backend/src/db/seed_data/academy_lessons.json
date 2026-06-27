@@ -1,0 +1,1568 @@
+[
+  {
+    "id": "l-001",
+    "profile_type": "revenge",
+    "source_type": "book",
+    "source_name": "Mark Douglas — Trading in the Zone",
+    "tag": "psychology",
+    "xp": 25,
+    "external_url": "https://www.amazon.com/Trading-Zone-Confidence-Discipline-Attitude/dp/0735201447",
+    "sort_order": 0,
+    "title": {
+      "ru": "Правило после убытка",
+      "kk": "Шығыннан кейінгі ереже",
+      "en": "The post-loss rule"
+    },
+    "quote": {
+      "ru": "Anything can happen. You don't need to know what is going to happen next to make money.",
+      "kk": "Anything can happen. You don't need to know what is going to happen next to make money.",
+      "en": "Anything can happen. You don't need to know what is going to happen next to make money."
+    },
+    "explanation": {
+      "ru": "Убыток — часть системы. «Надо отыграться» — нейробиологический рефлекс, не связан с рынком. Каждую сделку рассматривайте как независимое событие.",
+      "kk": "Шығын — жүйенің бір бөлшегі. \"Қайтару керек\" эмоциясы — нейробиологиялық рефлекс, нарықпен байланысы жоқ. Әр сделкаға тәуелсіз оқиға ретінде қарау керек.",
+      "en": "Loss is part of the system. \"I must recover\" is a neurobiological reflex, not a market signal. Treat each trade as an independent event."
+    },
+    "gold_application": {
+      "ru": "Если на XAU/USD сработал SL — пауза минимум 1 час. Максимум 3 сделки в сессию.",
+      "kk": "XAU/USD SL шықса — кем дегенде 1 сағат пауза. Бір сессияға max 3 сделка.",
+      "en": "If SL hits on XAU/USD — at least 1-hour pause. Max 3 trades per session."
+    },
+    "quick_check": {
+      "question": {
+        "ru": "Самое здоровое действие после большого убытка:",
+        "kk": "Үлкен шығыннан кейінгі ең сау әрекет:",
+        "en": "The healthiest action after a large loss:"
+      },
+      "options": {
+        "ru": [
+          "Войти противоположно с большим лотом",
+          "Минимум час паузы и запись в журнал",
+          "Сразу открыть ещё 3–4 сделки",
+          "Расширить SL и ждать"
+        ],
+        "kk": [
+          "Лотты ұлғайтып қарсы кіру",
+          "Кем дегенде 1 сағат пауза + журналға жазу",
+          "Бірден тағы 3–4 сделка ашу",
+          "SL-ді кеңейтіп күту"
+        ],
+        "en": [
+          "Re-enter opposite with bigger lot",
+          "At least 1-hour break + journal it",
+          "Open 3–4 more trades immediately",
+          "Widen the SL and wait"
+        ]
+      },
+      "correctIndex": 1
+    }
+  },
+  {
+    "id": "l-002",
+    "profile_type": "revenge",
+    "source_type": "film",
+    "source_name": "Margin Call (2011)",
+    "tag": "mindset",
+    "xp": 20,
+    "external_url": "https://www.imdb.com/title/tt1615147/",
+    "sort_order": 1,
+    "title": {
+      "ru": "Точка остановки",
+      "kk": "Шектен шығу нүктесі",
+      "en": "The cut-off point"
+    },
+    "quote": {
+      "ru": "Be first, be smarter, or cheat.",
+      "kk": "Be first, be smarter, or cheat.",
+      "en": "Be first, be smarter, or cheat."
+    },
+    "explanation": {
+      "ru": "У эмоциональных сделок нет edge. Рынок не видит вас — он видит статистику. Достиг лимита — стоп.",
+      "kk": "Эмоциялық сделкаларда edge жоқ. Нарық сізді емес, статистиканы көреді. Шектен шыққанда — тоқтау.",
+      "en": "Emotional trades have no edge. The market does not see you — it sees statistics. Hit the limit — stop."
+    },
+    "gold_application": {
+      "ru": "3 убытка подряд → закрой терминал. Оставь на завтра.",
+      "kk": "3 шығын қатарынан → терминалды жап. Ертеңге қалдыр.",
+      "en": "3 losses in a row → close the terminal. Leave it for tomorrow."
+    },
+    "quick_check": {
+      "question": {
+        "ru": "Что определяет «стоп» внутри дня?",
+        "kk": "Күн ішінде \"stop\"-ты не белгілейді?",
+        "en": "What defines the daily \"stop\"?"
+      },
+      "options": {
+        "ru": [
+          "Только время (24:00)",
+          "−3% drawdown или 3 убытка подряд",
+          "Когда депозит полностью потерян",
+          "Когда испортилось настроение"
+        ],
+        "kk": [
+          "Тек уақыт (24:00)",
+          "−3% drawdown немесе 3 қатарынан шығын",
+          "Депозит толық жоғалғанда",
+          "Көңіл-күй жабылғанда"
+        ],
+        "en": [
+          "Only the clock (24:00)",
+          "−3% drawdown or 3 losses in a row",
+          "When the deposit is fully lost",
+          "When the mood drops"
+        ]
+      },
+      "correctIndex": 1
+    }
+  },
+  {
+    "id": "l-003",
+    "profile_type": "revenge",
+    "source_type": "podcast",
+    "source_name": "Chat With Traders — Brett Steenbarger",
+    "tag": "psychology",
+    "xp": 25,
+    "external_url": "https://chatwithtraders.com/",
+    "sort_order": 2,
+    "title": {
+      "ru": "Эмоция ↔ метрика",
+      "kk": "Эмоция ↔ есеп",
+      "en": "Emotion ↔ metric"
+    },
+    "quote": {
+      "ru": "Successful traders are not those without emotions, but those who recognize them in real time.",
+      "kk": "Successful traders are not those without emotions, but those who recognize them in real time.",
+      "en": "Successful traders are not those without emotions, but those who recognize them in real time."
+    },
+    "explanation": {
+      "ru": "Не прячьте эмоции. Они сигнал — что вы делаете не так. Колонка эмоций в журнале — первый шаг к изменению.",
+      "kk": "Эмоцияларды жасырмау. Олар сигнал — нені дұрыс емес жасап жатқанының белгісі. Журналда эмоция бағанын қосу — өзгерістің 1-ші қадамы.",
+      "en": "Don't hide emotions. They are signals showing what you do wrong. An emotion column in the journal is step one."
+    },
+    "gold_application": {
+      "ru": "К каждой сделке — эмодзи (😤😬😐🙂😌). Со временем виден паттерн.",
+      "kk": "Әр сделкаға эмодзи (😤😬😐🙂😌). Соңында pattern шығады.",
+      "en": "Tag each trade with an emoji (😤😬😐🙂😌). Patterns emerge over time."
+    },
+    "quick_check": {
+      "question": {
+        "ru": "Зачем фиксировать эмоции в журнале:",
+        "kk": "Эмоцияны журналда тіркеудің мақсаты:",
+        "en": "Why log emotions in the journal:"
+      },
+      "options": {
+        "ru": [
+          "Привлечь подписчиков",
+          "Найти паттерн — в каком состоянии открываются плохие сделки",
+          "Просто провести время",
+          "Показать психологу"
+        ],
+        "kk": [
+          "Сатып алушыларды қызықтыру",
+          "Pattern табу — қандай күйде дұрыс емес сделка ашылады",
+          "Уақыт өткізу",
+          "Психологқа көрсету"
+        ],
+        "en": [
+          "Attract followers",
+          "Find the pattern of which mood triggers bad trades",
+          "Pass the time",
+          "Show to a psychologist"
+        ]
+      },
+      "correctIndex": 1
+    }
+  },
+  {
+    "id": "l-004",
+    "profile_type": "revenge",
+    "source_type": "book",
+    "source_name": "Brett Steenbarger — The Psychology of Trading",
+    "tag": "psychology",
+    "xp": 30,
+    "external_url": "https://www.amazon.com/Psychology-Trading-Tools-Techniques-Minded/dp/0471267619",
+    "sort_order": 3,
+    "title": {
+      "ru": "Превратить стресс в процесс",
+      "kk": "Стрессті процеске айналдыру",
+      "en": "Turn stress into process"
+    },
+    "quote": {
+      "ru": "The market does not care about your feelings; build a process that does.",
+      "kk": "The market does not care about your feelings; build a process that does.",
+      "en": "The market does not care about your feelings; build a process that does."
+    },
+    "explanation": {
+      "ru": "В эмоциях правила не работают. Решение — процесс: pre-trade чек-лист, post-trade ревью.",
+      "kk": "Эмоциялы күйде ереже орындалмайды. Шешім — процесс: pre-trade checklist, post-trade review.",
+      "en": "Rules fail under emotion. Solution: a process — pre-trade checklist, post-trade review."
+    },
+    "gold_application": {
+      "ru": "Не входим в XAU/USD без записанного плана сетапа.",
+      "kk": "XAU/USD setup жоспарын жазып алмай — кірмеу.",
+      "en": "Don't enter XAU/USD without a written setup plan."
+    },
+    "quick_check": {
+      "question": {
+        "ru": "В стрессе правила не работают. Что делать:",
+        "kk": "Стресс кезінде ережелер жұмыс істемейді. Дұрыс шешім:",
+        "en": "Rules fail under stress. What works:"
+      },
+      "options": {
+        "ru": [
+          "Сильнее стараться",
+          "Смотреть мотивационные видео",
+          "Внедрить pre-trade и post-trade процесс",
+          "Снести терминал"
+        ],
+        "kk": [
+          "Күштірек тырысу",
+          "Мотивациялық видео көру",
+          "Pre-trade және post-trade процесс орнату",
+          "Терминалды босату"
+        ],
+        "en": [
+          "Try harder",
+          "Watch motivational videos",
+          "Install pre-trade and post-trade process",
+          "Delete the terminal"
+        ]
+      },
+      "correctIndex": 2
+    }
+  },
+  {
+    "id": "l-005",
+    "profile_type": "revenge",
+    "source_type": "trader",
+    "source_name": "Ed Seykota",
+    "tag": "mindset",
+    "xp": 30,
+    "external_url": "https://en.wikipedia.org/wiki/Ed_Seykota",
+    "sort_order": 4,
+    "title": {
+      "ru": "Каждый получает желаемый результат",
+      "kk": "Әркім қалаған нәтижесін алады",
+      "en": "Everyone gets what they want"
+    },
+    "quote": {
+      "ru": "Win or lose, everybody gets what they want out of the market.",
+      "kk": "Win or lose, everybody gets what they want out of the market.",
+      "en": "Win or lose, everybody gets what they want out of the market."
+    },
+    "explanation": {
+      "ru": "Кто получает удовольствие от убытков, тот их получает. «Отыграться» — форма самонаказания. Чтобы поменять поведение — найдите причину.",
+      "kk": "Шығыннан рахаттанатын адам шығынға келеді. \"Қайтару\" — өзін-өзі жазалаудың формасы. Іс-әрекетті өзгерту үшін — себебін табыңыз.",
+      "en": "Those who enjoy losses get them. \"Revenge\" is self-punishment. To change behaviour, find the underlying motive."
+    },
+    "gold_application": {
+      "ru": "После убытка: вопрос «что я получил?» — пауза + журнал.",
+      "kk": "Шығыннан кейін: \"Мен не алдым?\" сұрағы — pause + журнал.",
+      "en": "After a loss ask 'what did I get?' — pause + journal."
+    },
+    "quick_check": {
+      "question": {
+        "ru": "По Сейкоте, корневая причина повторяющихся убытков:",
+        "kk": "Сейкотаның тезисі бойынша, қайталанатын шығынның түпкі себебі:",
+        "en": "Per Seykota, the root cause of recurring losses:"
+      },
+      "options": {
+        "ru": [
+          "Скрытый мотив — самонаказание",
+          "Манипуляции брокера",
+          "Плохой интернет",
+          "Фаза луны"
+        ],
+        "kk": [
+          "Жасырын мотив — өзін жазалау",
+          "Брокер манипуляциясы",
+          "Нашар интернет",
+          "Айдың фазасы"
+        ],
+        "en": [
+          "Hidden motive — self-punishment",
+          "Broker manipulation",
+          "Bad internet",
+          "Phase of the moon"
+        ]
+      },
+      "correctIndex": 0
+    }
+  },
+  {
+    "id": "l-006",
+    "profile_type": "uncontrolledRisk",
+    "source_type": "book",
+    "source_name": "Alexander Elder — Trading for a Living",
+    "tag": "risk",
+    "xp": 30,
+    "external_url": "https://www.amazon.com/Trading-Living-Psychology-Tactics-Management/dp/0471592242",
+    "sort_order": 5,
+    "title": {
+      "ru": "Правило 2%",
+      "kk": "2% ережесі",
+      "en": "The 2% rule"
+    },
+    "quote": {
+      "ru": "Risk no more than 2% of your equity on any single trade.",
+      "kk": "Risk no more than 2% of your equity on any single trade.",
+      "en": "Risk no more than 2% of your equity on any single trade."
+    },
+    "explanation": {
+      "ru": "Больше 2% на сделку — внезапная смерть. Даже при 10 убытках подряд депозит не упадёт ниже −20%.",
+      "kk": "Кез келген сделкаға 2%-дан көп қою — оқыс өлім. 10 қатарынан шығын болса да, депозит −20%-дан төмендемейді.",
+      "en": "Risking more than 2% per trade is sudden death. Even 10 losses in a row keep the account above −20%."
+    },
+    "gold_application": {
+      "ru": "Депозит $1000 → макс. $20 риска → 0.05 лот при SL 40 пипсов.",
+      "kk": "$1000 депозит → max $20 risk → 0.05 lot 40 pip SL-мен.",
+      "en": "$1000 deposit → max $20 risk → 0.05 lot with 40-pip SL."
+    },
+    "quick_check": {
+      "question": {
+        "ru": "Депозит $5000, риск 1%, SL 50 пипсов. Лот:",
+        "kk": "$5000 депозит, 1% риск, SL 50 пип. Лот:",
+        "en": "$5000 deposit, 1% risk, 50-pip SL. Lot size:"
+      },
+      "options": {
+        "ru": [
+          "0.1 lot",
+          "1.0 lot",
+          "0.5 lot",
+          "5.0 lot"
+        ],
+        "kk": [
+          "0.1 lot",
+          "1.0 lot",
+          "0.5 lot",
+          "5.0 lot"
+        ],
+        "en": [
+          "0.1 lot",
+          "1.0 lot",
+          "0.5 lot",
+          "5.0 lot"
+        ]
+      },
+      "correctIndex": 0
+    }
+  },
+  {
+    "id": "l-007",
+    "profile_type": "uncontrolledRisk",
+    "source_type": "book",
+    "source_name": "Nassim Taleb — Fooled by Randomness",
+    "tag": "risk",
+    "xp": 30,
+    "external_url": "https://www.amazon.com/Fooled-Randomness-Hidden-Markets-Incerto/dp/0812975219",
+    "sort_order": 6,
+    "title": {
+      "ru": "Победа ≠ ум",
+      "kk": "Жеңіс ≠ ақылдылық",
+      "en": "Winning ≠ skill"
+    },
+    "quote": {
+      "ru": "Mild success can be explained by skills and labor. Wild success is attributable to variance.",
+      "kk": "Mild success can be explained by skills and labor. Wild success is attributable to variance.",
+      "en": "Mild success can be explained by skills and labor. Wild success is attributable to variance."
+    },
+    "explanation": {
+      "ru": "Большая выигрышная серия — это часто случайность. После «угадал» большим лотом следует разнос.",
+      "kk": "Үлкен ұтыс — көбіне randomness. Жоғары лотпен бір рет ұту → \"ережені тапқам\" сезім → келесіде талқандалу.",
+      "en": "Big wins often come from randomness. One outsized win seeds overconfidence and the next blow-up."
+    },
+    "gold_application": {
+      "ru": "После победы не увеличивайте лот. Цикл Plan-Do-Review.",
+      "kk": "Жеңістен кейін лотты үлкейтпеңіз. Plan-Do-Review циклы.",
+      "en": "Do not increase lot after a win. Plan-Do-Review cycle."
+    },
+    "quick_check": {
+      "question": {
+        "ru": "Здоровое действие после 5 побед подряд:",
+        "kk": "5 жеңіс қатарынан кейінгі сау әрекет:",
+        "en": "Healthy action after 5 wins in a row:"
+      },
+      "options": {
+        "ru": [
+          "Увеличить лот в 2 раза",
+          "Продолжать по тем же правилам",
+          "Поставить весь депозит на одну сделку",
+          "Уволиться и только трейдить"
+        ],
+        "kk": [
+          "Лотты 2× үлкейту",
+          "Сол ережемен жалғастыру",
+          "Барлық депозитті бір сделкаға салу",
+          "Жұмысты тастап тек трейдинг"
+        ],
+        "en": [
+          "Double the lot",
+          "Stick to the same rules",
+          "All-in on one trade",
+          "Quit job and trade full-time"
+        ]
+      },
+      "correctIndex": 1
+    }
+  },
+  {
+    "id": "l-008",
+    "profile_type": "uncontrolledRisk",
+    "source_type": "book",
+    "source_name": "Nassim Taleb — The Black Swan",
+    "tag": "risk",
+    "xp": 30,
+    "external_url": "https://www.amazon.com/Black-Swan-Improbable-Robustness-Fragility/dp/081297381X",
+    "sort_order": 7,
+    "title": {
+      "ru": "Чёрный лебедь — всегда возможен",
+      "kk": "Қара аққу — әрқашан тағатын",
+      "en": "Black Swan — always possible"
+    },
+    "quote": {
+      "ru": "History does not crawl, it jumps.",
+      "kk": "History does not crawl, it jumps.",
+      "en": "History does not crawl, it jumps."
+    },
+    "explanation": {
+      "ru": "Главные изменения истории — чёрные лебеди. Риск-менеджмент нужен, чтобы их пережить.",
+      "kk": "Тарихтың үлкен өзгерістері — қара аққулар. Risk management — олардан өтуге арналған.",
+      "en": "History's biggest moves are black swans. Risk management exists to survive them."
+    },
+    "gold_application": {
+      "ru": "Сделка без SL — бомба. Всегда SL.",
+      "kk": "Stop loss-сыз сделка — бомба. Әрқашан SL.",
+      "en": "Trade without SL = a bomb. Always SL."
+    },
+    "quick_check": {
+      "question": {
+        "ru": "Защита от события «чёрного лебедя»:",
+        "kk": "Қара аққу оқиғасынан қорғану жолы:",
+        "en": "Protection from a Black Swan event:"
+      },
+      "options": {
+        "ru": [
+          "Высокое плечо",
+          "Если прогноз чёткий — без SL",
+          "SL и максимум % риска на каждой сделке",
+          "Концентрация на одном активе"
+        ],
+        "kk": [
+          "Жоғары leverage",
+          "Болжам нақты болса — SL жоқ",
+          "Барлық сделкада SL + max risk %",
+          "Бір ғана активке шоғырлану"
+        ],
+        "en": [
+          "High leverage",
+          "No SL if forecast is clear",
+          "SL + max % risk on every trade",
+          "Concentrate in one asset"
+        ]
+      },
+      "correctIndex": 2
+    }
+  },
+  {
+    "id": "l-009",
+    "profile_type": "uncontrolledRisk",
+    "source_type": "film",
+    "source_name": "Rogue Trader (1999)",
+    "tag": "risk",
+    "xp": 25,
+    "external_url": "https://www.imdb.com/title/tt0131566/",
+    "sort_order": 8,
+    "title": {
+      "ru": "Barings: падение из-за одного трейдера",
+      "kk": "Барингс банкі: бір трейдердің құлауы",
+      "en": "Barings: one trader, full collapse"
+    },
+    "quote": {
+      "ru": "I bet the bank — and lost it.",
+      "kk": "I bet the bank — and lost it.",
+      "en": "I bet the bank — and lost it."
+    },
+    "explanation": {
+      "ru": "Ник Лисон averaging-down потерял $1.3B и обанкротил 233-летний банк. Риск без дисциплины — катастрофа.",
+      "kk": "Ник Лисон averaging-down арқылы $1.3B жоғалтып, 233 жасар банкті құлатты. Дисциплинасыз risk — апат.",
+      "en": "Nick Leeson averaged-down to $1.3B in losses, sinking a 233-year-old bank. Risk without discipline = disaster."
+    },
+    "gold_application": {
+      "ru": "Averaging-down — никогда. Только запланированный набор позиции.",
+      "kk": "Averaging-down ешқашан. Тек жоспарланған позиция масштабтау.",
+      "en": "Averaging-down — never. Only planned position scaling."
+    },
+    "quick_check": {
+      "question": {
+        "ru": "Почему averaging-down опасен?",
+        "kk": "Averaging-down дегеніміз не үшін қауіпті?",
+        "en": "Why is averaging-down dangerous?"
+      },
+      "options": {
+        "ru": [
+          "Улучшает среднюю цену",
+          "Экспоненциально увеличивает убыток",
+          "Выгодно брокеру",
+          "Эмоционально легче"
+        ],
+        "kk": [
+          "Орташа бағаны жақсартады",
+          "Шығынды экспоненциалды үлкейтеді",
+          "Брокерге пайдалы",
+          "Эмоция жағынан жеңіл"
+        ],
+        "en": [
+          "It improves the average",
+          "It grows losses exponentially",
+          "Good for the broker",
+          "Easier emotionally"
+        ]
+      },
+      "correctIndex": 1
+    }
+  },
+  {
+    "id": "l-010",
+    "profile_type": "uncontrolledRisk",
+    "source_type": "podcast",
+    "source_name": "The Trading Game Podcast — Gary Stevenson",
+    "tag": "risk",
+    "xp": 25,
+    "external_url": "https://garyseconomics.com/podcast",
+    "sort_order": 9,
+    "title": {
+      "ru": "Учиться переваривать риск",
+      "kk": "Тәуекелді жеуге үйрену",
+      "en": "Learning to digest risk"
+    },
+    "quote": {
+      "ru": "You don't learn to win — you learn to size losses.",
+      "kk": "You don't learn to win — you learn to size losses.",
+      "en": "You don't learn to win — you learn to size losses."
+    },
+    "explanation": {
+      "ru": "Самый молодой трейдер Citi: контролируйте не размер позиции, а размер убытка.",
+      "kk": "Citi-дегі ең жас трейдер: позиция мөлшерін емес, шығын мөлшерін бақылау керек.",
+      "en": "Citi's youngest trader: control loss size, not position size."
+    },
+    "gold_application": {
+      "ru": "SL на XAU/USD всегда заранее. Лот — следствие SL.",
+      "kk": "XAU/USD-те SL әрқашан жоспарлы. Лот — SL-ден туады.",
+      "en": "SL on XAU/USD is always pre-planned. Lot follows from SL."
+    },
+    "quick_check": {
+      "question": {
+        "ru": "Что профи считает в первую очередь?",
+        "kk": "Профи трейдер бірінші не есептейді?",
+        "en": "What does a pro calculate first?"
+      },
+      "options": {
+        "ru": [
+          "Потенциальный убыток",
+          "Потенциальная прибыль",
+          "Комиссию брокера",
+          "Spread"
+        ],
+        "kk": [
+          "Ықтимал шығын",
+          "Ықтимал пайда",
+          "Брокер комиссиясы",
+          "Spread"
+        ],
+        "en": [
+          "Potential loss",
+          "Potential profit",
+          "Broker commission",
+          "Spread"
+        ]
+      },
+      "correctIndex": 0
+    }
+  },
+  {
+    "id": "l-011",
+    "profile_type": "hope",
+    "source_type": "book",
+    "source_name": "Edwin Lefèvre — Reminiscences of a Stock Operator",
+    "tag": "discipline",
+    "xp": 25,
+    "external_url": "https://www.amazon.com/Reminiscences-Stock-Operator-Edwin-Lef%C3%A8vre/dp/0471770884",
+    "sort_order": 10,
+    "title": {
+      "ru": "Надежда и план",
+      "kk": "Үміт пен Жоспар",
+      "en": "Hope and plan"
+    },
+    "quote": {
+      "ru": "The market is never wrong; opinions often are.",
+      "kk": "The market is never wrong; opinions often are.",
+      "en": "The market is never wrong; opinions often are."
+    },
+    "explanation": {
+      "ru": "«В итоге развернётся» — не интуиция, а бегство от убытка. SL — защита, его нельзя двигать.",
+      "kk": "\"Соңында бұрылады\" сезімі — интуиция емес, шығыннан қашу. SL — қорғаныс, оны қозғау зиян.",
+      "en": "\"It will turn around\" is not intuition — it is escape from loss. SL is a shield; do not move it."
+    },
+    "gold_application": {
+      "ru": "Поставил SL — не расширяй. Не достал TP → двигай в breakeven, не назад.",
+      "kk": "SL қойдың — кеңейтпе. TP жетпесе breakeven-ге жылжыт, артқа емес.",
+      "en": "SL set — do not widen it. If TP not reached → move to breakeven, never back."
+    },
+    "quick_check": {
+      "question": {
+        "ru": "Что такое SL:",
+        "kk": "SL дегеніміз:",
+        "en": "What is SL:"
+      },
+      "options": {
+        "ru": [
+          "Уйти стыдно — лучше расширить",
+          "Точка инвалидации сетапа — не двигается",
+          "Просто рекомендация брокера",
+          "Ненужная деталь"
+        ],
+        "kk": [
+          "Шығу — ұят, оны кеңейту керек",
+          "Setup invalidation point — қозғалмайды",
+          "Брокер ұсынысы ғана",
+          "Қажет емес деталь"
+        ],
+        "en": [
+          "Exiting is shameful, widen it",
+          "Setup invalidation point — never moves",
+          "Just a broker's suggestion",
+          "Unnecessary detail"
+        ]
+      },
+      "correctIndex": 1
+    }
+  },
+  {
+    "id": "l-012",
+    "profile_type": "hope",
+    "source_type": "podcast",
+    "source_name": "Two Quants and a Financial Planner",
+    "tag": "psychology",
+    "xp": 25,
+    "external_url": "https://twoquantsandafinancialplanner.com/",
+    "sort_order": 11,
+    "title": {
+      "ru": "Вероятностное мышление",
+      "kk": "Probabilistic thinking",
+      "en": "Probabilistic thinking"
+    },
+    "quote": {
+      "ru": "Stop predicting. Start measuring probabilities.",
+      "kk": "Stop predicting. Start measuring probabilities.",
+      "en": "Stop predicting. Start measuring probabilities."
+    },
+    "explanation": {
+      "ru": "Надежда — это вера в один исход. Трейдер же присваивает вероятность каждому сценарию.",
+      "kk": "Үміт — бір нәтижеге сену. Trader — әр сценарийге ықтималдық беру. Бұл — кәсіби көзқарас.",
+      "en": "Hope is belief in one outcome. A trader assigns probability to every scenario."
+    },
+    "gold_application": {
+      "ru": "Перед сделкой: bullish 60% / bearish 30% / neutral 10%. Под это и размер позиции.",
+      "kk": "Сделка алдында: bullish 60% / bearish 30% / neutral 10%. Соған сай size.",
+      "en": "Pre-trade: bullish 60% / bearish 30% / neutral 10%. Size accordingly."
+    },
+    "quick_check": {
+      "question": {
+        "ru": "Роль надежды в трейдинге:",
+        "kk": "Үміттің трейдингтегі рөлі:",
+        "en": "Hope's role in trading:"
+      },
+      "options": {
+        "ru": [
+          "Сильный актив — больше надежды → больше побед",
+          "Против плана — нет статистического edge",
+          "Только в дей-трейдинге",
+          "Нужна в инвестбанке"
+        ],
+        "kk": [
+          "Күшті актив — үміт жоғары → жеңіс жоғары",
+          "Жоспарға қарсы — статистикалық edge жоқ",
+          "Тек day trading-те қолданылады",
+          "Инвестбанкте керек"
+        ],
+        "en": [
+          "Strong asset, more hope → more wins",
+          "Against the plan — no statistical edge",
+          "Used only in day trading",
+          "Needed at an investment bank"
+        ]
+      },
+      "correctIndex": 1
+    }
+  },
+  {
+    "id": "l-013",
+    "profile_type": "hope",
+    "source_type": "book",
+    "source_name": "Annie Duke — Thinking in Bets",
+    "tag": "mindset",
+    "xp": 30,
+    "external_url": "https://www.amazon.com/Thinking-Bets-Making-Smarter-Decisions/dp/0735216355",
+    "sort_order": 12,
+    "title": {
+      "ru": "Отделить решение от результата",
+      "kk": "Шешімді нәтижеден ажырату",
+      "en": "Decision vs outcome"
+    },
+    "quote": {
+      "ru": "Resulting is judging a decision based on its outcome rather than on the quality of the decision.",
+      "kk": "Resulting is judging a decision based on its outcome rather than on the quality of the decision.",
+      "en": "Resulting is judging a decision based on its outcome rather than on the quality of the decision."
+    },
+    "explanation": {
+      "ru": "Хорошее решение может дать плохой исход — и наоборот. Оценивайте качество решения отдельно от результата.",
+      "kk": "Жақсы шешім қате нәтиже бере алады — және керісінше. Шешімнің сапасын бөлек бағалаңыз.",
+      "en": "A good decision can yield a bad outcome and vice versa. Judge decision quality independently of result."
+    },
+    "gold_application": {
+      "ru": "Даже если SL — но это был A+ сетап, в журнале отметить «качественное решение».",
+      "kk": "SL шықса да, A+ setup болса — журналда \"сапалы шешім\" деп белгілеу.",
+      "en": "Even if SL hit, if it was an A+ setup, log it as 'good decision'."
+    },
+    "quick_check": {
+      "question": {
+        "ru": "Ошибка «resulting»:",
+        "kk": "\"Resulting\" қатесі:",
+        "en": "The \"resulting\" mistake:"
+      },
+      "options": {
+        "ru": [
+          "Слишком часто проверять результат",
+          "Оценивать решение только по результату",
+          "Отрицать убыток",
+          "Делать паузу"
+        ],
+        "kk": [
+          "Нәтижені тым көп тексеру",
+          "Шешімді тек нәтиже бойынша бағалау",
+          "Шығынды теріске шығару",
+          "Pause жасау"
+        ],
+        "en": [
+          "Checking outcomes too often",
+          "Judging decisions purely by outcome",
+          "Denying losses",
+          "Taking a break"
+        ]
+      },
+      "correctIndex": 1
+    }
+  },
+  {
+    "id": "l-014",
+    "profile_type": "hope",
+    "source_type": "film",
+    "source_name": "The Wolf of Wall Street (2013)",
+    "tag": "mindset",
+    "xp": 20,
+    "external_url": "https://www.imdb.com/title/tt0993846/",
+    "sort_order": 13,
+    "title": {
+      "ru": "Цена гипер-надежды",
+      "kk": "Гипер-үміттің бағасы",
+      "en": "Cost of hyper-hope"
+    },
+    "quote": {
+      "ru": "The only thing standing between you and your goal is the bullsh*t story you keep telling yourself.",
+      "kk": "The only thing standing between you and your goal is the bullsh*t story you keep telling yourself.",
+      "en": "The only thing standing between you and your goal is the bullsh*t story you keep telling yourself."
+    },
+    "explanation": {
+      "ru": "Большая надежда часто это просто продажа. Никакого «выигрыша вне плана» — есть только план.",
+      "kk": "Үлкен үміт — кейде үлкен сатылым ғана. Жоспардан тыс \"ұту\" уәдесі — жоқ. Жоспар бар.",
+      "en": "Big hope is often just a sales pitch. There is no \"win outside the plan\" — there is only the plan."
+    },
+    "gold_application": {
+      "ru": "Появилось чувство «можно заработать» — превратите его в план (entry/SL/TP/RR).",
+      "kk": "\"Ұтуға болады\" сезімі болса — соны жоспарға айналдыр (entry/SL/TP/RR).",
+      "en": "When \"I could win this\" arises — turn it into a plan (entry/SL/TP/RR)."
+    },
+    "quick_check": {
+      "question": {
+        "ru": "«Нельзя пропустить» — как реагировать?",
+        "kk": "\"Соны қашыруға болмайды\" сезімі — қалай әрекет ету керек?",
+        "en": "The \"I cannot miss this\" feeling — how to react?"
+      },
+      "options": {
+        "ru": [
+          "Войти по чувству",
+          "Увеличить лот",
+          "Потребовать план (entry/SL/TP) или пропустить",
+          "Включить максимальное плечо"
+        ],
+        "kk": [
+          "Сезімге кіру",
+          "Лот ұлғайту",
+          "Жоспарды талап ету (entry/SL/TP) немесе өткізу",
+          "Жоғары leverage"
+        ],
+        "en": [
+          "Enter by feeling",
+          "Increase the lot",
+          "Demand a plan (entry/SL/TP) or skip",
+          "Max leverage"
+        ]
+      },
+      "correctIndex": 2
+    }
+  },
+  {
+    "id": "l-015",
+    "profile_type": "hope",
+    "source_type": "podcast",
+    "source_name": "Better System Trader",
+    "tag": "strategy",
+    "xp": 25,
+    "external_url": "https://bettersystemtrader.com/",
+    "sort_order": 14,
+    "title": {
+      "ru": "Без системы — случайный результат",
+      "kk": "Жүйесіз сауда — кездейсоқ нәтиже",
+      "en": "No system, random result"
+    },
+    "quote": {
+      "ru": "If you can't describe what you're doing as a system, you don't have an edge.",
+      "kk": "If you can't describe what you're doing as a system, you don't have an edge.",
+      "en": "If you can't describe what you're doing as a system, you don't have an edge."
+    },
+    "explanation": {
+      "ru": "Система воспроизводима. Без системы «надежда» делает результат случайным. Система проверяется бэктестом.",
+      "kk": "Жүйе — қайталанатын. Жүйесіз \"үміт\" нәтижені кездейсоқ етеді. Жүйе backtest-пен расталады.",
+      "en": "A system is reproducible. Without it, 'hope' makes results random. A system is validated via backtest."
+    },
+    "gold_application": {
+      "ru": "Прогоните стратегию XAU/USD по 50 ретестам + 50 пробоям в бэктесте.",
+      "kk": "XAU/USD стратегиясын 50 retest + 50 breakout бойынша backtest жасап шығар.",
+      "en": "Backtest your XAU/USD strategy across 50 retests + 50 breakouts."
+    },
+    "quick_check": {
+      "question": {
+        "ru": "Простейшая проверка системы:",
+        "kk": "Жүйенің ең қарапайым тексерісі:",
+        "en": "Simplest system check:"
+      },
+      "options": {
+        "ru": [
+          "Одобрение брокера",
+          "Backtest + forward demo",
+          "Количество телеграм-чатов",
+          "Лайки в соцсетях"
+        ],
+        "kk": [
+          "Брокердің мақұлдауы",
+          "Backtest + forward demo",
+          "Telegram чатының саны",
+          "Әлеуметтік желілердегі лайктар"
+        ],
+        "en": [
+          "Broker's approval",
+          "Backtest + forward demo",
+          "Number of Telegram chats",
+          "Social media likes"
+        ]
+      },
+      "correctIndex": 1
+    }
+  },
+  {
+    "id": "l-016",
+    "profile_type": "hope",
+    "source_type": "book",
+    "source_name": "Mark Douglas — The Disciplined Trader",
+    "tag": "discipline",
+    "xp": 25,
+    "external_url": "https://www.amazon.com/Disciplined-Trader-Developing-Winning-Attitudes/dp/0132157578",
+    "sort_order": 15,
+    "title": {
+      "ru": "Условие уверенности",
+      "kk": "Сенімділік шарты",
+      "en": "Confidence condition"
+    },
+    "quote": {
+      "ru": "Confidence and fear are mutually exclusive.",
+      "kk": "Confidence and fear are mutually exclusive.",
+      "en": "Confidence and fear are mutually exclusive."
+    },
+    "explanation": {
+      "ru": "Уверенность рождается из доверия к системе. Надежда — из страха.",
+      "kk": "Сенімділік — жүйеге сенімнен туады. Үміт — қорқыныштан туады.",
+      "en": "Confidence comes from trust in a system. Hope comes from fear."
+    },
+    "gold_application": {
+      "ru": "Соберите A+ чек-лист и читайте его перед каждой сделкой.",
+      "kk": "A+ checklist құр; әр сделкаға дейін соны қайталап оқы.",
+      "en": "Build an A+ checklist and read it before each trade."
+    },
+    "quick_check": {
+      "question": {
+        "ru": "Источник уверенности:",
+        "kk": "Сенімділіктің көзі:",
+        "en": "Source of confidence:"
+      },
+      "options": {
+        "ru": [
+          "Доверие к системе",
+          "Большой депозит",
+          "Мотивационные цитаты",
+          "Логотип брокера"
+        ],
+        "kk": [
+          "Жүйеге сенім",
+          "Үлкен депозит",
+          "Мотивациялық цитаталар",
+          "Брокер логотипі"
+        ],
+        "en": [
+          "Trust in the system",
+          "Large deposit",
+          "Motivational quotes",
+          "Broker's logo"
+        ]
+      },
+      "correctIndex": 0
+    }
+  },
+  {
+    "id": "l-017",
+    "profile_type": "disciplined",
+    "source_type": "trader",
+    "source_name": "Paul Tudor Jones",
+    "tag": "strategy",
+    "xp": 35,
+    "external_url": "https://en.wikipedia.org/wiki/Paul_Tudor_Jones",
+    "sort_order": 16,
+    "title": {
+      "ru": "Сначала риск, потом прибыль",
+      "kk": "Тәуекел әуелі, пайда содан кейін",
+      "en": "Risk first, profit second"
+    },
+    "quote": {
+      "ru": "The most important rule of trading is to play great defense, not great offense.",
+      "kk": "The most important rule of trading is to play great defense, not great offense.",
+      "en": "The most important rule of trading is to play great defense, not great offense."
+    },
+    "explanation": {
+      "ru": "Defense — журнал после каждой сделки, оценка edge, только A+ сетапы.",
+      "kk": "Defense — әр сделкадан кейін журнал, statistical edge есептеу, A+ setup-тарды ғана таңдау.",
+      "en": "Defense — journal every trade, measure the edge, take only A+ setups."
+    },
+    "gold_application": {
+      "ru": "На XAU/USD — максимум 5 A+ сетапов в неделю. Фокус на overlap London/NY.",
+      "kk": "XAU/USD үшін аптада max 5 A+ setup. London/NY overlap-қа шоғырлан.",
+      "en": "On XAU/USD: max 5 A+ setups per week. Focus on London/NY overlap."
+    },
+    "quick_check": {
+      "question": {
+        "ru": "Критерий A+ сетапа:",
+        "kk": "A+ setup критерийі:",
+        "en": "A+ setup criterion:"
+      },
+      "options": {
+        "ru": [
+          "Чувство «выглядит правильно»",
+          "Письменный чек-лист — минимум 4 confluence",
+          "Только высокая волатильность",
+          "Любой ретест"
+        ],
+        "kk": [
+          "\"Көзімде дұрыс\" сезім",
+          "Жазылған checklist — min 4 confluence",
+          "Тек жоғары волатильділік",
+          "Кез келген retest"
+        ],
+        "en": [
+          "\"Feels right\" intuition",
+          "Written checklist — min 4 confluence",
+          "Only high volatility",
+          "Any retest"
+        ]
+      },
+      "correctIndex": 1
+    }
+  },
+  {
+    "id": "l-018",
+    "profile_type": "disciplined",
+    "source_type": "book",
+    "source_name": "Jack Schwager — Market Wizards",
+    "tag": "strategy",
+    "xp": 35,
+    "external_url": "https://www.amazon.com/Market-Wizards-Updated-Interviews-Traders/dp/1118273052",
+    "sort_order": 17,
+    "title": {
+      "ru": "Поиск edge",
+      "kk": "Edge табу",
+      "en": "Finding the edge"
+    },
+    "quote": {
+      "ru": "The hard work in trading comes in the preparation. The actual process of trading should be effortless.",
+      "kk": "The hard work in trading comes in the preparation. The actual process of trading should be effortless.",
+      "en": "The hard work in trading comes in the preparation. The actual process of trading should be effortless."
+    },
+    "explanation": {
+      "ru": "Edge — это статистическое преимущество. Live только после backtest + forward demo + журнала.",
+      "kk": "Edge — статистикалық преимущество. Backtesting + forward demo + журналдан кейін ғана live.",
+      "en": "Edge = statistical advantage. Live only after backtest + forward demo + journal."
+    },
+    "gold_application": {
+      "ru": "200+ сделок backtest + месяц forward demo → live.",
+      "kk": "200+ сделка backtest + 1 ай forward демо → live.",
+      "en": "200+ trade backtest + 1-month forward demo → live."
+    },
+    "quick_check": {
+      "question": {
+        "ru": "Когда выводить стратегию на live?",
+        "kk": "Стратегияны live-қа қашан шығару керек?",
+        "en": "When to take a strategy live?"
+      },
+      "options": {
+        "ru": [
+          "Сразу, как появилась идея",
+          "После 5 сделок",
+          "После 200+ бэктеста + месяц forward demo",
+          "После 10 побед подряд"
+        ],
+        "kk": [
+          "Бірден, идея бар болса",
+          "5 сделкадан кейін",
+          "200+ backtest + 1 ай forward демо растағаннан кейін",
+          "10 жеңіс қатарынан болғанда"
+        ],
+        "en": [
+          "Right after the idea forms",
+          "After 5 trades",
+          "After 200+ backtest + 1-month forward demo",
+          "After 10 wins in a row"
+        ]
+      },
+      "correctIndex": 2
+    }
+  },
+  {
+    "id": "l-019",
+    "profile_type": "disciplined",
+    "source_type": "film",
+    "source_name": "The Big Short (2015)",
+    "tag": "mindset",
+    "xp": 30,
+    "external_url": "https://www.imdb.com/title/tt1596363/",
+    "sort_order": 18,
+    "title": {
+      "ru": "Против консенсуса",
+      "kk": "Контр-консенсус",
+      "en": "Counter-consensus"
+    },
+    "quote": {
+      "ru": "The market does what it wants to do, when it wants to do it.",
+      "kk": "The market does what it wants to do, when it wants to do it.",
+      "en": "The market does what it wants to do, when it wants to do it."
+    },
+    "explanation": {
+      "ru": "Дисциплинированный трейдер идёт не с толпой, а со своим edge. Но это работает только при плане + журнале + research.",
+      "kk": "Дисциплиналы трейдер консенсуспен бірге емес — өз edge-ін ұстайды. Бірақ ол тиімді болуы үшін жоспар + журнал + research керек.",
+      "en": "The disciplined trader does not follow the crowd — they hold their edge. But only with a plan + journal + research."
+    },
+    "gold_application": {
+      "ru": "Толпа bullish → проверяй DXY. Дивергенция sentiment + структура — A+ сетап.",
+      "kk": "Crowd \"bullish\" → DXY-ді тексеру. Sentiment + structure divergence — A+ setup.",
+      "en": "Crowd bullish → check DXY. Sentiment + structure divergence — A+ setup."
+    },
+    "quick_check": {
+      "question": {
+        "ru": "Когда можно открывать сделку против консенсуса?",
+        "kk": "Контр-консенсус сделканы қашан ашуға болады?",
+        "en": "When can you take a counter-consensus trade?"
+      },
+      "options": {
+        "ru": [
+          "Когда все bullish — сразу против",
+          "Только когда план + research + structure подтверждают",
+          "Чтобы отыграться",
+          "Всегда"
+        ],
+        "kk": [
+          "Барлығы bullish дегенде керісінше",
+          "Тек жоспар + research + structure растағанда",
+          "Алдыңғы шығынды қайтару үшін",
+          "Әрқашан"
+        ],
+        "en": [
+          "When all are bullish — go opposite",
+          "Only with plan + research + structure confirmation",
+          "To recover a loss",
+          "Always"
+        ]
+      },
+      "correctIndex": 1
+    }
+  },
+  {
+    "id": "l-020",
+    "profile_type": "disciplined",
+    "source_type": "trader",
+    "source_name": "Stanley Druckenmiller",
+    "tag": "strategy",
+    "xp": 30,
+    "external_url": "https://en.wikipedia.org/wiki/Stanley_Druckenmiller",
+    "sort_order": 19,
+    "title": {
+      "ru": "Концентрация и терпение",
+      "kk": "Концентрация мен сабырлылық",
+      "en": "Concentration and patience"
+    },
+    "quote": {
+      "ru": "The way to build long-term returns is preservation of capital and home runs.",
+      "kk": "The way to build long-term returns is preservation of capital and home runs.",
+      "en": "The way to build long-term returns is preservation of capital and home runs."
+    },
+    "explanation": {
+      "ru": "Не много мелких сделок — а готовность ждать и взять один большой сетап (в рамках риска %). Терпение — главный навык.",
+      "kk": "Көп майда сделка емес — бірақ дайын тұрып, бір үлкен setup-та \"all-in\" (риск %-ке сай). Сабырлылық — алдыңғы дағды.",
+      "en": "Not many small trades — wait and strike one big setup within risk %. Patience is the skill."
+    },
+    "gold_application": {
+      "ru": "На XAU/USD будь готов к 1–2 сетапам H4 в неделю. Остальное — пропускай.",
+      "kk": "XAU/USD-та аптасына 1–2 H4 сетапқа дайын болу. Қалғанын өткіз.",
+      "en": "On XAU/USD: ready for 1–2 H4 setups per week. Skip the rest."
+    },
+    "quick_check": {
+      "question": {
+        "ru": "Главное качество по Друкенмиллеру:",
+        "kk": "Druckenmiller бойынша негізгі сапа:",
+        "en": "Druckenmiller's key trait:"
+      },
+      "options": {
+        "ru": [
+          "Скорость",
+          "Много сделок",
+          "Сохранение капитала и терпение",
+          "Большое плечо"
+        ],
+        "kk": [
+          "Жылдамдық",
+          "Көп сделка",
+          "Капиталды сақтап, сабырмен күту",
+          "Жоғары leverage"
+        ],
+        "en": [
+          "Speed",
+          "Many trades",
+          "Capital preservation + patience",
+          "High leverage"
+        ]
+      },
+      "correctIndex": 2
+    }
+  },
+  {
+    "id": "l-021",
+    "profile_type": "disciplined",
+    "source_type": "film",
+    "source_name": "Trader: The Documentary (1987, Paul Tudor Jones)",
+    "tag": "discipline",
+    "xp": 25,
+    "external_url": "https://en.wikipedia.org/wiki/Trader_(film)",
+    "sort_order": 20,
+    "title": {
+      "ru": "Распорядок — это всё",
+      "kk": "Күн тәртібі — бәрі",
+      "en": "Routine is everything"
+    },
+    "quote": {
+      "ru": "I have a daily routine. That's it.",
+      "kk": "I have a daily routine. That's it.",
+      "en": "I have a daily routine. That's it."
+    },
+    "explanation": {
+      "ru": "Пре-маркет, рынок, пост-маркет — ритуал PTJ, фундамент его эффективности.",
+      "kk": "PTJ-дың пре-маркет, ішкі маркет, пост-маркет ритуалы — performance-тің негізі.",
+      "en": "PTJ's pre-, in-, post-market routine is the bedrock of his performance."
+    },
+    "gold_application": {
+      "ru": "Ежедневный ритуал: 8:30 HTF-анализ, 10:00 список сетапов, 18:00 журнал.",
+      "kk": "Әр күнгі ритуал: 8:30 HTF талдау, 10:00 setup тізімі, 18:00 журнал.",
+      "en": "Daily routine: 8:30 HTF analysis, 10:00 setup list, 18:00 journal."
+    },
+    "quick_check": {
+      "question": {
+        "ru": "Роль распорядка:",
+        "kk": "Күн тәртібінің рөлі:",
+        "en": "Role of the routine:"
+      },
+      "options": {
+        "ru": [
+          "Бессмысленный ритуал",
+          "База качества решений и стабильности",
+          "Только для новичков",
+          "Потеря времени"
+        ],
+        "kk": [
+          "Мағынасыз салт",
+          "Шешімдер сапасы мен тұрақтылықтың базасы",
+          "Тек newbie-лерге",
+          "Уақытты жоғалту"
+        ],
+        "en": [
+          "Meaningless ritual",
+          "Foundation of decision quality + consistency",
+          "Only for newbies",
+          "Waste of time"
+        ]
+      },
+      "correctIndex": 1
+    }
+  },
+  {
+    "id": "l-022",
+    "profile_type": "disciplined",
+    "source_type": "film",
+    "source_name": "Floored (2009)",
+    "tag": "mindset",
+    "xp": 20,
+    "external_url": "https://www.imdb.com/title/tt1372701/",
+    "sort_order": 21,
+    "title": {
+      "ru": "День в пите",
+      "kk": "Pit-тегі күн",
+      "en": "A day in the pit"
+    },
+    "quote": {
+      "ru": "Discipline and self-control will be your only friend on the trading floor.",
+      "kk": "Discipline and self-control will be your only friend on the trading floor.",
+      "en": "Discipline and self-control will be your only friend on the trading floor."
+    },
+    "explanation": {
+      "ru": "Эмоция чикагского пита — та же, что и за экраном. Правила — оружие против самого себя.",
+      "kk": "Чикаго pit-инің ыстық эмоциясы — қазіргі экранмен бірдей. Ережелер — өзіңмен соғыстағы қаруың.",
+      "en": "Chicago pit emotion = the same as the modern screen. Rules are your weapon against yourself."
+    },
+    "gold_application": {
+      "ru": "Чувствуете tilt — пауза + 4-секундное дыхание.",
+      "kk": "Tilt сезімде — pause + 4 саттық дем алу.",
+      "en": "Feeling tilt — pause + 4-second breathing."
+    },
+    "quick_check": {
+      "question": {
+        "ru": "Способ выйти из tilt:",
+        "kk": "Tilt-тен шығу әдісі:",
+        "en": "Way out of tilt:"
+      },
+      "options": {
+        "ru": [
+          "Увеличить лот",
+          "Кофе",
+          "Пауза + дыхание + запись в журнал",
+          "Открыть новости"
+        ],
+        "kk": [
+          "Лот ұлғайту",
+          "Кофе ішу",
+          "Pause + дем алу + журналға жазу",
+          "Жаңалықтарды ашу"
+        ],
+        "en": [
+          "Increase the lot",
+          "Coffee",
+          "Pause + breathing + journaling",
+          "Open the news"
+        ]
+      },
+      "correctIndex": 2
+    }
+  },
+  {
+    "id": "l-023",
+    "profile_type": "disciplined",
+    "source_type": "podcast",
+    "source_name": "Top Traders Unplugged",
+    "tag": "strategy",
+    "xp": 25,
+    "external_url": "https://toptradersunplugged.com/",
+    "sort_order": 22,
+    "title": {
+      "ru": "Systematic ↔ Discretionary",
+      "kk": "Systematic ↔ Discretionary",
+      "en": "Systematic ↔ Discretionary"
+    },
+    "quote": {
+      "ru": "You don't need to predict — you need to react with rules.",
+      "kk": "You don't need to predict — you need to react with rules.",
+      "en": "You don't need to predict — you need to react with rules."
+    },
+    "explanation": {
+      "ru": "Дисциплина в системности. Даже если discretionary — превратите решения в письменные правила.",
+      "kk": "Дисциплина — systematic-те. Discretionary болсаңыз да, шешімдеріңізді жазылған ережелерге айналдыр.",
+      "en": "Discipline is systematic. Even if discretionary, convert decisions into written rules."
+    },
+    "gold_application": {
+      "ru": "У каждого сетапа прописаны правила входа/SL/TP/выхода.",
+      "kk": "Әр setup-тың кіру/SL/TP/exit ережесі жазылған.",
+      "en": "Every setup has written entry/SL/TP/exit rules."
+    },
+    "quick_check": {
+      "question": {
+        "ru": "Дисциплина discretionary-трейдера:",
+        "kk": "Discretionary трейдердің дисциплинасы:",
+        "en": "A discretionary trader's discipline:"
+      },
+      "options": {
+        "ru": [
+          "Превратить решения в письменные правила",
+          "Только интуиция",
+          "Доверие брокеру",
+          "Зависимость от новостей"
+        ],
+        "kk": [
+          "Шешімдерді жазылған ережелерге айналдыру",
+          "Тек интуиция",
+          "Брокерге сену",
+          "Жаңалықтарға тәуелді болу"
+        ],
+        "en": [
+          "Convert decisions into written rules",
+          "Intuition only",
+          "Trust the broker",
+          "Depending on news"
+        ]
+      },
+      "correctIndex": 0
+    }
+  },
+  {
+    "id": "l-024",
+    "profile_type": "disciplined",
+    "source_type": "podcast",
+    "source_name": "Chat With Traders — Aaron Fifield",
+    "tag": "discipline",
+    "xp": 25,
+    "external_url": "https://chatwithtraders.com/",
+    "sort_order": 23,
+    "title": {
+      "ru": "Цена терпения",
+      "kk": "Сабырлылықтың құны",
+      "en": "The price of patience"
+    },
+    "quote": {
+      "ru": "The market pays the patient — and tuition for the impatient.",
+      "kk": "The market pays the patient — and tuition for the impatient.",
+      "en": "The market pays the patient — and tuition for the impatient."
+    },
+    "explanation": {
+      "ru": "Терпение — практика: pre-trade чек-лист, минутная пауза, только A+ сетапы.",
+      "kk": "Күтуді практика — pre-trade checklist, минут пауза, тек A+ setup.",
+      "en": "Patience is a practice — pre-trade checklist, 60-sec pause, A+ setups only."
+    },
+    "gold_application": {
+      "ru": "Перед каждой сделкой — 60-секундная пауза по чек-листу.",
+      "kk": "Әр сделкаға дейін 60 секунд тоқта — checklist арқылы өт.",
+      "en": "Before each trade — 60-second pause via checklist."
+    },
+    "quick_check": {
+      "question": {
+        "ru": "Терпение — это:",
+        "kk": "Сабырлылық — бұл:",
+        "en": "Patience is:"
+      },
+      "options": {
+        "ru": [
+          "Бездействие",
+          "Ожидание плана и точное исполнение",
+          "Страх",
+          "Неуверенность"
+        ],
+        "kk": [
+          "Қозғалыссыздық",
+          "Жоспарға дейін күту мен ережеге сай орындау",
+          "Қорқыныш",
+          "Сенімсіздік"
+        ],
+        "en": [
+          "Inaction",
+          "Waiting for the plan and executing it",
+          "Fear",
+          "Uncertainty"
+        ]
+      },
+      "correctIndex": 1
+    }
+  },
+  {
+    "id": "l-025",
+    "profile_type": "disciplined",
+    "source_type": "book",
+    "source_name": "Van K. Tharp — Trade Your Way to Financial Freedom",
+    "tag": "risk",
+    "xp": 30,
+    "external_url": "https://www.amazon.com/Trade-Your-Way-Financial-Freedom/dp/0071478710",
+    "sort_order": 24,
+    "title": {
+      "ru": "Position sizing — главный навык",
+      "kk": "Position sizing — басты сапа",
+      "en": "Position sizing — the key skill"
+    },
+    "quote": {
+      "ru": "Most people focus on entries. Wizards focus on position sizing.",
+      "kk": "Most people focus on entries. Wizards focus on position sizing.",
+      "en": "Most people focus on entries. Wizards focus on position sizing."
+    },
+    "explanation": {
+      "ru": "Лот определяет 90% результата. Фокус не на входе, а на sizing. Считай risk-of-ruin.",
+      "kk": "Лот — пайданың 90%-ы. Entry-ге емес, sizing-ке шоғырлан. Risk-of-ruin есепте.",
+      "en": "Lot drives 90% of returns. Focus on sizing, not entries. Calculate risk-of-ruin."
+    },
+    "gold_application": {
+      "ru": "Для XAU/USD используйте Position Calculator в TraderOS.",
+      "kk": "XAU/USD-те sizing-ке Position Calculator-ды қолдан (TraderOS-та бар).",
+      "en": "Use the Position Calculator inside TraderOS for XAU/USD sizing."
+    },
+    "quick_check": {
+      "question": {
+        "ru": "По Тарпу, большая часть результата от чего?",
+        "kk": "Tharp бойынша пайданың үлкен бөлігі неден туады?",
+        "en": "Per Tharp, what drives most of the return?"
+      },
+      "options": {
+        "ru": [
+          "Время входа",
+          "Position sizing",
+          "Выбор брокера",
+          "Смена языка"
+        ],
+        "kk": [
+          "Entry timing",
+          "Position sizing",
+          "Брокер таңдау",
+          "Тіл алмастыру"
+        ],
+        "en": [
+          "Entry timing",
+          "Position sizing",
+          "Broker choice",
+          "Switching language"
+        ]
+      },
+      "correctIndex": 1
+    }
+  },
+  {
+    "id": "l-026",
+    "profile_type": "disciplined",
+    "source_type": "book",
+    "source_name": "Andrew Aziz — How to Day Trade for a Living",
+    "tag": "strategy",
+    "xp": 25,
+    "external_url": "https://www.amazon.com/How-Day-Trade-Living-Management/dp/1535585951",
+    "sort_order": 25,
+    "title": {
+      "ru": "Routine + setup + риск",
+      "kk": "Routine + setup + risk",
+      "en": "Routine + setup + risk"
+    },
+    "quote": {
+      "ru": "Trading is not a sprint. It's a process you repeat every day.",
+      "kk": "Trading is not a sprint. It's a process you repeat every day.",
+      "en": "Trading is not a sprint. It's a process you repeat every day."
+    },
+    "explanation": {
+      "ru": "Ежедневно: HTF bias, watchlist, критерии сетапа, sizing, журнал.",
+      "kk": "Күнделікті: HTF bias, watchlist, setup criteria, sizing, журнал.",
+      "en": "Daily: HTF bias, watchlist, setup criteria, sizing, journal."
+    },
+    "gold_application": {
+      "ru": "В TraderOS Edge Academy + Position Calculator + Journal — полный цикл.",
+      "kk": "TraderOS-те Edge Academy + Position Calculator + Journal — толық цикл.",
+      "en": "In TraderOS: Edge Academy + Position Calculator + Journal — the complete loop."
+    },
+    "quick_check": {
+      "question": {
+        "ru": "Самый важный элемент ежедневного процесса:",
+        "kk": "Күнделікті процестің ең қажетті элементі:",
+        "en": "The most essential element of the daily process:"
+      },
+      "options": {
+        "ru": [
+          "Новости",
+          "Журнал сделок (review)",
+          "Чаты брокера",
+          "YouTube-стрим"
+        ],
+        "kk": [
+          "Жаңалық",
+          "Сату-сатып алу журналы (review)",
+          "Брокер чаттары",
+          "YouTube ағыны"
+        ],
+        "en": [
+          "News",
+          "Trade journal (review)",
+          "Broker chats",
+          "YouTube stream"
+        ]
+      },
+      "correctIndex": 1
+    }
+  },
+  {
+    "id": "l-027",
+    "profile_type": "disciplined",
+    "source_type": "book",
+    "source_name": "Michael Covel — Trend Following",
+    "tag": "strategy",
+    "xp": 25,
+    "external_url": "https://www.amazon.com/Trend-Following-Updated-Edition-Learn/dp/0136137180",
+    "sort_order": 26,
+    "title": {
+      "ru": "Система следования за трендом",
+      "kk": "Трендке еру жүйесі",
+      "en": "Trend-following as a system"
+    },
+    "quote": {
+      "ru": "You don't predict — you respond.",
+      "kk": "You don't predict — you respond.",
+      "en": "You don't predict — you respond."
+    },
+    "explanation": {
+      "ru": "Система по тренду: HTF bias, вход на пробой, trailing stop. Воспроизводимый процесс.",
+      "kk": "Тренд бойынша жүйе: HTF bias, breakout entry, trailing stop. Кездейсоқтыққа қарсы — қайталанатын процесс.",
+      "en": "Trend-based system: HTF bias, breakout entry, trailing stop. A repeatable process."
+    },
+    "gold_application": {
+      "ru": "Тренд H4 на XAU/USD → вход по структуре 15M → trailing.",
+      "kk": "XAU/USD H4 trend → 15M структурада entry → trailing.",
+      "en": "XAU/USD H4 trend → 15M structural entry → trailing."
+    },
+    "quick_check": {
+      "question": {
+        "ru": "Основа trend-following:",
+        "kk": "Trend-following жүйесінің базасы:",
+        "en": "Core of trend-following:"
+      },
+      "options": {
+        "ru": [
+          "HTF bias + LTF вход + trailing",
+          "Фильтр всех сигналов",
+          "Только по новостям",
+          "Большое плечо"
+        ],
+        "kk": [
+          "Жоғары TF bias + LTF entry + trailing",
+          "Барлық signal-ды сүзу",
+          "Тек жаңалық бойынша",
+          "Жоғары leverage"
+        ],
+        "en": [
+          "HTF bias + LTF entry + trailing",
+          "Filter all signals",
+          "News-only",
+          "High leverage"
+        ]
+      },
+      "correctIndex": 0
+    }
+  }
+]

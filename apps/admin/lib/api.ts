@@ -31,13 +31,14 @@ export async function api<T = any>(
   options: { method?: string; body?: unknown } = {},
 ): Promise<T> {
   const token = getToken();
+  const hasBody = options.body !== undefined;
   const res = await fetch(`${API_BASE}${path}`, {
     method: options.method ?? 'GET',
     headers: {
-      'Content-Type': 'application/json',
+      ...(hasBody ? { 'Content-Type': 'application/json' } : {}),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
-    body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
+    body: hasBody ? JSON.stringify(options.body) : undefined,
     cache: 'no-store',
   });
 
@@ -45,7 +46,8 @@ export async function api<T = any>(
   const data = text ? JSON.parse(text) : null;
 
   if (!res.ok) {
-    const msg = data && data.error ? String(data.error) : `HTTP ${res.status}`;
+    const msg =
+      data && (data.message || data.error) ? String(data.message || data.error) : `HTTP ${res.status}`;
     if (res.status === 401 && typeof window !== 'undefined') {
       clearToken();
     }

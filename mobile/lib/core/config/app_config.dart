@@ -1,17 +1,17 @@
 /// Қосымшаның орта (environment) конфигурациясы.
 ///
-/// `useRemoteApi = false` болса — app мок деректермен (fixtures + локалды сақтау)
-/// жұмыс істейді. Backend deploy етілген соң, `useRemoteApi = true` қойып,
-/// `apiBaseUrl`-ды нақты серверге бағыттаңыз.
+/// Backend — ЖАЛҒЫЗ дереккөз (mock деректер жоқ). `useRemoteApi` әрқашан true;
+/// барлық экран DB-ден API арқылы оқиды. `apiBaseUrl`-ды нақты серверге бағыттаңыз.
 ///
 /// Android эмуляторында host-машинаның localhost-ы = 10.0.2.2.
 /// iOS симуляторында = 127.0.0.1.
 class AppConfig {
   AppConfig._();
 
-  /// `--dart-define=USE_REMOTE_API=true` арқылы build кезінде қосуға болады.
+  /// Backend жалғыз дереккөз — әрқашан remote. (`--dart-define=USE_REMOTE_API=false`
+  /// арқылы өшіруге болады, бірақ mock fixtures жойылған — оқу жолдары API-ды талап етеді.)
   static const bool useRemoteApi =
-      bool.fromEnvironment('USE_REMOTE_API', defaultValue: false);
+      bool.fromEnvironment('USE_REMOTE_API', defaultValue: true);
 
   /// `--dart-define=API_BASE_URL=https://api.altyn.kz/api/v1` арқылы өзгертіледі.
   static const String apiBaseUrl = String.fromEnvironment(

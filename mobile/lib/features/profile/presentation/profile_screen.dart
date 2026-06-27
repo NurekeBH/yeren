@@ -57,9 +57,12 @@ class ProfileScreen extends ConsumerWidget {
           const SizedBox(width: 8),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
+      body: RefreshIndicator(
+        onRefresh: () => ref.read(profileControllerProvider.notifier).hydrateFromRemote(),
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(16),
+          children: [
           Card(
             child: Padding(
               padding: const EdgeInsets.all(16),
@@ -202,6 +205,7 @@ class ProfileScreen extends ConsumerWidget {
             },
           ),
         ],
+        ),
       ),
     );
   }

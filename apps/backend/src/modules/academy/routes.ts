@@ -12,6 +12,28 @@ const Complete = z.object({
 });
 
 export async function academyRoutes(app: FastifyInstance) {
+  // ── Психология сабақтары каталогы v2 (DB-ден, локализацияланған {ru,kk,en}) ──
+  app.get('/academy/lessons', async (req) => {
+    const profile = (req.query as { profile_type?: string }).profile_type ?? null;
+    const { rows } = await query(
+      `select id, profile_type, source_type, source_name, tag, xp, external_url,
+              title, quote, explanation, gold_application, quick_check, sort_order
+         from academy_lessons
+        where is_published = true and ($1::text is null or profile_type = $1)
+        order by sort_order, id`,
+      [profile],
+    );
+    return { lessons: rows };
+  });
+
+  // ── Gallup тест сұрақтары (трейдер профилін анықтау) ──
+  app.get('/academy/questions', async () => {
+    const { rows } = await query(
+      'select id, text, options, sort_order from gallup_questions order by sort_order, id',
+    );
+    return { questions: rows };
+  });
+
   app.get('/lessons', async (req) => {
     const Q = z.object({ profile_type: z.string().optional() });
     const { profile_type } = Q.parse(req.query);

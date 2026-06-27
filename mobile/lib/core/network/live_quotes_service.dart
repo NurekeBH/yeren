@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../config/app_config.dart';
 import '../locale/locale_controller.dart';
 
 /// XAU/USD, DXY, XAG/USD, USOIL үшін бірыңғай live quote.
@@ -36,7 +37,7 @@ class LiveQuote extends Equatable {
 ///   Yahoo GC=F (фьючерс) ~10 минут кідіріспен берілетін — сол себепті ауыстырылды.
 /// DXY/XAG/USOIL — Yahoo Finance REST (қосымша тикерлер).
 class StooqLiveQuotesService {
-  StooqLiveQuotesService({Dio? dio, this.pollInterval = const Duration(seconds: 4)})
+  StooqLiveQuotesService({Dio? dio, this.pollInterval = const Duration(seconds: 2)})
       : _dio = dio ??
             Dio(BaseOptions(
               connectTimeout: const Duration(seconds: 10),
@@ -129,14 +130,48 @@ class StooqLiveQuotesService {
     }
   }
 
-  /// Барлық 4 тикерді параллель сұрау.
+  /// Барлық тикерді алу. Remote режимде — backend /prices (бір ОРТАҚ дереккөз:
+  /// дисплей + alert + сервер бір бағада). Backend құласа немесе mock режимде —
+  /// тікелей Binance/Yahoo-ға fallback.
   Future<Map<String, LiveQuote>> fetchAll() async {
+    if (AppConfig.useRemoteApi) {
+      final backend = await _fetchFromBackend();
+      if (backend.isNotEmpty) return backend;
+    }
     final results = await Future.wait(symbols.keys.map(fetchOne));
     final out = <String, LiveQuote>{};
     for (final q in results) {
       if (q != null) out[q.symbol] = q;
     }
     return out;
+  }
+
+  /// Backend /prices — сервер жинаған бағалар (PAXG + Yahoo, ~6с кэш).
+  Future<Map<String, LiveQuote>> _fetchFromBackend() async {
+    try {
+      final res = await _dio.get<Map<String, dynamic>>('${AppConfig.apiBaseUrl}/prices');
+      final list = res.data?['quotes'] as List?;
+      if (list == null) return const {};
+      final out = <String, LiveQuote>{};
+      for (final item in list) {
+        final j = (item as Map).cast<String, dynamic>();
+        final sym = j['symbol'] as String?;
+        final price = (j['price'] as num?)?.toDouble();
+        if (sym == null || price == null) continue;
+        out[sym] = LiveQuote(
+          symbol: sym,
+          price: price,
+          deltaAbs: (j['deltaAbs'] as num?)?.toDouble() ?? 0,
+          deltaPct: (j['deltaPct'] as num?)?.toDouble() ?? 0,
+          timestamp: DateTime.tryParse('${j['ts']}') ?? DateTime.now(),
+        );
+      }
+      return out;
+    } on DioException {
+      return const {};
+    } catch (_) {
+      return const {};
+    }
   }
 
   /// Periodic polling stream. UI subscribe ете береді — Provider auto-dispose-те cancel.

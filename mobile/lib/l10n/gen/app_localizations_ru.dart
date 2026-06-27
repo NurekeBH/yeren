@@ -447,7 +447,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get prov_following => 'Вы отслеживаете';
 
   @override
-  String get prov_follow_toast => 'Вы отслеживаете трейдера (бесплатно)';
+  String get prov_follow_toast => 'Вы отслеживаете провайдера (бесплатно)';
 
   @override
   String get prov_follow_note => 'Уведомим, когда он опубликует новую идею';
@@ -755,6 +755,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get signals_publish_need_text => 'Напишите текст идеи';
 
   @override
+  String get signals_publish_need_levels => 'Заполните зону входа, TP1 и Stop';
+
+  @override
   String get signals_entry_from => 'Вход (от)';
 
   @override
@@ -827,20 +830,19 @@ class AppLocalizationsRu extends AppLocalizations {
   String get prov_tab_posts => 'Посты';
 
   @override
-  String get profile_trader_mode => 'Режим трейдера';
+  String get profile_trader_mode => 'Режим провайдера';
 
   @override
   String get profile_trader_mode_desc => 'Публикация и управление идеями';
 
   @override
-  String get profile_become_trader => 'Стать верифицированным трейдером';
+  String get profile_become_trader => 'Стать провайдером';
 
   @override
-  String get profile_verified_trader => 'Верифицированный трейдер ✓';
+  String get profile_verified_trader => 'Провайдер ✓';
 
   @override
-  String get profile_verified_trader_desc =>
-      'Публикуйте идеи на странице Ideas';
+  String get profile_verified_trader_desc => 'Публикуйте сигналы и идеи';
 
   @override
   String get profile_support => 'Поддержка / Администрация';
@@ -862,7 +864,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get support_sent => 'Сообщение отправлено! Мы скоро ответим.';
 
   @override
-  String get trader_apply_title => 'Заявка на верификацию трейдера';
+  String get trader_apply_title => 'Заявка на провайдера';
 
   @override
   String get trader_apply_desc =>
@@ -891,8 +893,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get trader_apply_send => 'Отправить заявку';
 
   @override
-  String get trader_apply_sent =>
-      'Заявка отправлена! (демо: режим трейдера включён)';
+  String get trader_apply_sent => 'Заявка отправлена!';
 
   @override
   String get signals_provider_stats => 'Статистика провайдера';
@@ -1051,6 +1052,48 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get journal_saved => 'Сделка сохранена';
+
+  @override
+  String get journal_tab_trades => 'Сделки';
+
+  @override
+  String get journal_tab_analytics => 'Аналитика';
+
+  @override
+  String get journal_import => 'Импорт отчёта';
+
+  @override
+  String get journal_import_hint => 'MT4/MT5 отчёт (.html или .csv)';
+
+  @override
+  String get journal_sync => 'Синхронизировать';
+
+  @override
+  String get journal_all_accounts => 'Все счета';
+
+  @override
+  String get journal_analytics_empty => 'Пока нет закрытых сделок для анализа';
+
+  @override
+  String get journal_calendar_title => 'Календарь P&L';
+
+  @override
+  String get journal_emotions_title => 'Эмоции и прибыль';
+
+  @override
+  String get journal_setups_title => 'Сетапы';
+
+  @override
+  String get journal_sessions_title => 'Сессии';
+
+  @override
+  String get journal_correlation => 'Корреляция эмоция↔P&L';
+
+  @override
+  String get journal_link_account => 'Привязать счёт';
+
+  @override
+  String get journal_no_credentials => 'Нет пароля для синхронизации';
 
   @override
   String get journal_delete => 'Удалить';

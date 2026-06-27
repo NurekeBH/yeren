@@ -1,11 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/config/app_config.dart';
 import '../../../core/locale/locale_controller.dart';
-import '../../../core/mock/fixtures.dart';
 import '../../../core/network/api_service.dart';
 import '../../../shared/models/signal.dart';
-import '../application/my_signals_controller.dart';
 
 abstract class SignalsRepository {
   Future<List<Signal>> fetchAll(String loc);
@@ -51,6 +48,8 @@ Signal signalFromJson(Map<String, dynamic> j) => Signal(
       publishedAt: DateTime.tryParse('${j['published_at']}') ?? DateTime.now(),
       resultPips: _i(j['result_pips']),
       isFree: j['is_free'] == true || j['is_free']?.toString() == 'true',
+      // Автор өз идеясын әрқашан ашық көреді (платный болса да).
+      isMine: j['is_mine'] == true,
     );
 
 class ApiSignalsRepository implements SignalsRepository {
@@ -73,42 +72,18 @@ class ApiSignalsRepository implements SignalsRepository {
   }
 }
 
-class MockSignalsRepository implements SignalsRepository {
-  @override
-  Future<List<Signal>> fetchAll(String loc) async {
-    await Future<void>.delayed(const Duration(milliseconds: 250));
-    return MockFixtures.signals(loc);
-  }
-
-  @override
-  Future<Signal?> fetchById(String loc, String id) async {
-    final all = await fetchAll(loc);
-    try {
-      return all.firstWhere((s) => s.id == id);
-    } catch (_) {
-      return null;
-    }
-  }
-}
-
 final signalsRepositoryProvider = Provider<SignalsRepository>(
-  (ref) => AppConfig.useRemoteApi
-      ? ApiSignalsRepository(ref.watch(apiServiceProvider))
-      : MockSignalsRepository(),
+  (ref) => ApiSignalsRepository(ref.watch(apiServiceProvider)),
 );
 
+// Backend — жалғыз дереккөз. Автор өз идеясын `is_mine` арқылы ашық көреді,
+// сондықтан жергілікті кэшті қоспаймыз (әйтпесе бір идея екі рет көрінер еді).
 final signalsListProvider = FutureProvider<List<Signal>>((ref) async {
   final loc = ref.watch(localeControllerProvider).languageCode;
-  final base = await ref.watch(signalsRepositoryProvider).fetchAll(loc);
-  // Трейдер жариялаған сигналдар (жергілікті) тізімнің басына қосылады.
-  final mine = ref.watch(mySignalsProvider);
-  final mineIds = mine.map((s) => s.id).toSet();
-  return [...mine, ...base.where((s) => !mineIds.contains(s.id))];
+  return ref.watch(signalsRepositoryProvider).fetchAll(loc);
 });
 
 final signalByIdProvider = FutureProvider.family<Signal?, String>((ref, id) async {
-  final mine = ref.watch(mySignalsProvider).where((s) => s.id == id);
-  if (mine.isNotEmpty) return mine.first;
   final loc = ref.watch(localeControllerProvider).languageCode;
   return ref.watch(signalsRepositoryProvider).fetchById(loc, id);
 });

@@ -19,22 +19,24 @@ class GoldHeroCard extends ConsumerWidget {
     final async = ref.watch(liveQuotesStreamProvider);
     final cached = ref.watch(cachedQuotesProvider);
     final history = ref.watch(liveHistoryProvider);
-    // Алдымен live → сосын cached → мок fallback.
-    final quotes = async.value ?? cached;
+    final live = async.value;
 
-    final gold = quotes['XAU/USD'];
-    final dxy = quotes['DXY'];
+    // ТЕК шынайы баға көрсетеміз: live, әйтпесе ЖАҚЫНДА (≤15 мин) кэштелген баға.
+    // Ескі кэш пен мок fallback КӨРСЕТІЛМЕЙДІ — оның орнына loading күйі.
+    LiveQuote? fresh(String sym) {
+      if (live != null && live.containsKey(sym)) return live[sym];
+      final q = cached[sym];
+      if (q == null) return null;
+      return DateTime.now().difference(q.timestamp).inMinutes <= 15 ? q : null;
+    }
 
-    final price = gold?.price ?? fallback.price;
-    final deltaAbs = gold?.deltaAbs ?? fallback.deltaAbs;
-    final deltaPct = gold?.deltaPct ?? fallback.deltaPct;
-    final dxyPrice = dxy?.price ?? fallback.dxy;
-    final isLive = async.value != null && async.value!.containsKey('XAU/USD');
-    final color = deltaAbs >= 0 ? AppColors.profitGreen : AppColors.lossRed;
+    final gold = fresh('XAU/USD');
+    final dxy = fresh('DXY');
+    final isLive = live != null && live.containsKey('XAU/USD');
+    final color = (gold?.deltaAbs ?? 0) >= 0 ? AppColors.profitGreen : AppColors.lossRed;
 
-    // Live sparkline: ≥3 нүкте жиналса live history, әйтпесе fallback.
+    // Live sparkline: ≥3 нүкте жиналғанда ғана (мок sparkline көрсетпейміз).
     final liveSpark = history['XAU/USD'];
-    final sparkValues = (liveSpark != null && liveSpark.length >= 3) ? liveSpark : fallback.sparkline;
 
     return Card(
       child: Container(
@@ -77,26 +79,48 @@ class GoldHeroCard extends ConsumerWidget {
                     ),
                   ),
                 const Spacer(),
-                Text('DXY ${Fmt.price(dxyPrice)}',
-                    style: AppTypography.bodySmall(color: AppColors.dxyBlue)),
+                if (dxy != null)
+                  Text('DXY ${Fmt.price(dxy.price)}',
+                      style: AppTypography.bodySmall(color: AppColors.dxyBlue)),
               ],
             ),
             const SizedBox(height: 12),
-            Text(Fmt.price(price),
-                style: AppTypography.price(size: 36, weight: FontWeight.w700)),
-            const SizedBox(height: 4),
-            Row(
-              children: [
-                Icon(deltaAbs >= 0 ? Icons.arrow_upward : Icons.arrow_downward, size: 16, color: color),
-                const SizedBox(width: 4),
-                Text(
-                  '${Fmt.price(deltaAbs.abs())}  ${Fmt.pct(deltaPct)}',
-                  style: AppTypography.price(size: 14, color: color),
+            if (gold != null) ...[
+              Text(Fmt.price(gold.price),
+                  style: AppTypography.price(size: 36, weight: FontWeight.w700)),
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  Icon(gold.deltaAbs >= 0 ? Icons.arrow_upward : Icons.arrow_downward, size: 16, color: color),
+                  const SizedBox(width: 4),
+                  Text(
+                    '${Fmt.price(gold.deltaAbs.abs())}  ${Fmt.pct(gold.deltaPct)}',
+                    style: AppTypography.price(size: 14, color: color),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              if (liveSpark != null && liveSpark.length >= 3)
+                Sparkline(values: liveSpark, color: AppColors.gold, height: 56)
+              else
+                const SizedBox(height: 56),
+            ] else
+              // Мок/ескі баға көрсетпейміз — тек шынайы баға келгенше loading.
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 18),
+                child: Row(
+                  children: [
+                    const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.gold),
+                    ),
+                    const SizedBox(width: 12),
+                    Text('Тікелей баға жүктелуде…',
+                        style: AppTypography.bodyMedium(color: AppColors.textMuted)),
+                  ],
                 ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Sparkline(values: sparkValues, color: AppColors.gold, height: 56),
+              ),
           ],
         ),
       ),

@@ -16,6 +16,33 @@ type FinnhubNews = {
   url: string;
 };
 
+/// Finnhub summary кейде толық HTML (мыс. investinglive мақаласы) қайтарады.
+/// UI-да шикі тег көрінбес үшін — таза мәтінге айналдырамыз (блок-тегтер → жол,
+/// <li> → •, қалған тегтерді алып тастап, HTML-entity-лерді ашамыз).
+export function htmlToText(html: string): string {
+  return html
+    .replace(/<\s*li[^>]*>/gi, '\n• ')
+    .replace(/<\s*(br|\/p|\/li|\/ul|\/ol|\/div|\/h[1-6]|p|h[1-6])[^>]*>/gi, '\n')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;|&apos;|&[lr]squo;/gi, "'")
+    .replace(/&[lr]dquo;/gi, '"')
+    .replace(/&ndash;/gi, '–')
+    .replace(/&mdash;/gi, '—')
+    .replace(/&hellip;/gi, '…')
+    .replace(/&middot;/gi, '·')
+    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCharCode(parseInt(h, 16)))
+    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
+    .replace(/[ \t]+/g, ' ')
+    .replace(/[ \t]*\n[ \t]*/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
 function classifyImpact(text: string): { impact: 'bullish' | 'bearish' | 'neutral'; urgent: boolean } {
   const t = text.toLowerCase();
   const bullish = ['rate cut', 'dovish', 'war', 'sanction', 'tension', 'safe haven', 'inflation rises', 'weak dollar', 'recession'];
@@ -46,20 +73,23 @@ export async function ingestNews(): Promise<{ inserted: number; sources: string[
   let inserted = 0;
   const sources = new Set<string>();
   for (const n of items.slice(0, 60)) {
-    const text = n.summary?.trim() || n.headline;
+    const text = htmlToText(n.summary ?? '') || htmlToText(n.headline ?? '');
     if (!text) continue;
     const { impact, urgent } = classifyImpact(`${n.headline} ${n.summary}`);
     sources.add(n.source);
     const { rows } = await query<{ id: string; inserted: boolean }>(
       `insert into intel_posts (source, external_id, text, impact, is_urgent, published_at)
        values ($1, $2, $3, $4, $5, to_timestamp($6))
-       on conflict (source, external_id) where external_id is not null do nothing
+       on conflict (source, external_id) where external_id is not null
+         do update set text = excluded.text, impact = excluded.impact
        returning id, (xmax = 0) as inserted`,
       [n.source, String(n.id), text, impact, urgent, n.datetime],
     );
-    if (rows.length > 0) {
+    // (xmax = 0) → шынымен ЖАҢА жазба. Бар жазба болса — мәтінін жаңартамыз
+    // (ескі HTML авто-тазаланады), бірақ қайта санамаймыз әрі push жібермейміз.
+    if (rows[0]?.inserted) {
       inserted++;
-      if (urgent) await sendIntelPush({ id: rows[0]!.id, text, impact });
+      if (urgent) await sendIntelPush({ id: rows[0].id, text, impact });
     }
   }
   return { inserted, sources: [...sources] };

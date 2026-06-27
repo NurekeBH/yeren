@@ -94,6 +94,9 @@ class AuthController extends StateNotifier<AuthState> {
     final storage = _ref.read(secureStorageProvider);
     await storage.delete(key: _tokenKey);
     await storage.delete(key: _phoneKey);
+    // Кэштелген профиль деректерін де тазалаймыз (аты, стильдер, бонустар) —
+    // келесі қолданушы ескі деректі көрмесін.
+    await _ref.read(profileControllerProvider.notifier).clear();
     state = const AuthState(status: AuthStatus.unauthenticated);
   }
 }

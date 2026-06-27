@@ -9,8 +9,8 @@ const SignalCreate = z.object({
   entry_from: z.number(),
   entry_to: z.number(),
   tp1: z.number(),
-  tp2: z.number().optional(),
-  tp3: z.number().optional(),
+  tp2: z.number().nullish(),
+  tp3: z.number().nullish(),
   sl: z.number(),
   rr: z.number(),
   confidence: z.number().int().min(0).max(100),
@@ -44,14 +44,32 @@ async function ownsSignal(
 }
 
 export async function signalsRoutes(app: FastifyInstance) {
-  app.get('/signals', async () => {
-    const { rows } = await query(`select * from signals order by published_at desc limit 200`);
+  // Токен болса — userId аламыз (is_mine есептеу үшін). Болмаса — аноним.
+  const optionalUserId = async (req: { jwtVerify: <T>() => Promise<T> }): Promise<string | null> => {
+    try {
+      return (await req.jwtVerify<{ sub: string }>()).sub;
+    } catch {
+      return null;
+    }
+  };
+
+  app.get('/signals', async (req) => {
+    const userId = await optionalUserId(req);
+    const { rows } = await query(
+      `select *, coalesce(created_by = $1, false) as is_mine
+         from signals order by published_at desc limit 200`,
+      [userId],
+    );
     return { signals: rows };
   });
 
   app.get('/signals/:id', async (req, reply) => {
     const id = (req.params as { id: string }).id;
-    const { rows } = await query('select * from signals where id = $1', [id]);
+    const userId = await optionalUserId(req);
+    const { rows } = await query(
+      'select *, coalesce(created_by = $1, false) as is_mine from signals where id = $2',
+      [userId, id],
+    );
     if (rows.length === 0) return reply.code(404).send({ error: 'not_found' });
     return { signal: rows[0] };
   });
@@ -59,15 +77,24 @@ export async function signalsRoutes(app: FastifyInstance) {
   // Admin: жариялау (TZ §10.3)
   app.post('/signals', { onRequest: [app.requireTrader] }, async (req, reply) => {
     const parsed = SignalCreate.safeParse(req.body);
-    if (!parsed.success) return reply.code(400).send({ error: 'bad_request', issues: parsed.error.issues });
+    if (!parsed.success) {
+      const fields = [...new Set(parsed.error.issues.map((i) => i.path.join('.')))].join(', ');
+      return reply.code(400).send({ error: 'bad_request', message: `Тексеріңіз: ${fields}`, issues: parsed.error.issues });
+    }
     const s = parsed.data;
+    // Провайдер (админ емес) сигнал жарияласа — өзінің провайдер профиліне байлаймыз.
+    let providerId = s.provider_id ?? null;
+    if (!req.isAdmin) {
+      const p = await query<{ id: string }>('select id from signal_providers where user_id = $1', [req.userId]);
+      if (p.rows[0]) providerId = p.rows[0].id;
+    }
     const { rows } = await query(
       `insert into signals (pair, direction, entry_from, entry_to, tp1, tp2, tp3, sl, rr, confidence,
                             screenshot_url, analysis, is_free, provider_id, source, source_message_id, created_by)
        values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17)
        returning *`,
       [s.pair, s.direction, s.entry_from, s.entry_to, s.tp1, s.tp2 ?? null, s.tp3 ?? null, s.sl, s.rr,
-        s.confidence, s.screenshot_url ?? null, s.analysis, s.is_free, s.provider_id ?? null, s.source, s.source_message_id ?? null,
+        s.confidence, s.screenshot_url ?? null, s.analysis, s.is_free, providerId, s.source, s.source_message_id ?? null,
         req.userId],
     );
     const sig = rows[0] as { id: string; pair: string; direction: string; is_free: boolean };

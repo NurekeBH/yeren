@@ -7,6 +7,7 @@ import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/library_item.dart';
 import '../data/lessons_repository.dart';
+import 'courses_screen.dart';
 import 'widgets/library_cover.dart';
 
 /// Библиотека — кітаптар/фильмдер/подкасттар каталогы (рейтингтерімен).
@@ -20,7 +21,7 @@ class LibraryScreen extends ConsumerStatefulWidget {
 
 class _LibraryScreenState extends ConsumerState<LibraryScreen>
     with SingleTickerProviderStateMixin {
-  late final TabController _tabs = TabController(length: 3, vsync: this)
+  late final TabController _tabs = TabController(length: 4, vsync: this)
     ..addListener(_onTab);
   String? _topic; // таңдалған категория (topic) — null = бәрі
   double _minRating = 0; // ★ фильтр (0 = бәрі)
@@ -76,9 +77,13 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen>
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    final byCat = ref.watch(libraryByCategoryProvider);
+    // Каталог DB-ден async тартылады; жүктелгенше бос карта (грид бос күй көрсетеді).
+    final byCatAsync = ref.watch(libraryByCategoryProvider);
+    final byCat = byCatAsync.valueOrNull ?? const <LibraryCategory, List<LibraryItem>>{};
+    final loading = byCatAsync.isLoading;
+    final isCourses = _tabs.index == 0; // бірінші қойынды — Курсы
     const cats = [LibraryCategory.book, LibraryCategory.film, LibraryCategory.podcast];
-    final curCat = cats[_tabs.index.clamp(0, 2)];
+    final curCat = cats[(_tabs.index - 1).clamp(0, 2)];
     final topics = ((byCat[curCat] ?? const <LibraryItem>[])
         .map((x) => x.topic)
         .whereType<String>()
@@ -91,7 +96,9 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen>
         title: Text(l.academy_library),
         bottom: TabBar(
           controller: _tabs,
+          isScrollable: true,
           tabs: [
+            Tab(text: '🎓 ${l.academy_courses}'),
             Tab(text: '📖 ${l.academy_category_books}'),
             Tab(text: '🎬 ${l.academy_category_films}'),
             Tab(text: '▶️ ${l.academy_category_podcasts}'),
@@ -100,9 +107,9 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen>
       ),
       body: Column(
         children: [
-          const _CoursesBanner(),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+          if (!isCourses)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -150,80 +157,19 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen>
             child: TabBarView(
               controller: _tabs,
               children: [
-                _CoverGrid(items: _apply(byCat[LibraryCategory.book] ?? const []), l: l),
-                _CoverGrid(items: _apply(byCat[LibraryCategory.film] ?? const []), l: l),
-                _CoverGrid(items: _apply(byCat[LibraryCategory.podcast] ?? const []), l: l),
+                const CoursesList(),
+                for (final cat in cats)
+                  Builder(builder: (_) {
+                    final items = _apply(byCat[cat] ?? const []);
+                    if (loading && items.isEmpty) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    return _CoverGrid(items: items, l: l);
+                  }),
               ],
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-/// Edge Academy табындағы премиум-курстарға кіру баннері.
-class _CoursesBanner extends StatelessWidget {
-  const _CoursesBanner();
-
-  @override
-  Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context);
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-      child: GestureDetector(
-        onTap: () => GoRouter.of(context).push('/academy/courses'),
-        child: Container(
-          padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [AppColors.gold, AppColors.goldBright],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(18),
-            boxShadow: const [BoxShadow(color: AppColors.shadow, blurRadius: 16, offset: Offset(0, 8))],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  const Text('🎓', style: TextStyle(fontSize: 26)),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(l.academy_cta_title,
-                        style: AppTypography.h2(color: Colors.white).copyWith(fontWeight: FontWeight.w800)),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.22),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Text(l.academy_premium_badge,
-                        style: AppTypography.label(color: Colors.white).copyWith(fontWeight: FontWeight.w800, letterSpacing: 1)),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Text(l.academy_cta_sub,
-                  style: AppTypography.bodySmall(color: Colors.white).copyWith(height: 1.35)),
-              const SizedBox(height: 14),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(l.academy_cta_button,
-                    style: AppTypography.button(color: AppColors.gold).copyWith(fontSize: 15, fontWeight: FontWeight.w800)),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

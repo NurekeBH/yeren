@@ -48,3 +48,6 @@ mobile/**/*.freezed.dart
 # Coverage / tests
 coverage/
 *.lcov
+
+# Firebase service account (НЕ коммитить)
+docs/*firebase-adminsdk*.json

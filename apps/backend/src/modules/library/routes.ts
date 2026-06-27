@@ -2,13 +2,39 @@ import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { query } from '../../db/client.js';
 
-// Кітапхана каталогы (b-001, f-002, p-003...) — статик, клиентте.
-// Серверде тек пайдаланушы деректері: сақтау / рейтинг / отзыв.
+// Кітапхана каталогы (Кітап/Фильм/Подкаст) енді DB-де (library_items), админ басқарады.
+// Серверде пайдаланушы деректері де бар: сақтау / рейтинг / отзыв (library_user_data).
 const UpsertBody = z.object({
   saved: z.boolean().optional(),
   rating: z.number().int().min(0).max(5).optional(),
   review: z.string().optional(),
 });
+
+// Каталог элементі (админ CRUD). Локализацияланатын мәтін {ru,kk,en} картасы.
+const LibItemBody = z.object({
+  id: z.string().min(1).optional(), // болмаса авто-генерация
+  category: z.enum(['book', 'film', 'podcast']),
+  title: z.string().min(1),
+  author: z.string().optional(),
+  topic: z.string().nullish(),
+  year: z.number().int().nullish(),
+  rating: z.number().nullish(),
+  rating_max: z.number().optional(),
+  rating_source: z.string().nullish(),
+  isbn: z.string().nullish(),
+  cover_url: z.string().nullish(),
+  youtube_id: z.string().nullish(),
+  external_url: z.string().nullish(),
+  lang: z.string().nullish(),
+  summary: z.record(z.string()).optional(),
+  ideas: z.record(z.array(z.string())).optional(),
+  conclusion: z.record(z.string()).nullish(),
+  sort_order: z.number().int().optional(),
+  is_published: z.boolean().optional(),
+});
+const LIB_JSONB = new Set(['summary', 'ideas', 'conclusion']);
+const LIB_COLS =
+  'id, category, title, author, topic, year, rating, rating_max, rating_source, isbn, cover_url, youtube_id, external_url, lang, summary, ideas, conclusion, sort_order, is_published';
 
 export async function libraryRoutes(app: FastifyInstance) {
   // Пайдаланушының барлық кітапхана деректері (сақталғандар, бағалар, отзывтар)
@@ -59,5 +85,78 @@ export async function libraryRoutes(app: FastifyInstance) {
       [itemId],
     );
     return { reviews: rows };
+  });
+
+  // ── Каталог (қоғамдық): Кітап/Фильм/Подкаст. Мобайл app осыдан тартады. ──
+  app.get('/library/catalog', async (req) => {
+    const cat = (req.query as { category?: string }).category ?? null;
+    const { rows } = await query(
+      `select ${LIB_COLS} from library_items
+        where is_published = true and ($1::text is null or category = $1)
+        order by category, sort_order, title`,
+      [cat],
+    );
+    return { items: rows };
+  });
+
+  // ── Админ: барлық элементтер (жарияланбағанды қоса) ──
+  app.get('/admin/library', { onRequest: [app.requireAdmin] }, async (req) => {
+    const cat = (req.query as { category?: string }).category ?? null;
+    const { rows } = await query(
+      `select ${LIB_COLS}, created_at, updated_at from library_items
+        where ($1::text is null or category = $1)
+        order by category, sort_order, title`,
+      [cat],
+    );
+    return { items: rows };
+  });
+
+  // ── Админ: жаңа элемент ──
+  app.post('/admin/library', { onRequest: [app.requireAdmin] }, async (req, reply) => {
+    const parsed = LibItemBody.safeParse(req.body);
+    if (!parsed.success) return reply.code(400).send({ error: 'bad_request', issues: parsed.error.issues });
+    const d = parsed.data;
+    const id = d.id || `${d.category[0]}-${Date.now()}`;
+    const { rows } = await query(
+      `insert into library_items
+         (id, category, title, author, topic, year, rating, rating_max, rating_source, isbn,
+          cover_url, youtube_id, external_url, lang, summary, ideas, conclusion, sort_order, is_published)
+       values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19)
+       returning ${LIB_COLS}`,
+      [
+        id, d.category, d.title, d.author ?? '', d.topic ?? null, d.year ?? null, d.rating ?? null,
+        d.rating_max ?? 5, d.rating_source ?? null, d.isbn ?? null, d.cover_url ?? null,
+        d.youtube_id ?? null, d.external_url ?? null, d.lang ?? null,
+        JSON.stringify(d.summary ?? {}), JSON.stringify(d.ideas ?? {}),
+        d.conclusion ? JSON.stringify(d.conclusion) : null, d.sort_order ?? 0, d.is_published ?? true,
+      ],
+    );
+    return { item: rows[0] };
+  });
+
+  // ── Админ: өзгерту (ішінара) ──
+  app.patch('/admin/library/:id', { onRequest: [app.requireAdmin] }, async (req, reply) => {
+    const id = (req.params as { id: string }).id;
+    const parsed = LibItemBody.partial().safeParse(req.body);
+    if (!parsed.success) return reply.code(400).send({ error: 'bad_request', issues: parsed.error.issues });
+    const set: string[] = [];
+    const args: unknown[] = [id];
+    for (const [k, v] of Object.entries(parsed.data)) {
+      if (v === undefined || k === 'id') continue;
+      const json = LIB_JSONB.has(k);
+      args.push(json ? JSON.stringify(v) : v);
+      set.push(`${k} = $${args.length}${json ? '::jsonb' : ''}`);
+    }
+    if (set.length === 0) return { ok: true };
+    set.push('updated_at = now()');
+    const { rows } = await query(`update library_items set ${set.join(', ')} where id = $1 returning ${LIB_COLS}`, args);
+    if (!rows[0]) return reply.code(404).send({ error: 'not_found' });
+    return { item: rows[0] };
+  });
+
+  // ── Админ: жою ──
+  app.delete('/admin/library/:id', { onRequest: [app.requireAdmin] }, async (req) => {
+    await query('delete from library_items where id = $1', [(req.params as { id: string }).id]);
+    return { ok: true };
   });
 }

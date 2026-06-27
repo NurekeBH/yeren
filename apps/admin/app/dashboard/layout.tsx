@@ -8,12 +8,14 @@ import { clearToken, getToken } from '@/lib/api';
 const NAV = [
   { href: '/dashboard', label: 'Обзор' },
   { href: '/dashboard/users', label: 'Пользователи' },
-  { href: '/dashboard/applications', label: 'Заявки трейдеров' },
+  { href: '/dashboard/applications', label: 'Заявки провайдеров' },
   { href: '/dashboard/subscriptions', label: 'Подписки' },
   { href: '/dashboard/signals', label: 'Сигналы / Идеи' },
   { href: '/dashboard/providers', label: 'Провайдеры' },
   { href: '/dashboard/intel', label: 'Market Intel' },
   { href: '/dashboard/events', label: 'События' },
+  { href: '/dashboard/library', label: 'Библиотека' },
+  { href: '/dashboard/courses', label: 'Курсы' },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {

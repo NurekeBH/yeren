@@ -30,16 +30,7 @@ class _LibraryDetailScreenState extends ConsumerState<LibraryDetailScreen> {
   @override
   void initState() {
     super.initState();
-    final items = ref.read(libraryItemsProvider);
-    final matches = items.where((x) => x.id == widget.itemId);
-    final yid = matches.isEmpty ? null : matches.first.youtubeId;
-    if (yid != null) {
-      _yt = YoutubePlayerController.fromVideoId(
-        videoId: yid,
-        autoPlay: false,
-        params: const YoutubePlayerParams(showControls: true, showFullscreenButton: true),
-      );
-    }
+    // Каталог async тартылады — подкаст плеері build-те (элемент келгенде) баптаймыз.
     _review.text = ref.read(librarySavedProvider.notifier).entry(widget.itemId).review;
   }
 
@@ -53,8 +44,18 @@ class _LibraryDetailScreenState extends ConsumerState<LibraryDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    final items = ref.watch(libraryItemsProvider);
+    final catalogAsync = ref.watch(libraryCatalogProvider);
+    final items = catalogAsync.valueOrNull ?? const [];
     final matches = items.where((x) => x.id == widget.itemId);
+    final item = matches.isEmpty ? null : matches.first;
+    // Подкаст плеерін лази баптаймыз (элемент келгенде, бір рет).
+    if (item != null && item.youtubeId != null && _yt == null) {
+      _yt = YoutubePlayerController.fromVideoId(
+        videoId: item.youtubeId!,
+        autoPlay: false,
+        params: const YoutubePlayerParams(showControls: true, showFullscreenButton: true),
+      );
+    }
     final saved = ref.watch(librarySavedProvider)[widget.itemId]?.saved ?? false;
 
     return Scaffold(
@@ -68,9 +69,13 @@ class _LibraryDetailScreenState extends ConsumerState<LibraryDetailScreen> {
           ),
         ],
       ),
-      body: matches.isEmpty
-          ? Center(child: Text(l.common_error, style: AppTypography.bodyMedium()))
-          : _body(context, l, matches.first),
+      body: item == null
+          ? Center(
+              child: catalogAsync.isLoading
+                  ? const CircularProgressIndicator()
+                  : Text(l.common_error, style: AppTypography.bodyMedium()),
+            )
+          : _body(context, l, item),
     );
   }
 

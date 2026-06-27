@@ -1,0 +1,1030 @@
+[
+  {
+    "id": "q1",
+    "sort_order": 0,
+    "text": {
+      "ru": "Как формируется ваш bias перед входом в сделку?",
+      "kk": "Сделкаға кіру алдында сіздің бағыт (bias) қалай қалыптасады?",
+      "en": "How is your bias formed before entering a trade?"
+    },
+    "options": [
+      {
+        "label": {
+          "ru": "Сначала HTF (D1/H4) bias, потом LTF исполнение",
+          "kk": "HTF (D1/H4) bias анықталады, тек LTF executor",
+          "en": "HTF (D1/H4) bias first, then LTF execution"
+        },
+        "scores": {
+          "disciplined": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "По интуиции на 5-минутке",
+          "kk": "5-минуттық графикке қарап интуициямен",
+          "en": "5m chart by intuition"
+        },
+        "scores": {
+          "uncontrolledRisk": 2,
+          "hope": 1
+        }
+      },
+      {
+        "label": {
+          "ru": "После убытка — в противоположную сторону",
+          "kk": "Соңғы шығыннан кейін қарсы бағытқа",
+          "en": "Opposite direction after a loss"
+        },
+        "scores": {
+          "revenge": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Жду разворота",
+          "kk": "Соңында бұрылады деп күтемін",
+          "en": "I wait for reversal"
+        },
+        "scores": {
+          "hope": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": "q2",
+    "sort_order": 1,
+    "text": {
+      "ru": "Как выбираете объём позиции?",
+      "kk": "Position sizing қалай шешіледі?",
+      "en": "How do you size positions?"
+    },
+    "options": [
+      {
+        "label": {
+          "ru": "Equity × 1–2% / SL pips через калькулятор",
+          "kk": "Account equity × 1–2% / SL pips калькуляторымен",
+          "en": "Equity × 1–2% / SL pips via calculator"
+        },
+        "scores": {
+          "disciplined": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Лот по чувству — иногда 5–10%",
+          "kk": "Лот сезімге сәйкес — кейде 5–10% risk",
+          "en": "Lot by feel — sometimes 5–10%"
+        },
+        "scores": {
+          "uncontrolledRisk": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Увеличиваю лот, чтобы отыграться",
+          "kk": "Шығынды қайтару үшін лотты үлкейтемін",
+          "en": "Increase lot to recover losses"
+        },
+        "scores": {
+          "revenge": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "«Сетап сильный» → больше лот",
+          "kk": "\"Бұл setup мықты\" → лот ұлғаяды",
+          "en": "\"Strong setup\" → bigger lot"
+        },
+        "scores": {
+          "hope": 2,
+          "uncontrolledRisk": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": "q3",
+    "sort_order": 2,
+    "text": {
+      "ru": "Где ставите Stop-Loss?",
+      "kk": "Stop-Loss деңгейі қайда қойылады?",
+      "en": "Where do you place Stop-Loss?"
+    },
+    "options": [
+      {
+        "label": {
+          "ru": "Structure invalidation — не двигаю",
+          "kk": "Structure invalidation point — қозғалмайды",
+          "en": "Structure invalidation — never move it"
+        },
+        "scores": {
+          "disciplined": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "«Свип ликвидности» — снимаю SL",
+          "kk": "\"Liquidity sweep тазалап шығарады\" — алып тастаймын",
+          "en": "\"Liquidity sweep\" — I remove the SL"
+        },
+        "scores": {
+          "hope": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Расширяю, чтобы отыграться",
+          "kk": "Шығынды қайтару үшін кеңейтемін",
+          "en": "Widen it to recover"
+        },
+        "scores": {
+          "revenge": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Иногда есть SL, иногда нет",
+          "kk": "Кейде қоямын, кейде SL жоқ",
+          "en": "Sometimes I use SL, sometimes not"
+        },
+        "scores": {
+          "uncontrolledRisk": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": "q4",
+    "sort_order": 3,
+    "text": {
+      "ru": "Дневной лимит drawdown:",
+      "kk": "Күндік drawdown лимиті:",
+      "en": "Daily drawdown limit:"
+    },
+    "options": [
+      {
+        "label": {
+          "ru": "При −3% автоматический «off day»",
+          "kk": "−3%-ке жетсе автоматты \"off day\"",
+          "en": "At −3% automatic \"off day\""
+        },
+        "scores": {
+          "disciplined": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "«Сейчас отыграю» — продолжаю",
+          "kk": "\"Қайта қайтарам\" деп жалғастырамын",
+          "en": "\"I will recover\" — keep going"
+        },
+        "scores": {
+          "hope": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Увеличиваю лот для recovery",
+          "kk": "Лотты ұлғайтамын — recovery үшін",
+          "en": "Increase lot for recovery"
+        },
+        "scores": {
+          "revenge": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Лимита нет — каждая сделка отдельно",
+          "kk": "Шектеу жоқ — әр сделка бөлек оқиға",
+          "en": "No limit — every trade is separate"
+        },
+        "scores": {
+          "uncontrolledRisk": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": "q5",
+    "sort_order": 4,
+    "text": {
+      "ru": "HIGH-impact новость (NFP, FOMC):",
+      "kk": "HIGH-impact news event (NFP, FOMC):",
+      "en": "HIGH-impact news event (NFP, FOMC):"
+    },
+    "options": [
+      {
+        "label": {
+          "ru": "Закрываю до новости, после жду structure",
+          "kk": "Pre-news жабам, post-news structure күтемін",
+          "en": "Close pre-news, wait for post-news structure"
+        },
+        "scores": {
+          "disciplined": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Вхожу с расширенным SL в волатильность",
+          "kk": "Кеңейтілген SL-мен volatility-ге кіремін",
+          "en": "Enter volatility with wider SL"
+        },
+        "scores": {
+          "uncontrolledRisk": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Захожу на ожидании смены тренда",
+          "kk": "Бағыт ауысуын алдын ала кіремін",
+          "en": "Enter pre-news on directional bet"
+        },
+        "scores": {
+          "hope": 2
+        }
+      },
+      {
+        "label": {
+          "ru": "Отыгрываю убыток на pre-news pump",
+          "kk": "Шығынды pre-news pump-та қайтарам",
+          "en": "Recover loss on pre-news pump"
+        },
+        "scores": {
+          "revenge": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": "q6",
+    "sort_order": 5,
+    "text": {
+      "ru": "Торговый журнал:",
+      "kk": "Trading journal:",
+      "en": "Trading journal:"
+    },
+    "options": [
+      {
+        "label": {
+          "ru": "Каждая сделка: скриншот + теги + эмоция + RR plan/actual",
+          "kk": "Әр сделка: screenshot + теги + emotion + RR plan/actual",
+          "en": "Each trade: screenshot + tags + emotion + RR plan/actual"
+        },
+        "scores": {
+          "disciplined": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Записываю только победы",
+          "kk": "Тек жеңістерді жазамын",
+          "en": "I log only winners"
+        },
+        "scores": {
+          "hope": 2
+        }
+      },
+      {
+        "label": {
+          "ru": "Не хочу видеть убытки — пропускаю",
+          "kk": "Шығынды көргім келмейді — өткізіп жіберемін",
+          "en": "I don't want to see losses — skip them"
+        },
+        "scores": {
+          "revenge": 2
+        }
+      },
+      {
+        "label": {
+          "ru": "Лишнее — рынок не изменится от этого",
+          "kk": "Артық — нарық оны өзгертпейді",
+          "en": "Pointless — market does not change"
+        },
+        "scores": {
+          "uncontrolledRisk": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": "q7",
+    "sort_order": 6,
+    "text": {
+      "ru": "После срабатывания SL:",
+      "kk": "SL шыққаннан кейін:",
+      "en": "After SL hits:"
+    },
+    "options": [
+      {
+        "label": {
+          "ru": "Пауза минимум 30 мин, анализ в журнал",
+          "kk": "Минимум 30 мин пауза, талдау жасап журналға",
+          "en": "Minimum 30-min break, analyze in journal"
+        },
+        "scores": {
+          "disciplined": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Захожу в противоположную сторону большим лотом",
+          "kk": "Лотты ұлғайтып қарсы бағытта кіремін",
+          "en": "Bigger lot, opposite direction"
+        },
+        "scores": {
+          "revenge": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "«В итоге выйдет в плюс» — averaging down",
+          "kk": "\"Соңында дұрыс шығады\" — averaging down",
+          "en": "\"It will work in the end\" — averaging down"
+        },
+        "scores": {
+          "hope": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Открываю несколько сделок подряд быстро",
+          "kk": "Бірнеше сделканы жылдам тізбектеп ашамын",
+          "en": "Open several trades back-to-back quickly"
+        },
+        "scores": {
+          "uncontrolledRisk": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": "q8",
+    "sort_order": 7,
+    "text": {
+      "ru": "Коррелированные позиции (XAU/USD + XAG/USD + USDJPY):",
+      "kk": "Correlated positions (XAU/USD + XAG/USD + USDJPY):",
+      "en": "Correlated positions (XAU/USD + XAG/USD + USDJPY):"
+    },
+    "options": [
+      {
+        "label": {
+          "ru": "Лимитирую total exposure по матрице корреляций",
+          "kk": "Correlation matrix-те total exposure %-ке шектеймін",
+          "en": "Limit total exposure via correlation matrix"
+        },
+        "scores": {
+          "disciplined": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Не знаю корреляций — захожу параллельно",
+          "kk": "Корреляцияны білмеймін — параллельді кіремін",
+          "en": "I don't know correlations — enter parallel"
+        },
+        "scores": {
+          "uncontrolledRisk": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "«Один из них сработает» — увеличиваю экспозицию",
+          "kk": "\"Соның бірі дұрыс шығады\" — экспозу үлкейтемін",
+          "en": "\"One will work\" — bigger exposure"
+        },
+        "scores": {
+          "hope": 2
+        }
+      },
+      {
+        "label": {
+          "ru": "Открываю много пар, чтобы отыграться",
+          "kk": "Шығынды қайтару үшін көп pair ашамын",
+          "en": "Open many pairs to recover"
+        },
+        "scores": {
+          "revenge": 2
+        }
+      }
+    ]
+  },
+  {
+    "id": "q9",
+    "sort_order": 8,
+    "text": {
+      "ru": "FOMO-сделка вне плана:",
+      "kk": "Жоспарда жоқ \"FOMO\" сделкасы:",
+      "en": "Off-plan \"FOMO\" trade:"
+    },
+    "options": [
+      {
+        "label": {
+          "ru": "Не вхожу — только A+ сетапы",
+          "kk": "Кірмеймін — A+ setup-та ғана пресс",
+          "en": "Skip it — A+ setups only"
+        },
+        "scores": {
+          "disciplined": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "«Упущу — буду жалеть» — вхожу",
+          "kk": "\"Жіберсем өкінемін\" — кіремін",
+          "en": "\"I will regret missing it\" — enter"
+        },
+        "scores": {
+          "uncontrolledRisk": 2,
+          "hope": 1
+        }
+      },
+      {
+        "label": {
+          "ru": "После убытка вошёл",
+          "kk": "Соңғы шығыннан кейін кірдім",
+          "en": "Entered after a loss"
+        },
+        "scores": {
+          "revenge": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Чувство «сейчас» — вхожу",
+          "kk": "\"Қазір\" сезімі — кіремін",
+          "en": "\"Now\" feeling — enter"
+        },
+        "scores": {
+          "hope": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": "q10",
+    "sort_order": 9,
+    "text": {
+      "ru": "После TP1:",
+      "kk": "TP1-ден кейін:",
+      "en": "After TP1:"
+    },
+    "options": [
+      {
+        "label": {
+          "ru": "Закрываю 50%, SL → BE, trailing",
+          "kk": "50% жабам, SL → BE, trailing rule-мен",
+          "en": "Close 50%, SL → BE, trailing"
+        },
+        "scores": {
+          "disciplined": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Не двигаю BE — «съест»",
+          "kk": "BE қозғамаймын — \"жұтылады\" сезім",
+          "en": "Don't move to BE — feels like it will eat me"
+        },
+        "scores": {
+          "hope": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Беру TP, опять вхожу с большим лотом",
+          "kk": "TP алып, тағы кіріп ұлғайтам",
+          "en": "Take TP, re-enter bigger"
+        },
+        "scores": {
+          "revenge": 2,
+          "uncontrolledRisk": 1
+        }
+      },
+      {
+        "label": {
+          "ru": "Нет trailing — иногда теряю прибыль",
+          "kk": "Trailing жоқ — кейде нәтиже жоғалады",
+          "en": "No trailing — sometimes lose the move"
+        },
+        "scores": {
+          "uncontrolledRisk": 2
+        }
+      }
+    ]
+  },
+  {
+    "id": "q11",
+    "sort_order": 10,
+    "text": {
+      "ru": "Критерий A+ setup:",
+      "kk": "A+ setup критерийі:",
+      "en": "A+ setup criterion:"
+    },
+    "options": [
+      {
+        "label": {
+          "ru": "Чек-лист — минимум 4 confluence",
+          "kk": "Жазылған checklist — min 4 confluence",
+          "en": "Written checklist — min 4 confluence"
+        },
+        "scores": {
+          "disciplined": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "«Увижу — пойму» — без правил",
+          "kk": "\"Көрсем білемін\" — нақты ереже жоқ",
+          "en": "\"I will know it when I see it\""
+        },
+        "scores": {
+          "uncontrolledRisk": 2,
+          "hope": 1
+        }
+      },
+      {
+        "label": {
+          "ru": "Верю интуиции «должно сработать»",
+          "kk": "\"Болуы керек\" интуицияға сенемін",
+          "en": "Trust the \"should work\" intuition"
+        },
+        "scores": {
+          "hope": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "После убытка любой сетап подойдёт",
+          "kk": "Шығыннан кейін кез келген setup жарайды",
+          "en": "Any setup will do after a loss"
+        },
+        "scores": {
+          "revenge": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": "q12",
+    "sort_order": 11,
+    "text": {
+      "ru": "Мультитаймфреймовый анализ:",
+      "kk": "Multi-timeframe анализ:",
+      "en": "Multi-timeframe analysis:"
+    },
+    "options": [
+      {
+        "label": {
+          "ru": "D1 → H4 → H1 → 15M top-down",
+          "kk": "D1 → H4 → H1 → 15M top-down workflow",
+          "en": "D1 → H4 → H1 → 15M top-down"
+        },
+        "scores": {
+          "disciplined": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Только 5M / 1M скальп",
+          "kk": "Тек 5M / 1M скальпинг",
+          "en": "Only 5M / 1M scalp"
+        },
+        "scores": {
+          "uncontrolledRisk": 2
+        }
+      },
+      {
+        "label": {
+          "ru": "«Сейчас момент» — без TF",
+          "kk": "\"Бұл момент дұрыс\" — TF-сіз кіремін",
+          "en": "\"This moment is right\" — no TF"
+        },
+        "scores": {
+          "hope": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Не смотрю TF — захожу",
+          "kk": "TF қарап тұрмаймын — кіремін",
+          "en": "Don't check TFs — enter"
+        },
+        "scores": {
+          "revenge": 2
+        }
+      }
+    ]
+  },
+  {
+    "id": "q13",
+    "sort_order": 12,
+    "text": {
+      "ru": "О стратегии:",
+      "kk": "Стратегия туралы:",
+      "en": "About strategy:"
+    },
+    "options": [
+      {
+        "label": {
+          "ru": "1 основная + 1 вспомогательная, backtested 200+ сделок",
+          "kk": "1 негізгі + 1 қосалқы, backtested 200+ trades",
+          "en": "1 primary + 1 backup, backtested 200+ trades"
+        },
+        "scores": {
+          "disciplined": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Каждую неделю тестирую новую",
+          "kk": "Әр аптада жаңасын сынап көремін",
+          "en": "Try a new one each week"
+        },
+        "scores": {
+          "uncontrolledRisk": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Моя интуиция — это система",
+          "kk": "\"Дұрыс шығады\" интуициям — система",
+          "en": "My intuition is the system"
+        },
+        "scores": {
+          "hope": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Меняю стратегию после убытка",
+          "kk": "Шығыннан кейін стратегия ауыстырамын",
+          "en": "Change strategy after a loss"
+        },
+        "scores": {
+          "revenge": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": "q14",
+    "sort_order": 13,
+    "text": {
+      "ru": "После TP:",
+      "kk": "TP-ға жеткеннен кейін:",
+      "en": "After hitting TP:"
+    },
+    "options": [
+      {
+        "label": {
+          "ru": "Полностью или scale out — по плану RR",
+          "kk": "Толық немесе scale out — RR жоспарға сай",
+          "en": "Full close or scale out per RR plan"
+        },
+        "scores": {
+          "disciplined": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "«Мало прибыли» — держу",
+          "kk": "\"Аз пайда\" — жалғастырамын",
+          "en": "\"Not enough profit\" — hold"
+        },
+        "scores": {
+          "hope": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Перезахожу большим лотом",
+          "kk": "Тағы кіріп лот ұлғайтамын",
+          "en": "Re-enter bigger"
+        },
+        "scores": {
+          "revenge": 2,
+          "uncontrolledRisk": 1
+        }
+      },
+      {
+        "label": {
+          "ru": "Хочется снова войти большим лотом",
+          "kk": "Жоғары лотқа қайта кіргім келеді",
+          "en": "Want to re-enter with bigger lot"
+        },
+        "scores": {
+          "uncontrolledRisk": 2
+        }
+      }
+    ]
+  },
+  {
+    "id": "q15",
+    "sort_order": 14,
+    "text": {
+      "ru": "Максимум сделок в день:",
+      "kk": "Максималды күндік сделка саны:",
+      "en": "Max trades per day:"
+    },
+    "options": [
+      {
+        "label": {
+          "ru": "3–5 сетапов, больше — «off day»",
+          "kk": "3–5 setup, көп болса \"off day\"",
+          "en": "3–5 setups, more = \"off day\""
+        },
+        "scores": {
+          "disciplined": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "10+ — сколько появится",
+          "kk": "10+ — қаншасы келсе сонша",
+          "en": "10+ — as many as appear"
+        },
+        "scores": {
+          "uncontrolledRisk": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Если надо отыграться — 20+",
+          "kk": "Шығынды қайтару керек болса 20+",
+          "en": "20+ if I need to recover"
+        },
+        "scores": {
+          "revenge": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "«Какой-то setup появится» — жду",
+          "kk": "\"Қалайда бір setup туады\" — қарап отырам",
+          "en": "\"Some setup will appear\" — wait"
+        },
+        "scores": {
+          "hope": 2
+        }
+      }
+    ]
+  },
+  {
+    "id": "q16",
+    "sort_order": 15,
+    "text": {
+      "ru": "В стрессе:",
+      "kk": "Стресс жағдайда:",
+      "en": "Under stress:"
+    },
+    "options": [
+      {
+        "label": {
+          "ru": "Отхожу, дыхание, запись в журнал",
+          "kk": "Алыстаймын, breathing, журналға жазам",
+          "en": "Step away, breathe, journal"
+        },
+        "scores": {
+          "disciplined": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Без паузы — вхожу снова",
+          "kk": "Pause жоқ — қайта кіремін",
+          "en": "No pause — re-enter"
+        },
+        "scores": {
+          "uncontrolledRisk": 2,
+          "revenge": 1
+        }
+      },
+      {
+        "label": {
+          "ru": "«В итоге правильно» — продолжаю",
+          "kk": "\"Соңында дұрыс\" — жалғастырамын",
+          "en": "\"Will be fine eventually\" — keep going"
+        },
+        "scores": {
+          "hope": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Увеличиваю лот, чтобы выйти из убытка",
+          "kk": "Лот ұлғайтып шығыннан шығам деп",
+          "en": "Bigger lot to escape loss"
+        },
+        "scores": {
+          "revenge": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": "q17",
+    "sort_order": 16,
+    "text": {
+      "ru": "Бэктест и forward test:",
+      "kk": "Backtesting & forward test:",
+      "en": "Backtesting & forward test:"
+    },
+    "options": [
+      {
+        "label": {
+          "ru": "200+ сделок backtest + 1 мес forward demo",
+          "kk": "200+ сделка backtest + 1 ай forward демо",
+          "en": "200+ trade backtest + 1-month forward demo"
+        },
+        "scores": {
+          "disciplined": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Лучше тестировать сразу на live",
+          "kk": "Жайдан live-да тестілеу артық",
+          "en": "Better test on live directly"
+        },
+        "scores": {
+          "uncontrolledRisk": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Несколько раз видел — хватит",
+          "kk": "Бірнешеуін көрдім — жетеді",
+          "en": "Saw a few — that's enough"
+        },
+        "scores": {
+          "hope": 1,
+          "uncontrolledRisk": 1
+        }
+      },
+      {
+        "label": {
+          "ru": "«История повторится» — без полного бэктеста",
+          "kk": "\"Тарих қайталанады\" — толық backtest жоқ",
+          "en": "\"History repeats\" — no full backtest"
+        },
+        "scores": {
+          "hope": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": "q18",
+    "sort_order": 17,
+    "text": {
+      "ru": "История margin call / stop-out:",
+      "kk": "Margin call / stop-out тарихы:",
+      "en": "Margin call / stop-out history:"
+    },
+    "options": [
+      {
+        "label": {
+          "ru": "Не было — строго держу риск %",
+          "kk": "Болған емес — risk %-те қатаң тұрамын",
+          "en": "Never — strict on risk %"
+        },
+        "scores": {
+          "disciplined": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Несколько раз, докладывал депозит",
+          "kk": "Бірнеше рет, депозит қостым",
+          "en": "A few times, topped up deposit"
+        },
+        "scores": {
+          "uncontrolledRisk": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Надеюсь, не случится — продолжаю",
+          "kk": "Болмайды деп үміттеніп жалғастырам",
+          "en": "I hope it won't happen — continue"
+        },
+        "scores": {
+          "hope": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Было, но работал, чтобы отыграться",
+          "kk": "Болған, бірақ қайтарам деп жұмыс істедім",
+          "en": "Happened, but worked to recover"
+        },
+        "scores": {
+          "revenge": 2
+        }
+      }
+    ]
+  },
+  {
+    "id": "q19",
+    "sort_order": 18,
+    "text": {
+      "ru": "Об edge (статистическом преимуществе):",
+      "kk": "Edge (статистикалық преимущество) туралы:",
+      "en": "About edge (statistical advantage):"
+    },
+    "options": [
+      {
+        "label": {
+          "ru": "Win Rate × avg RR > 1.0 — в цифрах",
+          "kk": "Win Rate × avg RR > 1.0 — нақты сандармен",
+          "en": "Win Rate × avg RR > 1.0 — numbers"
+        },
+        "scores": {
+          "disciplined": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Несколько пипсов — мой edge",
+          "kk": "Бірнеше pip алу — менің edge",
+          "en": "A few pips — my edge"
+        },
+        "scores": {
+          "uncontrolledRisk": 2
+        }
+      },
+      {
+        "label": {
+          "ru": "Интуиция — мой edge",
+          "kk": "Интуиция — менің edge",
+          "en": "Intuition is my edge"
+        },
+        "scores": {
+          "hope": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Меняю систему после убытка",
+          "kk": "Шығыннан кейін система ауыстырамын",
+          "en": "Switch system after a loss"
+        },
+        "scores": {
+          "revenge": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": "q20",
+    "sort_order": 19,
+    "text": {
+      "ru": "Что такое успех?",
+      "kk": "Жетістік деген не?",
+      "en": "What is success?"
+    },
+    "options": [
+      {
+        "label": {
+          "ru": "PF > 1.5, max DD < 10%, дисциплина 95%+",
+          "kk": "PF > 1.5, max DD < 10%, дисциплина 95%+",
+          "en": "PF > 1.5, max DD < 10%, discipline 95%+"
+        },
+        "scores": {
+          "disciplined": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Большой лот → большой профит",
+          "kk": "Үлкен лот → үлкен пайыз",
+          "en": "Big lot → big profit"
+        },
+        "scores": {
+          "uncontrolledRisk": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "«Правильных идей» больше → профит",
+          "kk": "\"Дұрыс ой\" көп болса → пайыз",
+          "en": "More \"good ideas\" → profit"
+        },
+        "scores": {
+          "hope": 3
+        }
+      },
+      {
+        "label": {
+          "ru": "Выбраться из убытка в плюс",
+          "kk": "Шығыннан шығып плюске келу",
+          "en": "Climb out of loss into profit"
+        },
+        "scores": {
+          "revenge": 3
+        }
+      }
+    ]
+  }
+]

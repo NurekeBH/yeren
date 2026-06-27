@@ -20,22 +20,15 @@ class ExamScreen extends ConsumerStatefulWidget {
 }
 
 class _ExamScreenState extends ConsumerState<ExamScreen> {
-  late final List<ExamQuestion> _q;
-  late final List<int?> _answers;
+  // Курс async тартылады — викторина курс келгенде build-те бір рет құрылады.
+  List<ExamQuestion> _q = const [];
+  List<int?> _answers = const [];
   final _pc = PageController();
   int _page = 0;
   bool _finished = false;
   ExamResult? _result;
 
   static const _passMark = 0.7; // 70%
-
-  @override
-  void initState() {
-    super.initState();
-    final course = ref.read(courseByIdProvider(widget.courseId));
-    _q = course == null ? const [] : buildExam(course, count: 30);
-    _answers = List<int?>.filled(_q.length, null);
-  }
 
   @override
   void dispose() {
@@ -72,8 +65,22 @@ class _ExamScreenState extends ConsumerState<ExamScreen> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    final course = ref.watch(courseByIdProvider(widget.courseId));
-    if (course == null || _q.isEmpty) {
+    final courseAsync = ref.watch(courseByIdProvider(widget.courseId));
+    final course = courseAsync.valueOrNull;
+    if (course == null) {
+      return Scaffold(
+        appBar: AppBar(),
+        body: Center(
+          child: courseAsync.isLoading ? const CircularProgressIndicator() : Text(l.common_error),
+        ),
+      );
+    }
+    // Курс келді — викторинаны бір рет құрамыз (30 сұрақ).
+    if (_q.isEmpty) {
+      _q = buildExam(course, count: 30);
+      _answers = List<int?>.filled(_q.length, null);
+    }
+    if (_q.isEmpty) {
       return Scaffold(appBar: AppBar(), body: Center(child: Text(l.common_error)));
     }
     if (_finished && _result != null) {

@@ -133,6 +133,27 @@ class ApiService {
       _send('POST', '/alerts', body: body);
   Future<void> deleteAlert(String id) => _send('DELETE', '/alerts/$id');
 
+  // ─────────────── Library каталогы (DB-ден: Кітап/Фильм/Подкаст) ───────────────
+  /// Жарияланған каталог элементтері (category: book|film|podcast немесе бәрі).
+  Future<List<dynamic>> libraryCatalog([String? category]) async =>
+      (await _get('/library/catalog', query: category == null ? null : {'category': category}))['items']
+          as List? ??
+      const [];
+
+  /// Курстар каталогы — content таңдалған тілде (модуль/сабақ ағашы).
+  Future<List<dynamic>> coursesCatalog(String lang) async =>
+      (await _get('/courses/catalog', query: {'lang': lang}))['courses'] as List? ?? const [];
+
+  /// Психология сабақтары (DB-ден, локализацияланған). profile — қалауынша сүзгі.
+  Future<List<dynamic>> academyLessons([String? profileType]) async => (await _get(
+        '/academy/lessons',
+        query: profileType == null ? null : {'profile_type': profileType},
+      ))['lessons'] as List? ?? const [];
+
+  /// Gallup тест сұрақтары.
+  Future<List<dynamic>> gallupQuestions() async =>
+      (await _get('/academy/questions'))['questions'] as List? ?? const [];
+
   // ─────────────── Library (save / rating / review) ───────────────
   Future<List<dynamic>> myLibrary() async => (await _get('/library/me'))['items'] as List;
   Future<void> upsertLibrary(String itemId, Map<String, dynamic> body) =>
@@ -165,6 +186,40 @@ class ApiService {
       (await _send('POST', '/brokers/mt', body: body))['account'] as Map<String, dynamic>? ?? const {};
   Future<void> syncBroker(String id) => _send('POST', '/brokers/$id/sync');
   Future<void> removeBroker(String id) => _send('DELETE', '/brokers/$id');
+
+  // ─────────────── Журнал v2 (MT sync + statement import + аналитика) ───────────────
+  Future<List<dynamic>> journalAccounts() async =>
+      (await _get('/journal/accounts'))['accounts'] as List? ?? const [];
+  Future<Map<String, dynamic>> linkJournalAccount(Map<String, dynamic> body) async =>
+      (await _send('POST', '/journal/accounts', body: body))['account'] as Map<String, dynamic>? ?? const {};
+  Future<void> removeJournalAccount(String id) => _send('DELETE', '/journal/accounts/$id');
+  Future<Map<String, dynamic>> syncJournalAccount(String id) =>
+      _send('POST', '/journal/accounts/$id/sync');
+
+  Future<List<dynamic>> journalTrades([String? accountId]) async => (await _get(
+        '/journal/trades',
+        query: accountId == null ? null : {'account_id': accountId},
+      ))['trades'] as List? ?? const [];
+  Future<Map<String, dynamic>> addJournalTrade(Map<String, dynamic> body) =>
+      _send('POST', '/journal/trades', body: body);
+  Future<void> deleteJournalTrade(String id) => _send('DELETE', '/journal/trades/$id');
+  Future<void> setTradeMetadata(String id, Map<String, dynamic> body) =>
+      _send('PUT', '/journal/trades/$id/metadata', body: body);
+
+  Future<Map<String, dynamic>> journalAnalytics([String? accountId]) =>
+      _get('/journal/analytics', query: accountId == null ? null : {'account_id': accountId});
+
+  /// MT4/MT5 statement (.html/.csv) импорттау — серверде парсеп upsert жасайды.
+  Future<Map<String, dynamic>> importStatement(String filePath, {String? accountId}) async {
+    final form = FormData.fromMap({'file': await MultipartFile.fromFile(filePath)});
+    final res = await _dio.post<dynamic>(
+      '/journal/import',
+      data: form,
+      queryParameters: accountId == null ? null : {'account_id': accountId},
+    );
+    _ensureOk(res);
+    return res.data is Map ? (res.data as Map).cast<String, dynamic>() : <String, dynamic>{};
+  }
 
   // ─────────────── Support (қолдау хабары → админ-панель) ───────────────
   Future<void> sendSupportMessage(String text) =>

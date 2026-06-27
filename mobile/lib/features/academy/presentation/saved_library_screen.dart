@@ -18,7 +18,8 @@ class SavedLibraryScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     final savedIds = ref.watch(librarySavedProvider.notifier).savedIds.toSet();
-    final items = ref.watch(libraryItemsProvider).where((x) => savedIds.contains(x.id)).toList();
+    final catalog = ref.watch(libraryCatalogProvider).valueOrNull ?? const [];
+    final items = catalog.where((x) => savedIds.contains(x.id)).toList();
 
     return Scaffold(
       appBar: AppBar(title: Text(l.profile_saved)),

@@ -1,6 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { query, tx } from '../../db/client.js';
+import { ensureProviderProfile } from '../../services/provider_profile.js';
 
 /// Расталған трейдер өтінімі: қолданушы жібереді → админ панелінде кезек → approve/reject.
 export async function traderAppsRoutes(app: FastifyInstance) {
@@ -61,6 +62,8 @@ export async function traderAppsRoutes(app: FastifyInstance) {
       );
       if (!rows[0]) return null;
       await c.query('update users set is_verified_trader = true where id = $1', [rows[0].user_id]);
+      // Провайдер профилін авто-жасаймыз (ол providers тізімінде көрінеді, сигнал бере алады).
+      await ensureProviderProfile((sql, p) => c.query(sql, p as never[]), rows[0].user_id);
       return rows[0];
     });
     if (!result) return reply.code(404).send({ error: 'not_found_or_reviewed' });

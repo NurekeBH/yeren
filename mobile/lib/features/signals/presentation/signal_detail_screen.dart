@@ -225,7 +225,7 @@ class _SetResultCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     Future<void> set(SignalStatus s) async {
-      await ref.read(mySignalsProvider.notifier).setStatus(signal.id, s);
+      await ref.read(mySignalsProvider).setStatus(signal, s);
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.signals_result_set)));
       }

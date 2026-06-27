@@ -2,85 +2,41 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/locale/locale_controller.dart';
+import '../../../core/network/api_service.dart';
 import '../../../shared/models/course.dart';
-import 'course_meta.dart';
-import 'courses_data.dart';
+import '../../../shared/models/course_json.dart';
 
-/// Барлық премиум-курстар каталогы. Мазмұн courses_data-да, ал «сатылатын»
-/// маркетинг қабаты (ілмекті тақырып, эмодзи, минут) + тіл локализациясы
-/// course_meta-да — осы жерде біріктіреміз. Тіл ауысса қайта құрылады.
-/// ЕСКЕРТУ: сабақ ДЕНЕСІ (blocks) әзірге тек RU (келесі кезеңде аударылады).
-final coursesProvider = Provider<List<Course>>((ref) {
-  final locale = ref.watch(localeControllerProvider).languageCode;
-  return buildCourses(locale).map((c) => _applyMeta(c, locale)).toList();
+/// Барлық премиум-курстар каталогы — DB-ден API арқылы (content таңдалған тілде).
+/// Метадата (атау/баға/эмодзи/акцент) DB бағандарынан, ал толық ағаш content-тен.
+/// Тіл ауысса қайта тартылады.
+final coursesProvider = FutureProvider<List<Course>>((ref) async {
+  final loc = ref.watch(localeControllerProvider).languageCode;
+  final raw = await ref.watch(apiServiceProvider).coursesCatalog(loc);
+  return raw.map((e) => _courseFromCatalog((e as Map).cast<String, dynamic>(), loc)).toList();
 });
 
-/// Курсқа маркетинг метасын + таңдалған тіл қабығын қолданады.
-Course _applyMeta(Course c, String locale) {
-  final lessonText = locale == 'kk'
-      ? lessonTextKk
-      : locale == 'en'
-          ? lessonTextEn
-          : const <String, LessonText>{};
-  final moduleText = locale == 'kk'
-      ? moduleTextKk
-      : locale == 'en'
-          ? moduleTextEn
-          : const <String, ModuleText>{};
-  final shell = locale == 'kk'
-      ? courseShellKk
-      : locale == 'en'
-          ? courseShellEn
-          : null;
+int? _ci(dynamic v) => v == null ? null : (v is num ? v.toInt() : int.tryParse(v.toString()));
+String _pick(dynamic m, String loc, String fb) =>
+    m is Map ? (m[loc] ?? m['ru'] ?? fb).toString() : fb;
 
+/// Каталог жазбасынан Course құру: ағаш content-тен, метадата бағандар басым.
+Course _courseFromCatalog(Map<String, dynamic> j, String loc) {
+  final tree = courseFromJson((j['content'] as Map?)?.cast<String, dynamic>() ?? const {});
   return Course(
-    id: c.id,
-    title: shell?.title ?? c.title,
-    subtitle: shell?.subtitle ?? c.subtitle,
-    description: shell?.description ?? c.description,
-    priceBonus: c.priceBonus,
-    accent: c.accent,
-    emoji: c.emoji,
-    modules: [
-      for (final m in c.modules)
-        CourseModule(
-          id: m.id,
-          index: m.index,
-          title: moduleText[m.id]?.title ?? m.title,
-          goal: moduleText[m.id]?.goal ?? m.goal,
-          emoji: moduleEmoji[m.id] ?? m.emoji,
-          lessons: [
-            for (final l in m.lessons)
-              CourseLesson(
-                id: l.id,
-                code: l.code,
-                title: lessonText[l.id]?.title ?? lessonMeta[l.id]?.title ?? l.title,
-                emoji: lessonMeta[l.id]?.emoji ?? l.emoji,
-                hook: lessonText[l.id]?.hook ?? lessonMeta[l.id]?.hook ?? l.hook,
-                minutes: lessonMeta[l.id]?.minutes ?? l.minutes,
-                // Тақырып бойынша фильм/кітап ұсынысы болса — сабақ соңына қосамыз.
-                blocks: lessonMedia[l.id] == null
-                    ? l.blocks
-                    : [
-                        ...l.blocks,
-                        MediaRecBlock(
-                          kind: lessonMedia[l.id]!.kind,
-                          title: lessonMedia[l.id]!.title,
-                          note: lessonMedia[l.id]!.note,
-                          meta: lessonMedia[l.id]!.meta,
-                        ),
-                      ],
-                quiz: l.quiz,
-              ),
-          ],
-        ),
-    ],
+    id: tree.id.isEmpty ? (j['id'] ?? '').toString() : tree.id,
+    title: _pick(j['title'], loc, tree.title),
+    subtitle: _pick(j['subtitle'], loc, tree.subtitle),
+    description: _pick(j['description'], loc, tree.description),
+    priceBonus: _ci(j['price_bonus']) ?? tree.priceBonus,
+    emoji: (j['emoji'] ?? tree.emoji).toString(),
+    accent: _ci(j['accent']) ?? tree.accent,
+    modules: tree.modules,
   );
 }
 
 /// Курсты id бойынша табу (детал/сабақ экрандарына).
-final courseByIdProvider = Provider.family<Course?, String>((ref, id) {
-  final courses = ref.watch(coursesProvider);
+final courseByIdProvider = FutureProvider.family<Course?, String>((ref, id) async {
+  final courses = await ref.watch(coursesProvider.future);
   for (final c in courses) {
     if (c.id == id) return c;
   }
@@ -138,8 +94,16 @@ final courseProgressProvider =
 );
 
 /// Курс бойынша аяқталған сабақтар саны (прогресс жолағы үшін).
+/// Курстар async тартылатындықтан, жүктелмеген кезде 0 қайтарады.
 final courseDoneCountProvider = Provider.family<int, String>((ref, courseId) {
-  final course = ref.watch(courseByIdProvider(courseId));
+  final courses = ref.watch(coursesProvider).valueOrNull ?? const <Course>[];
+  Course? course;
+  for (final c in courses) {
+    if (c.id == courseId) {
+      course = c;
+      break;
+    }
+  }
   if (course == null) return 0;
   final done = ref.watch(courseProgressProvider);
   return course.allLessons.where((l) => done.contains(l.id)).length;

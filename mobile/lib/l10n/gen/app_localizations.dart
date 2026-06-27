@@ -943,7 +943,7 @@ abstract class AppLocalizations {
   /// No description provided for @prov_follow_toast.
   ///
   /// In kk, this message translates to:
-  /// **'Трейдерді бақылайсыз (тегін)'**
+  /// **'Провайдерді бақылайсыз (тегін)'**
   String get prov_follow_toast;
 
   /// No description provided for @prov_follow_note.
@@ -1498,6 +1498,12 @@ abstract class AppLocalizations {
   /// **'Идея мәтінін жазыңыз'**
   String get signals_publish_need_text;
 
+  /// No description provided for @signals_publish_need_levels.
+  ///
+  /// In kk, this message translates to:
+  /// **'Кіру зонасы, TP1 және Стопты толтырыңыз'**
+  String get signals_publish_need_levels;
+
   /// No description provided for @signals_entry_from.
   ///
   /// In kk, this message translates to:
@@ -1627,7 +1633,7 @@ abstract class AppLocalizations {
   /// No description provided for @profile_trader_mode.
   ///
   /// In kk, this message translates to:
-  /// **'Трейдер режимі'**
+  /// **'Провайдер режимі'**
   String get profile_trader_mode;
 
   /// No description provided for @profile_trader_mode_desc.
@@ -1639,19 +1645,19 @@ abstract class AppLocalizations {
   /// No description provided for @profile_become_trader.
   ///
   /// In kk, this message translates to:
-  /// **'Расталған трейдер болу'**
+  /// **'Провайдер болу'**
   String get profile_become_trader;
 
   /// No description provided for @profile_verified_trader.
   ///
   /// In kk, this message translates to:
-  /// **'Расталған трейдер ✓'**
+  /// **'Провайдер ✓'**
   String get profile_verified_trader;
 
   /// No description provided for @profile_verified_trader_desc.
   ///
   /// In kk, this message translates to:
-  /// **'Идеяларды Ideas бетінен жариялайсыз'**
+  /// **'Сигнал мен идея жариялайсыз'**
   String get profile_verified_trader_desc;
 
   /// No description provided for @profile_support.
@@ -1693,7 +1699,7 @@ abstract class AppLocalizations {
   /// No description provided for @trader_apply_title.
   ///
   /// In kk, this message translates to:
-  /// **'Расталған трейдерге өтінім'**
+  /// **'Провайдерге өтінім'**
   String get trader_apply_title;
 
   /// No description provided for @trader_apply_desc.
@@ -1747,7 +1753,7 @@ abstract class AppLocalizations {
   /// No description provided for @trader_apply_sent.
   ///
   /// In kk, this message translates to:
-  /// **'Өтінім жіберілді! (демо: трейдер режимі қосылды)'**
+  /// **'Өтінім жіберілді!'**
   String get trader_apply_sent;
 
   /// No description provided for @signals_provider_stats.
@@ -2055,6 +2061,90 @@ abstract class AppLocalizations {
   /// In kk, this message translates to:
   /// **'Сделка сақталды'**
   String get journal_saved;
+
+  /// No description provided for @journal_tab_trades.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сделкалар'**
+  String get journal_tab_trades;
+
+  /// No description provided for @journal_tab_analytics.
+  ///
+  /// In kk, this message translates to:
+  /// **'Аналитика'**
+  String get journal_tab_analytics;
+
+  /// No description provided for @journal_import.
+  ///
+  /// In kk, this message translates to:
+  /// **'Есепті импорттау'**
+  String get journal_import;
+
+  /// No description provided for @journal_import_hint.
+  ///
+  /// In kk, this message translates to:
+  /// **'MT4/MT5 есебі (.html немесе .csv)'**
+  String get journal_import_hint;
+
+  /// No description provided for @journal_sync.
+  ///
+  /// In kk, this message translates to:
+  /// **'Синхрондау'**
+  String get journal_sync;
+
+  /// No description provided for @journal_all_accounts.
+  ///
+  /// In kk, this message translates to:
+  /// **'Барлық шоттар'**
+  String get journal_all_accounts;
+
+  /// No description provided for @journal_analytics_empty.
+  ///
+  /// In kk, this message translates to:
+  /// **'Талдау үшін жабылған сделка әлі жоқ'**
+  String get journal_analytics_empty;
+
+  /// No description provided for @journal_calendar_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'P&L күнтізбесі'**
+  String get journal_calendar_title;
+
+  /// No description provided for @journal_emotions_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Эмоция мен пайда'**
+  String get journal_emotions_title;
+
+  /// No description provided for @journal_setups_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сетаптар'**
+  String get journal_setups_title;
+
+  /// No description provided for @journal_sessions_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сессиялар'**
+  String get journal_sessions_title;
+
+  /// No description provided for @journal_correlation.
+  ///
+  /// In kk, this message translates to:
+  /// **'Эмоция↔P&L корреляциясы'**
+  String get journal_correlation;
+
+  /// No description provided for @journal_link_account.
+  ///
+  /// In kk, this message translates to:
+  /// **'Шот жалғау'**
+  String get journal_link_account;
+
+  /// No description provided for @journal_no_credentials.
+  ///
+  /// In kk, this message translates to:
+  /// **'Синхрондауға пароль жоқ'**
+  String get journal_no_credentials;
 
   /// No description provided for @journal_delete.
   ///

@@ -447,7 +447,7 @@ class AppLocalizationsKk extends AppLocalizations {
   String get prov_following => 'Бақылаудасыз';
 
   @override
-  String get prov_follow_toast => 'Трейдерді бақылайсыз (тегін)';
+  String get prov_follow_toast => 'Провайдерді бақылайсыз (тегін)';
 
   @override
   String get prov_follow_note => 'Жаңа идея жариялағанда хабарландыру келеді';
@@ -753,6 +753,10 @@ class AppLocalizationsKk extends AppLocalizations {
   String get signals_publish_need_text => 'Идея мәтінін жазыңыз';
 
   @override
+  String get signals_publish_need_levels =>
+      'Кіру зонасы, TP1 және Стопты толтырыңыз';
+
+  @override
   String get signals_entry_from => 'Кіру (бастап)';
 
   @override
@@ -824,20 +828,19 @@ class AppLocalizationsKk extends AppLocalizations {
   String get prov_tab_posts => 'Посттар';
 
   @override
-  String get profile_trader_mode => 'Трейдер режимі';
+  String get profile_trader_mode => 'Провайдер режимі';
 
   @override
   String get profile_trader_mode_desc => 'Идея жариялау және басқару';
 
   @override
-  String get profile_become_trader => 'Расталған трейдер болу';
+  String get profile_become_trader => 'Провайдер болу';
 
   @override
-  String get profile_verified_trader => 'Расталған трейдер ✓';
+  String get profile_verified_trader => 'Провайдер ✓';
 
   @override
-  String get profile_verified_trader_desc =>
-      'Идеяларды Ideas бетінен жариялайсыз';
+  String get profile_verified_trader_desc => 'Сигнал мен идея жариялайсыз';
 
   @override
   String get profile_support => 'Қолдау / Әкімшілік';
@@ -859,7 +862,7 @@ class AppLocalizationsKk extends AppLocalizations {
   String get support_sent => 'Хабар жіберілді! Жақын арада жауап береміз.';
 
   @override
-  String get trader_apply_title => 'Расталған трейдерге өтінім';
+  String get trader_apply_title => 'Провайдерге өтінім';
 
   @override
   String get trader_apply_desc =>
@@ -888,8 +891,7 @@ class AppLocalizationsKk extends AppLocalizations {
   String get trader_apply_send => 'Өтінім жіберу';
 
   @override
-  String get trader_apply_sent =>
-      'Өтінім жіберілді! (демо: трейдер режимі қосылды)';
+  String get trader_apply_sent => 'Өтінім жіберілді!';
 
   @override
   String get signals_provider_stats => 'Провайдер статистикасы';
@@ -1048,6 +1050,48 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get journal_saved => 'Сделка сақталды';
+
+  @override
+  String get journal_tab_trades => 'Сделкалар';
+
+  @override
+  String get journal_tab_analytics => 'Аналитика';
+
+  @override
+  String get journal_import => 'Есепті импорттау';
+
+  @override
+  String get journal_import_hint => 'MT4/MT5 есебі (.html немесе .csv)';
+
+  @override
+  String get journal_sync => 'Синхрондау';
+
+  @override
+  String get journal_all_accounts => 'Барлық шоттар';
+
+  @override
+  String get journal_analytics_empty => 'Талдау үшін жабылған сделка әлі жоқ';
+
+  @override
+  String get journal_calendar_title => 'P&L күнтізбесі';
+
+  @override
+  String get journal_emotions_title => 'Эмоция мен пайда';
+
+  @override
+  String get journal_setups_title => 'Сетаптар';
+
+  @override
+  String get journal_sessions_title => 'Сессиялар';
+
+  @override
+  String get journal_correlation => 'Эмоция↔P&L корреляциясы';
+
+  @override
+  String get journal_link_account => 'Шот жалғау';
+
+  @override
+  String get journal_no_credentials => 'Синхрондауға пароль жоқ';
 
   @override
   String get journal_delete => 'Жою';

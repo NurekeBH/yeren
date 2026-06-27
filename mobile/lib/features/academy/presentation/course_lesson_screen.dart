@@ -75,9 +75,15 @@ class _CourseLessonScreenState extends ConsumerState<CourseLessonScreen> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    final course = ref.watch(courseByIdProvider(widget.courseId));
+    final courseAsync = ref.watch(courseByIdProvider(widget.courseId));
+    final course = courseAsync.valueOrNull;
     if (course == null) {
-      return Scaffold(appBar: AppBar(), body: Center(child: Text(l.common_error)));
+      return Scaffold(
+        appBar: AppBar(),
+        body: Center(
+          child: courseAsync.isLoading ? const CircularProgressIndicator() : Text(l.common_error),
+        ),
+      );
     }
     final lessons = course.allLessons;
     final idx = lessons.indexWhere((x) => x.id == widget.lessonId);

@@ -19,14 +19,18 @@ import { alertsRoutes } from './modules/alerts/routes.js';
 import { libraryRoutes } from './modules/library/routes.js';
 import { agreementRoutes } from './modules/agreement/routes.js';
 import { supportRoutes } from './modules/support/routes.js';
+import { subscriptionRoutes } from './modules/subscription/routes.js';
 import { adminRoutes } from './modules/admin/routes.js';
 import { traderAppsRoutes } from './modules/trader_apps/routes.js';
 import { coursesRoutes } from './modules/courses/routes.js';
 import { uploadsRoutes } from './modules/uploads/routes.js';
+import { pricesRoutes } from './modules/prices/routes.js';
+import { journalRoutes } from './modules/journal/routes.js';
 import { ensureAdmin } from './services/bootstrap_admin.js';
 import { ingestNews } from './services/news.js';
 import { ingestCalendar } from './services/calendar.js';
 import { checkPriceAlerts } from './services/alerts.js';
+import { startPricePoller, startBinanceWs } from './services/prices.js';
 import { sendCalendarReminders } from './services/calendar_reminders.js';
 import { pool } from './db/client.js';
 
@@ -36,6 +40,22 @@ const app = Fastify({
     : { level: env.LOG_LEVEL },
   bodyLimit: 5 * 1024 * 1024,
   trustProxy: true,
+});
+
+// Денесіз POST/PATCH әрекеттер (approve/reject/like/ingest/close/...) Content-Type:
+// application/json-мен бос дене жіберсе, Fastify әдепкіде 400 ("Body cannot be empty")
+// береді. Бос денені {} деп қабылдаймыз — осылайша денесіз әрекеттер барлық клиентте
+// (admin, mobile) дұрыс жұмыс істейді.
+app.addContentTypeParser('application/json', { parseAs: 'string' }, (_req, body, done) => {
+  const raw = (body as string) ?? '';
+  if (raw.trim() === '') return done(null, {});
+  try {
+    done(null, JSON.parse(raw));
+  } catch {
+    const err = new Error('Invalid JSON body') as Error & { statusCode?: number };
+    err.statusCode = 400;
+    done(err, undefined);
+  }
 });
 
 await app.register(cors, { origin: env.CORS_ORIGIN, credentials: true });
@@ -65,10 +85,13 @@ await app.register(async (api) => {
   await libraryRoutes(api);
   await agreementRoutes(api);
   await supportRoutes(api);
+  await subscriptionRoutes(api);
   await adminRoutes(api);
   await traderAppsRoutes(api);
   await coursesRoutes(api);
   await uploadsRoutes(api);
+  await pricesRoutes(api);
+  await journalRoutes(api);
 }, { prefix: '/api/v1' });
 
 const shutdown = async (signal: string) => {
@@ -90,6 +113,9 @@ try {
   app.log.info(`ALTYN API listening at http://${env.HOST}:${env.PORT}`);
   // Деплойда ADMIN_PHONE/ADMIN_PASSWORD орнатылса — админ аккаунтын қамтамасыз етеміз.
   await ensureAdmin(app.log).catch((e) => app.log.warn(e, 'ensure_admin_failed'));
+  // Бағаны сервер жағында жинау. XAU — Binance WS (нақты уақыт), қалғаны REST (Yahoo).
+  startPricePoller(app.log);
+  startBinanceWs(app.log);
 } catch (err) {
   app.log.error(err, 'failed_to_start');
   process.exit(1);
@@ -118,8 +144,14 @@ if (env.FINNHUB_API_KEY) {
   const timer = setInterval(() => void poll(), POLL_MS);
   timer.unref?.();
   app.log.info(`Market Intel poller started (every ${POLL_MS / 1000}s)`);
+} else {
+  app.log.info('Market Intel poller disabled (no FINNHUB_API_KEY)');
+}
 
-  // Экономикалық календарь — live (Finnhub economic calendar), әр 30 минут.
+// ─────────────── Экономикалық календарь поллері (кілтсіз, Forex Factory) ───────────────
+// faireconomy.media тегін фиді — Finnhub-тың calendar endpoint-ы premium болғандықтан.
+{
+  const CAL_MS = 30 * 60_000;
   const calPoll = async () => {
     try {
       const r = await ingestCalendar();
@@ -129,10 +161,9 @@ if (env.FINNHUB_API_KEY) {
     }
   };
   void calPoll();
-  const calTimer = setInterval(() => void calPoll(), 30 * 60_000);
+  const calTimer = setInterval(() => void calPoll(), CAL_MS);
   calTimer.unref?.();
-} else {
-  app.log.info('Market Intel poller disabled (no FINNHUB_API_KEY)');
+  app.log.info('Economic calendar poller started (Forex Factory, every 30m)');
 }
 
 // ─────────────── Баға дабылы поллері (кілтсіз, Binance PAXG) ───────────────

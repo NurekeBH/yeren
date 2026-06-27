@@ -1,8 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/config/app_config.dart';
 import '../../../core/locale/locale_controller.dart';
-import '../../../core/mock/fixtures.dart';
 import '../../../core/network/api_service.dart';
 import '../../../shared/models/calendar_event.dart';
 
@@ -32,14 +30,9 @@ class CalendarRepository {
   final ApiService _api;
 
   Future<List<CalendarEvent>> fetchAll(String loc) async {
-    if (AppConfig.useRemoteApi) {
-      final list = await _api.calendar();
-      final events = list.map((e) => calendarFromJson((e as Map).cast<String, dynamic>())).toList();
-      return events..sort((a, b) => a.scheduledAt.compareTo(b.scheduledAt));
-    }
-    await Future<void>.delayed(const Duration(milliseconds: 200));
-    final events = MockFixtures.calendarEvents(loc);
-    return [...events]..sort((a, b) => a.scheduledAt.compareTo(b.scheduledAt));
+    final list = await _api.calendar();
+    final events = list.map((e) => calendarFromJson((e as Map).cast<String, dynamic>())).toList();
+    return events..sort((a, b) => a.scheduledAt.compareTo(b.scheduledAt));
   }
 }
 

@@ -33,15 +33,38 @@ class _PublishSheet extends ConsumerStatefulWidget {
 
 class _PublishSheetState extends ConsumerState<_PublishSheet> {
   final _text = TextEditingController();
+  final _entryFrom = TextEditingController();
+  final _entryTo = TextEditingController();
+  final _tp1 = TextEditingController();
+  final _tp2 = TextEditingController();
+  final _tp3 = TextEditingController();
+  final _sl = TextEditingController();
   SignalDirection _direction = SignalDirection.buy;
   RiskLevel _risk = RiskLevel.medium; // тәуекел деңгейі (сенімділікке айналады)
   int _price = 500; // 0 = тегін, 500, 1000
   String? _photoPath;
   bool _busy = false;
 
+  double _num(TextEditingController c) => double.tryParse(c.text.trim().replaceAll(',', '.')) ?? 0;
+
+  /// Зона ортасынан есептелген RR (reward/risk).
+  double _rr() {
+    final entry = (_num(_entryFrom) + _num(_entryTo)) / 2;
+    final tp = _num(_tp1), sl = _num(_sl);
+    if (entry == 0 || tp == 0 || sl == 0) return 0;
+    final risk = (entry - sl).abs();
+    return risk == 0 ? 0 : double.parse(((tp - entry).abs() / risk).toStringAsFixed(2));
+  }
+
   @override
   void dispose() {
     _text.dispose();
+    _entryFrom.dispose();
+    _entryTo.dispose();
+    _tp1.dispose();
+    _tp2.dispose();
+    _tp3.dispose();
+    _sl.dispose();
     super.dispose();
   }
 
@@ -50,10 +73,27 @@ class _PublishSheetState extends ConsumerState<_PublishSheet> {
     if (file != null) setState(() => _photoPath = file.path);
   }
 
+  Widget _numField(TextEditingController c, String label) => TextField(
+        controller: c,
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        onChanged: (_) => setState(() {}), // RR-ді тірі қайта есептеу
+        decoration: InputDecoration(
+          labelText: label,
+          isDense: true,
+          border: const OutlineInputBorder(),
+        ),
+      );
+
   Future<void> _publish(AppLocalizations l) async {
     final text = _text.text.trim();
     if (text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.signals_publish_need_text)));
+      return;
+    }
+    final entryFrom = _num(_entryFrom), entryTo = _num(_entryTo);
+    final tp1 = _num(_tp1), sl = _num(_sl);
+    if (entryFrom == 0 || entryTo == 0 || tp1 == 0 || sl == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.signals_publish_need_levels)));
       return;
     }
     setState(() => _busy = true);
@@ -70,9 +110,8 @@ class _PublishSheetState extends ConsumerState<_PublishSheet> {
       id: 'my-${now.microsecondsSinceEpoch}',
       pair: 'XAU/USD',
       direction: _direction,
-      // Деңгейлер мәтінде — сандық өрістер 0 (hasLevels=false).
-      entryFrom: 0, entryTo: 0, tp1: 0, tp2: 0, tp3: 0, sl: 0,
-      rr: 0, confidence: Signal.confidenceForRisk(_risk),
+      entryFrom: entryFrom, entryTo: entryTo, tp1: tp1, tp2: _num(_tp2), tp3: _num(_tp3), sl: sl,
+      rr: _rr(), confidence: Signal.confidenceForRisk(_risk),
       screenshotUrl: shot,
       analysis: text,
       status: SignalStatus.active,
@@ -82,7 +121,14 @@ class _PublishSheetState extends ConsumerState<_PublishSheet> {
       authorName: name.isEmpty ? 'You' : name,
       priceOverride: _price == 0 ? null : _price,
     );
-    await ref.read(mySignalsProvider.notifier).publish(signal);
+    try {
+      await ref.read(mySignalsProvider).publish(signal);
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _busy = false);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.common_error)));
+      return;
+    }
     if (!mounted) return;
     Navigator.of(context).pop();
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.signals_published)));
@@ -142,7 +188,37 @@ class _PublishSheetState extends ConsumerState<_PublishSheet> {
             ),
             const SizedBox(height: 16),
 
-            // 1-2 сөйлем мәтін (entry/TP/SL)
+            // Сауда деңгейлері: зона входа, TP1-3, Stop, RR (авто).
+            Text(l.signals_entry_zone, style: AppTypography.label()),
+            const SizedBox(height: 8),
+            Row(children: [
+              Expanded(child: _numField(_entryFrom, l.signals_entry_from)),
+              const SizedBox(width: 10),
+              Expanded(child: _numField(_entryTo, l.signals_entry_to)),
+            ]),
+            const SizedBox(height: 10),
+            Row(children: [
+              Expanded(child: _numField(_tp1, l.signals_tp1)),
+              const SizedBox(width: 10),
+              Expanded(child: _numField(_tp2, l.signals_tp2)),
+            ]),
+            const SizedBox(height: 10),
+            Row(children: [
+              Expanded(child: _numField(_tp3, l.signals_tp3)),
+              const SizedBox(width: 10),
+              Expanded(child: _numField(_sl, l.signals_sl)),
+            ]),
+            const SizedBox(height: 8),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                _rr() > 0 ? 'RR ≈ 1:${_rr().toStringAsFixed(1)}' : 'RR —',
+                style: AppTypography.label(color: AppColors.gold).copyWith(fontWeight: FontWeight.w700),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Талдау мәтіні
             TextField(
               controller: _text,
               maxLines: 3,

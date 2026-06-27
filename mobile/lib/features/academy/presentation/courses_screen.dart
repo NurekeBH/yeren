@@ -8,28 +8,49 @@ import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/course.dart';
 import '../data/courses_repository.dart';
 
-/// Премиум-курстар тізімі (Академия).
+/// Премиум-курстар тізімі (Академия) — жеке экран.
 class CoursesScreen extends ConsumerWidget {
   const CoursesScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
-    final courses = ref.watch(coursesProvider);
-
     return Scaffold(
       appBar: AppBar(title: Text(l.academy_courses)),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
-        children: [
-          Text(l.academy_courses_subtitle,
-              style: AppTypography.bodyMedium(color: AppColors.textSecondary)),
-          const SizedBox(height: 16),
-          for (final c in courses) ...[
-            _CourseCard(course: c),
+      body: const CoursesList(),
+    );
+  }
+}
+
+/// Курстар тізімі (Scaffold-сыз) — Библиотека табындағы «Курсы» қойындысында да қолданылады.
+class CoursesList extends ConsumerWidget {
+  const CoursesList({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
+    final coursesAsync = ref.watch(coursesProvider);
+    return coursesAsync.when(
+      loading: () => const Center(child: Padding(padding: EdgeInsets.all(48), child: CircularProgressIndicator())),
+      error: (e, _) => Center(child: Padding(padding: const EdgeInsets.all(24), child: Text('${l.common_error}: $e'))),
+      data: (courses) => RefreshIndicator(
+        onRefresh: () async {
+          ref.invalidate(coursesProvider);
+          await ref.read(coursesProvider.future);
+        },
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
+          children: [
+            Text(l.academy_courses_subtitle,
+                style: AppTypography.bodyMedium(color: AppColors.textSecondary)),
             const SizedBox(height: 16),
+            for (final c in courses) ...[
+              _CourseCard(course: c),
+              const SizedBox(height: 16),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

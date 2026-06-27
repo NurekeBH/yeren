@@ -1,66 +1,59 @@
-import { env } from '../config/env.js';
 import { query } from '../db/client.js';
 
-/// Finnhub экономикалық календарынан live деректер тарту (trusted көз).
-/// FINNHUB_API_KEY болмаса немесе endpoint қолжетімсіз (premium/403) болса — no-op.
+/// Экономикалық календарь — Forex Factory (faireconomy.media) тегін фиді (кілтсіз).
+/// Finnhub-тың economic calendar endpoint-ы premium (403), сондықтан осы көзге көштік.
+/// Осы апта + келесі апта оқиғаларын тартып, calendar_events-ке upsert жасайды.
 
-type FinnhubCal = {
-  country: string;
-  event: string;
-  impact: string;
-  actual: number | null;
-  estimate: number | null;
-  prev: number | null;
-  time: string; // "YYYY-MM-DD HH:MM:SS" (UTC)
-  unit?: string;
-};
-
-// Ел коды → валюта (календарьде валюта чипі көрсетіледі).
-const CCY: Record<string, string> = {
-  US: 'USD', EU: 'EUR', DE: 'EUR', FR: 'EUR', IT: 'EUR', ES: 'EUR',
-  GB: 'GBP', JP: 'JPY', CN: 'CNY', CA: 'CAD', AU: 'AUD', NZ: 'NZD',
-  CH: 'CHF', KZ: 'KZT', RU: 'RUB', IN: 'INR',
+type FFEvent = {
+  title: string;
+  country: string; // валюта коды (USD, EUR, GBP, ...)
+  date: string; // ISO offset-пен: "2026-06-21T21:00:00-04:00"
+  impact: string; // Low | Medium | High | Holiday
+  forecast?: string;
+  previous?: string;
+  actual?: string;
 };
 
 function mapImpact(i: string): 'low' | 'medium' | 'high' {
-  const s = (i || '').toString().toLowerCase();
-  if (s.includes('high') || s === '3') return 'high';
-  if (s.includes('medium') || s.includes('moderate') || s === '2') return 'medium';
+  const s = (i || '').toLowerCase();
+  if (s.includes('high')) return 'high';
+  if (s.includes('medium') || s.includes('moderate')) return 'medium';
   return 'low';
 }
 
-function isoUtc(t: string): string | null {
-  // Finnhub: "2024-01-01 12:30:00" (UTC) → ISO.
-  if (!t) return null;
-  const norm = t.includes('T') ? t : t.replace(' ', 'T');
-  const d = new Date(norm.endsWith('Z') ? norm : `${norm}Z`);
-  return Number.isNaN(d.getTime()) ? null : d.toISOString();
+const clean = (v?: string): string | null => {
+  const t = (v ?? '').trim();
+  return t.length > 0 ? t : null;
+};
+
+async function fetchFF(url: string): Promise<FFEvent[]> {
+  try {
+    const res = await fetch(url, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (ALTYN)' },
+      signal: AbortSignal.timeout(12000),
+    });
+    if (!res.ok) return [];
+    return (await res.json()) as FFEvent[];
+  } catch {
+    return [];
+  }
 }
 
-/// Алдағы 2 аптаның экономикалық оқиғаларын тартып, calendar_events-ке upsert жасайды.
+/// Осы апта + келесі апта оқиғаларын тартып, calendar_events-ке upsert.
 export async function ingestCalendar(): Promise<{ inserted: number }> {
-  if (!env.FINNHUB_API_KEY) return { inserted: 0 };
-  const now = new Date();
-  const to = new Date(now.getTime() + 14 * 86400000);
-  const fmt = (d: Date) => d.toISOString().slice(0, 10);
-  const url = `https://finnhub.io/api/v1/calendar/economic?from=${fmt(now)}&to=${fmt(to)}&token=${env.FINNHUB_API_KEY}`;
-
-  let rows: FinnhubCal[] = [];
-  try {
-    const res = await fetch(url);
-    if (!res.ok) return { inserted: 0 }; // premium/403/429 — тыныш өткіземіз
-    const data = (await res.json()) as { economicCalendar?: FinnhubCal[] };
-    rows = data.economicCalendar ?? [];
-  } catch {
-    return { inserted: 0 };
-  }
+  const batches = await Promise.all([
+    fetchFF('https://nfs.faireconomy.media/ff_calendar_thisweek.json'),
+    fetchFF('https://nfs.faireconomy.media/ff_calendar_nextweek.json'),
+  ]);
+  const events = batches.flat();
 
   let inserted = 0;
-  for (const e of rows) {
-    const at = isoUtc(e.time);
-    if (!e.event || !at) continue;
-    const ccy = CCY[e.country] ?? e.country;
-    const ext = `fh-${e.country}-${e.event}-${e.time}`.slice(0, 250);
+  for (const e of events) {
+    if (!e.title || !e.date) continue;
+    if ((e.impact || '').toLowerCase().includes('holiday')) continue; // мереке — өткіземіз
+    const at = new Date(e.date);
+    if (Number.isNaN(at.getTime())) continue;
+    const ext = `ff-${e.country}-${e.title}-${e.date}`.slice(0, 250);
     const r = await query<{ inserted: boolean }>(
       `insert into calendar_events (external_id, name, currency, impact, forecast, previous, actual, scheduled_at)
        values ($1,$2,$3,$4,$5,$6,$7,$8)
@@ -69,8 +62,7 @@ export async function ingestCalendar(): Promise<{ inserted: number }> {
          forecast = coalesce(excluded.forecast, calendar_events.forecast),
          previous = coalesce(excluded.previous, calendar_events.previous)
        returning (xmax = 0) as inserted`,
-      [ext, e.event, ccy, mapImpact(e.impact),
-        e.estimate?.toString() ?? null, e.prev?.toString() ?? null, e.actual?.toString() ?? null, at],
+      [ext, e.title, e.country, mapImpact(e.impact), clean(e.forecast), clean(e.previous), clean(e.actual), at.toISOString()],
     );
     if (r.rows.length > 0 && r.rows[0]!.inserted) inserted++;
   }

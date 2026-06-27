@@ -100,6 +100,80 @@ create table if not exists trades (
 create index if not exists trades_user_opened_idx on trades(user_id, opened_at desc);
 create index if not exists trades_account_idx on trades(account_id);
 
+-- ═══════════════ TRADING JOURNAL v2 (MT investor-password sync + statement import) ═══════════════
+-- Архитектура: брокерден синхрондалған ФАКТІЛЕР (journal_trades) пайдаланушы
+-- АННОТАЦИЯЛАРЫНАН (trade_metadata) бөлінген. Қайта синхрон трейд фактілерін upsert
+-- етеді (ticket бойынша идемпотент), бірақ тег/скриншот/эмоцияны ЕШҚАШАН өшірмейді.
+
+-- Брокерлік аккаунттар. Investor (read-only) пароль AES-256-GCM-мен шифрленеді
+-- (қабат: src/services/journal/crypto.ts). Plaintext ешқашан сақталмайды.
+create table if not exists trading_accounts (
+  id              uuid primary key default uuid_generate_v4(),
+  user_id         uuid not null references users(id) on delete cascade,
+  broker          text not null,                            -- exness | xm | ic_markets | manual | ...
+  platform        text not null default 'mt5',              -- mt4 | mt5 | manual
+  login           text not null,                            -- MT аккаунт нөмірі ('manual' — қол режимі)
+  server          text not null default '',                 -- MT сервер атауы
+  account_name    text,
+  currency        text not null default 'USD',
+  investor_password_cipher text,                            -- AES-256-GCM: iv:tag:ciphertext (base64)
+  balance         numeric(16,2),
+  equity          numeric(16,2),
+  sync_state      text not null default 'idle',             -- idle|connecting|fetching|upserting|ok|error
+  sync_error      text,
+  last_synced_at  timestamptz,
+  created_at      timestamptz default now(),
+  removed_at      timestamptz,
+  unique (user_id, platform, login, server)
+);
+create index if not exists trading_accounts_user_idx on trading_accounts(user_id) where removed_at is null;
+
+-- Брокерден синхрондалған сделка ФАКТІЛЕРІ. (account_id, ticket_id) UNIQUE → идемпотент upsert.
+create table if not exists journal_trades (
+  id            uuid primary key default uuid_generate_v4(),
+  account_id    uuid not null references trading_accounts(id) on delete cascade,
+  user_id       uuid not null references users(id) on delete cascade,
+  ticket_id     text not null,                              -- брокер тикеті (manual → генерация)
+  symbol        text not null,                              -- XAUUSD, EURUSD...
+  side          text not null,                              -- buy | sell
+  volume        numeric(12,4) not null,                     -- лот
+  open_price    numeric(16,5) not null,
+  close_price   numeric(16,5),
+  sl            numeric(16,5),
+  tp            numeric(16,5),
+  commission    numeric(16,4) not null default 0,
+  swap          numeric(16,4) not null default 0,
+  profit        numeric(16,4) not null default 0,           -- таза P&L (валютада)
+  pips          numeric(12,2),                              -- есептелген пипс
+  opened_at     timestamptz not null,
+  closed_at     timestamptz,                                -- null → ашық позиция
+  source        text not null default 'mt_sync',            -- mt_sync | import_html | import_csv | manual
+  created_at    timestamptz default now(),
+  updated_at    timestamptz default now(),
+  unique (account_id, ticket_id)
+);
+create index if not exists journal_trades_user_idx on journal_trades(user_id, closed_at desc nulls first);
+create index if not exists journal_trades_account_idx on journal_trades(account_id, closed_at desc);
+create index if not exists journal_trades_symbol_idx on journal_trades(user_id, symbol);
+
+-- Пайдаланушы аннотациялары — синхрон ЕШҚАШАН өшірмейді (тұрақты (account_id, ticket_id) кілт).
+create table if not exists trade_metadata (
+  account_id     uuid not null references trading_accounts(id) on delete cascade,
+  ticket_id      text not null,
+  user_id        uuid not null references users(id) on delete cascade,
+  setup_tag      text,                                      -- retest|breakout|smc_ob|reversal|news|fvg
+  session_tag    text,                                      -- asia|london|new_york|overlap
+  emotion        text,                                      -- 😤|😬|😐|🙂|😌
+  grade          text,                                      -- A | B | C
+  rr_planned     numeric(8,2),
+  screenshot_url text,
+  notes          text,
+  tags           text[] not null default '{}',
+  updated_at     timestamptz default now(),
+  primary key (account_id, ticket_id)
+);
+create index if not exists trade_metadata_user_idx on trade_metadata(user_id);
+
 -- ─────────────────── SIGNALS (TZ §10) ───────────────────
 create table if not exists signals (
   id             uuid primary key default uuid_generate_v4(),
@@ -210,6 +284,38 @@ create table if not exists user_progress (
   last_completed date,
   week_progress  boolean[] default array[false,false,false,false,false,false,false],
   updated_at     timestamptz default now()
+);
+
+-- ─────────────────── ACADEMY LESSONS v2 (психология сабақтары — DB жалғыз дереккөз) ───────────────────
+-- Бұрын аппта mock болатын курстелген сабақтар. Локализацияланатын мәтін jsonb {ru,kk,en}.
+-- Ескі `lessons` (uuid) кестесінен бөлек — id мобайл пішімінде ('l-001').
+create table if not exists academy_lessons (
+  id               text primary key,                      -- 'l-001'
+  profile_type     text not null,                         -- revenge|uncontrolledRisk|hope|disciplined
+  source_type      text not null,                         -- book|trader|film|podcast
+  source_name      text not null default '',
+  tag              text,                                  -- psychology|risk|strategy|discipline|mindset
+  xp               int not null default 25,
+  external_url     text,
+  title            jsonb not null default '{}'::jsonb,    -- {ru,kk,en}
+  quote            jsonb not null default '{}'::jsonb,
+  explanation      jsonb not null default '{}'::jsonb,
+  gold_application jsonb not null default '{}'::jsonb,
+  quick_check      jsonb not null default '{}'::jsonb,    -- {question:{ru,kk,en}, options:{ru:[],kk:[],en:[]}, correctIndex}
+  sort_order       int not null default 0,
+  is_published     boolean not null default true,
+  created_at       timestamptz default now(),
+  updated_at       timestamptz default now()
+);
+create index if not exists academy_lessons_profile_idx on academy_lessons(profile_type, sort_order) where is_published;
+
+-- ─────────────────── GALLUP TEST сұрақтары (трейдер профилін анықтау) ───────────────────
+create table if not exists gallup_questions (
+  id         text primary key,                            -- 'q1'
+  text       jsonb not null default '{}'::jsonb,          -- {ru,kk,en}
+  options    jsonb not null default '[]'::jsonb,          -- [{label:{ru,kk,en}, scores:{revenge:n,...}}]
+  sort_order int not null default 0,
+  created_at timestamptz default now()
 );
 
 -- ─────────────────── SUBSCRIPTIONS (TZ.rtf override: Kaspi qoldan) ───────────────────
@@ -353,6 +459,54 @@ create table if not exists library_user_data (
 );
 create index if not exists lib_user_saved_idx on library_user_data(user_id) where saved = true;
 create index if not exists lib_item_idx on library_user_data(item_id);
+
+-- ─────────────────── LIBRARY CATALOG (Кітап/Фильм/Подкаст — DB жалғыз дереккөз, админ басқарады) ───────────────────
+-- Бұрын аппта mock fixture болатын каталог енді осында. Локализацияланатын мәтін
+-- (summary/ideas/conclusion) jsonb {ru,kk,en} ретінде; құрылымдық өрістер бөлек бағандарда.
+create table if not exists library_items (
+  id            text primary key,                          -- 'b-1', 'f-12', 'p-30'
+  category      text not null check (category in ('book','film','podcast')),
+  title         text not null,
+  author        text not null default '',                  -- автор / режиссёр / канал
+  topic         text,                                      -- сұрыптау/топтау тақырыбы
+  year          int,
+  rating        numeric(4,2),
+  rating_max    numeric(4,2) not null default 5,
+  rating_source text,
+  isbn          text,
+  cover_url     text,
+  youtube_id    text,                                      -- подкаст: YouTube video id
+  external_url  text,
+  lang          text,                                      -- подкаст: 'EN' | 'RU'
+  summary       jsonb not null default '{}'::jsonb,        -- {ru,kk,en}
+  ideas         jsonb not null default '{}'::jsonb,        -- {ru:[],kk:[],en:[]}
+  conclusion    jsonb,                                     -- {ru,kk,en}
+  sort_order    int not null default 0,
+  is_published  boolean not null default true,
+  created_at    timestamptz default now(),
+  updated_at    timestamptz default now()
+);
+create index if not exists library_items_cat_idx on library_items(category, sort_order) where is_published = true;
+
+-- ─────────────────── COURSE CATALOG (Курстар — толық контент DB-де JSONB) ───────────────────
+-- Әр курстың толық ағашы (модуль/сабақ/блок/квиз) тіл бойынша content jsonb-та:
+--   content = { ru: <courseJson>, kk: <courseJson>, en: <courseJson> }.
+-- title/subtitle/description тізім/админ ыңғайы үшін {ru,kk,en} болып бөлек хойстелген.
+create table if not exists course_catalog (
+  id           text primary key,                           -- курс id (мыс. 'masters')
+  title        jsonb not null default '{}'::jsonb,         -- {ru,kk,en}
+  subtitle     jsonb not null default '{}'::jsonb,
+  description  jsonb not null default '{}'::jsonb,
+  price_bonus  int not null default 0,
+  emoji        text default '🧠',
+  accent       bigint not null default 4280640491,         -- ARGB int (0xFF2563EB)
+  sort_order   int not null default 0,
+  is_published boolean not null default true,
+  content      jsonb not null default '{}'::jsonb,         -- {ru,kk,en}: толық курс ағашы
+  created_at   timestamptz default now(),
+  updated_at   timestamptz default now()
+);
+create index if not exists course_catalog_pub_idx on course_catalog(sort_order) where is_published = true;
 
 -- ─────────────────── AGREEMENT ACCEPTANCES (заңды лог) ───────────────────
 create table if not exists agreement_acceptances (

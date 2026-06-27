@@ -55,7 +55,18 @@ export default function SignalsPage() {
   }, []);
 
   function num(v: string) {
-    return v === '' ? undefined : Number(v);
+    if (v == null || v.trim() === '') return undefined;
+    const n = Number(v);
+    return Number.isNaN(n) ? undefined : n;
+  }
+
+  // RR: "1:3" → 3, "3" → 3, бос/жарамсыз → undefined
+  function parseRr(v: string) {
+    const t = (v ?? '').trim();
+    if (!t) return undefined;
+    const m = t.match(/^1\s*:\s*([\d.]+)$/);
+    const n = m ? Number(m[1]) : Number(t);
+    return Number.isNaN(n) ? undefined : n;
   }
 
   async function create(e: React.FormEvent) {
@@ -74,7 +85,7 @@ export default function SignalsPage() {
           tp2: num(form.tp2),
           tp3: num(form.tp3),
           sl: num(form.sl),
-          rr: num(form.rr),
+          rr: parseRr(form.rr),
           confidence: num(form.confidence),
           analysis: form.analysis,
           provider_id: form.provider_id || undefined,
@@ -155,13 +166,13 @@ export default function SignalsPage() {
             </div>
             <div>
               <label>TP3 (опц.)</label>
-              <input value={form.tp3} onChange={(e) => setForm({ ...form, tp3: e.target.value })} />
+              <input placeholder="число или пусто" value={form.tp3} onChange={(e) => setForm({ ...form, tp3: e.target.value })} />
             </div>
           </div>
           <div className="grid2">
             <div>
               <label>RR</label>
-              <input value={form.rr} onChange={(e) => setForm({ ...form, rr: e.target.value })} />
+              <input placeholder="напр. 3 или 1:3" value={form.rr} onChange={(e) => setForm({ ...form, rr: e.target.value })} />
             </div>
             <div>
               <label>Уверенность %</label>

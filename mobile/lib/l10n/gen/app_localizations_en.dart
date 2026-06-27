@@ -447,7 +447,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get prov_following => 'Following';
 
   @override
-  String get prov_follow_toast => 'You follow this trader (free)';
+  String get prov_follow_toast => 'You follow this provider (free)';
 
   @override
   String get prov_follow_note => 'We\'ll notify you when they post a new idea';
@@ -754,6 +754,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signals_publish_need_text => 'Please write the idea text';
 
   @override
+  String get signals_publish_need_levels => 'Fill in entry zone, TP1 and Stop';
+
+  @override
   String get signals_entry_from => 'Entry (from)';
 
   @override
@@ -824,20 +827,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get prov_tab_posts => 'Posts';
 
   @override
-  String get profile_trader_mode => 'Trader mode';
+  String get profile_trader_mode => 'Provider mode';
 
   @override
   String get profile_trader_mode_desc => 'Publish and manage ideas';
 
   @override
-  String get profile_become_trader => 'Become a verified trader';
+  String get profile_become_trader => 'Become a provider';
 
   @override
-  String get profile_verified_trader => 'Verified trader ✓';
+  String get profile_verified_trader => 'Provider ✓';
 
   @override
-  String get profile_verified_trader_desc =>
-      'Publish ideas from the Ideas page';
+  String get profile_verified_trader_desc => 'Publish signals and ideas';
 
   @override
   String get profile_support => 'Support / Admin';
@@ -859,7 +861,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get support_sent => 'Message sent! We\'ll get back to you soon.';
 
   @override
-  String get trader_apply_title => 'Verified trader application';
+  String get trader_apply_title => 'Provider application';
 
   @override
   String get trader_apply_desc =>
@@ -889,8 +891,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get trader_apply_send => 'Send application';
 
   @override
-  String get trader_apply_sent =>
-      'Application sent! (demo: trader mode enabled)';
+  String get trader_apply_sent => 'Application sent!';
 
   @override
   String get signals_provider_stats => 'Provider stats';
@@ -1049,6 +1050,48 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get journal_saved => 'Trade saved';
+
+  @override
+  String get journal_tab_trades => 'Trades';
+
+  @override
+  String get journal_tab_analytics => 'Analytics';
+
+  @override
+  String get journal_import => 'Import statement';
+
+  @override
+  String get journal_import_hint => 'MT4/MT5 statement (.html or .csv)';
+
+  @override
+  String get journal_sync => 'Sync';
+
+  @override
+  String get journal_all_accounts => 'All accounts';
+
+  @override
+  String get journal_analytics_empty => 'No closed trades to analyze yet';
+
+  @override
+  String get journal_calendar_title => 'P&L calendar';
+
+  @override
+  String get journal_emotions_title => 'Emotions & profit';
+
+  @override
+  String get journal_setups_title => 'Setups';
+
+  @override
+  String get journal_sessions_title => 'Sessions';
+
+  @override
+  String get journal_correlation => 'Emotion↔P&L correlation';
+
+  @override
+  String get journal_link_account => 'Link account';
+
+  @override
+  String get journal_no_credentials => 'No password for sync';
 
   @override
   String get journal_delete => 'Delete';

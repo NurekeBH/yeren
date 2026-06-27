@@ -1,6 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { query } from '../../db/client.js';
+import { ensureProviderProfile, removeProviderProfile } from '../../services/provider_profile.js';
 
 /// Админ-панель: статистика, қолданушыларды басқару (тізім, бұғаттау, рөл).
 export async function adminRoutes(app: FastifyInstance) {
@@ -107,6 +108,12 @@ export async function adminRoutes(app: FastifyInstance) {
     args.push(id);
     const { rowCount } = await query(`update users set ${set.join(', ')} where id = $${args.length}`, args);
     if (!rowCount) return reply.code(404).send({ error: 'not_found' });
+    // Провайдер ролі: берілсе — профиль авто-жасалады, алынса — өшіріледі.
+    if (parsed.data.is_verified_trader === true) {
+      await ensureProviderProfile((sql, p) => query(sql, p as never[]), id);
+    } else if (parsed.data.is_verified_trader === false) {
+      await removeProviderProfile((sql, p) => query(sql, p as never[]), id);
+    }
     return { ok: true };
   });
 }

@@ -327,6 +327,16 @@ class ProfileController extends StateNotifier<UserProfile> {
     _persist();
   }
 
+  /// Logout кезінде — кэштелген профиль деректерін толық тазарту
+  /// (аты, стильдер, бонустар, т.б.). Келесі қолданушы ескі деректі көрмесін.
+  Future<void> clear() async {
+    await _prefs.remove(_profileKey);
+    state = const UserProfile(
+      streak: 5,
+      weekProgress: [true, true, true, true, true, false, false],
+    );
+  }
+
   void completeOnboarding({
     required String name,
     required String city,
@@ -427,10 +437,12 @@ class ProfileController extends StateNotifier<UserProfile> {
           .expand((e) => e)
           .toSet();
       _set(state.copyWith(
-        name: (user['name'] as String?)?.trim().isNotEmpty == true ? user['name'] as String : state.name,
+        // Backend — дереккөз: аты/стилі бос болса, бос күйінде көрсетеміз
+        // (ескі кэш атын сақтамаймыз).
+        name: (user['name'] as String?)?.trim() ?? state.name,
         city: (user['city'] as String?) ?? state.city,
         bio: (user['bio'] as String?) ?? state.bio,
-        styles: styles.isNotEmpty ? styles : state.styles,
+        styles: styles,
         onboardedFlag: true,
         isVerifiedTrader: (user['is_verified_trader'] as bool?) ?? state.isVerifiedTrader,
         promoCode: (user['promo_code'] as String?) ?? state.promoCode,

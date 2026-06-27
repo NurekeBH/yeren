@@ -48,7 +48,7 @@ export default function ApplicationsPage() {
 
   return (
     <div>
-      <h1>Заявки трейдеров</h1>
+      <h1>Заявки провайдеров</h1>
       {err && <div className="err">{err}</div>}
       {items.length === 0 && <div className="muted" style={{ marginTop: 12 }}>Нет заявок на проверке</div>}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 14 }}>

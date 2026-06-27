@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -5,621 +6,311 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
-import '../../../shared/models/market_session.dart';
-import '../../../shared/models/signal.dart';
-import '../../../shared/models/trade.dart';
-import '../../../shared/utils/formatters.dart';
-import '../data/journal_repository.dart';
+import '../data/journal_controller.dart';
+import '../data/journal_models.dart';
+import 'add_trade_sheet.dart';
+import 'journal_analytics_tab.dart';
+import 'trade_detail_sheet.dart';
 
-class JournalScreen extends ConsumerStatefulWidget {
+/// Журнал v2 — 2 таб: Сделки + Аналитика. Дереккөз — backend /journal/* (DB).
+class JournalScreen extends ConsumerWidget {
   const JournalScreen({super.key});
 
   @override
-  ConsumerState<JournalScreen> createState() => _JournalScreenState();
-}
-
-class _JournalScreenState extends ConsumerState<JournalScreen> {
-  String? _broker;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
-    final async = ref.watch(tradesProvider);
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l.nav_journal),
-        actions: [
-          IconButton(
-            tooltip: l.journal_accounts_title,
-            icon: const Icon(Icons.account_balance_wallet_outlined),
-            onPressed: () => context.push('/accounts'),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _showAddTradeSheet(context, l),
-        icon: const Icon(Icons.add),
-        label: Text(l.journal_add_trade),
-      ),
-      body: async.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('${l.common_error}: $e')),
-        data: (trades) {
-          final brokers = {for (final t in trades) t.broker};
-          final filtered = _broker == null ? trades : trades.where((t) => t.broker == _broker).toList();
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      _BrokerChip(label: l.journal_filter_all_brokers, selected: _broker == null, onTap: () => setState(() => _broker = null)),
-                      const SizedBox(width: 8),
-                      for (final b in brokers) ...[
-                        _BrokerChip(label: b, selected: _broker == b, onTap: () => setState(() => _broker = b)),
-                        const SizedBox(width: 8),
-                      ],
-                    ],
-                  ),
-                ),
-              ),
-              if (filtered.isEmpty)
-                Expanded(child: Center(child: Text(l.journal_empty, style: AppTypography.bodyMedium())))
-              else
-                Expanded(
-                  child: ListView.builder(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 96),
-                    itemCount: filtered.length,
-                    itemBuilder: (_, i) => _TradeTile(trade: filtered[i], l: l),
-                  ),
-                ),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(l.nav_journal),
+          actions: [
+            IconButton(
+              tooltip: l.journal_accounts_title,
+              icon: const Icon(Icons.account_balance_wallet_outlined),
+              onPressed: () => context.push('/accounts'),
+            ),
+          ],
+          bottom: TabBar(
+            tabs: [
+              Tab(text: l.journal_tab_trades),
+              Tab(text: l.journal_tab_analytics),
             ],
-          );
-        },
+          ),
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () => _showAddMenu(context, ref, l),
+          icon: const Icon(Icons.add),
+          label: Text(l.journal_add_trade),
+        ),
+        body: Column(
+          children: [
+            const _AccountFilter(),
+            const Expanded(
+              child: TabBarView(
+                children: [
+                  _TradesTab(),
+                  JournalAnalyticsTab(),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  void _showAddTradeSheet(BuildContext context, AppLocalizations l) {
+  void _showAddMenu(BuildContext context, WidgetRef ref, AppLocalizations l) {
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
-      isScrollControlled: true,
-      builder: (_) => _AddTradeSheet(l: l),
+      builder: (_) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.edit_note, color: AppColors.gold),
+              title: Text(l.journal_add_trade),
+              onTap: () {
+                Navigator.pop(context);
+                showAddTradeSheet(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.upload_file, color: AppColors.dxyBlue),
+              title: Text(l.journal_import),
+              subtitle: Text(l.journal_import_hint, style: AppTypography.label(color: AppColors.textSecondary)),
+              onTap: () {
+                Navigator.pop(context);
+                _import(context, ref, l);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _import(BuildContext context, WidgetRef ref, AppLocalizations l) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final picked = await FilePicker.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['html', 'htm', 'csv'],
+    );
+    final path = picked?.files.single.path;
+    if (path == null) return;
+    messenger.showSnackBar(const SnackBar(content: Text('⏳ …')));
+    try {
+      final acc = ref.read(selectedAccountProvider);
+      final res = await ref.read(journalControllerProvider).importStatement(path, accountId: acc);
+      messenger.showSnackBar(SnackBar(
+        content: Text('✅ +${res['inserted']} / ↻${res['updated']} (${res['parsed']} оқылды)'),
+      ));
+    } catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text('${l.common_error}: $e')));
+    }
+  }
+}
+
+/// Шот фильтрі — «Барлық» + әр аккаунт.
+class _AccountFilter extends ConsumerWidget {
+  const _AccountFilter();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
+    final accounts = ref.watch(journalAccountsProvider).valueOrNull ?? const [];
+    if (accounts.isEmpty) return const SizedBox.shrink();
+    final selected = ref.watch(selectedAccountProvider);
+    return SizedBox(
+      height: 48,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        children: [
+          _Chip(label: l.journal_all_accounts, selected: selected == null, onTap: () => ref.read(selectedAccountProvider.notifier).state = null),
+          const SizedBox(width: 8),
+          for (final a in accounts) ...[
+            _Chip(
+              label: a.platform == 'manual' ? l.journal_add_trade : '${a.broker} ${a.login}',
+              selected: selected == a.id,
+              onTap: () => ref.read(selectedAccountProvider.notifier).state = a.id,
+            ),
+            const SizedBox(width: 8),
+          ],
+        ],
+      ),
     );
   }
 }
 
-class _BrokerChip extends StatelessWidget {
-  const _BrokerChip({required this.label, required this.selected, required this.onTap});
-
+class _Chip extends StatelessWidget {
+  const _Chip({required this.label, required this.selected, required this.onTap});
   final String label;
   final bool selected;
   final VoidCallback onTap;
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
         decoration: BoxDecoration(
-          color: selected ? AppColors.gold.withValues(alpha: 0.18) : AppColors.cardSurface,
+          color: selected ? AppColors.gold.withValues(alpha: 0.14) : AppColors.surfaceMuted,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: selected ? AppColors.gold : AppColors.border),
         ),
-        child: Text(label, style: AppTypography.label(color: selected ? AppColors.gold : AppColors.textSecondary)),
+        child: Text(label,
+            style: AppTypography.label(color: selected ? AppColors.gold : AppColors.textSecondary)
+                .copyWith(fontWeight: selected ? FontWeight.w700 : FontWeight.w500)),
+      ),
+    );
+  }
+}
+
+class _TradesTab extends ConsumerWidget {
+  const _TradesTab();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
+    final async = ref.watch(journalTradesProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('${l.common_error}: $e')),
+      data: (trades) => RefreshIndicator(
+        onRefresh: () async {
+          ref.invalidate(journalTradesProvider);
+          await ref.read(journalTradesProvider.future);
+        },
+        child: trades.isEmpty
+            ? ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                children: [
+                  const SizedBox(height: 130),
+                  Icon(Icons.candlestick_chart_outlined, size: 56, color: AppColors.textMuted),
+                  const SizedBox(height: 12),
+                  Text(l.journal_empty, textAlign: TextAlign.center, style: AppTypography.bodyMedium(color: AppColors.textSecondary)),
+                ],
+              )
+            : ListView.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+                itemCount: trades.length,
+                itemBuilder: (_, i) => _TradeTile(trade: trades[i]),
+              ),
       ),
     );
   }
 }
 
 class _TradeTile extends StatelessWidget {
-  const _TradeTile({required this.trade, required this.l});
-
-  final Trade trade;
-  final AppLocalizations l;
+  const _TradeTile({required this.trade});
+  final JournalTrade trade;
 
   @override
   Widget build(BuildContext context) {
-    final isBuy = trade.direction == SignalDirection.buy;
-    final color = trade.isWin ? AppColors.profitGreen : AppColors.lossRed;
+    final buy = trade.side == 'buy';
+    final dirColor = buy ? AppColors.profitGreen : AppColors.lossRed;
+    final net = trade.net;
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(14),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: color.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(8),
+      child: Material(
+        color: AppColors.cardSurface,
+        borderRadius: BorderRadius.circular(14),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(14),
+          onTap: () => showTradeDetailSheet(context, trade),
+          child: Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: AppColors.border),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(buy ? Icons.north_east : Icons.south_east, size: 16, color: dirColor),
+                    const SizedBox(width: 6),
+                    Text(trade.symbol, style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w700)),
+                    const SizedBox(width: 8),
+                    Text('${trade.volume.toStringAsFixed(2)} lot',
+                        style: AppTypography.label(color: AppColors.textSecondary)),
+                    if (trade.emotion != null) ...[
+                      const SizedBox(width: 8),
+                      Text(trade.emotion!, style: const TextStyle(fontSize: 15)),
+                    ],
+                    const Spacer(),
+                    Text(
+                      '${net >= 0 ? '+' : '-'}\$${net.abs().toStringAsFixed(2)}',
+                      style: AppTypography.price(
+                        size: 16,
+                        weight: FontWeight.w800,
+                        color: net >= 0 ? AppColors.profitGreen : AppColors.lossRed,
+                      ),
                     ),
-                    child: Icon(isBuy ? Icons.arrow_upward : Icons.arrow_downward, color: color),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(trade.instrument, style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w600)),
-                            const SizedBox(width: 6),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: AppColors.gold.withValues(alpha: 0.12),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: Text(trade.broker, style: AppTypography.label(color: AppColors.gold)),
-                            ),
-                            if (trade.emotion != null) ...[
-                              const SizedBox(width: 6),
-                              Text(trade.emotion!, style: const TextStyle(fontSize: 16)),
-                            ],
-                          ],
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    Text('${trade.openPrice} → ${trade.closePrice ?? '—'}',
+                        style: AppTypography.label(color: AppColors.textSecondary)),
+                    if (trade.pips != null) ...[
+                      const SizedBox(width: 10),
+                      Text('${trade.pips!.toStringAsFixed(0)} pips',
+                          style: AppTypography.label(
+                              color: trade.pips! >= 0 ? AppColors.profitGreen : AppColors.lossRed)),
+                    ],
+                    const Spacer(),
+                    if (trade.isOpen)
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: AppColors.dxyBlue.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(6),
                         ),
-                        const SizedBox(height: 2),
-                        Text(
-                          '${Fmt.price(trade.openPrice)} → ${Fmt.price(trade.closePrice)} • ${trade.lot} lot',
-                          style: AppTypography.bodySmall(),
-                        ),
-                      ],
-                    ),
+                        child: Text('OPEN', style: AppTypography.label(color: AppColors.dxyBlue).copyWith(fontSize: 10)),
+                      ),
+                  ],
+                ),
+                if (trade.setupTag != null || trade.sessionTag != null || trade.grade != null) ...[
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: [
+                      if (trade.grade != null) _MiniTag('[${trade.grade}]', AppColors.gold),
+                      if (trade.setupTag != null) _MiniTag(trade.setupTag!, AppColors.dxyBlue),
+                      if (trade.sessionTag != null) _MiniTag(trade.sessionTag!, AppColors.textSecondary),
+                      _MiniTag(trade.broker, AppColors.textMuted),
+                    ],
                   ),
-                  Text(Fmt.money(trade.pnl),
-                      style: AppTypography.price(size: 14, weight: FontWeight.w700, color: color)),
                 ],
-              ),
-              const SizedBox(height: 10),
-              Wrap(
-                spacing: 6,
-                runSpacing: 6,
-                children: [
-                  _Tag(text: '${l.journal_setup_tag}: ${_setupLabel(trade.setup, l)}', color: AppColors.purple),
-                  _Tag(text: '${l.journal_session_tag}: ${Fmt.sessionName(trade.session, l)}', color: AppColors.dxyBlue),
-                  if (trade.rrPlanned != null && trade.rrActual != null)
-                    _Tag(
-                      text: '${l.journal_rr_planned} 1:${trade.rrPlanned!.toStringAsFixed(1)} → ${l.journal_rr_actual} 1:${trade.rrActual!.toStringAsFixed(1)}',
-                      color: AppColors.gold,
-                    ),
-                ],
-              ),
-              if (trade.notes != null) ...[
-                const SizedBox(height: 8),
-                Text(trade.notes!, style: AppTypography.bodySmall(color: AppColors.textSecondary)),
               ],
-            ],
+            ),
           ),
         ),
       ),
     );
   }
-
-  String _setupLabel(TradeSetup s, AppLocalizations l) {
-    switch (s) {
-      case TradeSetup.retest:
-        return l.setup_retest;
-      case TradeSetup.breakout:
-        return l.setup_breakout;
-      case TradeSetup.smcOb:
-        return l.setup_smc_ob;
-      case TradeSetup.reversal:
-        return l.setup_reversal;
-      case TradeSetup.news:
-        return l.setup_news;
-      case TradeSetup.fvg:
-        return l.setup_fvg;
-    }
-  }
 }
 
-class _Tag extends StatelessWidget {
-  const _Tag({required this.text, required this.color});
-
+class _MiniTag extends StatelessWidget {
+  const _MiniTag(this.text, this.color);
   final String text;
   final Color color;
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(6),
       ),
-      child: Text(text, style: AppTypography.label(color: color)),
-    );
-  }
-}
-
-/// TZ §9.5: толық сделка енгізу — Lot, Entry, Close, P&L, RR, Notes
-/// + эмоциялық чекин + setup + session тегтер. SharedPreferences-те сақталады.
-class _AddTradeSheet extends ConsumerStatefulWidget {
-  const _AddTradeSheet({required this.l});
-
-  final AppLocalizations l;
-
-  @override
-  ConsumerState<_AddTradeSheet> createState() => _AddTradeSheetState();
-}
-
-class _AddTradeSheetState extends ConsumerState<_AddTradeSheet> {
-  static const _emojis = ['😤', '😬', '😐', '🙂', '😌'];
-  final _formKey = GlobalKey<FormState>();
-  final _instrument = TextEditingController(text: 'XAU/USD');
-  final _lot = TextEditingController(text: '0.10');
-  final _openPrice = TextEditingController();
-  final _closePrice = TextEditingController();
-  final _sl = TextEditingController();
-  final _fees = TextEditingController();
-  final _notes = TextEditingController();
-  SignalDirection _direction = SignalDirection.buy;
-  String _emotion = '😐';
-  TradeSetup _setup = TradeSetup.retest;
-  MarketSession _session = MarketSession.london;
-  String _grade = 'B'; // сделка бағасы (A/B/C) — өзін-өзі бағалау
-  bool _busy = false;
-
-  @override
-  void dispose() {
-    _instrument.dispose();
-    _lot.dispose();
-    _openPrice.dispose();
-    _closePrice.dispose();
-    _sl.dispose();
-    _fees.dispose();
-    _notes.dispose();
-    super.dispose();
-  }
-
-  double _d(TextEditingController c) => double.tryParse(c.text.replaceAll(',', '.')) ?? 0;
-
-  /// Best practices (Edgewonk/TraderSync үлгісінде): нәтиже автоматты есептеледі.
-  /// XAU/USD: 1 лот = 100 унция → бағаның $1 қозғалысы = лот×$100.
-  /// P&L (комиссия алынған таза), пипс және R-multiple (журналдың басты метрикасы).
-  ({double pnl, double pips, double? r})? _result() {
-    final o = double.tryParse(_openPrice.text.replaceAll(',', '.'));
-    final c = double.tryParse(_closePrice.text.replaceAll(',', '.'));
-    final lot = double.tryParse(_lot.text.replaceAll(',', '.'));
-    if (o == null || c == null || lot == null || lot <= 0) return null;
-    final sign = _direction == SignalDirection.buy ? 1 : -1;
-    final diff = (c - o) * sign;
-    final fees = double.tryParse(_fees.text.replaceAll(',', '.')) ?? 0;
-    final pnl = diff * lot * 100 - fees;
-    // R-multiple = пайда (баға) / тәуекел (кіру→SL қашықтығы).
-    final sl = double.tryParse(_sl.text.replaceAll(',', '.'));
-    final risk = sl == null ? 0.0 : (o - sl).abs();
-    final r = risk <= 0 ? null : diff / risk;
-    return (pnl: pnl, pips: diff / 0.10, r: r);
-  }
-
-  Future<void> _submit() async {
-    if (!_formKey.currentState!.validate()) return;
-    setState(() => _busy = true);
-    try {
-      final now = DateTime.now();
-      final res = _result();
-      final note = _notes.text.trim();
-      final trade = Trade(
-        id: 'tr-${now.millisecondsSinceEpoch}',
-        instrument: _instrument.text.trim(),
-        direction: _direction,
-        openPrice: _d(_openPrice),
-        closePrice: _d(_closePrice),
-        lot: _d(_lot),
-        pnl: res?.pnl ?? 0,
-        setup: _setup,
-        session: _session,
-        openedAt: now.subtract(const Duration(hours: 1)),
-        closedAt: now,
-        broker: 'Manual',
-        rrPlanned: null,
-        rrActual: res?.r == null ? null : double.parse(res!.r!.toStringAsFixed(2)),
-        emotion: _emotion,
-        // Сделка бағасы (A/B/C) ескертпеге қосылады.
-        notes: '[$_grade] ${note.isEmpty ? '' : note}'.trim(),
-      );
-      await ref.read(journalRepositoryProvider).addTrade(trade);
-      ref.invalidate(tradesProvider);
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(widget.l.journal_saved)),
-      );
-      Navigator.of(context).pop();
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
-  }
-
-  String? _required(String? v, AppLocalizations l) =>
-      (v == null || v.trim().isEmpty) ? l.common_error : null;
-
-  String? _number(String? v, AppLocalizations l) {
-    if (v == null || v.trim().isEmpty) return l.common_error;
-    if (double.tryParse(v.replaceAll(',', '.')) == null) return l.common_error;
-    return null;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l = widget.l;
-    final viewInsets = MediaQuery.viewInsetsOf(context).bottom;
-    return Padding(
-      padding: EdgeInsets.fromLTRB(20, 0, 20, 24 + viewInsets),
-      child: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(l.journal_add_trade, style: AppTypography.h2()),
-              const SizedBox(height: 16),
-
-              // Instrument + Direction
-              Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: TextFormField(
-                      controller: _instrument,
-                      decoration: InputDecoration(labelText: l.journal_instrument),
-                      validator: (v) => _required(v, l),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: SegmentedButton<SignalDirection>(
-                      segments: [
-                        ButtonSegment(value: SignalDirection.buy, label: Text(l.signals_direction_buy)),
-                        ButtonSegment(value: SignalDirection.sell, label: Text(l.signals_direction_sell)),
-                      ],
-                      selected: {_direction},
-                      onSelectionChanged: (s) => setState(() => _direction = s.first),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-
-              // Open + Close price (нәтиже тірі есептеледі)
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _openPrice,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      decoration: InputDecoration(labelText: l.journal_open_price),
-                      validator: (v) => _number(v, l),
-                      onChanged: (_) => setState(() {}),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _closePrice,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      decoration: InputDecoration(labelText: l.journal_close_price),
-                      validator: (v) => _number(v, l),
-                      onChanged: (_) => setState(() {}),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-
-              // Lot + Stop Loss (R-multiple есептеу үшін)
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _lot,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      decoration: InputDecoration(labelText: l.journal_lot),
-                      validator: (v) => _number(v, l),
-                      onChanged: (_) => setState(() {}),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _sl,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      decoration: InputDecoration(labelText: l.journal_sl_opt),
-                      onChanged: (_) => setState(() {}),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _fees,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      decoration: InputDecoration(labelText: l.journal_fees_opt),
-                      onChanged: (_) => setState(() {}),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-
-              // Есептелген нәтиже (P&L + пипс + R-multiple) — қолмен енгізілмейді
-              _ResultBox(result: _result(), l: l),
-              const SizedBox(height: 16),
-
-              // Сделка бағасы (A/B/C) — өзін-өзі бағалау (журнал best practice)
-              Text(l.journal_grade, style: AppTypography.label()),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  for (final g in const ['A', 'B', 'C'])
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 8),
-                        child: ChoiceChip(
-                          label: SizedBox(width: double.infinity, child: Text(g, textAlign: TextAlign.center)),
-                          selected: _grade == g,
-                          onSelected: (_) => setState(() => _grade = g),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-              const SizedBox(height: 16),
-
-              // Emotion check-in
-              Text(l.journal_emotion_check, style: AppTypography.label()),
-              const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  for (final e in _emojis)
-                    GestureDetector(
-                      onTap: () => setState(() => _emotion = e),
-                      child: Container(
-                        width: 48,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: _emotion == e ? AppColors.gold.withValues(alpha: 0.18) : AppColors.cardSurface,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: _emotion == e ? AppColors.gold : AppColors.border),
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(e, style: const TextStyle(fontSize: 22)),
-                      ),
-                    ),
-                ],
-              ),
-              const SizedBox(height: 16),
-
-              // Setup
-              Text(l.journal_setup_tag, style: AppTypography.label()),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  for (final s in TradeSetup.values)
-                    ChoiceChip(
-                      label: Text(_setupLabel(s, l)),
-                      selected: _setup == s,
-                      onSelected: (_) => setState(() => _setup = s),
-                    ),
-                ],
-              ),
-              const SizedBox(height: 16),
-
-              // Session
-              Text(l.journal_session_tag, style: AppTypography.label()),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  for (final s in MarketSession.values)
-                    ChoiceChip(
-                      label: Text(Fmt.sessionName(s, l)),
-                      selected: _session == s,
-                      onSelected: (_) => setState(() => _session = s),
-                    ),
-                ],
-              ),
-              const SizedBox(height: 12),
-
-              // Notes
-              TextFormField(
-                controller: _notes,
-                maxLines: 2,
-                maxLength: 300,
-                decoration: InputDecoration(labelText: l.journal_notes),
-              ),
-              const SizedBox(height: 16),
-
-              ElevatedButton(
-                onPressed: _busy ? null : _submit,
-                child: _busy
-                    ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                    : Text(l.common_save),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  String _setupLabel(TradeSetup s, AppLocalizations l) {
-    switch (s) {
-      case TradeSetup.retest:
-        return l.setup_retest;
-      case TradeSetup.breakout:
-        return l.setup_breakout;
-      case TradeSetup.smcOb:
-        return l.setup_smc_ob;
-      case TradeSetup.reversal:
-        return l.setup_reversal;
-      case TradeSetup.news:
-        return l.setup_news;
-      case TradeSetup.fvg:
-        return l.setup_fvg;
-    }
-  }
-}
-
-/// Кіру/шығу бағасы мен лоттан автоматты есептелген нәтиже (P&L + пипс).
-class _ResultBox extends StatelessWidget {
-  const _ResultBox({required this.result, required this.l});
-
-  final ({double pnl, double pips, double? r})? result;
-  final AppLocalizations l;
-
-  @override
-  Widget build(BuildContext context) {
-    final res = result;
-    final hasResult = res != null;
-    final win = hasResult && res.pnl >= 0;
-    final color = !hasResult
-        ? AppColors.textMuted
-        : (win ? AppColors.profitGreen : AppColors.lossRed);
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withValues(alpha: 0.30)),
-      ),
-      child: Row(
-        children: [
-          Icon(hasResult ? (win ? Icons.trending_up : Icons.trending_down) : Icons.calculate_outlined, color: color, size: 20),
-          const SizedBox(width: 10),
-          Text(l.journal_pnl, style: AppTypography.label(color: AppColors.textSecondary)),
-          const Spacer(),
-          if (hasResult) ...[
-            if (res.r != null) ...[
-              Text('${res.r! >= 0 ? '+' : ''}${res.r!.toStringAsFixed(1)}R',
-                  style: AppTypography.label(color: color).copyWith(fontWeight: FontWeight.w700)),
-              const SizedBox(width: 10),
-            ],
-            Text('${Fmt.pipsSigned(res.pips.round())} pips',
-                style: AppTypography.label(color: color).copyWith(fontWeight: FontWeight.w600)),
-            const SizedBox(width: 10),
-            Text(Fmt.money(res.pnl),
-                style: AppTypography.price(size: 16, weight: FontWeight.w800, color: color)),
-          ] else
-            Text('—', style: AppTypography.price(size: 16, weight: FontWeight.w700, color: AppColors.textMuted)),
-        ],
-      ),
+      child: Text(text, style: AppTypography.label(color: color).copyWith(fontSize: 11)),
     );
   }
 }

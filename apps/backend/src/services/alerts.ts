@@ -1,5 +1,5 @@
 import { query } from '../db/client.js';
-import { fetchXauPrice } from './price.js';
+import { getXauPrice } from './prices.js';
 import { sendToUser } from './push.js';
 
 /// Баға дабылдарын тексеру: тірі баға мақсатты деңгейді КИГЕНДЕ push жіберіп,
@@ -16,7 +16,7 @@ type AlertRow = {
 };
 
 export async function checkPriceAlerts(): Promise<{ triggered: number; price: number | null }> {
-  const price = await fetchXauPrice();
+  const price = getXauPrice(); // ортақ кэш (price poller жаңартып отырады) — дисплеймен бір дереккөз
   if (price == null) return { triggered: 0, price: null };
 
   const prev = _lastPrice;
