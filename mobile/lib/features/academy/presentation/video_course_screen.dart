@@ -72,8 +72,8 @@ class _VideoCourseScreenState extends ConsumerState<VideoCourseScreen> {
 
   Widget _body(VideoCourse c, AppLocalizations l) {
     final unlocked = c.isFree || ref.watch(purchasedCoursesProvider).contains(c.id);
-    // Алғашқы видео — intro (немесе бірінші модуль).
-    final firstVideo = c.introVideoId ?? (c.modules.isNotEmpty ? c.modules.first.videoId : null);
+    // Алғашқы видео — intro (немесе бірінші сабақ).
+    final firstVideo = c.introVideoId ?? (c.allLessons.isNotEmpty ? c.allLessons.first.videoId : null);
     if (_yt == null && firstVideo != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _ensurePlayer(firstVideo));
     }
@@ -124,36 +124,55 @@ class _VideoCourseScreenState extends ConsumerState<VideoCourseScreen> {
 
         Text(l.course_modules_count(c.modules.length), style: AppTypography.h2()),
         const SizedBox(height: 10),
-        for (var i = 0; i < c.modules.length; i++)
-          _ModuleTile(
-            index: i + 1,
-            module: c.modules[i],
-            unlocked: unlocked,
-            onPlay: () => _ensurePlayer(c.modules[i].videoId),
-            onBuy: () => _buy(c, l),
+        for (var mi = 0; mi < c.modules.length; mi++) ...[
+          Padding(
+            padding: const EdgeInsets.only(top: 8, bottom: 8),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(color: AppColors.gold.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(6)),
+                  child: Text('M${mi + 1}',
+                      style: AppTypography.label(color: AppColors.gold).copyWith(fontWeight: FontWeight.w800)),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    c.modules[mi].title.isEmpty ? '—' : c.modules[mi].title,
+                    style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w800),
+                  ),
+                ),
+              ],
+            ),
           ),
+          for (final lesson in c.modules[mi].lessons)
+            _LessonTile(
+              lesson: lesson,
+              unlocked: unlocked,
+              onPlay: () => _ensurePlayer(lesson.videoId),
+              onBuy: () => _buy(c, l),
+            ),
+        ],
       ],
     );
   }
 }
 
-class _ModuleTile extends StatelessWidget {
-  const _ModuleTile({
-    required this.index,
-    required this.module,
+class _LessonTile extends StatelessWidget {
+  const _LessonTile({
+    required this.lesson,
     required this.unlocked,
     required this.onPlay,
     required this.onBuy,
   });
-  final int index;
-  final VideoModule module;
+  final VideoLesson lesson;
   final bool unlocked;
   final VoidCallback onPlay;
   final VoidCallback onBuy;
 
   @override
   Widget build(BuildContext context) {
-    final hasVideo = module.videoId != null;
+    final hasVideo = lesson.videoId != null;
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(14),
@@ -167,16 +186,11 @@ class _ModuleTile extends StatelessWidget {
         children: [
           Row(
             children: [
-              Container(
-                width: 26,
-                height: 26,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(color: AppColors.surfaceMuted, shape: BoxShape.circle),
-                child: Text('$index', style: AppTypography.label()),
-              ),
+              Icon(unlocked ? Icons.play_circle_outline : Icons.lock_outline,
+                  size: 18, color: unlocked ? AppColors.gold : AppColors.textMuted),
               const SizedBox(width: 10),
               Expanded(
-                child: Text(module.title.isEmpty ? 'Модуль $index' : module.title,
+                child: Text(lesson.title.isEmpty ? '—' : lesson.title,
                     style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w700)),
               ),
               if (hasVideo)
@@ -187,9 +201,9 @@ class _ModuleTile extends StatelessWidget {
                 ),
             ],
           ),
-          if (module.text.isNotEmpty) ...[
+          if (lesson.text.isNotEmpty) ...[
             const SizedBox(height: 6),
-            Text(module.text,
+            Text(lesson.text,
                 maxLines: unlocked ? null : 2,
                 overflow: unlocked ? null : TextOverflow.ellipsis,
                 style: AppTypography.bodySmall(color: AppColors.textSecondary)),

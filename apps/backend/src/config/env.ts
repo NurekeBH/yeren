@@ -20,6 +20,9 @@ const Env = z.object({
   FINNHUB_API_KEY: z.string().optional(),
   SUPABASE_URL: z.string().optional(),
   SUPABASE_SERVICE_KEY: z.string().optional(),
+  // Жүктелген суреттердің абсолют URL-і үшін (мыс. https://altyn.social). Болмаса
+  // сұраудан анықталады (trustProxy → X-Forwarded-Proto/Host).
+  PUBLIC_URL: z.string().optional(),
 
   // Push (Firebase Cloud Messaging) — urgent intel / signals / alerts
   FCM_PROJECT_ID: z.string().optional(),

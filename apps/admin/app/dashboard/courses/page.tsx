@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { api } from '@/lib/api';
+import { api, uploadImage } from '@/lib/api';
 
 type Loc = { ru?: string; kk?: string; en?: string };
 type Course = {
@@ -18,7 +18,8 @@ type Course = {
   kind: string | null; // 'video' | null (curriculum)
 };
 
-type VModule = { title: string; video: string; text: string };
+type VLesson = { title: string; video: string; text: string };
+type VModule = { title: string; lessons: VLesson[] };
 type VForm = {
   id?: string;
   title: string;
@@ -40,9 +41,12 @@ const emptyForm = (): VForm => ({
   price_bonus: 0,
   emoji: '🎬',
   intro_video: '',
-  modules: [{ title: '', video: '', text: '' }],
+  modules: [{ title: '', lessons: [{ title: '', video: '', text: '' }] }],
   is_published: true,
 });
+
+const emptyLesson = (): VLesson => ({ title: '', video: '', text: '' });
+const emptyModule = (): VModule => ({ title: '', lessons: [emptyLesson()] });
 
 const LANGS: (keyof Loc)[] = ['ru', 'kk', 'en'];
 
@@ -52,6 +56,22 @@ export default function CoursesPage() {
   const [form, setForm] = useState<VForm | null>(null);
   const [meta, setMeta] = useState<Course | null>(null); // curriculum курс метадатасы (3-тіл)
   const [busy, setBusy] = useState(false);
+  const [uploading, setUploading] = useState(false);
+
+  async function onCoverFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file || !form) return;
+    setUploading(true);
+    setErr('');
+    try {
+      const url = await uploadImage(file);
+      setForm((f) => (f ? { ...f, cover_url: url } : f));
+    } catch (e: any) {
+      setErr(e.message);
+    } finally {
+      setUploading(false);
+    }
+  }
 
   async function load() {
     setErr('');
@@ -88,8 +108,13 @@ export default function CoursesPage() {
         intro_video: content.intro_video ?? '',
         modules:
           Array.isArray(content.modules) && content.kind === 'video'
-            ? content.modules.map((m: any) => ({ title: m.title ?? '', video: m.video ?? '', text: m.text ?? '' }))
-            : [{ title: '', video: '', text: '' }],
+            ? content.modules.map((m: any) => ({
+                title: m.title ?? '',
+                lessons: Array.isArray(m.lessons)
+                  ? m.lessons.map((ls: any) => ({ title: ls.title ?? '', video: ls.video ?? '', text: ls.text ?? '' }))
+                  : [emptyLesson()],
+              }))
+            : [emptyModule()],
         is_published: co.is_published,
       });
     } catch (e: any) {
@@ -148,6 +173,17 @@ export default function CoursesPage() {
   const set = (patch: Partial<VForm>) => setForm((f) => (f ? { ...f, ...patch } : f));
   const setModule = (i: number, patch: Partial<VModule>) =>
     setForm((f) => (f ? { ...f, modules: f.modules.map((m, j) => (j === i ? { ...m, ...patch } : m)) } : f));
+  const setLesson = (mi: number, li: number, patch: Partial<VLesson>) =>
+    setForm((f) =>
+      f
+        ? {
+            ...f,
+            modules: f.modules.map((m, j) =>
+              j === mi ? { ...m, lessons: m.lessons.map((ls, k) => (k === li ? { ...ls, ...patch } : ls)) } : m,
+            ),
+          }
+        : f,
+    );
 
   return (
     <div>
@@ -179,8 +215,14 @@ export default function CoursesPage() {
           </label>
           <div className="grid2">
             <label>
-              Обложка (URL картинки, необяз.)
-              <input value={form.cover_url} onChange={(e) => set({ cover_url: e.target.value })} placeholder="https://… или оставь пусто (превью intro-видео)" />
+              Обложка курса (фото, необяз.)
+              <input type="file" accept="image/*" onChange={onCoverFile} disabled={uploading} />
+              {uploading && <span className="muted"> загрузка…</span>}
+              {form.cover_url && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={form.cover_url} alt="" style={{ display: 'block', maxWidth: 200, borderRadius: 8, marginTop: 8 }} />
+              )}
+              <span className="muted" style={{ fontSize: 12 }}>Пусто → превью intro-видео</span>
             </label>
             <label>
               Бесплатное вступительное видео (URL)
@@ -196,34 +238,50 @@ export default function CoursesPage() {
             </label>
           </div>
 
-          <h3>Модули</h3>
-          {form.modules.map((m, i) => (
-            <div key={i} className="card" style={{ background: 'var(--bg)' }}>
+          <h3>Модули и уроки</h3>
+          {form.modules.map((m, mi) => (
+            <div key={mi} className="card" style={{ background: 'var(--bg)' }}>
               <div className="row" style={{ justifyContent: 'space-between', alignItems: 'center' }}>
-                <strong>Модуль {i + 1}</strong>
-                <button
-                  className="danger"
-                  style={{ padding: '4px 8px' }}
-                  onClick={() => set({ modules: form.modules.filter((_, j) => j !== i) })}
-                >
-                  ✕
+                <strong>📦 Модуль {mi + 1}</strong>
+                <button className="danger" style={{ padding: '4px 8px' }} onClick={() => set({ modules: form.modules.filter((_, j) => j !== mi) })}>
+                  ✕ модуль
                 </button>
               </div>
               <label>
                 Название модуля
-                <input value={m.title} onChange={(e) => setModule(i, { title: e.target.value })} />
+                <input value={m.title} onChange={(e) => setModule(mi, { title: e.target.value })} placeholder="Напр. Основы анализа" />
               </label>
-              <label>
-                Ссылка на видео
-                <input value={m.video} onChange={(e) => setModule(i, { video: e.target.value })} placeholder="https://youtube.com/watch?v=…" />
-              </label>
-              <label>
-                Текст / описание модуля
-                <textarea rows={2} value={m.text} onChange={(e) => setModule(i, { text: e.target.value })} />
-              </label>
+
+              <div style={{ marginLeft: 10, borderLeft: '3px solid var(--accent)', paddingLeft: 12, marginTop: 8 }}>
+                {m.lessons.map((ls, li) => (
+                  <div key={li} className="card" style={{ background: '#fff' }}>
+                    <div className="row" style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span className="muted">▶️ Урок {li + 1}</span>
+                      <button className="danger" style={{ padding: '2px 8px' }} onClick={() => setModule(mi, { lessons: m.lessons.filter((_, k) => k !== li) })}>
+                        ✕
+                      </button>
+                    </div>
+                    <label>
+                      Название урока
+                      <input value={ls.title} onChange={(e) => setLesson(mi, li, { title: e.target.value })} />
+                    </label>
+                    <label>
+                      Ссылка на видео
+                      <input value={ls.video} onChange={(e) => setLesson(mi, li, { video: e.target.value })} placeholder="https://youtube.com/watch?v=…" />
+                    </label>
+                    <label>
+                      Текст урока
+                      <textarea rows={2} value={ls.text} onChange={(e) => setLesson(mi, li, { text: e.target.value })} />
+                    </label>
+                  </div>
+                ))}
+                <button className="ghost" style={{ padding: '4px 10px' }} onClick={() => setModule(mi, { lessons: [...m.lessons, emptyLesson()] })}>
+                  + Урок
+                </button>
+              </div>
             </div>
           ))}
-          <button className="ghost" onClick={() => set({ modules: [...form.modules, { title: '', video: '', text: '' }] })}>
+          <button className="ghost" onClick={() => set({ modules: [...form.modules, emptyModule()] })}>
             + Добавить модуль
           </button>
 

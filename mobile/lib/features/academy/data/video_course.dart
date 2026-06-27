@@ -23,12 +23,18 @@ String? ytId(String? url) {
   return null;
 }
 
-class VideoModule {
-  VideoModule({required this.title, required this.video, required this.text});
+class VideoLesson {
+  VideoLesson({required this.title, required this.video, required this.text});
   final String title;
   final String video; // YouTube URL/id
   final String text;
   String? get videoId => ytId(video);
+}
+
+class VideoModule {
+  VideoModule({required this.title, required this.lessons});
+  final String title;
+  final List<VideoLesson> lessons;
 }
 
 /// Видео-курс (админ жасайды): мұқаба + тегін intro видео + видео модульдер.
@@ -59,10 +65,15 @@ class VideoCourse {
   bool get isFree => priceBonus <= 0;
   String? get introVideoId => ytId(introVideo);
 
-  /// Мұқаба: айқын URL → intro видеоның YouTube thumbnail-і.
+  /// Барлық сабақтар (тегіс тізім).
+  List<VideoLesson> get allLessons => [for (final m in modules) ...m.lessons];
+  int get lessonCount => allLessons.length;
+
+  /// Мұқаба: айқын URL → intro видеоның/алғашқы сабақтың YouTube thumbnail-і.
   String? get coverImageUrl {
     if (coverUrl != null && coverUrl!.isNotEmpty) return coverUrl;
-    final iv = introVideoId ?? (modules.isNotEmpty ? modules.first.videoId : null);
+    final lessons = allLessons;
+    final iv = introVideoId ?? (lessons.isNotEmpty ? lessons.first.videoId : null);
     return iv == null ? null : 'https://img.youtube.com/vi/$iv/hqdefault.jpg';
   }
 
@@ -75,8 +86,14 @@ class VideoCourse {
         .map((e) => (e as Map).cast<String, dynamic>())
         .map((m) => VideoModule(
               title: (m['title'] ?? '').toString(),
-              video: (m['video'] ?? '').toString(),
-              text: (m['text'] ?? '').toString(),
+              lessons: ((m['lessons'] as List?) ?? const [])
+                  .map((e) => (e as Map).cast<String, dynamic>())
+                  .map((ls) => VideoLesson(
+                        title: (ls['title'] ?? '').toString(),
+                        video: (ls['video'] ?? '').toString(),
+                        text: (ls['text'] ?? '').toString(),
+                      ))
+                  .toList(),
             ))
         .toList();
     return VideoCourse(

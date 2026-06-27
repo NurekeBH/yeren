@@ -26,6 +26,26 @@ export class ApiError extends Error {
   }
 }
 
+/** Суретті backend арқылы Supabase Storage-қа жүктеп, public URL қайтарады. */
+export async function uploadImage(file: File): Promise<string> {
+  const token = getToken();
+  const form = new FormData();
+  form.append('file', file);
+  const res = await fetch(`${API_BASE}/uploads`, {
+    method: 'POST',
+    headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+    body: form,
+    cache: 'no-store',
+  });
+  const text = await res.text();
+  const data = text ? JSON.parse(text) : null;
+  if (!res.ok) {
+    const msg = data && (data.message || data.error) ? String(data.message || data.error) : `HTTP ${res.status}`;
+    throw new ApiError(res.status, msg);
+  }
+  return data.url as string;
+}
+
 export async function api<T = any>(
   path: string,
   options: { method?: string; body?: unknown } = {},

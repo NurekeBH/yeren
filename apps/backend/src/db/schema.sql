@@ -695,3 +695,13 @@ create index if not exists price_alerts_active_idx on price_alerts(instrument) w
 create index if not exists calendar_reminder_idx on calendar_events(scheduled_at) where not reminder_sent;
 -- Курс/идея сатылым есебі (админ дашборды) + емтихан статистикасы.
 create index if not exists exam_results_course_idx on exam_results(course_id, created_at desc);
+
+-- ─────────────────── UPLOADS (суреттер — ӨЗ DB-де, Supabase емес) ───────────────────
+-- Мұқаба/аватар/скриншот суреттері Postgres-те (bytea). GET /api/v1/uploads/:id арқылы беріледі.
+create table if not exists uploads (
+  id         uuid primary key default uuid_generate_v4(),
+  user_id    uuid references users(id) on delete set null,
+  mime       text not null default 'image/jpeg',
+  data       bytea not null,
+  created_at timestamptz default now()
+);

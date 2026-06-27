@@ -66,8 +66,22 @@ export async function coursesRoutes(app: FastifyInstance) {
     price_bonus: z.number().int().min(0).default(0),
     emoji: z.string().optional().default('🎬'),
     intro_video: z.string().nullish(),
+    // Модуль → сабақтар (әр сабақ: атау + видео + текст).
     modules: z
-      .array(z.object({ title: z.string().default(''), video: z.string().optional().default(''), text: z.string().optional().default('') }))
+      .array(
+        z.object({
+          title: z.string().default(''),
+          lessons: z
+            .array(
+              z.object({
+                title: z.string().default(''),
+                video: z.string().optional().default(''),
+                text: z.string().optional().default(''),
+              }),
+            )
+            .default([]),
+        }),
+      )
       .default([]),
     is_published: z.boolean().default(true),
   });
