@@ -1370,6 +1370,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get calc_entry => 'Цена входа';
 
   @override
+  String get calc_risk_amount => 'Сумма риска, \$';
+
+  @override
+  String get calc_entry_from => 'Цена входа (от)';
+
+  @override
+  String get calc_entry_to => 'Цена входа (до) — необязательно';
+
+  @override
   String get calc_sl_price => 'Цена SL';
 
   @override

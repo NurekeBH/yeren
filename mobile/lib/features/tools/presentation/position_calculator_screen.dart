@@ -16,14 +16,15 @@ class PositionCalculatorScreen extends StatefulWidget {
   State<PositionCalculatorScreen> createState() => _PositionCalculatorScreenState();
 }
 
-enum _Mode { byPips, byPrice }
+enum _Mode { byPrice, byPips }
 
 class _PositionCalculatorScreenState extends State<PositionCalculatorScreen> {
-  _Mode _mode = _Mode.byPips;
-  final _balance = TextEditingController(text: '1000');
-  final _risk = TextEditingController(text: '5.0');
+  // 1-таб (әдепкі): кіру + SL бағасы арқылы.
+  _Mode _mode = _Mode.byPrice;
+  final _riskAmount = TextEditingController(text: '50'); // тәуекел сомасы ($), пайыз емес
   final _slPips = TextEditingController(text: '50');
-  final _entry = TextEditingController();
+  final _entry = TextEditingController(); // кіру бағасы (от)
+  final _entryTo = TextEditingController(); // кіру бағасы (до) — опционал (зона)
   final _slPrice = TextEditingController();
   final _tpPrice = TextEditingController();
   // XAU/USD: 1 lot ≈ $10/pip (0.01 = $0.10)
@@ -33,41 +34,44 @@ class _PositionCalculatorScreenState extends State<PositionCalculatorScreen> {
 
   @override
   void dispose() {
-    _balance.dispose();
-    _risk.dispose();
+    _riskAmount.dispose();
     _slPips.dispose();
     _entry.dispose();
+    _entryTo.dispose();
     _slPrice.dispose();
     _tpPrice.dispose();
     _pipValue.dispose();
     super.dispose();
   }
 
+  double _p(TextEditingController c) => double.tryParse(c.text.replaceAll(',', '.')) ?? 0;
+
   void _calc() {
-    final balance = double.tryParse(_balance.text.replaceAll(',', '.')) ?? 0;
-    final riskPct = double.tryParse(_risk.text.replaceAll(',', '.')) ?? 0;
-    final pipValue = double.tryParse(_pipValue.text.replaceAll(',', '.')) ?? 10;
-    if (balance <= 0 || riskPct <= 0 || pipValue <= 0) {
+    final riskUsd = _p(_riskAmount);
+    final pipValue = _p(_pipValue) <= 0 ? 10 : _p(_pipValue);
+    if (riskUsd <= 0) {
       setState(() => _result = null);
       return;
     }
-    final riskUsd = balance * riskPct / 100;
 
     double pips = 0;
     double? rr;
     if (_mode == _Mode.byPips) {
-      pips = double.tryParse(_slPips.text.replaceAll(',', '.')) ?? 0;
+      pips = _p(_slPips);
     } else {
-      final entry = double.tryParse(_entry.text.replaceAll(',', '.')) ?? 0;
-      final sl = double.tryParse(_slPrice.text.replaceAll(',', '.')) ?? 0;
+      // Кіру зонасы: «до» берілсе ортасын аламыз, әйтпесе «от».
+      final from = _p(_entry);
+      final to = _p(_entryTo);
+      final entry = to > 0 ? (from + to) / 2 : from;
+      final sl = _p(_slPrice);
       if (entry <= 0 || sl <= 0) {
         setState(() => _result = null);
         return;
       }
       // XAU/USD pip = 0.10 → diff/0.10
       pips = (entry - sl).abs() / 0.10;
-      final tp = double.tryParse(_tpPrice.text.replaceAll(',', '.'));
-      if (tp != null && tp > 0) {
+      final tp = _p(_tpPrice);
+      if (tp > 0) {
         final reward = (tp - entry).abs() / 0.10;
         rr = pips == 0 ? null : reward / pips;
       }
@@ -93,8 +97,8 @@ class _PositionCalculatorScreenState extends State<PositionCalculatorScreen> {
         children: [
           SegmentedButton<_Mode>(
             segments: [
-              ButtonSegment(value: _Mode.byPips, label: Text(l.calc_mode_by_pips)),
               ButtonSegment(value: _Mode.byPrice, label: Text(l.calc_mode_by_price)),
+              ButtonSegment(value: _Mode.byPips, label: Text(l.calc_mode_by_pips)),
             ],
             selected: {_mode},
             onSelectionChanged: (s) => setState(() {
@@ -104,15 +108,15 @@ class _PositionCalculatorScreenState extends State<PositionCalculatorScreen> {
           ),
           const SizedBox(height: 16),
 
-          _NumField(c: _balance, label: l.calc_balance, signed: false),
-          const SizedBox(height: 12),
-          _NumField(c: _risk, label: l.calc_risk_pct, signed: false),
+          _NumField(c: _riskAmount, label: l.calc_risk_amount, signed: false),
           const SizedBox(height: 12),
 
           if (_mode == _Mode.byPips) ...[
             _NumField(c: _slPips, label: l.calc_sl_pips, signed: false),
           ] else ...[
-            _NumField(c: _entry, label: l.calc_entry, signed: false),
+            _NumField(c: _entry, label: l.calc_entry_from, signed: false),
+            const SizedBox(height: 12),
+            _NumField(c: _entryTo, label: l.calc_entry_to, signed: false),
             const SizedBox(height: 12),
             _NumField(c: _slPrice, label: l.calc_sl_price, signed: false),
             const SizedBox(height: 12),

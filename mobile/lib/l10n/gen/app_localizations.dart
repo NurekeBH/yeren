@@ -2668,6 +2668,24 @@ abstract class AppLocalizations {
   /// **'Кіру бағасы'**
   String get calc_entry;
 
+  /// No description provided for @calc_risk_amount.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тәуекел сомасы, \$'**
+  String get calc_risk_amount;
+
+  /// No description provided for @calc_entry_from.
+  ///
+  /// In kk, this message translates to:
+  /// **'Кіру бағасы (бастап)'**
+  String get calc_entry_from;
+
+  /// No description provided for @calc_entry_to.
+  ///
+  /// In kk, this message translates to:
+  /// **'Кіру бағасы (дейін) — міндетті емес'**
+  String get calc_entry_to;
+
   /// No description provided for @calc_sl_price.
   ///
   /// In kk, this message translates to:

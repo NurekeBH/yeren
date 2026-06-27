@@ -1368,6 +1368,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get calc_entry => 'Entry price';
 
   @override
+  String get calc_risk_amount => 'Risk amount, \$';
+
+  @override
+  String get calc_entry_from => 'Entry price (from)';
+
+  @override
+  String get calc_entry_to => 'Entry price (to) — optional';
+
+  @override
   String get calc_sl_price => 'SL price';
 
   @override

@@ -1369,6 +1369,15 @@ class AppLocalizationsKk extends AppLocalizations {
   String get calc_entry => 'Кіру бағасы';
 
   @override
+  String get calc_risk_amount => 'Тәуекел сомасы, \$';
+
+  @override
+  String get calc_entry_from => 'Кіру бағасы (бастап)';
+
+  @override
+  String get calc_entry_to => 'Кіру бағасы (дейін) — міндетті емес';
+
+  @override
   String get calc_sl_price => 'SL бағасы';
 
   @override
