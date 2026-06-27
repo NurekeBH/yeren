@@ -298,7 +298,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get events_title => 'Events';
 
   @override
-  String get events_empty => 'No events yet';
+  String get events_empty =>
+      'Trading events — masterclasses, webinars and live sessions — will appear here. Coming soon!';
 
   @override
   String get event_free => 'Free';
@@ -471,6 +472,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get posts_you => 'You';
 
   @override
+  String get post_report => 'Report';
+
+  @override
+  String get post_reported => 'Report sent';
+
+  @override
+  String get post_report_sexual => 'Sexual content';
+
+  @override
+  String get post_report_harmful => 'Harmful/dangerous content';
+
+  @override
+  String get post_report_spam => 'Spam or ads';
+
+  @override
+  String get post_report_harassment => 'Harassment/bullying';
+
+  @override
+  String get post_report_misinfo => 'Misinformation';
+
+  @override
+  String get post_report_other => 'Other';
+
+  @override
   String posts_comments_count(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -580,7 +605,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signals_tab_closed => 'Closed';
 
   @override
-  String get signals_empty => 'No signals';
+  String get signals_empty => 'No ideas yet';
 
   @override
   String get signals_pair => 'Pair';
@@ -1528,10 +1553,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notif_title => 'Notifications';
 
   @override
-  String get notif_signals => 'TraderOS signals';
+  String get notif_signals => 'Trade ideas';
 
   @override
-  String get notif_signals_desc => 'Push when a new signal is published';
+  String get notif_signals_desc => 'Push when a new trade idea is published';
+
+  @override
+  String get notif_events => 'Events';
+
+  @override
+  String get notif_events_desc => 'Push when a new event is added';
 
   @override
   String get notif_intel => 'Market Intel';

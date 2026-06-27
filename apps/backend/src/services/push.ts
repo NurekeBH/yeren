@@ -76,7 +76,7 @@ export async function sendPushToTokens(tokens: string[], payload: PushPayload): 
   console.log(`[push] sent=${sent} failed=${failed} cleaned=${invalid.length} "${payload.title}: ${payload.body}"`);
 }
 
-const SAFE_CATEGORIES = new Set(['signals_on', 'intel_on', 'calendar_on', 'ideas_on', 'review_on', 'academy_on', 'broker_on', 'streak_on']);
+const SAFE_CATEGORIES = new Set(['signals_on', 'intel_on', 'calendar_on', 'ideas_on', 'review_on', 'academy_on', 'broker_on', 'streak_on', 'events_on']);
 
 /// Категория қосулы (мыс. signals_on=true) барлық құрылғыларға push.
 export async function sendToCategory(column: string, payload: PushPayload): Promise<void> {

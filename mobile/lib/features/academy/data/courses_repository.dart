@@ -2,17 +2,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/locale/locale_controller.dart';
-import '../../../core/network/api_service.dart';
 import '../../../shared/models/course.dart';
 import '../../../shared/models/course_json.dart';
+import 'video_course.dart';
 
-/// Барлық премиум-курстар каталогы — DB-ден API арқылы (content таңдалған тілде).
-/// Метадата (атау/баға/эмодзи/акцент) DB бағандарынан, ал толық ағаш content-тен.
-/// Тіл ауысса қайта тартылады.
+/// Curriculum премиум-курстар (КОД РЫНКА сияқты, модуль/сабақ/блок ағашы) —
+/// DB-ден API арқылы. Видео-курстар бөлек (videoCoursesProvider) — мұнда сүзіледі.
 final coursesProvider = FutureProvider<List<Course>>((ref) async {
   final loc = ref.watch(localeControllerProvider).languageCode;
-  final raw = await ref.watch(apiServiceProvider).coursesCatalog(loc);
-  return raw.map((e) => _courseFromCatalog((e as Map).cast<String, dynamic>(), loc)).toList();
+  final rows = await ref.watch(courseCatalogRawProvider.future);
+  return rows
+      .where((j) => (j['content'] as Map?)?['kind'] != 'video')
+      .map((j) => _courseFromCatalog(j, loc))
+      .toList();
 });
 
 int? _ci(dynamic v) => v == null ? null : (v is num ? v.toInt() : int.tryParse(v.toString()));

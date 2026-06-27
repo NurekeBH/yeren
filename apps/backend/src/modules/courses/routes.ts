@@ -19,26 +19,78 @@ const COURSE_META_JSONB = new Set(['title', 'subtitle', 'description']);
 
 export async function coursesRoutes(app: FastifyInstance) {
   // ── Каталог (қоғамдық): жарияланған курстар, content таңдалған тілде ──
+  // curriculum курстарда content={ru,kk,en}; видео-курстарда content={kind:'video',...}
+  // (тіл кілті жоқ) → соңғы fallback бүкіл content-ті қайтарады.
   app.get('/courses/catalog', async (req) => {
     const lang = (req.query as { lang?: string }).lang || 'ru';
     const { rows } = await query(
-      `select id, title, subtitle, description, price_bonus, emoji, accent, sort_order,
-              coalesce(content -> $1, content -> 'ru') as content
+      `select id, title, subtitle, description, price_bonus, emoji, accent, cover_url, sort_order,
+              coalesce(content -> $1, content -> 'ru', content) as content
          from course_catalog where is_published = true order by sort_order`,
       [lang],
     );
     return { courses: rows };
   });
 
-  // ── Админ: курстар тізімі (метадата; content көлемі үлкен болғандықтан мұнда қайтарылмайды) ──
+  // ── Админ: курстар тізімі (метадата + kind + модуль саны) ──
   app.get('/admin/courses', { onRequest: [app.requireAdmin] }, async () => {
     const { rows } = await query(
-      `select id, title, subtitle, description, price_bonus, emoji, accent, sort_order, is_published,
-              jsonb_array_length(coalesce(content -> 'ru' -> 'modules', '[]'::jsonb)) as module_count,
+      `select id, title, subtitle, description, price_bonus, emoji, accent, cover_url, sort_order, is_published,
+              content ->> 'kind' as kind,
+              coalesce(jsonb_array_length(content -> 'ru' -> 'modules'),
+                       jsonb_array_length(content -> 'modules'), 0) as module_count,
               created_at, updated_at
          from course_catalog order by sort_order`,
     );
     return { courses: rows };
+  });
+
+  // ── Админ: бір курстың толық деректері (видео-курс өңдеуге) ──
+  app.get('/admin/courses/:id', { onRequest: [app.requireAdmin] }, async (req, reply) => {
+    const id = (req.params as { id: string }).id;
+    const { rows } = await query<{ content: Record<string, unknown> } & Record<string, unknown>>(
+      'select id, title, subtitle, description, price_bonus, emoji, cover_url, is_published, sort_order, content from course_catalog where id = $1',
+      [id],
+    );
+    if (!rows[0]) return reply.code(404).send({ error: 'not_found' });
+    return { course: rows[0] };
+  });
+
+  // ── Админ: видео-курс құру/жаңарту (upsert by id) ──
+  const VideoCourse = z.object({
+    id: z.string().optional(),
+    title: z.string().min(1),
+    subtitle: z.string().optional().default(''),
+    description: z.string().optional().default(''),
+    cover_url: z.string().nullish(),
+    price_bonus: z.number().int().min(0).default(0),
+    emoji: z.string().optional().default('🎬'),
+    intro_video: z.string().nullish(),
+    modules: z
+      .array(z.object({ title: z.string().default(''), video: z.string().optional().default(''), text: z.string().optional().default('') }))
+      .default([]),
+    is_published: z.boolean().default(true),
+  });
+
+  app.post('/admin/courses', { onRequest: [app.requireAdmin] }, async (req, reply) => {
+    const parsed = VideoCourse.safeParse(req.body);
+    if (!parsed.success) return reply.code(400).send({ error: 'bad_request', issues: parsed.error.issues });
+    const d = parsed.data;
+    const id = d.id || `vc-${Date.now()}`;
+    const wrap = (s?: string) => JSON.stringify(s ? { ru: s } : {});
+    const content = { kind: 'video', intro_video: d.intro_video ?? null, modules: d.modules };
+    const { rows } = await query<{ id: string }>(
+      `insert into course_catalog (id, title, subtitle, description, price_bonus, emoji, cover_url, content, is_published)
+       values ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+       on conflict (id) do update set
+          title = excluded.title, subtitle = excluded.subtitle, description = excluded.description,
+          price_bonus = excluded.price_bonus, emoji = excluded.emoji, cover_url = excluded.cover_url,
+          content = excluded.content, is_published = excluded.is_published, updated_at = now()
+       returning id`,
+      [id, wrap(d.title), wrap(d.subtitle), wrap(d.description), d.price_bonus, d.emoji, d.cover_url ?? null,
+       JSON.stringify(content), d.is_published],
+    );
+    return { id: rows[0].id };
   });
 
   // ── Админ: курс метадатасын өзгерту (баға/эмодзи/жариялау/реттік т.б.) ──

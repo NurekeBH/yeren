@@ -25,10 +25,14 @@ class JournalScreen extends ConsumerWidget {
         appBar: AppBar(
           title: Text(l.nav_journal),
           actions: [
-            IconButton(
-              tooltip: l.journal_accounts_title,
-              icon: const Icon(Icons.account_balance_wallet_outlined),
-              onPressed: () => context.push('/accounts'),
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: TextButton.icon(
+                onPressed: () => context.push('/accounts'),
+                icon: const Icon(Icons.account_balance_wallet_outlined, size: 18),
+                label: Text(l.journal_link_broker),
+                style: TextButton.styleFrom(foregroundColor: AppColors.dxyBlue),
+              ),
             ),
           ],
           bottom: TabBar(
@@ -186,11 +190,20 @@ class _TradesTab extends ConsumerWidget {
         child: trades.isEmpty
             ? ListView(
                 physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 32),
                 children: [
-                  const SizedBox(height: 130),
+                  const SizedBox(height: 110),
                   Icon(Icons.candlestick_chart_outlined, size: 56, color: AppColors.textMuted),
                   const SizedBox(height: 12),
                   Text(l.journal_empty, textAlign: TextAlign.center, style: AppTypography.bodyMedium(color: AppColors.textSecondary)),
+                  const SizedBox(height: 6),
+                  Text(l.journal_import_hint, textAlign: TextAlign.center, style: AppTypography.label(color: AppColors.textMuted)),
+                  const SizedBox(height: 18),
+                  FilledButton.tonalIcon(
+                    onPressed: () => context.push('/accounts'),
+                    icon: const Icon(Icons.account_balance_wallet_outlined, size: 18),
+                    label: Text(l.journal_link_broker),
+                  ),
                 ],
               )
             : ListView.builder(

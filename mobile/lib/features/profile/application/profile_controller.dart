@@ -65,6 +65,7 @@ enum NotificationCategory {
   calendar,
   academy,
   broker,
+  events,
 }
 
 class NotificationPrefs extends Equatable {
@@ -490,11 +491,30 @@ class ProfileController extends StateNotifier<UserProfile> {
     _set(state.copyWith(styles: next));
   }
 
-  void toggleNotification(NotificationCategory c) =>
-      _set(state.copyWith(notifications: state.notifications.toggle(c)));
+  void toggleNotification(NotificationCategory c) {
+    _set(state.copyWith(notifications: state.notifications.toggle(c)));
+    _syncNotifications();
+  }
 
-  void toggleDnd() =>
-      _set(state.copyWith(notifications: state.notifications.toggleDnd()));
+  void toggleDnd() {
+    _set(state.copyWith(notifications: state.notifications.toggleDnd()));
+    _syncNotifications();
+  }
+
+  /// Хабарлама санаттарын backend-ке жібереді (push осыларды құрметтейді).
+  void _syncNotifications() {
+    if (!AppConfig.useRemoteApi) return;
+    final n = state.notifications;
+    _ref.read(apiServiceProvider).updateNotificationPrefs({
+      'signals_on': n.isOn(NotificationCategory.signals),
+      'intel_on': n.isOn(NotificationCategory.intel),
+      'calendar_on': n.isOn(NotificationCategory.calendar),
+      'academy_on': n.isOn(NotificationCategory.academy),
+      'broker_on': n.isOn(NotificationCategory.broker),
+      'events_on': n.isOn(NotificationCategory.events),
+      'dnd_until_morning': n.dndUntilMorning,
+    }).catchError((_) {});
+  }
 
   void setGallup(GallupResult result) => _set(state.copyWith(gallup: result));
 

@@ -125,11 +125,6 @@ class _IntelPostBlock extends StatelessWidget {
                 decoration: BoxDecoration(color: color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(4)),
                 child: Text(impactText, style: AppTypography.label(color: color)),
               ),
-              const SizedBox(width: 6),
-              Text(
-                'XAU ${post.xauMove >= 0 ? '+' : ''}${Fmt.price(post.xauMove)}',
-                style: AppTypography.price(size: 11, color: post.xauMove >= 0 ? AppColors.profitGreen : AppColors.lossRed),
-              ),
               const Spacer(),
               Text(Fmt.relativeTime(post.publishedAt, context),
                   style: AppTypography.label(color: AppColors.textMuted)),
@@ -142,34 +137,9 @@ class _IntelPostBlock extends StatelessWidget {
             maxLines: compact ? 2 : null,
             overflow: compact ? TextOverflow.ellipsis : null,
           ),
-          if (!compact) ...[
-            const SizedBox(height: 6),
-            Text(post.analysis, style: AppTypography.bodySmall()),
-            const SizedBox(height: 6),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: _Pill(label: l.intel_sentiment, value: '${post.sentiment}%', color: AppColors.gold),
-            ),
-          ],
         ],
       ),
     );
   }
 }
 
-class _Pill extends StatelessWidget {
-  const _Pill({required this.label, required this.value, required this.color});
-
-  final String label;
-  final String value;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      decoration: BoxDecoration(color: color.withValues(alpha: 0.10), borderRadius: BorderRadius.circular(4)),
-      child: Text('$label: $value', style: AppTypography.label(color: color)),
-    );
-  }
-}

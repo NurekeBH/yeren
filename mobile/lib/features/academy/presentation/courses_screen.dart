@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +8,7 @@ import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/course.dart';
 import '../data/courses_repository.dart';
+import '../data/video_course.dart';
 
 /// Премиум-курстар тізімі (Академия) — жеке экран.
 class CoursesScreen extends ConsumerWidget {
@@ -30,12 +32,15 @@ class CoursesList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     final coursesAsync = ref.watch(coursesProvider);
+    final videoCourses = ref.watch(videoCoursesProvider).valueOrNull ?? const [];
     return coursesAsync.when(
       loading: () => const Center(child: Padding(padding: EdgeInsets.all(48), child: CircularProgressIndicator())),
       error: (e, _) => Center(child: Padding(padding: const EdgeInsets.all(24), child: Text('${l.common_error}: $e'))),
       data: (courses) => RefreshIndicator(
         onRefresh: () async {
+          ref.invalidate(courseCatalogRawProvider);
           ref.invalidate(coursesProvider);
+          ref.invalidate(videoCoursesProvider);
           await ref.read(coursesProvider.future);
         },
         child: ListView(
@@ -49,6 +54,88 @@ class CoursesList extends ConsumerWidget {
               _CourseCard(course: c),
               const SizedBox(height: 16),
             ],
+            for (final v in videoCourses) ...[
+              _VideoCourseCard(course: v),
+              const SizedBox(height: 16),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Видео-курс картасы (мұқаба + атау + баға) → видео-курс деталіне.
+class _VideoCourseCard extends ConsumerWidget {
+  const _VideoCourseCard({required this.course});
+  final VideoCourse course;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
+    final unlocked = course.isFree || ref.watch(purchasedCoursesProvider).contains(course.id);
+    final cover = course.coverImageUrl;
+    return GestureDetector(
+      onTap: () => context.push('/academy/video-course/${course.id}'),
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.cardSurface,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: AppColors.border),
+          boxShadow: const [BoxShadow(color: AppColors.shadow, blurRadius: 16, offset: Offset(0, 8))],
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AspectRatio(
+              aspectRatio: 16 / 9,
+              child: cover != null
+                  ? Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        CachedNetworkImage(imageUrl: cover, fit: BoxFit.cover),
+                        const Center(child: Icon(Icons.play_circle_fill, color: Colors.white, size: 52)),
+                      ],
+                    )
+                  : Container(
+                      color: AppColors.midnight,
+                      child: Center(child: Text(course.emoji, style: const TextStyle(fontSize: 44))),
+                    ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(course.title, style: AppTypography.h2()),
+                  if (course.subtitle.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(course.subtitle,
+                        style: AppTypography.bodySmall(color: AppColors.textSecondary), maxLines: 2, overflow: TextOverflow.ellipsis),
+                  ],
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      _MetaChip(icon: Icons.movie_outlined, text: l.course_modules_count(course.modules.length)),
+                      const Spacer(),
+                      if (unlocked)
+                        Text(l.course_unlocked,
+                            style: AppTypography.label(color: AppColors.profitGreen).copyWith(fontWeight: FontWeight.w700))
+                      else if (course.isFree)
+                        Text(l.signals_free_badge,
+                            style: AppTypography.label(color: AppColors.profitGreen).copyWith(fontWeight: FontWeight.w700))
+                      else
+                        Row(children: [
+                          const Icon(Icons.toll, size: 16, color: AppColors.gold),
+                          const SizedBox(width: 4),
+                          Text('${course.priceBonus}', style: AppTypography.h2(color: AppColors.gold)),
+                        ]),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

@@ -649,7 +649,7 @@ abstract class AppLocalizations {
   /// No description provided for @events_empty.
   ///
   /// In kk, this message translates to:
-  /// **'Әзірге іс-шара жоқ'**
+  /// **'Мұнда іс-шаралар пайда болады: мастер-класс, вебинар және трейдинг бойынша live-сессиялар. Жақында!'**
   String get events_empty;
 
   /// No description provided for @event_free.
@@ -988,6 +988,54 @@ abstract class AppLocalizations {
   /// **'Сіз'**
   String get posts_you;
 
+  /// No description provided for @post_report.
+  ///
+  /// In kk, this message translates to:
+  /// **'Шағымдану'**
+  String get post_report;
+
+  /// No description provided for @post_reported.
+  ///
+  /// In kk, this message translates to:
+  /// **'Шағым жіберілді'**
+  String get post_reported;
+
+  /// No description provided for @post_report_sexual.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сексуалды контент'**
+  String get post_report_sexual;
+
+  /// No description provided for @post_report_harmful.
+  ///
+  /// In kk, this message translates to:
+  /// **'Зиянды/қауіпті контент'**
+  String get post_report_harmful;
+
+  /// No description provided for @post_report_spam.
+  ///
+  /// In kk, this message translates to:
+  /// **'Спам немесе жарнама'**
+  String get post_report_spam;
+
+  /// No description provided for @post_report_harassment.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қорлау/қудалау'**
+  String get post_report_harassment;
+
+  /// No description provided for @post_report_misinfo.
+  ///
+  /// In kk, this message translates to:
+  /// **'Жалған ақпарат'**
+  String get post_report_misinfo;
+
+  /// No description provided for @post_report_other.
+  ///
+  /// In kk, this message translates to:
+  /// **'Басқа'**
+  String get post_report_other;
+
   /// No description provided for @posts_comments_count.
   ///
   /// In kk, this message translates to:
@@ -1183,7 +1231,7 @@ abstract class AppLocalizations {
   /// No description provided for @signals_empty.
   ///
   /// In kk, this message translates to:
-  /// **'Сигнал жоқ'**
+  /// **'Идея әзірге жоқ'**
   String get signals_empty;
 
   /// No description provided for @signals_pair.
@@ -2965,14 +3013,26 @@ abstract class AppLocalizations {
   /// No description provided for @notif_signals.
   ///
   /// In kk, this message translates to:
-  /// **'TraderOS сигналдары'**
+  /// **'Сделка идеялары'**
   String get notif_signals;
 
   /// No description provided for @notif_signals_desc.
   ///
   /// In kk, this message translates to:
-  /// **'Жаңа сигнал жарияланғанда push'**
+  /// **'Жаңа сауда идеясы жарияланғанда push'**
   String get notif_signals_desc;
+
+  /// No description provided for @notif_events.
+  ///
+  /// In kk, this message translates to:
+  /// **'Іс-шаралар'**
+  String get notif_events;
+
+  /// No description provided for @notif_events_desc.
+  ///
+  /// In kk, this message translates to:
+  /// **'Жаңа іс-шара қосылғанда push'**
+  String get notif_events_desc;
 
   /// No description provided for @notif_intel.
   ///

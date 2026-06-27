@@ -86,4 +86,59 @@ export async function postsRoutes(app: FastifyInstance) {
     );
     return { post: rows[0] };
   });
+
+  // ── Постқа шағым (қолданушы) ──
+  app.post('/posts/:id/report', { onRequest: [app.authenticate] }, async (req, reply) => {
+    const id = (req.params as { id: string }).id;
+    const parsed = z
+      .object({
+        reason: z.enum(['sexual', 'harmful', 'spam', 'harassment', 'misinfo', 'other']),
+        note: z.string().max(500).optional(),
+      })
+      .safeParse(req.body);
+    if (!parsed.success) return reply.code(400).send({ error: 'bad_request' });
+    const exists = await query('select 1 from trader_posts where id = $1', [id]);
+    if (!exists.rowCount) return reply.code(404).send({ error: 'not_found' });
+    await query(
+      `insert into post_reports (post_id, user_id, reason, note) values ($1,$2,$3,$4)
+       on conflict (post_id, user_id) do update set reason = excluded.reason, note = excluded.note, status = 'open'`,
+      [id, req.userId, parsed.data.reason, parsed.data.note ?? null],
+    );
+    return { ok: true };
+  });
+
+  // ── Админ: шағымдар тізімі (пост мәтіні + шағымданушы) ──
+  app.get('/admin/reports', { onRequest: [app.requireAdmin] }, async () => {
+    const { rows } = await query(
+      `select r.id, r.reason, r.note, r.status, r.action, r.created_at,
+              r.post_id, p.text as post_text, p.image_url, p.provider_id,
+              pr.name as provider_name, u.name as reporter_name, u.phone as reporter_phone
+         from post_reports r
+         join trader_posts p on p.id = r.post_id
+         left join signal_providers pr on pr.id = p.provider_id
+         left join users u on u.id = r.user_id
+        order by (r.status = 'open') desc, r.created_at desc
+        limit 500`,
+    );
+    return { reports: rows };
+  });
+
+  // ── Админ: шағымды шешу (delete = постты өшіру; dismiss = қалдыру) ──
+  app.post('/admin/reports/:id/resolve', { onRequest: [app.requireAdmin] }, async (req, reply) => {
+    const id = (req.params as { id: string }).id;
+    const parsed = z.object({ action: z.enum(['delete', 'dismiss']) }).safeParse(req.body);
+    if (!parsed.success) return reply.code(400).send({ error: 'bad_request' });
+    const r = await query<{ post_id: string }>('select post_id from post_reports where id = $1', [id]);
+    if (!r.rows[0]) return reply.code(404).send({ error: 'not_found' });
+    if (parsed.data.action === 'delete') {
+      // Постты өшіреміз — оған қатысты барлық шағымдар cascade-пен кетеді.
+      await query('delete from trader_posts where id = $1', [r.rows[0].post_id]);
+      return { ok: true, deleted: true };
+    }
+    await query(
+      `update post_reports set status = 'resolved', action = 'dismissed', reviewed_at = now() where id = $1`,
+      [id],
+    );
+    return { ok: true, deleted: false };
+  });
 }

@@ -1,6 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { query } from '../../db/client.js';
+import { sendToCategory } from '../../services/push.js';
 
 const EventCreate = z.object({
   type: z.enum(['masterclass', 'live_trade', 'webinar']),
@@ -62,7 +63,19 @@ export async function eventsRoutes(app: FastifyInstance) {
        values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) returning *`,
       [e.type, e.title, e.speaker, e.city, e.is_online, e.starts_at, e.price, e.description, e.youtube_id ?? null, e.poster_url ?? null],
     );
+    // Push: жаңа іс-шара (events_on қосулы қолданушыларға).
+    void sendToCategory('events_on', {
+      title: '📅 Жаңа іс-шара',
+      body: e.title,
+      data: { type: 'event', id: String(rows[0].id) },
+    });
     return { event: rows[0] };
+  });
+
+  // Админ: іс-шараны жою.
+  app.delete('/events/:id', { onRequest: [app.requireAdmin] }, async (req) => {
+    await query('delete from events where id = $1', [(req.params as { id: string }).id]);
+    return { ok: true };
   });
 
   app.get('/events/:id/applications', { onRequest: [app.requireAdmin] }, async (req) => {

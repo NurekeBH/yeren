@@ -6,16 +6,18 @@ import Link from 'next/link';
 import { clearToken, getToken } from '@/lib/api';
 
 const NAV = [
-  { href: '/dashboard', label: 'Обзор' },
-  { href: '/dashboard/users', label: 'Пользователи' },
-  { href: '/dashboard/applications', label: 'Заявки провайдеров' },
-  { href: '/dashboard/subscriptions', label: 'Подписки' },
-  { href: '/dashboard/signals', label: 'Сигналы / Идеи' },
-  { href: '/dashboard/providers', label: 'Провайдеры' },
-  { href: '/dashboard/intel', label: 'Market Intel' },
-  { href: '/dashboard/events', label: 'События' },
-  { href: '/dashboard/library', label: 'Библиотека' },
-  { href: '/dashboard/courses', label: 'Курсы' },
+  { href: '/dashboard', label: 'Обзор', icon: '📊' },
+  { href: '/dashboard/users', label: 'Пользователи', icon: '👥' },
+  { href: '/dashboard/applications', label: 'Заявки провайдеров', icon: '📝' },
+  { href: '/dashboard/subscriptions', label: 'Подписки', icon: '💳' },
+  { href: '/dashboard/signals', label: 'Сигналы / Идеи', icon: '📈' },
+  { href: '/dashboard/providers', label: 'Провайдеры', icon: '🏆' },
+  { href: '/dashboard/intel', label: 'Market Intel', icon: '📰' },
+  { href: '/dashboard/events', label: 'События', icon: '📅' },
+  { href: '/dashboard/library', label: 'Библиотека', icon: '📚' },
+  { href: '/dashboard/courses', label: 'Курсы', icon: '🎬' },
+  { href: '/dashboard/reports', label: 'Жалобы на посты', icon: '🚩' },
+  { href: '/dashboard/support', label: 'Поддержка', icon: '🆘' },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -34,14 +36,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <div style={{ display: 'flex', minHeight: '100vh' }}>
       <aside
         style={{
-          width: 220,
+          width: 248,
           background: 'var(--panel)',
           borderRight: '1px solid var(--border)',
           padding: 18,
           flexShrink: 0,
         }}
       >
-        <div style={{ color: 'var(--gold)', fontWeight: 800, fontSize: 18, marginBottom: 22 }}>
+        <div style={{ color: 'var(--gold)', fontWeight: 800, fontSize: 22, marginBottom: 24 }}>
           🏆 ALTYN
         </div>
         <nav style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
@@ -52,13 +54,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 key={n.href}
                 href={n.href}
                 style={{
-                  padding: '9px 11px',
-                  borderRadius: 8,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10,
+                  padding: '11px 13px',
+                  borderRadius: 10,
+                  fontSize: 15.5,
                   color: active ? '#fff' : 'var(--text)',
                   background: active ? 'var(--accent)' : 'transparent',
                   fontWeight: active ? 700 : 500,
                 }}
               >
+                <span style={{ fontSize: 18 }}>{n.icon}</span>
                 {n.label}
               </Link>
             );

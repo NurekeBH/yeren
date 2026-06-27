@@ -32,6 +32,48 @@ class _TraderPostCardState extends ConsumerState<TraderPostCard> {
     super.dispose();
   }
 
+  /// Шағым себебін таңдау парағы → backend-ке жіберу.
+  Future<void> _report(BuildContext context, AppLocalizations l, String postId) async {
+    final reasons = <(String, String)>[
+      ('sexual', l.post_report_sexual),
+      ('harmful', l.post_report_harmful),
+      ('spam', l.post_report_spam),
+      ('harassment', l.post_report_harassment),
+      ('misinfo', l.post_report_misinfo),
+      ('other', l.post_report_other),
+    ];
+    final messenger = ScaffoldMessenger.of(context);
+    final picked = await showModalBottomSheet<String>(
+      context: context,
+      showDragHandle: true,
+      builder: (_) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
+              child: Text(l.post_report, style: AppTypography.h2()),
+            ),
+            for (final (key, label) in reasons)
+              ListTile(
+                leading: const Icon(Icons.flag_outlined, color: AppColors.lossRed),
+                title: Text(label),
+                onTap: () => Navigator.pop(context, key),
+              ),
+          ],
+        ),
+      ),
+    );
+    if (picked == null) return;
+    try {
+      await ref.read(apiServiceProvider).reportPost(postId, picked);
+      messenger.showSnackBar(SnackBar(content: Text(l.post_reported)));
+    } catch (_) {
+      messenger.showSnackBar(SnackBar(content: Text(l.common_error)));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
@@ -82,6 +124,11 @@ class _TraderPostCardState extends ConsumerState<TraderPostCard> {
                           Text(post.agoLabel!, style: AppTypography.label(color: AppColors.textMuted)),
                       ],
                     ),
+                  ),
+                  IconButton(
+                    tooltip: l.post_report,
+                    icon: const Icon(Icons.more_vert, size: 18, color: AppColors.textMuted),
+                    onPressed: () => _report(context, l, post.id),
                   ),
                 ],
               ),

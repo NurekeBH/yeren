@@ -346,10 +346,12 @@ create table if not exists notification_prefs (
   academy_on       boolean default true,
   broker_on        boolean default true,
   streak_on        boolean default true,
+  events_on        boolean default true,
   dnd_until_morning boolean default true,                   -- 00:00–07:00
   expo_push_token  text,                                    -- Expo Push token (mobile-ден)
   updated_at       timestamptz default now()
 );
+alter table notification_prefs add column if not exists events_on boolean default true;
 
 -- ─────────────────── SIGNAL PROVIDERS (Ideas aggregator) ───────────────────
 -- Бірнеше трейдер сигнал/идея береді. Статусты админ береді (verified).
@@ -500,12 +502,14 @@ create table if not exists course_catalog (
   price_bonus  int not null default 0,
   emoji        text default '🧠',
   accent       bigint not null default 4280640491,         -- ARGB int (0xFF2563EB)
+  cover_url    text,                                       -- видео-курс мұқабасы (URL немесе intro YouTube thumbnail)
   sort_order   int not null default 0,
   is_published boolean not null default true,
-  content      jsonb not null default '{}'::jsonb,         -- {ru,kk,en}: толық курс ағашы
+  content      jsonb not null default '{}'::jsonb,         -- curriculum: {modules→lessons}; video: {kind:'video',intro_video,modules:[{title,video,text}]}
   created_at   timestamptz default now(),
   updated_at   timestamptz default now()
 );
+alter table course_catalog add column if not exists cover_url text;
 create index if not exists course_catalog_pub_idx on course_catalog(sort_order) where is_published = true;
 
 -- ─────────────────── AGREEMENT ACCEPTANCES (заңды лог) ───────────────────
@@ -548,6 +552,21 @@ create table if not exists trader_post_comments (
   created_at timestamptz default now()
 );
 create index if not exists trader_post_comments_post_idx on trader_post_comments(post_id, created_at);
+
+-- ─────────────────── POST REPORTS (пост шағымдары → админ модерациясы) ───────────────────
+create table if not exists post_reports (
+  id          uuid primary key default uuid_generate_v4(),
+  post_id     uuid not null references trader_posts(id) on delete cascade,
+  user_id     uuid not null references users(id) on delete cascade,   -- шағымданушы
+  reason      text not null,                                          -- sexual|harmful|spam|harassment|misinfo|other
+  note        text,
+  status      text not null default 'open',                           -- open | resolved
+  action      text,                                                   -- deleted | dismissed
+  created_at  timestamptz default now(),
+  reviewed_at timestamptz,
+  unique (post_id, user_id)
+);
+create index if not exists post_reports_status_idx on post_reports(status, created_at desc);
 
 -- ─────────────────── SIGNAL PURCHASES (ақылы идеялар) ───────────────────
 -- Әр идея ақылы: TP 50–200 пипс → 500 ₸, 200 пипстен астам → 1000 ₸.

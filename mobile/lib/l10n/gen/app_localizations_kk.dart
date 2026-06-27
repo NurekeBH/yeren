@@ -297,7 +297,8 @@ class AppLocalizationsKk extends AppLocalizations {
   String get events_title => 'Іс-шаралар';
 
   @override
-  String get events_empty => 'Әзірге іс-шара жоқ';
+  String get events_empty =>
+      'Мұнда іс-шаралар пайда болады: мастер-класс, вебинар және трейдинг бойынша live-сессиялар. Жақында!';
 
   @override
   String get event_free => 'Тегін';
@@ -471,6 +472,30 @@ class AppLocalizationsKk extends AppLocalizations {
   String get posts_you => 'Сіз';
 
   @override
+  String get post_report => 'Шағымдану';
+
+  @override
+  String get post_reported => 'Шағым жіберілді';
+
+  @override
+  String get post_report_sexual => 'Сексуалды контент';
+
+  @override
+  String get post_report_harmful => 'Зиянды/қауіпті контент';
+
+  @override
+  String get post_report_spam => 'Спам немесе жарнама';
+
+  @override
+  String get post_report_harassment => 'Қорлау/қудалау';
+
+  @override
+  String get post_report_misinfo => 'Жалған ақпарат';
+
+  @override
+  String get post_report_other => 'Басқа';
+
+  @override
   String posts_comments_count(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -579,7 +604,7 @@ class AppLocalizationsKk extends AppLocalizations {
   String get signals_tab_closed => 'Жабық';
 
   @override
-  String get signals_empty => 'Сигнал жоқ';
+  String get signals_empty => 'Идея әзірге жоқ';
 
   @override
   String get signals_pair => 'Валюта жұбы';
@@ -1529,10 +1554,16 @@ class AppLocalizationsKk extends AppLocalizations {
   String get notif_title => 'Хабарландырулар';
 
   @override
-  String get notif_signals => 'TraderOS сигналдары';
+  String get notif_signals => 'Сделка идеялары';
 
   @override
-  String get notif_signals_desc => 'Жаңа сигнал жарияланғанда push';
+  String get notif_signals_desc => 'Жаңа сауда идеясы жарияланғанда push';
+
+  @override
+  String get notif_events => 'Іс-шаралар';
+
+  @override
+  String get notif_events_desc => 'Жаңа іс-шара қосылғанда push';
 
   @override
   String get notif_intel => 'Market Intel';

@@ -97,78 +97,21 @@ class _IntelCard extends StatelessWidget {
               const SizedBox(height: 8),
               Text(post.text, style: AppTypography.bodyMedium().copyWith(fontStyle: FontStyle.italic)),
               const SizedBox(height: 12),
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: color.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Text(impactText, style: AppTypography.label(color: color)),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    'XAU ${post.xauMove >= 0 ? '+' : ''}${Fmt.price(post.xauMove)}',
-                    style: AppTypography.price(
-                      size: 13,
-                      color: post.xauMove >= 0 ? AppColors.profitGreen : AppColors.lossRed,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Text(post.analysis, style: AppTypography.bodyMedium()),
-              const SizedBox(height: 12),
-              _SentimentBar(value: post.sentiment, l: l),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _SentimentBar extends StatelessWidget {
-  const _SentimentBar({required this.value, required this.l});
-
-  final int value;
-  final AppLocalizations l;
-
-  @override
-  Widget build(BuildContext context) {
-    final pct = (value.clamp(0, 100)) / 100.0;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Text(l.intel_bears, style: AppTypography.label(color: AppColors.lossRed)),
-            const Spacer(),
-            Text('${l.intel_sentiment} $value%', style: AppTypography.label(color: AppColors.textSecondary)),
-            const Spacer(),
-            Text(l.intel_bulls, style: AppTypography.label(color: AppColors.profitGreen)),
-          ],
-        ),
-        const SizedBox(height: 6),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(4),
-          child: Stack(
-            children: [
-              Container(height: 8, color: AppColors.lossRed.withValues(alpha: 0.18)),
-              FractionallySizedBox(
-                widthFactor: pct,
+              Align(
+                alignment: Alignment.centerLeft,
                 child: Container(
-                  height: 8,
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(colors: [AppColors.lossRed, AppColors.profitGreen]),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(6),
                   ),
+                  child: Text(impactText, style: AppTypography.label(color: color)),
                 ),
               ),
             ],
           ),
         ),
-      ],
+      ),
     );
   }
 }

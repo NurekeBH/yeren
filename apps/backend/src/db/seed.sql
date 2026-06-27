@@ -57,17 +57,6 @@ on conflict do nothing;
 -- Провайдер = расталған НАҚТЫ юзер. Approve (немесе админ роль) кезінде ол юзерге
 -- signal_providers профилі авто-жасалады. Жалған демо-провайдерлер алынды.
 
--- Demo events — кесте бос болса ғана
-insert into events (type, title, speaker, city, is_online, starts_at, price, description, youtube_id)
-select type, title, speaker, city, is_online, now() + ((days)::text || ' days')::interval, price, description, youtube_id
-from (values
-  ('masterclass', 'Психология трейдинга: дисциплина и риск', 'Александр Герчик', 'Алматы', false, 5, 15000, 'Полный мастер-класс: контроль эмоций, дисциплина после убытка, критерий A+ сетапа и дневной лимит риска.', 'DuImQVIE82I'),
-  ('live_trade', 'Live-сессия по XAU/USD: London open', 'TraderOS', 'Онлайн', true, 2, 0, 'Прямой эфир-разбор XAU/USD на открытии Лондона: HTF bias, ликвидность, retest-сетап.', null),
-  ('webinar', 'Управление капиталом с нуля', 'MaxCapital — Максим Петров', 'Онлайн', true, 7, 5000, 'Расчёт размера позиции, risk %, дневной лимит и сохранение депозита. Практика с калькулятором.', 'PZocEdQcst0'),
-  ('masterclass', 'Smart Money: структура рынка', 'TraderOS Pro', 'Астана', false, 12, 20000, 'Order block, liquidity sweep, BOS/CHoCH на реальных графиках. Топ-даун workflow.', null),
-  ('live_trade', 'Разбор сделок недели', 'Тимофей Мартынов', 'Онлайн', true, 9, 0, 'Живой разбор сделок участников: ошибки, верные решения, ведение журнала.', 'HbsPPpeACvI'),
-  ('webinar', 'Риск-менеджмент: считаем лот', 'ProMarket — Олег Полунин', 'Онлайн', true, 4, 0, 'Формулы и примеры грамотного расчёта риска. Бесплатный вебинар для начинающих.', 'X3OMQriyHFg')
-) as v(type, title, speaker, city, is_online, days, price, description, youtube_id)
-where not exists (select 1 from events);
+-- Demo events алынды — іс-шаралар админ-панель арқылы қосылады (нақты деректер).
 
 -- Demo trader posts алынды — посттар нақты провайдер-юзерлерден келеді.

@@ -114,6 +114,10 @@ class ApiService {
   Future<List<dynamic>> providerPosts(String providerId) async =>
       (await _get('/providers/$providerId/posts'))['posts'] as List? ?? const [];
   Future<Map<String, dynamic>> likePost(String postId) => _send('POST', '/posts/$postId/like');
+
+  /// Постқа шағым (sexual|harmful|spam|harassment|misinfo|other).
+  Future<void> reportPost(String postId, String reason, {String? note}) =>
+      _send('POST', '/posts/$postId/report', body: {'reason': reason, 'note': ?note});
   Future<Map<String, dynamic>> commentPost(String postId, String text) =>
       _send('POST', '/posts/$postId/comments', body: {'text': text});
 
@@ -165,6 +169,10 @@ class ApiService {
   /// FCM токенін backend-ке тіркеу (notification_prefs.expo_push_token).
   Future<void> registerPushToken(String token) =>
       _send('PATCH', '/notifications/prefs', body: {'expo_push_token': token});
+
+  /// Хабарлама санаттарының күйін backend-ке синхрондау (push таргеттеу үшін).
+  Future<void> updateNotificationPrefs(Map<String, dynamic> body) =>
+      _send('PATCH', '/notifications/prefs', body: body);
 
   // ─────────────── Agreement ───────────────
   Future<void> acceptAgreement({String version = 'v1'}) =>

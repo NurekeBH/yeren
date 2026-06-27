@@ -63,9 +63,14 @@ class EventsScreen extends ConsumerWidget {
           data: (events) => events.isEmpty
               ? ListView(
                   physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
                   children: [
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.3),
-                    Center(child: Text(l.events_empty, style: AppTypography.bodyMedium())),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.26),
+                    const Icon(Icons.event_outlined, size: 56, color: AppColors.textMuted),
+                    const SizedBox(height: 14),
+                    Text(l.events_empty,
+                        textAlign: TextAlign.center,
+                        style: AppTypography.bodyMedium(color: AppColors.textSecondary)),
                   ],
                 )
               : ListView.builder(
