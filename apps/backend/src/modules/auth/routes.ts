@@ -18,6 +18,20 @@ const RegisterBody = Credentials.extend({
   promo_code: z.string().max(24).optional(),
 });
 
+/**
+ * Телефонды E.164-ке келтіру (болашақ WhatsApp верификациясына дайындық).
+ * Бос орын/тире/жақша алынады; 00 префиксі → +; Қазақстан/Ресей 8XXXXXXXXXX → +7XXXXXXXXXX;
+ * 11 цифрлы 7… → +7…; алдыңғы + кепілдендіріледі. Тіркеу де, кіру де бірдей форматты қолданады.
+ */
+export function normalizePhone(raw: string): string {
+  let p = raw.replace(/[\s\-()]/g, '');
+  if (p.startsWith('00')) p = `+${p.slice(2)}`;
+  if (/^8\d{10}$/.test(p)) p = `+7${p.slice(1)}`;
+  else if (/^7\d{10}$/.test(p)) p = `+${p}`;
+  else if (!p.startsWith('+') && /^\d{10,15}$/.test(p)) p = `+${p}`;
+  return p;
+}
+
 /** Промокодпен тіркелген ЖАҢА қолданушыға берілетін бонус (ұпай). */
 const PROMO_BONUS_TG = 100;
 
@@ -55,7 +69,8 @@ export async function authRoutes(app: FastifyInstance) {
   app.post('/auth/register', async (req, reply) => {
     const parsed = RegisterBody.safeParse(req.body);
     if (!parsed.success) return reply.code(400).send({ error: 'bad_request', issues: parsed.error.issues });
-    const { phone, password, name, city, trading_styles, preferred_sessions, locale, promo_code } = parsed.data;
+    const { password, name, city, trading_styles, preferred_sessions, locale, promo_code } = parsed.data;
+    const phone = normalizePhone(parsed.data.phone);
 
     const exists = await query('select 1 from users where phone = $1', [phone]);
     if (exists.rowCount && exists.rowCount > 0) {
@@ -116,7 +131,8 @@ export async function authRoutes(app: FastifyInstance) {
   app.post('/auth/login', async (req, reply) => {
     const parsed = Credentials.safeParse(req.body);
     if (!parsed.success) return reply.code(400).send({ error: 'bad_request' });
-    const { phone, password } = parsed.data;
+    const { password } = parsed.data;
+    const phone = normalizePhone(parsed.data.phone);
 
     const { rows } = await query<{ id: string; password_hash: string; is_admin: boolean; is_blocked: boolean }>(
       'select id, password_hash, is_admin, is_blocked from users where phone = $1',

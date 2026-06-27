@@ -14,6 +14,7 @@ type Signal = {
   confidence: number;
   status: string;
   result_pips?: number;
+  votes?: Record<string, number>;
 };
 type Provider = { id: string; name: string };
 
@@ -71,6 +72,19 @@ export default function SignalsPage() {
 
   async function create(e: React.FormEvent) {
     e.preventDefault();
+    const need: [string, string][] = [
+      ['Entry от', form.entry_from],
+      ['Entry до', form.entry_to],
+      ['TP1', form.tp1],
+      ['SL', form.sl],
+      ['RR', form.rr],
+      ['Анализ', form.analysis],
+    ];
+    const missing = need.filter(([, v]) => !String(v).trim()).map(([k]) => k);
+    if (missing.length) {
+      setErr('Заполните обязательные поля: ' + missing.join(', '));
+      return;
+    }
     setBusy(true);
     setErr('');
     try {
@@ -109,6 +123,22 @@ export default function SignalsPage() {
     } catch (e: any) {
       setErr(e.message);
     }
+  }
+
+  async function del(id: string) {
+    if (!confirm('Удалить идею? Это действие необратимо.')) return;
+    try {
+      await api(`/signals/${id}`, { method: 'DELETE' });
+      await load();
+    } catch (e: any) {
+      setErr(e.message);
+    }
+  }
+
+  function votesLabel(v?: Record<string, number>): string {
+    if (!v) return '';
+    const parts = (['tp1', 'tp2', 'tp3', 'sl'] as const).filter((k) => v[k]).map((k) => `${k.toUpperCase()}:${v[k]}`);
+    return parts.join(' ');
   }
 
   return (
@@ -197,6 +227,7 @@ export default function SignalsPage() {
               <th>SL</th>
               <th>RR</th>
               <th>Статус</th>
+              <th>Голоса 👥</th>
               <th></th>
             </tr>
           </thead>
@@ -215,17 +246,25 @@ export default function SignalsPage() {
                   <span className="tag gold">{s.status}</span>
                   {s.result_pips != null && <span className="muted"> {s.result_pips}p</span>}
                 </td>
+                <td className="muted" style={{ fontSize: 12 }}>
+                  {votesLabel(s.votes)}
+                </td>
                 <td>
-                  {s.status === 'active' && (
-                    <div className="row">
-                      <button className="green" onClick={() => close(s.id, 'closed_tp1')}>
-                        TP
-                      </button>
-                      <button className="danger" onClick={() => close(s.id, 'closed_sl')}>
-                        SL
-                      </button>
-                    </div>
-                  )}
+                  <div className="row" style={{ gap: 6 }}>
+                    {s.status === 'active' && (
+                      <>
+                        <button className="green" onClick={() => close(s.id, 'closed_tp1')}>
+                          TP
+                        </button>
+                        <button className="danger" onClick={() => close(s.id, 'closed_sl')}>
+                          SL
+                        </button>
+                      </>
+                    )}
+                    <button className="ghost" style={{ padding: '4px 8px' }} onClick={() => del(s.id)}>
+                      🗑️
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

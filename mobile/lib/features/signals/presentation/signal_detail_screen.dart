@@ -118,9 +118,9 @@ class _Body extends ConsumerWidget {
             const SizedBox(height: 16),
             _SetResultCard(signal: signal, l: l),
           ],
-          // Жабылған идея: қоғам трейдердің мәлімдеген нәтижесін растайды/даулайды
-          // (шынымен TP3-ке жетті ме, әлде SL-ге тиді ме — провайдер шынайылығын тексеру).
-          if (!signal.isMine && signal.status != SignalStatus.active) ...[
+          // Қоғам нәтижені дауыспен растайды/даулайды. Белсенді идеяда да көрінеді —
+          // идея TP-ге жетсе немесе SL-ге тисе, провайдер жаппай тұрса да қоғам белгілей алады.
+          if (!signal.isMine) ...[
             const SizedBox(height: 16),
             _VotingCard(signal: signal, l: l),
           ],

@@ -56,11 +56,20 @@ export async function signalsRoutes(app: FastifyInstance) {
   app.get('/signals', async (req) => {
     const userId = await optionalUserId(req);
     const { rows } = await query(
-      `select *, coalesce(created_by = $1, false) as is_mine
-         from signals order by published_at desc limit 200`,
+      `select s.*, coalesce(s.created_by = $1, false) as is_mine,
+              (select coalesce(jsonb_object_agg(outcome, n), '{}'::jsonb)
+                 from (select outcome, count(*)::int as n from signal_votes
+                        where signal_id = s.id group by outcome) v) as votes
+         from signals s order by s.published_at desc limit 200`,
       [userId],
     );
     return { signals: rows };
+  });
+
+  // Админ: идеяны (сигналды) жою.
+  app.delete('/signals/:id', { onRequest: [app.requireAdmin] }, async (req) => {
+    await query('delete from signals where id = $1', [(req.params as { id: string }).id]);
+    return { ok: true };
   });
 
   app.get('/signals/:id', async (req, reply) => {

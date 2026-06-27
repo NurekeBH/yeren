@@ -84,6 +84,16 @@ export default function EventsPage() {
     }
   }
 
+  async function delEvent(id: string) {
+    if (!confirm('Удалить событие?')) return;
+    try {
+      await api(`/events/${id}`, { method: 'DELETE' });
+      await load();
+    } catch (e: any) {
+      setErr(e.message);
+    }
+  }
+
   return (
     <div>
       <h1>События</h1>
@@ -163,9 +173,14 @@ export default function EventsPage() {
                 {Number(ev.price) > 0 ? `${ev.price} ₸` : 'бесплатно'}
               </div>
             </div>
-            <button className="ghost" onClick={() => showApps(ev.id)}>
-              Заявки
-            </button>
+            <div className="row" style={{ gap: 6 }}>
+              <button className="ghost" onClick={() => showApps(ev.id)}>
+                Заявки
+              </button>
+              <button className="danger" onClick={() => delEvent(ev.id)}>
+                🗑️
+              </button>
+            </div>
           </div>
           {apps[ev.id] && (
             <table style={{ marginTop: 12 }}>
