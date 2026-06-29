@@ -264,11 +264,10 @@ export async function coursesRoutes(app: FastifyInstance) {
   });
 
   // ── Курсты бонуспен ашу (идемпотент) ──
+  // ҚАУІПСІЗДІК: баға клиенттен ЕМЕС, course_catalog.price_bonus-тан алынады
+  // (транзакция ішінде). Әйтпесе bonus_cost=0 жіберіп курсты тегін алуға болатын еді.
   app.post('/courses/:id/purchase', { onRequest: [app.authenticate] }, async (req, reply) => {
     const courseId = (req.params as { id: string }).id;
-    const parsed = z.object({ bonus_cost: z.number().int().min(0) }).safeParse(req.body);
-    if (!parsed.success) return reply.code(400).send({ error: 'bad_request' });
-    const cost = parsed.data.bonus_cost;
 
     const exists = await query('select 1 from course_purchases where user_id = $1 and course_id = $2', [
       req.userId,
@@ -278,6 +277,14 @@ export async function coursesRoutes(app: FastifyInstance) {
 
     try {
       const balance = await tx(async (c) => {
+        // Авторитетная цена из каталога (тек жарияланған курс).
+        const cc = await c.query<{ price_bonus: number; is_published: boolean }>(
+          'select price_bonus, is_published from course_catalog where id = $1',
+          [courseId],
+        );
+        if (!cc.rows[0] || !cc.rows[0].is_published) throw new Error('not_available');
+        const cost = cc.rows[0].price_bonus ?? 0;
+
         const u = await c.query<{ bonus_balance: number }>(
           'select bonus_balance from users where id = $1 for update',
           [req.userId],
@@ -289,14 +296,18 @@ export async function coursesRoutes(app: FastifyInstance) {
           'insert into course_purchases (user_id, course_id, bonus_used) values ($1, $2, $3)',
           [req.userId, courseId, cost],
         );
-        await c.query(
-          "insert into bonus_transactions (user_id, type, amount, ref) values ($1, 'spend_course', $2, $3)",
-          [req.userId, -cost, `course:${courseId}`],
-        );
+        if (cost > 0) {
+          await c.query(
+            "insert into bonus_transactions (user_id, type, amount, ref) values ($1, 'spend_course', $2, $3)",
+            [req.userId, -cost, `course:${courseId}`],
+          );
+        }
         return bal - cost;
       });
       return { ok: true, bonus_balance: balance };
-    } catch {
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : '';
+      if (msg === 'not_available') return reply.code(404).send({ error: 'not_found' });
       return reply.code(400).send({ error: 'insufficient_bonus' });
     }
   });

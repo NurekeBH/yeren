@@ -168,6 +168,10 @@ export async function adminRoutes(app: FastifyInstance) {
       .object({ is_admin: z.boolean().optional(), is_verified_trader: z.boolean().optional() })
       .safeParse(req.body);
     if (!parsed.success) return reply.code(400).send({ error: 'bad_request' });
+    // Админ өзін-өзі админдіктен айыра алмайды (өзін құлыптап қалмауы үшін).
+    if (id === req.userId && parsed.data.is_admin === false) {
+      return reply.code(400).send({ error: 'cannot_demote_self' });
+    }
     const set: string[] = [];
     const args: unknown[] = [];
     for (const [k, v] of Object.entries(parsed.data)) {

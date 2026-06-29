@@ -40,7 +40,27 @@ const app = Fastify({
     ? { level: env.LOG_LEVEL, transport: { target: 'pino-pretty' } }
     : { level: env.LOG_LEVEL },
   bodyLimit: 5 * 1024 * 1024,
-  trustProxy: true,
+  // Тек loopback (nginx сол серверде) сенімді. `true` болса кез келген клиент
+  // X-Forwarded-For-ды бұрмалап rate-limit/лог IP-ін алдай алатын еді.
+  trustProxy: 'loopback',
+});
+
+// ҚАУІПСІЗДІК: өңделмеген қателер шикі error.message (кесте/драйвер атаулары) клиентке
+// кетпесін. Толық қате — серверлік логқа ғана; клиентке жалпы код.
+app.setErrorHandler((err, req, reply) => {
+  req.log.error({ err }, 'unhandled_error');
+  const status = err.statusCode && err.statusCode < 500 ? err.statusCode : 500;
+  const body = status === 500 ? { error: 'internal_error' } : { error: err.code ?? 'bad_request' };
+  reply.code(status).send(body);
+});
+
+// Қауіпсіздік тақырыптары (helmet орнына — қосымша тәуелділіксіз). Барлық жауапқа.
+app.addHook('onSend', async (_req, reply, payload) => {
+  reply.header('X-Content-Type-Options', 'nosniff');
+  reply.header('X-Frame-Options', 'DENY');
+  reply.header('Referrer-Policy', 'no-referrer');
+  reply.header('X-DNS-Prefetch-Control', 'off');
+  return payload;
 });
 
 // Денесіз POST/PATCH әрекеттер (approve/reject/like/ingest/close/...) Content-Type:
@@ -59,9 +79,13 @@ app.addContentTypeParser('application/json', { parseAs: 'string' }, (_req, body,
   }
 });
 
-await app.register(cors, { origin: env.CORS_ORIGIN, credentials: true });
+// Аутентификация Bearer-токенмен (cookie ЕМЕС) → credentials қажет емес. `*`+credentials
+// қаупін жабамыз. Прод-та CORS_ORIGIN-ді нақты доменге қойыңыз (мыс. https://altyn.social).
+await app.register(cors, { origin: env.CORS_ORIGIN, credentials: false });
 await app.register(rateLimit, { max: 200, timeWindow: '1 minute' });
-await app.register(multipart, { limits: { fileSize: 5 * 1024 * 1024 } });
+await app.register(multipart, {
+  limits: { fileSize: 5 * 1024 * 1024, files: 1, fields: 12, parts: 14 },
+});
 await registerAuth(app);
 
 app.get('/health', async () => ({

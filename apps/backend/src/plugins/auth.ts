@@ -12,13 +12,14 @@ declare module 'fastify' {
   interface FastifyRequest {
     userId: string;
     isAdmin: boolean;
+    jti?: string;
   }
 }
 
 declare module '@fastify/jwt' {
   interface FastifyJWT {
-    payload: { sub: string; admin?: boolean };
-    user: { sub: string; admin?: boolean };
+    payload: { sub: string; admin?: boolean; jti?: string };
+    user: { sub: string; admin?: boolean; jti?: string };
   }
 }
 
@@ -35,12 +36,22 @@ export async function registerAuth(app: FastifyInstance) {
     req: FastifyRequest,
     reply: FastifyReply,
   ): Promise<{ id: string; is_admin: boolean; is_verified_trader: boolean } | null> {
-    let decoded: { sub: string };
+    let decoded: { sub: string; jti?: string };
     try {
-      decoded = await req.jwtVerify<{ sub: string; admin?: boolean }>();
+      decoded = await req.jwtVerify<{ sub: string; admin?: boolean; jti?: string }>();
     } catch {
       reply.code(401).send({ error: 'unauthorized' });
       return null;
+    }
+    req.jti = decoded.jti;
+    // Сессия ревокациясы: jti бар (жаңа) токендер user_sessions-та белсенді болуы керек.
+    // Logout/парольді ауыстыру сессияны жабады. Ескі (jti жоқ) токендер — exp-ке дейін.
+    if (decoded.jti) {
+      const s = await query('select 1 from user_sessions where jwt_jti = $1 and revoked_at is null', [decoded.jti]);
+      if (!s.rowCount) {
+        reply.code(401).send({ error: 'session_expired' });
+        return null;
+      }
     }
     const { rows } = await query<{
       id: string;

@@ -14,7 +14,9 @@ export async function ensureAdmin(log: { info: (o: unknown, m?: string) => void 
   await tx(async (c) => {
     const existing = await c.query<{ id: string }>('select id from users where phone = $1', [phone]);
     if (existing.rowCount) {
-      await c.query('update users set is_admin = true, is_blocked = false, password_hash = $1 where phone = $2', [hash, phone]);
+      // Рөлді ғана қамтамасыз етеміз + құпиясөзді env-тен орнатамыз (админ провизия).
+      // is_blocked-ты ҚОЗҒАМАЙМЫЗ — әдейі бұғатталған админ рестартта «тіріліп» кетпесін.
+      await c.query('update users set is_admin = true, password_hash = $1 where phone = $2', [hash, phone]);
       return;
     }
     const u = await c.query<{ id: string }>(

@@ -1,8 +1,30 @@
-import type { FastifyInstance } from 'fastify';
+import type { FastifyInstance, FastifyRequest } from 'fastify';
+import { randomUUID } from 'node:crypto';
 import bcrypt from 'bcrypt';
 import { z } from 'zod';
 import { env } from '../../config/env.js';
 import { query, tx } from '../../db/client.js';
+
+/// Тұрақты dummy-хэш: белгісіз телефонда да bcrypt.compare-ды орындап, жауап
+/// уақытын теңестіреміз (user enumeration-ды timing арқылы болдырмау). Старт кезінде
+/// бір рет есептеледі — нақты валидті bcrypt хэш.
+const DUMMY_BCRYPT_HASH = bcrypt.hashSync('altyn-timing-equalizer', env.BCRYPT_ROUNDS);
+
+/// Жаңа сессия ашып, токен береді (jti + user_sessions жазбасы → logout/revoke жұмыс істейді).
+async function issueToken(
+  app: FastifyInstance,
+  userId: string,
+  isAdmin: boolean,
+  req: FastifyRequest,
+): Promise<string> {
+  const jti = randomUUID();
+  await query(
+    `insert into user_sessions (user_id, jwt_jti, user_agent, ip, expires_at)
+     values ($1, $2, $3, $4, now() + interval '30 days')`,
+    [userId, jti, String(req.headers['user-agent'] ?? '').slice(0, 200), req.ip ?? null],
+  );
+  return app.jwt.sign({ sub: userId, admin: isAdmin, jti });
+}
 
 const Credentials = z.object({
   phone: z.string().min(7).max(20),
@@ -126,11 +148,13 @@ export async function authRoutes(app: FastifyInstance) {
     });
 
     const user = rows[0]!;
-    const token = app.jwt.sign({ sub: user.id, admin: user.is_admin });
+    const token = await issueToken(app, user.id, user.is_admin, req);
     return { token, user_id: user.id };
   });
 
-  app.post('/auth/login', async (req, reply) => {
+  // Логин: брутфорстан қорғау (тар rate-limit) + constant-time (timing enumeration жоқ) +
+  // блок/жоқ юзер/қате пароль үшін БІРДЕЙ жауап (қай телефон тіркелгенін ашпаймыз).
+  app.post('/auth/login', { config: { rateLimit: { max: 8, timeWindow: '1 minute' } } }, async (req, reply) => {
     const parsed = Credentials.safeParse(req.body);
     if (!parsed.success) return reply.code(400).send({ error: 'bad_request' });
     const { password } = parsed.data;
@@ -141,14 +165,22 @@ export async function authRoutes(app: FastifyInstance) {
       [phone],
     );
     const user = rows[0];
-    if (!user) return reply.code(401).send({ error: 'invalid_credentials' });
-    if (user.is_blocked) return reply.code(403).send({ error: 'account_blocked' });
+    // Юзер болмаса да dummy-хэшпен салыстырамыз — жауап уақыты бірдей болады.
+    const ok = await bcrypt.compare(password, user?.password_hash ?? DUMMY_BCRYPT_HASH);
+    if (!user || !ok || user.is_blocked) {
+      return reply.code(401).send({ error: 'invalid_credentials' });
+    }
 
-    const ok = await bcrypt.compare(password, user.password_hash);
-    if (!ok) return reply.code(401).send({ error: 'invalid_credentials' });
-
-    const token = app.jwt.sign({ sub: user.id, admin: user.is_admin });
+    const token = await issueToken(app, user.id, user.is_admin, req);
     return { token, user_id: user.id };
+  });
+
+  // Шығу: ағымдағы сессияны жабамыз (токен бұдан былай жарамсыз).
+  app.post('/auth/logout', { onRequest: [app.authenticate] }, async (req) => {
+    if (req.jti) {
+      await query('update user_sessions set revoked_at = now() where jwt_jti = $1', [req.jti]);
+    }
+    return { ok: true };
   });
 
   app.get('/auth/me', { onRequest: [app.authenticate] }, async (req) => {
@@ -168,6 +200,12 @@ export async function authRoutes(app: FastifyInstance) {
     return { user };
   });
 
+  // Профильдің ҚАУІПСІЗ өрістерін ғана өзгертуге рұқсат. РӨЛ (is_verified_trader/is_admin)
+  // МҰНДА ЖОҚ — әйтпесе кез келген қолданушы өзін трейдер/админ ете алатын еді (escalation).
+  // Рөл тек /admin/users/:id/role + трейдер өтінімін мақұлдау арқылы өзгереді.
+  const PROFILE_FIELDS = new Set([
+    'name', 'city', 'bio', 'avatar_url', 'trading_styles', 'preferred_sessions', 'locale',
+  ]);
   app.patch('/auth/me', { onRequest: [app.authenticate] }, async (req, reply) => {
     const Body = z.object({
       name: z.string().max(60).optional(),
@@ -177,8 +215,7 @@ export async function authRoutes(app: FastifyInstance) {
       trading_styles: z.array(z.string()).optional(),
       preferred_sessions: z.array(z.string()).optional(),
       locale: z.enum(['kk', 'ru', 'en']).optional(),
-      is_verified_trader: z.boolean().optional(),
-      // promo_code клиенттен ҚАБЫЛДАНБАЙДЫ — оны сервер генерациялайды (бірегейлік кепілі).
+      // promo_code/is_verified_trader/is_admin клиенттен ҚАБЫЛДАНБАЙДЫ.
     });
     const parsed = Body.safeParse(req.body);
     if (!parsed.success) return reply.code(400).send({ error: 'bad_request' });
@@ -186,7 +223,7 @@ export async function authRoutes(app: FastifyInstance) {
     const set: string[] = [];
     const args: unknown[] = [];
     for (const [k, v] of Object.entries(parsed.data)) {
-      if (v === undefined) continue;
+      if (v === undefined || !PROFILE_FIELDS.has(k)) continue; // тек whitelist өрістер
       args.push(v);
       set.push(`${k} = $${args.length}`);
     }
@@ -255,24 +292,42 @@ export async function authRoutes(app: FastifyInstance) {
     return { ok: true, bonus: PROMO_BONUS_TG };
   });
 
-  /// Бонусты толтыру (Kaspi төлемі расталғаннан кейін). Балансқа қосамыз.
-  app.post('/bonus/topup', { onRequest: [app.authenticate] }, async (req, reply) => {
-    const Body = z.object({ amount: z.number().int().min(1).max(100000) });
+  /// Бонусты толтыру (Kaspi төлемі РАСТАЛҒАННАН кейін).
+  /// ҚАУІПСІЗДІК: бұрын кез келген қолданушы өзіне шексіз баланс «басып шығара» алатын
+  /// еді (төлем тексерілмейтін). Енді тек АДМИН (немесе сервер вебхугы) расталған
+  /// төлем бойынша есептейді + payment_id арқылы идемпотент (бір төлем — бір рет).
+  /// TODO: нақты Kaspi вебхугын қосып, ол подписьті тексеріп осы логиканы шақырсын.
+  app.post('/bonus/topup', { onRequest: [app.requireAdmin] }, async (req, reply) => {
+    const Body = z.object({
+      user_id: z.string().uuid(),
+      amount: z.number().int().min(1).max(1_000_000),
+      payment_id: z.string().min(6).max(120),
+    });
     const parsed = Body.safeParse(req.body);
     if (!parsed.success) return reply.code(400).send({ error: 'bad_request' });
-    const amount = parsed.data.amount;
-    const balance = await tx(async (c) => {
-      const r = await c.query<{ bonus_balance: number }>(
-        'update users set bonus_balance = bonus_balance + $1 where id = $2 returning bonus_balance',
-        [amount, req.userId],
-      );
-      // Топ-ап = Kaspi кірісі (1 бонус = 1 ₸). Монетизация дашбордына жазамыз.
-      await c.query(
-        "insert into bonus_transactions (user_id, type, amount, ref) values ($1, 'topup', $2, 'kaspi')",
-        [req.userId, amount],
-      );
-      return r.rows[0]?.bonus_balance ?? 0;
-    });
-    return { ok: true, bonus_balance: balance };
+    const { user_id, amount, payment_id } = parsed.data;
+    const ref = `kaspi:${payment_id}`;
+    try {
+      const balance = await tx(async (c) => {
+        const dup = await c.query('select 1 from bonus_transactions where ref = $1', [ref]);
+        if (dup.rowCount) throw new Error('duplicate');
+        const r = await c.query<{ bonus_balance: number }>(
+          'update users set bonus_balance = bonus_balance + $1 where id = $2 returning bonus_balance',
+          [amount, user_id],
+        );
+        if (!r.rowCount) throw new Error('no_user');
+        await c.query(
+          "insert into bonus_transactions (user_id, type, amount, ref) values ($1, 'topup', $2, $3)",
+          [user_id, amount, ref],
+        );
+        return r.rows[0]!.bonus_balance;
+      });
+      return { ok: true, bonus_balance: balance };
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : '';
+      if (msg === 'duplicate') return reply.code(409).send({ error: 'already_processed' });
+      if (msg === 'no_user') return reply.code(404).send({ error: 'not_found' });
+      throw e;
+    }
   });
 }
