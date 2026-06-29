@@ -23,8 +23,12 @@ class SignalUnlockController extends StateNotifier<Set<String>> {
   static Set<String> _load(SharedPreferences prefs) {
     final raw = prefs.getString(_unlockedKey);
     if (raw == null) return {};
-    final list = jsonDecode(raw) as List;
-    return list.map((e) => e.toString()).toSet();
+    try {
+      final list = jsonDecode(raw) as List;
+      return list.map((e) => e.toString()).toSet();
+    } catch (_) {
+      return {}; // бұзық/ескі prefs — краш бермейміз
+    }
   }
 
   Future<void> _persist() async {

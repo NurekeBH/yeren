@@ -21,8 +21,12 @@ class MyEventsController extends StateNotifier<List<TradingEvent>> {
   static List<TradingEvent> _load(SharedPreferences prefs) {
     final raw = prefs.getString(_myEventsKey);
     if (raw == null) return [];
-    final list = jsonDecode(raw) as List;
-    return list.map((e) => TradingEvent.fromJsonLocal((e as Map).cast<String, dynamic>())).toList();
+    try {
+      final list = jsonDecode(raw) as List;
+      return list.map((e) => TradingEvent.fromJsonLocal((e as Map).cast<String, dynamic>())).toList();
+    } catch (_) {
+      return [];
+    }
   }
 
   Future<void> _persist() async {

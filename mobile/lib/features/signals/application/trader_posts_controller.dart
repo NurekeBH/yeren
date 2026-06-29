@@ -52,8 +52,12 @@ class TraderPostsController extends StateNotifier<Map<String, PostUserData>> {
   static Map<String, PostUserData> _load(SharedPreferences prefs) {
     final raw = prefs.getString(_postsUserKey);
     if (raw == null) return {};
-    final map = jsonDecode(raw) as Map<String, dynamic>;
-    return map.map((k, v) => MapEntry(k, PostUserData.fromJson(v as Map<String, dynamic>)));
+    try {
+      final map = jsonDecode(raw) as Map<String, dynamic>;
+      return map.map((k, v) => MapEntry(k, PostUserData.fromJson(v as Map<String, dynamic>)));
+    } catch (_) {
+      return {};
+    }
   }
 
   Future<void> _persist() async {

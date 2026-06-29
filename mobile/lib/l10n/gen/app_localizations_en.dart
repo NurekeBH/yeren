@@ -1845,6 +1845,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get bonus_topup_soon => 'Top-up will be available soon';
+
+  @override
   String get academy_courses => 'Courses';
 
   @override

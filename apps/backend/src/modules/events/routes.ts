@@ -97,7 +97,7 @@ export async function eventsRoutes(app: FastifyInstance) {
       void sendEventPush(
         { city: e.city, price: e.price, is_online: e.is_online, type: e.type },
         { title: '📅 Жаңа іс-шара', body: e.title, data: { type: 'event', id: String(rows[0].id) } },
-      );
+      ).catch((err) => req.log.error({ err }, 'push_failed'));
     }
     return { event: rows[0], pending: !isAdmin };
   });
@@ -124,7 +124,7 @@ export async function eventsRoutes(app: FastifyInstance) {
     void sendEventPush(
       { city: ev.city, price: Number(ev.price), is_online: ev.is_online, type: ev.type },
       { title: '📅 Жаңа іс-шара', body: ev.title, data: { type: 'event', id } },
-    );
+    ).catch((err) => req.log.error({ err }, 'push_failed'));
     return { ok: true };
   });
 

@@ -156,7 +156,7 @@ export async function signalsRoutes(app: FastifyInstance) {
       title: 'Жаңа идея · New idea',
       body: `${dir} ${sig.pair}${sig.is_free ? ' · Free' : ''}`,
       data: { type: 'signal', id: sig.id },
-    });
+    }).catch((err) => req.log.error({ err }, 'push_failed'));
     return { signal: rows[0] };
   });
 

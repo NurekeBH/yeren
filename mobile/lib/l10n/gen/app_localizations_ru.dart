@@ -1848,6 +1848,9 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String get bonus_topup_soon => 'Пополнение скоро будет доступно';
+
+  @override
   String get academy_courses => 'Курсы';
 
   @override

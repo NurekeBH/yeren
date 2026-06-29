@@ -49,7 +49,7 @@ export async function intelRoutes(app: FastifyInstance) {
       );
       const post = rows[0] as { id: string; text: string; impact: string; is_urgent: boolean };
       if (post.is_urgent) {
-        void sendIntelPush({ id: post.id, text: post.text, impact: post.impact });
+        void sendIntelPush({ id: post.id, text: post.text, impact: post.impact }).catch(() => {});
       }
       await pruneIntel(); // тек соңғы 15 жаңалық қалады — ескілерін сақтамаймыз
       return { post };

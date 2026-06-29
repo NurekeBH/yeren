@@ -615,6 +615,7 @@
   "bonus_topup_desc": "Choose a pack — pay with Kaspi",
   "bonus_topup": "Top up bonus with Kaspi",
   "bonus_topup_success": "Balance topped up: +{amount} bonus",
+  "bonus_topup_soon": "Top-up will be available soon",
 
   "academy_courses": "Courses",
   "academy_courses_subtitle": "Deep premium courses — theory, examples, interactive and a test",

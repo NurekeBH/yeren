@@ -630,6 +630,7 @@
   "bonus_topup": "Kaspi-мен бонус толтыру",
   "bonus_topup_success": "Баланс толтырылды: +{amount} бонус",
   "@bonus_topup_success": {"placeholders": {"amount": {"type": "int"}}},
+  "bonus_topup_soon": "Толтыру жақында қолжетімді болады",
 
   "academy_courses": "Курстар",
   "academy_courses_subtitle": "Терең премиум-курстар — теория, мысал, интерактив және тест",

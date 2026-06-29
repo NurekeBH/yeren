@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
-import '../application/profile_controller.dart';
 
 /// Бонус толтыру sheet-і — Kaspi Pay арқылы (1 бонус = 1 ₸).
 /// Сәтті болса true қайтарады.
@@ -31,7 +30,6 @@ class _TopUpSheet extends ConsumerStatefulWidget {
 
 class _TopUpSheetState extends ConsumerState<_TopUpSheet> {
   late int _amount;
-  bool _busy = false;
 
   @override
   void initState() {
@@ -41,13 +39,11 @@ class _TopUpSheetState extends ConsumerState<_TopUpSheet> {
   }
 
   Future<void> _pay(AppLocalizations l) async {
-    setState(() => _busy = true);
-    // Kaspi Pay имитациясы (mock). Remote режимде topUpBonus backend-ке тіркейді.
-    await Future<void>.delayed(const Duration(milliseconds: 900));
-    ref.read(profileControllerProvider.notifier).topUpBonus(_amount);
-    if (!mounted) return;
-    Navigator.of(context).pop(true);
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.bonus_topup_success(_amount))));
+    // Kaspi төлемі интеграциясы әлі қосылмаған (сервер /bonus/topup тек верификацияланған
+    // төлеммен есептейді). Енгізілгенше — «жақында». Жалған баланс есептемейміз.
+    final messenger = ScaffoldMessenger.of(context);
+    Navigator.of(context).pop(false);
+    messenger.showSnackBar(SnackBar(content: Text(l.bonus_topup_soon)));
   }
 
   @override
@@ -114,11 +110,9 @@ class _TopUpSheetState extends ConsumerState<_TopUpSheet> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
-              onPressed: _busy ? null : () => _pay(l),
-              icon: _busy
-                  ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                  : const Icon(Icons.account_balance_wallet, size: 18),
-              label: Text(_busy ? l.signals_paying : l.signals_pay_kaspi(_amount)),
+              onPressed: () => _pay(l),
+              icon: const Icon(Icons.account_balance_wallet, size: 18),
+              label: Text(l.signals_pay_kaspi(_amount)),
             ),
           ),
           const SizedBox(height: 8),

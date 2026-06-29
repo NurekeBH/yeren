@@ -39,8 +39,12 @@ class SignalVotesController extends StateNotifier<Map<String, SignalVote>> {
   static Map<String, SignalVote> _load(SharedPreferences prefs) {
     final raw = prefs.getString(_votesKey);
     if (raw == null) return {};
-    final map = jsonDecode(raw) as Map<String, dynamic>;
-    return map.map((k, v) => MapEntry(k, SignalVote.fromJson((v as Map).cast<String, dynamic>())));
+    try {
+      final map = jsonDecode(raw) as Map<String, dynamic>;
+      return map.map((k, v) => MapEntry(k, SignalVote.fromJson((v as Map).cast<String, dynamic>())));
+    } catch (_) {
+      return {};
+    }
   }
 
   Future<void> _persist() async {

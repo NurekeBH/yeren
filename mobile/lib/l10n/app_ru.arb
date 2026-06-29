@@ -615,6 +615,7 @@
   "bonus_topup_desc": "Выберите пакет — оплата через Kaspi",
   "bonus_topup": "Пополнить бонусы через Kaspi",
   "bonus_topup_success": "Баланс пополнен: +{amount} бонусов",
+  "bonus_topup_soon": "Пополнение скоро будет доступно",
 
   "academy_courses": "Курсы",
   "academy_courses_subtitle": "Глубокие премиум-курсы — теория, примеры, интерактив и тест",

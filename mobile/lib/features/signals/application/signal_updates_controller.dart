@@ -36,11 +36,15 @@ class SignalUpdatesController extends StateNotifier<Map<String, List<SignalUpdat
   static Map<String, List<SignalUpdate>> _load(SharedPreferences prefs) {
     final raw = prefs.getString(_updatesKey);
     if (raw == null) return {};
-    final map = jsonDecode(raw) as Map<String, dynamic>;
-    return map.map((k, v) => MapEntry(
-          k,
-          (v as List).map((e) => SignalUpdate.fromJson((e as Map).cast<String, dynamic>())).toList(),
-        ));
+    try {
+      final map = jsonDecode(raw) as Map<String, dynamic>;
+      return map.map((k, v) => MapEntry(
+            k,
+            (v as List).map((e) => SignalUpdate.fromJson((e as Map).cast<String, dynamic>())).toList(),
+          ));
+    } catch (_) {
+      return {};
+    }
   }
 
   Future<void> _persist() async {

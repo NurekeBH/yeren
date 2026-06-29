@@ -44,8 +44,12 @@ class LibrarySavedController extends StateNotifier<Map<String, LibraryUserEntry>
   static Map<String, LibraryUserEntry> _load(SharedPreferences prefs) {
     final raw = prefs.getString(_libUserKey);
     if (raw == null) return {};
-    final map = jsonDecode(raw) as Map<String, dynamic>;
-    return map.map((k, v) => MapEntry(k, LibraryUserEntry.fromJson(v as Map<String, dynamic>)));
+    try {
+      final map = jsonDecode(raw) as Map<String, dynamic>;
+      return map.map((k, v) => MapEntry(k, LibraryUserEntry.fromJson(v as Map<String, dynamic>)));
+    } catch (_) {
+      return {};
+    }
   }
 
   Future<void> _loadRemote() async {

@@ -3538,6 +3538,12 @@ abstract class AppLocalizations {
   /// **'Баланс толтырылды: +{amount} бонус'**
   String bonus_topup_success(int amount);
 
+  /// No description provided for @bonus_topup_soon.
+  ///
+  /// In kk, this message translates to:
+  /// **'Толтыру жақында қолжетімді болады'**
+  String get bonus_topup_soon;
+
   /// No description provided for @academy_courses.
   ///
   /// In kk, this message translates to:

@@ -1844,6 +1844,9 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
+  String get bonus_topup_soon => 'Толтыру жақында қолжетімді болады';
+
+  @override
   String get academy_courses => 'Курстар';
 
   @override
