@@ -7,6 +7,7 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../l10n/gen/app_localizations.dart';
 import '../../../../shared/models/intel_post.dart';
 import '../../../../shared/utils/formatters.dart';
+import '../../../../shared/widgets/error_view.dart';
 import '../../../intel/data/intel_repository.dart';
 
 /// Home-да Market Intel модулі: ең соңғы пост толық көрінеді.
@@ -50,7 +51,11 @@ class _IntelModuleState extends ConsumerState<IntelModule> {
                 padding: EdgeInsets.symmetric(vertical: 16),
                 child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
               ),
-              error: (e, _) => Text('${l.common_error}: $e', style: AppTypography.bodySmall()),
+              error: (e, _) => ErrorRetryView(
+                error: e,
+                compact: true,
+                onRetry: () => ref.invalidate(intelListProvider),
+              ),
               data: (posts) {
                 if (posts.isEmpty) return const SizedBox.shrink();
                 final sorted = [...posts]..sort((a, b) => b.publishedAt.compareTo(a.publishedAt));

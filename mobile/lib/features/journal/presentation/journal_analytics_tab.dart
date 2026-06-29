@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
+import '../../../shared/widgets/error_view.dart';
 import '../data/journal_controller.dart';
 import '../data/journal_models.dart';
 
@@ -18,7 +19,7 @@ class JournalAnalyticsTab extends ConsumerWidget {
     final async = ref.watch(journalAnalyticsProvider);
     return async.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text('${l.common_error}: $e')),
+      error: (e, _) => ErrorRetryView(error: e, onRetry: () => ref.invalidate(journalAnalyticsProvider)),
       data: (a) {
         if (a.isEmpty) {
           return _Empty(label: l.journal_analytics_empty);

@@ -7,6 +7,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/trading_event.dart';
+import '../../../shared/widgets/error_view.dart';
 import '../../profile/application/profile_controller.dart';
 import 'publish_event_sheet.dart';
 
@@ -71,7 +72,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
           : null,
       body: async.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('${l.common_error}: $e')),
+        error: (e, _) => ErrorRetryView(error: e, onRetry: () => ref.invalidate(eventsProvider)),
         data: (events) {
           // Бэкендте мүлде оқиға жоқ — «жақында» бос күй (фильтрсіз).
           if (events.isEmpty) {

@@ -9,6 +9,7 @@ import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/signal.dart';
 import '../../../shared/utils/formatters.dart';
+import '../../../shared/widgets/error_view.dart';
 import '../../../shared/widgets/secure_screen.dart';
 import '../../alerts/presentation/create_alert_sheet.dart';
 import '../../tools/presentation/position_calculator_screen.dart';
@@ -36,7 +37,7 @@ class SignalDetailScreen extends ConsumerWidget {
       appBar: AppBar(),
       body: async.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('${l.common_error}: $e')),
+        error: (e, _) => ErrorRetryView(error: e, onRetry: () => ref.invalidate(signalByIdProvider(signalId))),
         data: (signal) {
           if (signal == null) return Center(child: Text(l.signals_empty));
           return _Body(signal: signal, l: l);

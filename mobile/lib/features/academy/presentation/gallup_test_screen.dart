@@ -6,6 +6,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/gallup.dart';
+import '../../../shared/widgets/error_view.dart';
 import '../../profile/application/profile_controller.dart';
 import '../data/lessons_repository.dart';
 
@@ -37,7 +38,7 @@ class _GallupTestScreenState extends ConsumerState<GallupTestScreen> {
       appBar: AppBar(),
       body: async.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('${l.common_error}: $e')),
+        error: (e, _) => ErrorRetryView(error: e, onRetry: () => ref.invalidate(gallupQuestionsProvider)),
         data: (questions) {
           final i = _answers.length;
           if (i >= questions.length) return const SizedBox.shrink();

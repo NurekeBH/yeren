@@ -154,6 +154,18 @@ abstract class AppLocalizations {
   /// **'Қайталау'**
   String get common_retry;
 
+  /// No description provided for @error_network.
+  ///
+  /// In kk, this message translates to:
+  /// **'Интернет байланысын тексеріңіз'**
+  String get error_network;
+
+  /// No description provided for @error_generic.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бірдеңе дұрыс болмады. Кейінірек қайталаңыз'**
+  String get error_generic;
+
   /// No description provided for @common_undo.
   ///
   /// In kk, this message translates to:
@@ -385,7 +397,7 @@ abstract class AppLocalizations {
   /// No description provided for @intro_s1_text.
   ///
   /// In kk, this message translates to:
-  /// **'XAU/USD тірі бағасы, DXY және экономикалық календарь — бәрі бір экранда.'**
+  /// **'XAU/USD тірі бағасы, DXY және Economic Calendar — бәрі бір экранда.'**
   String get intro_s1_text;
 
   /// No description provided for @intro_s2_title.
@@ -1951,7 +1963,7 @@ abstract class AppLocalizations {
   /// No description provided for @calendar_title.
   ///
   /// In kk, this message translates to:
-  /// **'Экономикалық календарь'**
+  /// **'Economic Calendar'**
   String get calendar_title;
 
   /// No description provided for @calendar_filter_all.
@@ -3151,7 +3163,7 @@ abstract class AppLocalizations {
   /// No description provided for @notif_calendar.
   ///
   /// In kk, this message translates to:
-  /// **'Экономикалық календарь'**
+  /// **'Economic Calendar'**
   String get notif_calendar;
 
   /// No description provided for @notif_calendar_desc.

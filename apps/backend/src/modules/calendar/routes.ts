@@ -13,7 +13,13 @@ export async function calendarRoutes(app: FastifyInstance) {
 
     const where: string[] = [];
     const args: unknown[] = [];
-    if (from) { args.push(from); where.push(`scheduled_at >= $${args.length}`); }
+    if (from) {
+      args.push(from);
+      where.push(`scheduled_at >= $${args.length}`);
+    } else {
+      // Әдепкі: БҮГІННЕН бастап (өткен күндер көрінбейді — «Барлығын көрсету» бүгіннен басталсын).
+      where.push(`scheduled_at >= date_trunc('day', now())`);
+    }
     if (to)   { args.push(to);   where.push(`scheduled_at <= $${args.length}`); }
     if (impact) { args.push(impact); where.push(`impact = $${args.length}`); }
     const sql = `select * from calendar_events ${where.length ? 'where ' + where.join(' and ') : ''}

@@ -36,6 +36,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get common_retry => 'Retry';
 
   @override
+  String get error_network => 'Check your internet connection';
+
+  @override
+  String get error_generic => 'Something went wrong. Please try again later';
+
+  @override
   String get common_undo => 'Undo';
 
   @override

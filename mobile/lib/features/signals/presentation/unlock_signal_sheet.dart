@@ -5,6 +5,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
+import '../../../shared/widgets/error_view.dart';
 import '../../../shared/models/signal.dart';
 import '../../profile/application/profile_controller.dart';
 import '../../profile/presentation/top_up_bonus_sheet.dart';
@@ -51,7 +52,7 @@ class _UnlockSheetState extends ConsumerState<_UnlockSheet> {
       if (!mounted) return;
       setState(() => _busy = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${l.common_error}: $e')),
+        SnackBar(content: Text(friendlyErrorText(e, l))),
       );
     }
   }

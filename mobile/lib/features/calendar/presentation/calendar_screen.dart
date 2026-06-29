@@ -7,6 +7,7 @@ import '../../../core/utils/ticker_provider.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/calendar_event.dart';
 import '../../../shared/utils/formatters.dart';
+import '../../../shared/widgets/error_view.dart';
 import '../data/calendar_repository.dart';
 
 // Импакт түстері — апп палитрасы (төмен=жасыл, орташа=алтын, жоғары=қызыл).
@@ -55,7 +56,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           Expanded(
             child: async.when(
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, _) => Center(child: Text('${l.common_error}: $e')),
+              error: (e, _) => ErrorRetryView(error: e, onRetry: () => ref.invalidate(calendarEventsProvider)),
               data: (events) {
                 final filtered = _filter == null ? events : events.where((e) => e.impact == _filter).toList();
                 if (filtered.isEmpty) {

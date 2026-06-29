@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
+import '../../../shared/widgets/error_view.dart';
 import '../data/journal_controller.dart';
 import '../data/journal_models.dart';
 
@@ -26,7 +27,7 @@ class AccountsScreen extends ConsumerWidget {
       ),
       body: async.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('${l.common_error}: $e')),
+        error: (e, _) => ErrorRetryView(error: e, onRetry: () => ref.invalidate(journalAccountsProvider)),
         data: (accounts) {
           if (accounts.isEmpty) {
             return Center(
@@ -88,7 +89,7 @@ class _AccountTileState extends ConsumerState<_AccountTile> {
         messenger.showSnackBar(SnackBar(content: Text('⚠️ ${res['error']}')));
       }
     } catch (e) {
-      messenger.showSnackBar(SnackBar(content: Text('${l.common_error}: $e')));
+      messenger.showSnackBar(SnackBar(content: Text(friendlyErrorText(e, l))));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -104,7 +105,7 @@ class _AccountTileState extends ConsumerState<_AccountTile> {
       final res = await ref.read(journalControllerProvider).importStatement(path, accountId: widget.account.id);
       messenger.showSnackBar(SnackBar(content: Text('✅ +${res['inserted']} / ↻${res['updated']} (${res['parsed']})')));
     } catch (e) {
-      messenger.showSnackBar(SnackBar(content: Text('${l.common_error}: $e')));
+      messenger.showSnackBar(SnackBar(content: Text(friendlyErrorText(e, l))));
     } finally {
       if (mounted) setState(() => _busy = false);
     }

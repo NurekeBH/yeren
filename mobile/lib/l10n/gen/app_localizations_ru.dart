@@ -36,6 +36,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get common_retry => 'Повторить';
 
   @override
+  String get error_network => 'Проверьте интернет-соединение';
+
+  @override
+  String get error_generic => 'Что-то пошло не так. Попробуйте позже';
+
+  @override
   String get common_undo => 'Отменить';
 
   @override

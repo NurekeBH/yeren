@@ -6,6 +6,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/signal.dart';
+import '../../../shared/widgets/error_view.dart';
 import '../application/trader_posts_controller.dart';
 import '../data/signals_repository.dart';
 import 'provider_card.dart';
@@ -100,7 +101,7 @@ class ProviderDetailScreen extends ConsumerWidget {
                         // 3) Посттар (Published Ideas)
                         ref.watch(traderPostsProvider(providerId)).when(
                               loading: () => const Center(child: CircularProgressIndicator()),
-                              error: (e, _) => Center(child: Text('${l.common_error}: $e', style: AppTypography.bodyMedium(color: AppColors.textSecondary))),
+                              error: (e, _) => ErrorRetryView(error: e, onRetry: () => ref.invalidate(traderPostsProvider(providerId))),
                               data: (posts) => _TabList(
                                 empty: posts.isEmpty,
                                 emptyLabel: l.posts_empty,

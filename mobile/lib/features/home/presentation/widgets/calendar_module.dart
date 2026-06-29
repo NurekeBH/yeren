@@ -7,6 +7,7 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../core/utils/ticker_provider.dart';
 import '../../../../l10n/gen/app_localizations.dart';
 import '../../../../shared/models/calendar_event.dart';
+import '../../../../shared/widgets/error_view.dart';
 import '../../../calendar/data/calendar_repository.dart';
 
 /// Home-да экономикалық календарь модулі: ең жақын 3 оқиға + толық экранға өту.
@@ -42,7 +43,11 @@ class CalendarModule extends ConsumerWidget {
                 padding: EdgeInsets.symmetric(vertical: 16),
                 child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
               ),
-              error: (e, _) => Text('${l.common_error}: $e', style: AppTypography.bodySmall()),
+              error: (e, _) => ErrorRetryView(
+                error: e,
+                compact: true,
+                onRetry: () => ref.invalidate(calendarEventsProvider),
+              ),
               data: (events) {
                 final upcoming = events
                     .where((e) => e.scheduledAt.isAfter(DateTime.now()) || e.scheduledAt.difference(DateTime.now()).inMinutes > -60)

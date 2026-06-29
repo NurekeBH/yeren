@@ -212,17 +212,25 @@ create table if not exists signals (
   screenshot_url text,
   analysis       text not null,
   is_free        boolean not null default false,          -- тегін идея (paywall жоқ)
-  status         text not null default 'active',         -- active | closed_tp1 | closed_tp2 | closed_tp3 | closed_sl
+  status         text not null default 'active',         -- active | closed_tp1 | closed_tp2 | closed_tp3 | closed_sl | expired
   result_pips    int,
   source         text default 'admin',                   -- admin | telegram_bot
   source_message_id text,                                -- Telegram message id (TZ.rtf)
   created_by     uuid references users(id) on delete set null,  -- жариялаған трейдер (меншік тексеру)
   published_at   timestamptz default now(),
-  closed_at      timestamptz
+  closed_at      timestamptz,
+  deleted_at     timestamptz,                            -- АНТИ-ФРОД: жұмсақ жою (статистика сақталады)
+  auto_closed    boolean not null default false          -- тірі баға SL/TP-ке тигенде сервер автоматты жапты
 );
 -- Бұрыннан бар БД-лар үшін (create table if not exists жаңа бағанды қоспайды):
 alter table signals add column if not exists is_free boolean not null default false;
+-- АНТИ-ФРОД бағандары: жоғалтқан идеяны өшіріп немесе мәңгі «active» қалдырып
+-- статистиканы бұрмалауға жол бермейміз (soft-delete + price-truth авто-шешу).
+alter table signals add column if not exists deleted_at timestamptz;
+alter table signals add column if not exists auto_closed boolean not null default false;
 create index if not exists signals_status_published_idx on signals(status, published_at desc);
+-- Авто-шешуші тірі активтерді жылдам табу үшін (жойылмаған, әлі ашық).
+create index if not exists signals_active_open_idx on signals(status) where status = 'active' and deleted_at is null;
 
 -- ─────────────────── INTEL POSTS (TZ §7) ───────────────────
 create table if not exists intel_posts (

@@ -31,7 +31,13 @@ class CalendarRepository {
 
   Future<List<CalendarEvent>> fetchAll(String loc) async {
     final list = await _api.calendar();
-    final events = list.map((e) => calendarFromJson((e as Map).cast<String, dynamic>())).toList();
+    // Тек БҮГІННЕН бастап (өткен күндерді көрсетпейміз — тізім бүгіннен басталады).
+    final now = DateTime.now();
+    final startOfToday = DateTime(now.year, now.month, now.day);
+    final events = list
+        .map((e) => calendarFromJson((e as Map).cast<String, dynamic>()))
+        .where((e) => !e.scheduledAt.isBefore(startOfToday))
+        .toList();
     return events..sort((a, b) => a.scheduledAt.compareTo(b.scheduledAt));
   }
 }

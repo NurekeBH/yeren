@@ -17,11 +17,13 @@ const ProviderCreate = z.object({
 /// (win_rate/avg_rr/trades_count статикалық емес: сигнал TP/SL-ге жабылғанда жаңарады).
 /// closed>0 болса есептелген мән қолданылады, әйтпесе кестедегі мән сақталады.
 async function liveProviderStats(): Promise<Record<string, { win_rate: number; avg_rr: number; trades_count: number }>> {
+  // «Шешілген» = тек TP/SL-ге жабылғандар (active/expired КІРМЕЙДІ). Жойылған (deleted_at)
+  // сигналдар да САНАЛАДЫ — АНТИ-ФРОД: жоғалтқанды өшіріп Win Rate көтеруге болмайды.
   const { rows } = await query<{ provider_id: string; closed: string; wins: string; avg_rr: string }>(`
     select provider_id,
-      count(*) filter (where status <> 'active')::text as closed,
+      count(*) filter (where status in ('closed_tp1','closed_tp2','closed_tp3','closed_sl'))::text as closed,
       count(*) filter (where status in ('closed_tp1','closed_tp2','closed_tp3'))::text as wins,
-      coalesce(avg(rr) filter (where status <> 'active'), 0)::text as avg_rr
+      coalesce(avg(rr) filter (where status in ('closed_tp1','closed_tp2','closed_tp3','closed_sl')), 0)::text as avg_rr
     from signals where provider_id is not null group by provider_id`);
   const map: Record<string, { win_rate: number; avg_rr: number; trades_count: number }> = {};
   for (const r of rows) {
@@ -52,7 +54,13 @@ export async function providersRoutes(app: FastifyInstance) {
     const { rows } = await query<Record<string, unknown>>('select * from signal_providers where id = $1', [id]);
     if (rows.length === 0) return reply.code(404).send({ error: 'not_found' });
     const stats = await liveProviderStats();
-    const ideas = await query('select * from signals where provider_id = $1 order by published_at desc limit 50', [id]);
+    // Жойылмаған идеяларды ғана көрсетеміз (бірақ liveProviderStats жойылғанды да санайды —
+    // АНТИ-ФРОД: жоғалтқан идеяны өшіріп статистиканы бұрмалауға болмайды).
+    const ideas = await query(
+      `select * from signals where provider_id = $1 and deleted_at is null and status <> 'expired'
+        order by published_at desc limit 50`,
+      [id],
+    );
     return { provider: applyStats(rows[0], stats[id]), ideas: ideas.rows };
   });
 

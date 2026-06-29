@@ -6,6 +6,7 @@ import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/intel_post.dart';
 import '../../../shared/utils/formatters.dart';
+import '../../../shared/widgets/error_view.dart';
 import '../data/intel_repository.dart';
 
 class IntelScreen extends ConsumerWidget {
@@ -29,8 +30,10 @@ class IntelScreen extends ConsumerWidget {
           error: (e, _) => ListView(
             // Жаңартуға (pull-to-refresh) мүмкіндік қалу үшін скроллды сақтаймыз.
             children: [
-              SizedBox(height: MediaQuery.of(context).size.height * 0.35),
-              Center(child: Text('${l.common_error}: $e')),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.7,
+                child: ErrorRetryView(error: e, onRetry: () => ref.invalidate(intelListProvider)),
+              ),
             ],
           ),
           data: (posts) => posts.isEmpty

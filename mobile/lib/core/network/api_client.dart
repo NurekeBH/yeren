@@ -49,22 +49,50 @@ final apiClientProvider = Provider<Dio>((ref) {
 
 /// API қателерін біркелкі түрге келтіретін көмекші.
 class ApiException implements Exception {
-  ApiException(this.statusCode, this.message);
+  ApiException(this.statusCode, this.message, {this.isNetwork = false});
   final int? statusCode;
   final String message;
+
+  /// Желі/таймаут қатесі (интернет жоқ/баяу) ма — сервер қайтарған қате емес.
+  /// UI осыған қарап «Интернетті тексеріңіз» деп көрсетеді.
+  final bool isNetwork;
 
   @override
   String toString() => 'ApiException($statusCode): $message';
 
   static ApiException from(Object error) {
     if (error is DioException) {
+      // Желі деңгейіндегі қателер: таймаут, қосыла алмау, сертификат.
+      const networkTypes = {
+        DioExceptionType.connectionTimeout,
+        DioExceptionType.sendTimeout,
+        DioExceptionType.receiveTimeout,
+        DioExceptionType.connectionError,
+        DioExceptionType.badCertificate,
+      };
+      // type==unknown болғанда да жауап жоқ болса (SocketException т.б.) — желі.
+      final isNet = networkTypes.contains(error.type) ||
+          (error.type == DioExceptionType.unknown && error.response == null);
       final code = error.response?.statusCode;
       final data = error.response?.data;
       final msg = data is Map && data['error'] != null
           ? data['error'].toString()
           : (error.message ?? 'network_error');
-      return ApiException(code, msg);
+      return ApiException(code, msg, isNetwork: isNet);
     }
     return ApiException(null, error.toString());
   }
+}
+
+/// Кез келген қатені желі қатесі ме деп тану (ApiException-ге айналмаған шикі
+/// DioException/SocketException жағдайлары үшін де).
+bool isNetworkError(Object? e) {
+  if (e is ApiException) return e.isNetwork;
+  if (e is DioException) return ApiException.from(e).isNetwork;
+  final s = e.toString().toLowerCase();
+  return s.contains('socketexception') ||
+      s.contains('connection') ||
+      s.contains('timeout') ||
+      s.contains('failed host lookup') ||
+      s.contains('network is unreachable');
 }

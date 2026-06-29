@@ -60,15 +60,20 @@ export async function signalsRoutes(app: FastifyInstance) {
               (select coalesce(jsonb_object_agg(outcome, n), '{}'::jsonb)
                  from (select outcome, count(*)::int as n from signal_votes
                         where signal_id = s.id group by outcome) v) as votes
-         from signals s order by s.published_at desc limit 200`,
+         from signals s
+        where s.deleted_at is null and s.status <> 'expired'
+        order by s.published_at desc limit 200`,
       [userId],
     );
     return { signals: rows };
   });
 
-  // Админ: идеяны (сигналды) жою.
+  // Админ: идеяны (сигналды) ЖҰМСАҚ жою. АНТИ-ФРОД: жазба DB-де қалады (статистика
+  // сақталады) — жоғалтқан идеяны өшіріп Win Rate көтеруге болмайды. Тек тізімнен
+  // жасырылады. Жабылған (нәтижесі бар) сигнал жойылса да провайдер статистикасында қалады.
   app.delete('/signals/:id', { onRequest: [app.requireAdmin] }, async (req) => {
-    await query('delete from signals where id = $1', [(req.params as { id: string }).id]);
+    await query('update signals set deleted_at = now() where id = $1 and deleted_at is null',
+      [(req.params as { id: string }).id]);
     return { ok: true };
   });
 
@@ -76,7 +81,7 @@ export async function signalsRoutes(app: FastifyInstance) {
     const id = (req.params as { id: string }).id;
     const userId = await optionalUserId(req);
     const { rows } = await query(
-      'select *, coalesce(created_by = $1, false) as is_mine from signals where id = $2',
+      'select *, coalesce(created_by = $1, false) as is_mine from signals where id = $2 and deleted_at is null',
       [userId, id],
     );
     if (rows.length === 0) return reply.code(404).send({ error: 'not_found' });
@@ -267,7 +272,8 @@ export async function signalsRoutes(app: FastifyInstance) {
       total: string; wins: string; losses: string; sum_win: string; sum_loss: string; avg_rr: string;
     }>(`
       with closed as (
-        select * from signals where status <> 'active'
+        -- Тек TP/SL шешілгендер (active/expired КІРМЕЙДІ). Жойылғандар САНАЛАДЫ (анти-фрод).
+        select * from signals where status in ('closed_tp1','closed_tp2','closed_tp3','closed_sl')
       )
       select
         count(*)::text as total,

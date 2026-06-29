@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
+import '../../../shared/widgets/error_view.dart';
 import '../data/journal_controller.dart';
 import '../data/journal_models.dart';
 import 'add_trade_sheet.dart';
@@ -111,7 +112,7 @@ class JournalScreen extends ConsumerWidget {
         content: Text('✅ +${res['inserted']} / ↻${res['updated']} (${res['parsed']} оқылды)'),
       ));
     } catch (e) {
-      messenger.showSnackBar(SnackBar(content: Text('${l.common_error}: $e')));
+      messenger.showSnackBar(SnackBar(content: Text(friendlyErrorText(e, l))));
     }
   }
 }
@@ -181,7 +182,7 @@ class _TradesTab extends ConsumerWidget {
     final async = ref.watch(journalTradesProvider);
     return async.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text('${l.common_error}: $e')),
+      error: (e, _) => ErrorRetryView(error: e, onRetry: () => ref.invalidate(journalTradesProvider)),
       data: (trades) => RefreshIndicator(
         onRefresh: () async {
           ref.invalidate(journalTradesProvider);

@@ -30,6 +30,7 @@ import { ensureAdmin } from './services/bootstrap_admin.js';
 import { ingestNews } from './services/news.js';
 import { ingestCalendar } from './services/calendar.js';
 import { checkPriceAlerts } from './services/alerts.js';
+import { resolveActiveSignals } from './services/signal_resolver.js';
 import { startPricePoller, startBinanceWs } from './services/prices.js';
 import { sendCalendarReminders } from './services/calendar_reminders.js';
 import { pool } from './db/client.js';
@@ -177,6 +178,11 @@ if (env.FINNHUB_API_KEY) {
     try {
       const r = await checkPriceAlerts();
       if (r.triggered > 0) app.log.info({ triggered: r.triggered, price: r.price }, 'price_alerts_triggered');
+      // АНТИ-ФРОД: ашық идеяларды тірі бағамен авто-шешу (SL/TP-ке тигенде жабу).
+      const sr = await resolveActiveSignals();
+      if (sr.closed > 0 || sr.expired > 0) {
+        app.log.info({ closed: sr.closed, expired: sr.expired, price: sr.price }, 'signals_auto_resolved');
+      }
     } catch (err) {
       app.log.warn(err, 'price_alert_check_failed');
     } finally {
@@ -186,7 +192,7 @@ if (env.FINNHUB_API_KEY) {
   void tick();
   const alertTimer = setInterval(() => void tick(), ALERT_MS);
   alertTimer.unref?.();
-  app.log.info(`Price-alert poller started (every ${ALERT_MS / 1000}s)`);
+  app.log.info(`Price-alert + signal-resolver poller started (every ${ALERT_MS / 1000}s)`);
 }
 
 // ─────────────── Календарь еске салу поллері (high-impact, ~15 мин бұрын) ───────────────

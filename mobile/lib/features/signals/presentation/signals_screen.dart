@@ -6,6 +6,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/signal.dart';
+import '../../../shared/widgets/error_view.dart';
 import '../../profile/application/profile_controller.dart';
 import '../data/signals_repository.dart';
 import 'provider_card.dart';
@@ -54,7 +55,7 @@ class SignalsScreen extends ConsumerWidget {
         ),
         body: async.when(
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (e, _) => Center(child: Text('${l.common_error}: $e')),
+          error: (e, _) => ErrorRetryView(error: e, onRetry: () => ref.invalidate(signalsListProvider)),
           data: (all) {
             final active = all.where((s) => s.status == SignalStatus.active).toList();
             final closed = all.where((s) => s.status != SignalStatus.active).toList();

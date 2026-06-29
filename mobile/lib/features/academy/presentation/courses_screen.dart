@@ -7,6 +7,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/course.dart';
+import '../../../shared/widgets/error_view.dart';
 import '../data/courses_repository.dart';
 import '../data/video_course.dart';
 
@@ -35,7 +36,7 @@ class CoursesList extends ConsumerWidget {
     final videoCourses = ref.watch(videoCoursesProvider).valueOrNull ?? const [];
     return coursesAsync.when(
       loading: () => const Center(child: Padding(padding: EdgeInsets.all(48), child: CircularProgressIndicator())),
-      error: (e, _) => Center(child: Padding(padding: const EdgeInsets.all(24), child: Text('${l.common_error}: $e'))),
+      error: (e, _) => ErrorRetryView(error: e, onRetry: () => ref.invalidate(coursesProvider)),
       data: (courses) => RefreshIndicator(
         onRefresh: () async {
           ref.invalidate(courseCatalogRawProvider);

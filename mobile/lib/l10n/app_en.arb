@@ -11,6 +11,8 @@
   "common_loading": "Loading…",
   "common_error": "Error",
   "common_retry": "Retry",
+  "error_network": "Check your internet connection",
+  "error_generic": "Something went wrong. Please try again later",
   "common_undo": "Undo",
   "common_skip": "Skip",
   "common_next": "Next",

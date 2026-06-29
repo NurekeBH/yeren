@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
+import '../../../shared/widgets/error_view.dart';
 import '../data/journal_controller.dart';
 
 /// (id, дисплей атауы) — қолдау көрсетілетін брокерлер.
@@ -168,7 +169,7 @@ class _CredentialsState extends ConsumerState<_Credentials> {
     } catch (e) {
       if (!mounted) return;
       setState(() => _busy = false);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${l.common_error}: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(friendlyErrorText(e, l))));
     }
   }
 

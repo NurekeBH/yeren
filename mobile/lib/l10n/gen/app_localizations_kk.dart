@@ -36,6 +36,12 @@ class AppLocalizationsKk extends AppLocalizations {
   String get common_retry => 'Қайталау';
 
   @override
+  String get error_network => 'Интернет байланысын тексеріңіз';
+
+  @override
+  String get error_generic => 'Бірдеңе дұрыс болмады. Кейінірек қайталаңыз';
+
+  @override
   String get common_undo => 'Қайтару';
 
   @override
@@ -153,7 +159,7 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get intro_s1_text =>
-      'XAU/USD тірі бағасы, DXY және экономикалық календарь — бәрі бір экранда.';
+      'XAU/USD тірі бағасы, DXY және Economic Calendar — бәрі бір экранда.';
 
   @override
   String get intro_s2_title => 'Трейдерлердің идеялары';
@@ -993,7 +999,7 @@ class AppLocalizationsKk extends AppLocalizations {
   String get intel_bulls => 'Бұқалар';
 
   @override
-  String get calendar_title => 'Экономикалық календарь';
+  String get calendar_title => 'Economic Calendar';
 
   @override
   String get calendar_filter_all => 'Барлығы';
@@ -1625,7 +1631,7 @@ class AppLocalizationsKk extends AppLocalizations {
   String get notif_intel_desc => 'Gold-қа әсер ететін breaking news';
 
   @override
-  String get notif_calendar => 'Экономикалық календарь';
+  String get notif_calendar => 'Economic Calendar';
 
   @override
   String get notif_calendar_desc => 'HIGH-оқиғаға 15 мин қалғанда';

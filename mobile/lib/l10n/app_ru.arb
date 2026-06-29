@@ -11,6 +11,8 @@
   "common_loading": "Загрузка…",
   "common_error": "Ошибка",
   "common_retry": "Повторить",
+  "error_network": "Проверьте интернет-соединение",
+  "error_generic": "Что-то пошло не так. Попробуйте позже",
   "common_undo": "Отменить",
   "common_skip": "Пропустить",
   "common_next": "Далее",
