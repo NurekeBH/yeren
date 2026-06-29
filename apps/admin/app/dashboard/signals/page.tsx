@@ -17,6 +17,11 @@ type Signal = {
   votes?: Record<string, number>;
 };
 type Provider = { id: string; name: string };
+type DeletedSignal = {
+  id: string; pair: string; direction: string; status: string; result_pips?: number; rr: number;
+  deleted_at: string; published_at: string; provider_name: string | null;
+  author_name: string | null; author_phone: string | null;
+};
 
 const empty = {
   direction: 'buy',
@@ -35,20 +40,37 @@ const empty = {
 export default function SignalsPage() {
   const [signals, setSignals] = useState<Signal[]>([]);
   const [providers, setProviders] = useState<Provider[]>([]);
+  const [deleted, setDeleted] = useState<DeletedSignal[]>([]);
+  const [showDeleted, setShowDeleted] = useState(false);
   const [form, setForm] = useState({ ...empty });
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
 
   async function load() {
     try {
-      const [s, p] = await Promise.all([
+      const [s, p, d] = await Promise.all([
         api<{ signals: Signal[] }>('/signals'),
         api<{ providers: Provider[] }>('/providers'),
+        api<{ signals: DeletedSignal[] }>('/admin/signals/deleted').catch(() => ({ signals: [] as DeletedSignal[] })),
       ]);
       setSignals(s.signals);
       setProviders(p.providers);
+      setDeleted(d.signals);
     } catch (e: any) {
       setErr(e.message);
+    }
+  }
+
+  async function restore(id: string) {
+    setBusy(true);
+    setErr('');
+    try {
+      await api(`/admin/signals/${id}/restore`, { method: 'POST' });
+      await load();
+    } catch (e: any) {
+      setErr(e.message);
+    } finally {
+      setBusy(false);
     }
   }
   useEffect(() => {
@@ -270,6 +292,72 @@ export default function SignalsPage() {
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* 🗑 Удалённые (аудит) — анти-фрод: что удалено, не теряется из статистики */}
+      <div className="card" style={{ marginTop: 16 }}>
+        <div className="row" style={{ alignItems: 'center', justifyContent: 'space-between' }}>
+          <h2 style={{ margin: 0 }}>🗑 Удалённые идеи · аудит ({deleted.length})</h2>
+          <button className="ghost" onClick={() => setShowDeleted((v) => !v)}>
+            {showDeleted ? 'Скрыть' : 'Показать'}
+          </button>
+        </div>
+        <p className="muted" style={{ fontSize: 12, marginTop: 6 }}>
+          Удалённые идеи скрыты из приложения, но остаются в базе и в статистике провайдера
+          (нельзя «удалить» убыточную идею, чтобы поднять Win Rate). Можно восстановить.
+        </p>
+        {showDeleted &&
+          (deleted.length === 0 ? (
+            <p className="muted">Удалённых идей нет.</p>
+          ) : (
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+              <thead>
+                <tr style={{ textAlign: 'left', color: 'var(--muted)' }}>
+                  <th style={{ padding: '8px 10px' }}>Пара / Направл.</th>
+                  <th style={{ padding: '8px 10px' }}>Статус</th>
+                  <th style={{ padding: '8px 10px' }}>Результат</th>
+                  <th style={{ padding: '8px 10px' }}>Провайдер / Автор</th>
+                  <th style={{ padding: '8px 10px' }}>Удалено</th>
+                  <th style={{ padding: '8px 10px' }}></th>
+                </tr>
+              </thead>
+              <tbody>
+                {deleted.map((s) => (
+                  <tr key={s.id} style={{ borderTop: '1px solid var(--border)' }}>
+                    <td style={{ padding: '8px 10px' }}>
+                      <b>{s.pair}</b> · {s.direction === 'buy' ? 'BUY' : 'SELL'}
+                    </td>
+                    <td style={{ padding: '8px 10px' }}>
+                      <span
+                        className="badge"
+                        style={{
+                          background: s.status === 'closed_sl' ? '#dc2626' : s.status.startsWith('closed_tp') ? '#059669' : '#555',
+                          color: '#fff',
+                        }}
+                      >
+                        {s.status}
+                      </span>
+                    </td>
+                    <td style={{ padding: '8px 10px', fontWeight: 700, color: (s.result_pips ?? 0) >= 0 ? '#059669' : '#dc2626' }}>
+                      {s.result_pips != null ? `${s.result_pips > 0 ? '+' : ''}${s.result_pips} pips` : '—'}
+                    </td>
+                    <td style={{ padding: '8px 10px' }}>
+                      {s.provider_name || s.author_name || '—'}
+                      {s.author_phone ? <span className="muted"> · {s.author_phone}</span> : null}
+                    </td>
+                    <td style={{ padding: '8px 10px' }} className="muted">
+                      {new Date(s.deleted_at).toLocaleString('ru-RU')}
+                    </td>
+                    <td style={{ padding: '8px 10px' }}>
+                      <button className="ghost" disabled={busy} onClick={() => restore(s.id)}>
+                        ♻ Восстановить
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ))}
       </div>
     </div>
   );

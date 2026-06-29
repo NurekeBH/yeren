@@ -235,9 +235,42 @@
   /* mobile sticky cta */
   .mcta{display:none}
   @media(max-width:760px){.mcta{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:60;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:rgba(8,8,10,.9);backdrop-filter:blur(14px);border-top:1px solid var(--line)}.mcta .btn{flex:1;justify-content:center}}
+
+  /* ─── полиш: прогресс прокрутки ─── */
+  .scroll-prog{position:fixed;top:0;left:0;height:3px;width:0;z-index:100;
+    background:var(--gold-shine);background-size:220% auto;box-shadow:0 0 12px rgba(227,190,114,.55);transition:width .08s linear}
+
+  /* ─── полиш: бегущая строка (trading vibe) ─── */
+  .marquee{overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:16px 0;background:linear-gradient(90deg,rgba(227,190,114,.05),transparent,rgba(227,190,114,.05));
+    -webkit-mask:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);mask:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent)}
+  .marquee-track{display:flex;width:max-content;animation:marq 30s linear infinite}
+  .marquee:hover .marquee-track{animation-play-state:paused}
+  .marquee .grp{display:flex;align-items:center;gap:40px;padding-right:40px}
+  .marquee i{font-family:'Playfair Display',serif;font-style:normal;font-size:19px;color:var(--t2);white-space:nowrap;letter-spacing:.01em}
+  .marquee i b{color:var(--gold)}
+  .marquee .dot{width:5px;height:5px;border-radius:50%;background:var(--gold);opacity:.5;flex:none}
+  @keyframes marq{to{transform:translateX(-50%)}}
+
+  /* ─── полиш: staggered reveal + счётчик ─── */
+  .reveal{transition-delay:var(--rd,0s)}
+  .stats .s b{transition:transform .5s cubic-bezier(.2,.7,.2,1),opacity .5s}
+  .reveal:not(.in) .stats .s b{transform:scale(.7);opacity:0}
+
+  /* ─── полиш: spotlight на карточках возможностей ─── */
+  .feat{--mx:50%;--my:0%}
+  .feat::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s;
+    background:radial-gradient(340px circle at var(--mx) var(--my),rgba(227,190,114,.12),transparent 42%)}
+  .feat:hover::after{opacity:1}
+
+  @media(prefers-reduced-motion:reduce){
+    .marquee-track{animation:none}.scroll-prog{display:none}
+    .reveal:not(.in) .stats .s b{transform:none;opacity:1}
+  }
 </style>
 </head>
 <body>
+<div class="scroll-prog" id="scrollProg"></div>
 
 <div class="announce">✦ Приложение для трейдинга золотом (XAU/USD) — начни <b>бесплатно</b> уже сегодня</div>
 
@@ -292,12 +325,40 @@
 <section class="block" style="padding:64px 0">
   <div class="wrap">
     <div class="stats reveal">
-      <div class="s"><b class="gold-text">49+</b><span>уроков и тестов</span></div>
+      <div class="s"><b class="gold-text"><span class="cnt" data-to="49">0</span>+</b><span>уроков и тестов</span></div>
       <div class="s"><b class="gold-text">24/7</b><span>сигналы и push в реальном времени</span></div>
-      <div class="s"><b class="gold-text">1:3</b><span>средний риск/прибыль</span></div>
+      <div class="s"><b class="gold-text">1:<span class="cnt" data-to="3">0</span></b><span>средний риск/прибыль</span></div>
     </div>
   </div>
 </section>
+
+<!-- MARQUEE -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <div class="grp">
+      <i><b>XAU/USD</b> сигналы</i><span class="dot"></span>
+      <i>Проверенные трейдеры</i><span class="dot"></span>
+      <i><b>TP / SL / RR</b></i><span class="dot"></span>
+      <i>Журнал <b>MT5</b></i><span class="dot"></span>
+      <i>Push <b>24/7</b></i><span class="dot"></span>
+      <i>Академия <b>49+</b></i><span class="dot"></span>
+      <i>Экономический календарь</i><span class="dot"></span>
+      <i><b>Market Intel</b></i><span class="dot"></span>
+      <i>Ценовые алерты</i><span class="dot"></span>
+    </div>
+    <div class="grp">
+      <i><b>XAU/USD</b> сигналы</i><span class="dot"></span>
+      <i>Проверенные трейдеры</i><span class="dot"></span>
+      <i><b>TP / SL / RR</b></i><span class="dot"></span>
+      <i>Журнал <b>MT5</b></i><span class="dot"></span>
+      <i>Push <b>24/7</b></i><span class="dot"></span>
+      <i>Академия <b>49+</b></i><span class="dot"></span>
+      <i>Экономический календарь</i><span class="dot"></span>
+      <i><b>Market Intel</b></i><span class="dot"></span>
+      <i>Ценовые алерты</i><span class="dot"></span>
+    </div>
+  </div>
+</div>
 
 <!-- FEATURES -->
 <section class="block" id="features">
@@ -460,8 +521,45 @@
 <div class="mcta"><a class="btn btn-gold" href="#download">Начать бесплатно →</a></div>
 
 <script>
+  // Staggered reveal — бір ата-ананың ішіндегі .reveal элементтер кезекпен шығады.
+  document.querySelectorAll('.reveal').forEach((el)=>{
+    const sibs=[...el.parentElement.children].filter(c=>c.classList.contains('reveal'));
+    const i=sibs.indexOf(el);
+    if(i>0) el.style.setProperty('--rd',(i*0.08).toFixed(2)+'s');
+  });
   const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
   document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // Count-up — сандар көрінгенде 0-ден мақсатқа дейін өседі.
+  const countUp=(el)=>{
+    const to=+el.dataset.to||0; const dur=1100; const t0=performance.now();
+    const step=(t)=>{const p=Math.min((t-t0)/dur,1); const e=1-Math.pow(1-p,3);
+      el.textContent=Math.round(to*e); if(p<1) requestAnimationFrame(step);};
+    requestAnimationFrame(step);
+  };
+  const cio=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){countUp(e.target);cio.unobserve(e.target)}})},{threshold:.6});
+  document.querySelectorAll('.cnt').forEach(el=>cio.observe(el));
+
+  // Прогресс прокрутки (жоғарғы алтын жолақ).
+  const prog=document.getElementById('scrollProg');
+  const onScroll=()=>{
+    const h=document.documentElement;
+    const p=h.scrollTop/((h.scrollHeight-h.clientHeight)||1);
+    if(prog) prog.style.width=(p*100).toFixed(2)+'%';
+    // Hero parallax — алтын фон баяу жылжиды.
+    const bull=document.querySelector('.bull-bg');
+    if(bull) bull.style.transform='translateY(calc(-50% + '+(h.scrollTop*0.08)+'px))';
+  };
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+
+  // Spotlight — карточка возможностей курсорды қуалайтын жарық.
+  document.querySelectorAll('.feat').forEach((c)=>{
+    c.addEventListener('pointermove',(e)=>{
+      const r=c.getBoundingClientRect();
+      c.style.setProperty('--mx',(e.clientX-r.left)+'px');
+      c.style.setProperty('--my',(e.clientY-r.top)+'px');
+    });
+  });
 </script>
 </body>
 </html>

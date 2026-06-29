@@ -92,6 +92,29 @@ export async function signalsRoutes(app: FastifyInstance) {
     return { ok: true };
   });
 
+  // ── Админ: ЖОЙЫЛҒАН (soft-deleted) сигналдар тізімі — аудит үшін ──
+  // Кім, қашан жойды, нәтижесі қандай еді — статистика бұрмалауын бақылау.
+  app.get('/admin/signals/deleted', { onRequest: [app.requireAdmin] }, async () => {
+    const { rows } = await query(
+      `select s.id, s.pair, s.direction, s.status, s.result_pips, s.rr, s.is_free,
+              s.published_at, s.closed_at, s.deleted_at, s.created_by, s.provider_id,
+              p.name as provider_name, u.name as author_name, u.phone as author_phone
+         from signals s
+         left join signal_providers p on p.id = s.provider_id
+         left join users u on u.id = s.created_by
+        where s.deleted_at is not null
+        order by s.deleted_at desc limit 200`,
+    );
+    return { signals: rows };
+  });
+
+  // ── Админ: жойылған сигналды қалпына келтіру (қателесіп жойса) ──
+  app.post('/admin/signals/:id/restore', { onRequest: [app.requireAdmin] }, async (req) => {
+    await query('update signals set deleted_at = null where id = $1',
+      [(req.params as { id: string }).id]);
+    return { ok: true };
+  });
+
   app.get('/signals/:id', async (req, reply) => {
     const id = (req.params as { id: string }).id;
     const userId = await optionalUserId(req);
