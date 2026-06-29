@@ -12,8 +12,8 @@ import '../../../shared/models/gallup.dart';
 import '../../../shared/models/market_session.dart';
 import 'promo_registry.dart';
 
-/// Промокодпен тіркелген ЖАҢА қолданушыға берілетін бонус (₸).
-const int kPromoBonusTg = 100;
+/// Промокодпен тіркелген ЖАҢА қолданушыға берілетін бонус (₸). Реферермен ТЕҢ (500/500).
+const int kPromoBonusTg = 500;
 
 /// Промокодын бөліскен қолданушыға (реферерге) әр тіркелу үшін бонус (₸).
 const int kReferrerBonusTg = 500;

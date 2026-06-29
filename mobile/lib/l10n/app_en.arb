@@ -220,6 +220,8 @@
   "signals_tab_active": "Active",
   "signals_tab_closed": "Closed",
   "signals_empty": "No ideas yet",
+  "my_publications": "My publications",
+  "my_pub_posts": "Posts",
   "signals_pair": "Pair",
   "signals_direction_buy": "BUY",
   "signals_direction_sell": "SELL",

@@ -68,6 +68,21 @@ export async function signalsRoutes(app: FastifyInstance) {
     return { signals: rows };
   });
 
+  // ── Менің идеяларым (кірген трейдер жариялаған — белсенді + жабылған) ──
+  app.get('/me/signals', { onRequest: [app.authenticate] }, async (req) => {
+    const { rows } = await query(
+      `select s.*, true as is_mine,
+              (select coalesce(jsonb_object_agg(outcome, n), '{}'::jsonb)
+                 from (select outcome, count(*)::int as n from signal_votes
+                        where signal_id = s.id group by outcome) v) as votes
+         from signals s
+        where s.created_by = $1 and s.deleted_at is null
+        order by s.published_at desc limit 200`,
+      [req.userId],
+    );
+    return { signals: rows };
+  });
+
   // Админ: идеяны (сигналды) ЖҰМСАҚ жою. АНТИ-ФРОД: жазба DB-де қалады (статистика
   // сақталады) — жоғалтқан идеяны өшіріп Win Rate көтеруге болмайды. Тек тізімнен
   // жасырылады. Жабылған (нәтижесі бар) сигнал жойылса да провайдер статистикасында қалады.

@@ -173,6 +173,13 @@ class ProfileScreen extends ConsumerWidget {
               label: l.profile_become_trader,
               onTap: () => showTraderApplicationSheet(context),
             ),
+          // Трейдер: өзі жариялаған идеялар (белсенді/жабық) мен жазбалар.
+          if (profile.isVerifiedTrader)
+            _MenuItem(
+              icon: Icons.campaign_outlined,
+              label: l.my_publications,
+              onTap: () => context.push('/profile/publications'),
+            ),
           _MenuItem(
             icon: Icons.bookmark_outline,
             label: l.profile_saved,

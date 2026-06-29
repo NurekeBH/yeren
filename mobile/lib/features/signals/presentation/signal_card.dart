@@ -61,9 +61,12 @@ class SignalCard extends ConsumerWidget {
                           const Icon(Icons.verified, size: 13, color: AppColors.dxyBlue),
                         ],
                         const Spacer(),
-                        // Win Rate + рейтинг (кіші шрифт) — трейдер атымен бір жолда.
+                        // Win Rate + орташа RR + рейтинг (кіші шрифт) — трейдер атымен бір жолда.
                         Text('${l.signals_wr_short} ${(provider.winRate * 100).round()}%',
                             style: AppTypography.label(color: AppColors.profitGreen).copyWith(fontSize: 11, fontWeight: FontWeight.w700)),
+                        const SizedBox(width: 8),
+                        Text('RR 1:${provider.avgRr.toStringAsFixed(1)}',
+                            style: AppTypography.label(color: AppColors.textSecondary).copyWith(fontSize: 11, fontWeight: FontWeight.w700)),
                         const SizedBox(width: 8),
                         const Icon(Icons.star, size: 11, color: AppColors.gold),
                         const SizedBox(width: 2),

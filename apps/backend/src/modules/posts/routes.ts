@@ -33,6 +33,28 @@ export async function postsRoutes(app: FastifyInstance) {
     return { posts: rows };
   });
 
+  // ── Менің посттарым (кірген қолданушының провайдер профилі бойынша) ──
+  app.get('/me/posts', { onRequest: [app.authenticate] }, async (req) => {
+    const { rows } = await query(
+      `select tp.id, tp.provider_id, tp.text, tp.image_url, tp.likes_count, tp.created_at,
+              coalesce(c.comments, '[]'::json) as comments
+         from trader_posts tp
+         join signal_providers sp on sp.id = tp.provider_id
+         left join lateral (
+           select json_agg(
+                    json_build_object('author', cm.author, 'text', cm.text, 'created_at', cm.created_at)
+                    order by cm.created_at
+                  ) as comments
+             from trader_post_comments cm
+            where cm.post_id = tp.id
+         ) c on true
+        where sp.user_id = $1
+        order by tp.created_at desc`,
+      [req.userId],
+    );
+    return { posts: rows };
+  });
+
   // Лайк (toggle).
   app.post('/posts/:id/like', { onRequest: [app.authenticate] }, async (req, reply) => {
     const id = (req.params as { id: string }).id;

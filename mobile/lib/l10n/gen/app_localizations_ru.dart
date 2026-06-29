@@ -670,6 +670,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get signals_empty => 'Идей пока нет';
 
   @override
+  String get my_publications => 'Мои публикации';
+
+  @override
+  String get my_pub_posts => 'Посты';
+
+  @override
   String get signals_pair => 'Пара';
 
   @override

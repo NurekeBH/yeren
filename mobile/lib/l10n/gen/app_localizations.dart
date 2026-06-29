@@ -1354,6 +1354,18 @@ abstract class AppLocalizations {
   /// **'Идея әзірге жоқ'**
   String get signals_empty;
 
+  /// No description provided for @my_publications.
+  ///
+  /// In kk, this message translates to:
+  /// **'Менің жарияланымдарым'**
+  String get my_publications;
+
+  /// No description provided for @my_pub_posts.
+  ///
+  /// In kk, this message translates to:
+  /// **'Жазбалар'**
+  String get my_pub_posts;
+
   /// No description provided for @signals_pair.
   ///
   /// In kk, this message translates to:

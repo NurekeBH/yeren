@@ -669,6 +669,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signals_empty => 'No ideas yet';
 
   @override
+  String get my_publications => 'My publications';
+
+  @override
+  String get my_pub_posts => 'Posts';
+
+  @override
   String get signals_pair => 'Pair';
 
   @override

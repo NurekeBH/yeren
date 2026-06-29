@@ -29,6 +29,18 @@ type Item = {
   is_published: boolean;
 };
 
+type ReviewStat = {
+  id: string;
+  category: Category;
+  title: string;
+  author: string;
+  cover_url: string | null;
+  review_count: number;
+  rating_count: number;
+  avg_user_rating: number | null;
+  saved_count: number;
+};
+
 const CATS: { key: Category; label: string }[] = [
   { key: 'book', label: '📖 Книги' },
   { key: 'film', label: '🎬 Фильмы' },
@@ -65,12 +77,17 @@ export default function LibraryPage() {
   const [err, setErr] = useState('');
   const [editing, setEditing] = useState<Partial<Item> | null>(null);
   const [busy, setBusy] = useState(false);
+  const [reviews, setReviews] = useState<ReviewStat[]>([]);
 
   const load = useCallback(async () => {
     setErr('');
     try {
-      const r = await api<{ items: Item[] }>(`/admin/library?category=${cat}`);
+      const [r, rev] = await Promise.all([
+        api<{ items: Item[] }>(`/admin/library?category=${cat}`),
+        api<{ items: ReviewStat[] }>(`/admin/library/reviews?category=${cat}`).catch(() => ({ items: [] as ReviewStat[] })),
+      ]);
       setItems(r.items);
+      setReviews(rev.items);
     } catch (e: any) {
       setErr(e.message);
     }
@@ -154,6 +171,42 @@ export default function LibraryPage() {
           onCancel={() => setEditing(null)}
           busy={busy}
         />
+      )}
+
+      {/* 📊 Отзывы и рейтинги — для маркетинга (что популярно у пользователей) */}
+      {reviews.length > 0 && (
+        <div className="card" style={{ marginBottom: 16 }}>
+          <h2 style={{ marginTop: 0 }}>📊 Отзывы и рейтинги · {CATS.find((c) => c.key === cat)?.label}</h2>
+          <div className="muted" style={{ fontSize: 12, marginBottom: 10 }}>
+            Что чаще оценивают/сохраняют — кандидаты для контента. Сортировка по числу отзывов.
+          </div>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+            <thead>
+              <tr style={{ textAlign: 'left', color: 'var(--muted)' }}>
+                <th style={{ padding: '8px 10px' }}>Название</th>
+                <th style={{ padding: '8px 10px' }}>★ Ср. оценка</th>
+                <th style={{ padding: '8px 10px' }}>Оценок</th>
+                <th style={{ padding: '8px 10px' }}>Отзывов</th>
+                <th style={{ padding: '8px 10px' }}>Сохранили</th>
+              </tr>
+            </thead>
+            <tbody>
+              {reviews.map((r) => (
+                <tr key={r.id} style={{ borderTop: '1px solid var(--border)' }}>
+                  <td style={{ padding: '8px 10px' }}>
+                    <b>{r.title}</b>{r.author ? <span className="muted"> · {r.author}</span> : null}
+                  </td>
+                  <td style={{ padding: '8px 10px', fontWeight: 700, color: 'var(--gold)' }}>
+                    {r.avg_user_rating != null ? `★ ${Number(r.avg_user_rating).toFixed(1)}` : '—'}
+                  </td>
+                  <td style={{ padding: '8px 10px' }}>{r.rating_count}</td>
+                  <td style={{ padding: '8px 10px', fontWeight: 700 }}>{r.review_count}</td>
+                  <td style={{ padding: '8px 10px' }}>{r.saved_count}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
       <div className="card">

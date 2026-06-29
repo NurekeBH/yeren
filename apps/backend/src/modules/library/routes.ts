@@ -111,6 +111,42 @@ export async function libraryRoutes(app: FastifyInstance) {
     return { items: rows };
   });
 
+  // ── Админ: пікір/рейтинг қорытындысы (маркетинг — қай кітап/фильм/подкаст танымал) ──
+  // Әр элемент бойынша пікір саны + орташа пайдаланушы рейтингі + сақтағандар саны.
+  app.get('/admin/library/reviews', { onRequest: [app.requireAdmin] }, async (req) => {
+    const cat = (req.query as { category?: string }).category ?? null;
+    const { rows } = await query(
+      `select li.id, li.category, li.title, li.author, li.cover_url,
+              count(*) filter (where d.review is not null and d.review <> '')::int as review_count,
+              count(*) filter (where d.rating > 0)::int as rating_count,
+              round(avg(d.rating) filter (where d.rating > 0), 2) as avg_user_rating,
+              count(*) filter (where d.saved)::int as saved_count
+         from library_items li
+         left join library_user_data d on d.item_id = li.id
+        where ($1::text is null or li.category = $1)
+        group by li.id, li.category, li.title, li.author, li.cover_url
+       having count(*) filter (where d.rating > 0 or (d.review is not null and d.review <> '') or d.saved) > 0
+        order by review_count desc, rating_count desc, avg_user_rating desc nulls last
+        limit 200`,
+      [cat],
+    );
+    return { items: rows };
+  });
+
+  // ── Админ: бір элементтің барлық пікірлері (мәтінмен) ──
+  app.get('/admin/library/:itemId/reviews', { onRequest: [app.requireAdmin] }, async (req) => {
+    const itemId = (req.params as { itemId: string }).itemId;
+    const { rows } = await query(
+      `select u.name, u.phone, d.rating, d.review, d.updated_at
+         from library_user_data d
+         join users u on u.id = d.user_id
+        where d.item_id = $1 and (d.rating > 0 or (d.review is not null and d.review <> ''))
+        order by d.updated_at desc limit 200`,
+      [itemId],
+    );
+    return { reviews: rows };
+  });
+
   // ── Админ: жаңа элемент ──
   app.post('/admin/library', { onRequest: [app.requireAdmin] }, async (req, reply) => {
     const parsed = LibItemBody.safeParse(req.body);

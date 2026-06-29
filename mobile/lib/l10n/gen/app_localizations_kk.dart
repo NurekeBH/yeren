@@ -667,6 +667,12 @@ class AppLocalizationsKk extends AppLocalizations {
   String get signals_empty => 'Идея әзірге жоқ';
 
   @override
+  String get my_publications => 'Менің жарияланымдарым';
+
+  @override
+  String get my_pub_posts => 'Жазбалар';
+
+  @override
   String get signals_pair => 'Валюта жұбы';
 
   @override

@@ -33,8 +33,9 @@ export function normalizePhone(raw: string): string {
   return p;
 }
 
-/** Промокодпен тіркелген ЖАҢА қолданушыға берілетін бонус (ұпай). */
-const PROMO_BONUS_TG = 100;
+/** Промокодпен тіркелген ЖАҢА қолданушыға берілетін бонус (ұпай). Маркетинг: реферермен
+ *  ТЕҢ — екеуі де 500 алады. */
+const PROMO_BONUS_TG = 500;
 
 /** Промокодын бөліскен реферерге әр тіркелу үшін бонус (ұпай). */
 const REFERRER_BONUS_TG = 500;
@@ -109,7 +110,7 @@ export async function authRoutes(app: FastifyInstance) {
           [code],
         );
         if (ref.rowCount && ref.rows[0]!.id !== u.rows[0]!.id) {
-          // Жаңа қолданушыға +100; реферерге +500 және реферал саны +1.
+          // Жаңа қолданушыға +500; реферерге +500 және реферал саны +1 (тең).
           await c.query('update users set bonus_balance = $1, referred_by = $2 where id = $3', [
             PROMO_BONUS_TG,
             code,

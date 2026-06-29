@@ -87,6 +87,12 @@ class ApiService {
       (await _get('/signals/$id'))['signal'] as Map<String, dynamic>;
   Future<Map<String, dynamic>> signalStats() => _get('/signals/stats');
 
+  /// Менің жариялаған идеяларым (белсенді + жабылған).
+  Future<List<dynamic>> mySignals() async => (await _get('/me/signals'))['signals'] as List;
+
+  /// Менің жариялаған посттарым.
+  Future<List<dynamic>> myPosts() async => (await _get('/me/posts'))['posts'] as List;
+
   /// Ашылған (сатып алынған) идеялардың id-тізімі.
   Future<List<String>> purchasedSignals() async {
     final list = (await _get('/signals/purchased'))['signal_ids'] as List? ?? const [];
