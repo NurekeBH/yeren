@@ -216,12 +216,25 @@ class ProfileScreen extends ConsumerWidget {
               if (context.mounted) context.go('/home');
             },
           ),
-          // Аккаунтты жою (Apple App Store талабы — қосымшаішілік жою).
-          _MenuItem(
-            icon: Icons.delete_forever_outlined,
-            label: l.profile_delete_account,
-            danger: true,
-            onTap: () => _confirmDeleteAccount(context, ref, l),
+          // Аккаунтты жою — Apple App Store талабы бойынша қол жетімді болуы керек,
+          // бірақ ҚОЛДАНУШЫЛАР БАЙҚАУСЫЗ ЖОЙМАСЫН деп көзге түспейтін кіші мәтін
+          // (үлкен қызыл батырма емес).
+          const SizedBox(height: 14),
+          Center(
+            child: TextButton(
+              onPressed: () => _confirmDeleteAccount(context, ref, l),
+              style: TextButton.styleFrom(
+                foregroundColor: AppColors.textMuted,
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                minimumSize: const Size(0, 0),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: Text(
+                l.profile_delete_account,
+                style: AppTypography.label(color: AppColors.textMuted)
+                    .copyWith(fontSize: 12, decoration: TextDecoration.underline),
+              ),
+            ),
           ),
         ],
         ),
@@ -231,20 +244,18 @@ class ProfileScreen extends ConsumerWidget {
 }
 
 class _MenuItem extends StatelessWidget {
-  const _MenuItem({required this.icon, required this.label, this.onTap, this.danger = false});
+  const _MenuItem({required this.icon, required this.label, this.onTap});
 
   final IconData icon;
   final String label;
   final VoidCallback? onTap;
-  final bool danger;
 
   @override
   Widget build(BuildContext context) {
-    final color = danger ? AppColors.lossRed : AppColors.gold;
     return Card(
       child: ListTile(
-        leading: Icon(icon, color: color),
-        title: Text(label, style: danger ? AppTypography.bodyMedium(color: AppColors.lossRed) : AppTypography.bodyMedium()),
+        leading: Icon(icon, color: AppColors.gold),
+        title: Text(label, style: AppTypography.bodyMedium()),
         trailing: const Icon(Icons.chevron_right, color: AppColors.textMuted),
         onTap: onTap,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
