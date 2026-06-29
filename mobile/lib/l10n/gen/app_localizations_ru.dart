@@ -301,6 +301,27 @@ class AppLocalizationsRu extends AppLocalizations {
       'Здесь появятся события: мастер-классы, вебинары и live-сессии по трейдингу. Скоро!';
 
   @override
+  String get events_none_match => 'Нет событий по фильтру';
+
+  @override
+  String get events_filter_all => 'Все';
+
+  @override
+  String get events_filter_online => 'Онлайн';
+
+  @override
+  String get events_filter_offline => 'Оффлайн';
+
+  @override
+  String get events_filter_free => 'Бесплатно';
+
+  @override
+  String get events_filter_paid => 'Платно';
+
+  @override
+  String get events_filter_city => 'Город';
+
+  @override
   String get event_free => 'Бесплатно';
 
   @override
@@ -873,6 +894,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get profile_support => 'Поддержка / Администрация';
 
   @override
+  String get profile_delete_account => 'Удалить аккаунт';
+
+  @override
+  String get profile_delete_account_warning =>
+      'Ваш аккаунт и все данные будут удалены безвозвратно. Это действие нельзя отменить.';
+
+  @override
+  String get profile_delete_account_confirm => 'Удалить';
+
+  @override
   String get support_title => 'Служба поддержки';
 
   @override
@@ -1400,6 +1431,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get calc_calculate => 'Рассчитать';
 
   @override
+  String get calc_from_idea => 'Рассчитать объём по этой идее';
+
+  @override
   String get calc_help_pip_xau => 'XAU/USD: 1 lot ≈ \$10/pip';
 
   @override
@@ -1574,6 +1608,15 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get notif_events_desc => 'Push при добавлении нового события';
+
+  @override
+  String get notif_events_filter => 'Фильтр событий (сузьте при желании)';
+
+  @override
+  String get notif_events_filter_hint => 'Пусто — push по всем новым событиям';
+
+  @override
+  String get notif_events_type => 'Тип';
 
   @override
   String get notif_intel => 'Market Intel';

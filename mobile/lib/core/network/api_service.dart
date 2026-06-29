@@ -60,12 +60,26 @@ class ApiService {
   }
 
   // ─────────────── Auth ───────────────
-  Future<Map<String, dynamic>> register(String phone, String password) =>
-      _send('POST', '/auth/register', body: {'phone': phone, 'password': password});
+  Future<Map<String, dynamic>> register(String phone, String password, {String? country}) =>
+      _send('POST', '/auth/register', body: {
+        'phone': phone,
+        'password': password,
+        if (country != null && country.isNotEmpty) 'country': country,
+      });
   Future<Map<String, dynamic>> login(String phone, String password) =>
       _send('POST', '/auth/login', body: {'phone': phone, 'password': password});
   Future<Map<String, dynamic>> me() => _get('/auth/me');
   Future<void> updateMe(Map<String, dynamic> patch) => _send('PATCH', '/auth/me', body: patch);
+  Future<void> deleteAccount() => _send('DELETE', '/auth/me');
+
+  /// Қалалар autocomplete (теру → DB ұсынысы).
+  Future<List<String>> cities(String q) async {
+    final res = await _get('/cities', query: {'q': q});
+    return ((res['cities'] as List?) ?? const [])
+        .map((e) => ((e as Map)['name'] ?? '').toString())
+        .where((s) => s.isNotEmpty)
+        .toList();
+  }
 
   // ─────────────── Signals / Ideas ───────────────
   Future<List<dynamic>> signals() async => (await _get('/signals'))['signals'] as List;
@@ -173,6 +187,12 @@ class ApiService {
   /// Хабарлама санаттарының күйін backend-ке синхрондау (push таргеттеу үшін).
   Future<void> updateNotificationPrefs(Map<String, dynamic> body) =>
       _send('PATCH', '/notifications/prefs', body: body);
+
+  /// Ағымдағы хабарлама баптаулары (оқиға сүзгілерін оқу үшін).
+  Future<Map<String, dynamic>> notificationPrefs() async {
+    final res = await _get('/notifications/prefs');
+    return ((res['prefs'] as Map?) ?? const {}).cast<String, dynamic>();
+  }
 
   // ─────────────── Agreement ───────────────
   Future<void> acceptAgreement({String version = 'v1'}) =>

@@ -13,21 +13,47 @@ const ProviderCreate = z.object({
   trades_count: z.number().int().default(0),
 });
 
+/// Провайдерлердің ТІРІ статистикасы — нақты жабылған сигналдардан есептеледі
+/// (win_rate/avg_rr/trades_count статикалық емес: сигнал TP/SL-ге жабылғанда жаңарады).
+/// closed>0 болса есептелген мән қолданылады, әйтпесе кестедегі мән сақталады.
+async function liveProviderStats(): Promise<Record<string, { win_rate: number; avg_rr: number; trades_count: number }>> {
+  const { rows } = await query<{ provider_id: string; closed: string; wins: string; avg_rr: string }>(`
+    select provider_id,
+      count(*) filter (where status <> 'active')::text as closed,
+      count(*) filter (where status in ('closed_tp1','closed_tp2','closed_tp3'))::text as wins,
+      coalesce(avg(rr) filter (where status <> 'active'), 0)::text as avg_rr
+    from signals where provider_id is not null group by provider_id`);
+  const map: Record<string, { win_rate: number; avg_rr: number; trades_count: number }> = {};
+  for (const r of rows) {
+    const closed = Number(r.closed) || 0;
+    if (closed > 0) {
+      map[r.provider_id] = { win_rate: Number(r.wins) / closed, avg_rr: Number(r.avg_rr), trades_count: closed };
+    }
+  }
+  return map;
+}
+
+function applyStats(p: Record<string, unknown>, stat?: { win_rate: number; avg_rr: number; trades_count: number }) {
+  return stat ? { ...p, win_rate: stat.win_rate, avg_rr: stat.avg_rr, trades_count: stat.trades_count } : p;
+}
+
 export async function providersRoutes(app: FastifyInstance) {
-  // Барлық провайдерлер (рейтинг бойынша)
+  // Барлық провайдерлер (рейтинг бойынша) — статистика нақты жабылған сигналдардан.
   app.get('/providers', async () => {
-    const { rows } = await query(
+    const { rows } = await query<Record<string, unknown>>(
       `select * from signal_providers order by verified desc, rating desc, subscribers desc`,
     );
-    return { providers: rows };
+    const stats = await liveProviderStats();
+    return { providers: rows.map((p) => applyStats(p, stats[p.id as string])) };
   });
 
   app.get('/providers/:id', async (req, reply) => {
     const id = (req.params as { id: string }).id;
-    const { rows } = await query('select * from signal_providers where id = $1', [id]);
+    const { rows } = await query<Record<string, unknown>>('select * from signal_providers where id = $1', [id]);
     if (rows.length === 0) return reply.code(404).send({ error: 'not_found' });
+    const stats = await liveProviderStats();
     const ideas = await query('select * from signals where provider_id = $1 order by published_at desc limit 50', [id]);
-    return { provider: rows[0], ideas: ideas.rows };
+    return { provider: applyStats(rows[0], stats[id]), ideas: ideas.rows };
   });
 
   // Пайдаланушының подпискалары

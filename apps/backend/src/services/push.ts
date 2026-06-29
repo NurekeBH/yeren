@@ -88,6 +88,25 @@ export async function sendToCategory(column: string, payload: PushPayload): Prom
   await sendPushToTokens(rows.map((r) => r.token), payload);
 }
 
+/// Оқиға push-ы — қолданушының ДЕТАЛЬДІ сүзгілерін ескереді (events_on=жалпы қосқыш,
+/// ev_city/ev_free_only/ev_online_only/ev_type — қаласа тарылтады). Сүзгілер бос болса —
+/// барлық events_on қосулы қолданушыға барады (жалпы режим сақталады).
+export async function sendEventPush(
+  ev: { city: string; price: number; is_online: boolean; type: string },
+  payload: PushPayload,
+): Promise<void> {
+  const { rows } = await query<{ token: string }>(
+    `select expo_push_token as token from notification_prefs
+      where events_on = true and expo_push_token is not null and expo_push_token <> ''
+        and (coalesce(ev_city,'') = '' or lower(ev_city) = lower($1))
+        and (ev_free_only is not true or $2 = 0)
+        and (ev_online_only is not true or $3 = true)
+        and (coalesce(ev_type,'') = '' or ev_type = $4)`,
+    [ev.city, ev.price, ev.is_online, ev.type],
+  );
+  await sendPushToTokens(rows.map((r) => r.token), payload);
+}
+
 /// Бір қолданушыға push (баға дабылы сияқты дербес хабарлар).
 export async function sendToUser(userId: string, payload: PushPayload): Promise<void> {
   const { rows } = await query<{ token: string }>(

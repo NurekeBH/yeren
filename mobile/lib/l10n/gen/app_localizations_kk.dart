@@ -301,6 +301,27 @@ class AppLocalizationsKk extends AppLocalizations {
       'Мұнда іс-шаралар пайда болады: мастер-класс, вебинар және трейдинг бойынша live-сессиялар. Жақында!';
 
   @override
+  String get events_none_match => 'Сүзгіге сай іс-шара жоқ';
+
+  @override
+  String get events_filter_all => 'Барлығы';
+
+  @override
+  String get events_filter_online => 'Онлайн';
+
+  @override
+  String get events_filter_offline => 'Оффлайн';
+
+  @override
+  String get events_filter_free => 'Тегін';
+
+  @override
+  String get events_filter_paid => 'Ақылы';
+
+  @override
+  String get events_filter_city => 'Қала';
+
+  @override
   String get event_free => 'Тегін';
 
   @override
@@ -871,6 +892,16 @@ class AppLocalizationsKk extends AppLocalizations {
   String get profile_support => 'Қолдау / Әкімшілік';
 
   @override
+  String get profile_delete_account => 'Аккаунтты жою';
+
+  @override
+  String get profile_delete_account_warning =>
+      'Аккаунтыңыз бен барлық деректеріңіз біржола жойылады. Бұл әрекетті қайтару мүмкін емес.';
+
+  @override
+  String get profile_delete_account_confirm => 'Жою';
+
+  @override
   String get support_title => 'Қолдау қызметі';
 
   @override
@@ -1399,6 +1430,9 @@ class AppLocalizationsKk extends AppLocalizations {
   String get calc_calculate => 'Есептеу';
 
   @override
+  String get calc_from_idea => 'Осы идеядан лот есептеу';
+
+  @override
   String get calc_help_pip_xau => 'XAU/USD: 1 lot ≈ \$10/pip';
 
   @override
@@ -1573,6 +1607,16 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get notif_events_desc => 'Жаңа іс-шара қосылғанда push';
+
+  @override
+  String get notif_events_filter => 'Оқиға сүзгісі (қаласаңыз тарылтыңыз)';
+
+  @override
+  String get notif_events_filter_hint =>
+      'Бос болса — барлық жаңа оқиғаға push келеді';
+
+  @override
+  String get notif_events_type => 'Түрі';
 
   @override
   String get notif_intel => 'Market Intel';

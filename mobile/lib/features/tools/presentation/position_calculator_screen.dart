@@ -10,7 +10,20 @@ import '../../../shared/utils/formatters.dart';
 /// Mode 1: SL pip арқылы (қарапайым)
 /// Mode 2: Кіру + SL бағасы арқылы (нақты структура)
 class PositionCalculatorScreen extends StatefulWidget {
-  const PositionCalculatorScreen({super.key});
+  const PositionCalculatorScreen({
+    super.key,
+    this.entryFrom,
+    this.entryTo,
+    this.slPrice,
+    this.tpPrice,
+  });
+
+  /// Идеядан алдын-ала толтыру (сатып алынған сигнал → «Есептеу»).
+  /// Берілсе — деңгейлер автотолтырылады, қолданушы тек тәуекел сомасын енгізеді.
+  final double? entryFrom;
+  final double? entryTo;
+  final double? slPrice;
+  final double? tpPrice;
 
   @override
   State<PositionCalculatorScreen> createState() => _PositionCalculatorScreenState();
@@ -31,6 +44,22 @@ class _PositionCalculatorScreenState extends State<PositionCalculatorScreen> {
   final _pipValue = TextEditingController(text: '10');
 
   _Result? _result;
+
+  @override
+  void initState() {
+    super.initState();
+    // Идеядан келген деңгейлерді толтыру (бар болса). Локаль-тәуелсіз сан форматы.
+    String f(double? v) => (v == null || v <= 0) ? '' : v.toStringAsFixed(2);
+    if (widget.entryFrom != null) _entry.text = f(widget.entryFrom);
+    if (widget.entryTo != null && widget.entryTo != widget.entryFrom) _entryTo.text = f(widget.entryTo);
+    if (widget.slPrice != null) _slPrice.text = f(widget.slPrice);
+    if (widget.tpPrice != null) _tpPrice.text = f(widget.tpPrice);
+    // Деңгейлер келсе — бірден есептеп көрсетеміз (тәуекел сомасы әдепкі $50).
+    final prefilled = (widget.entryFrom ?? 0) > 0 && (widget.slPrice ?? 0) > 0;
+    if (prefilled) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _calc());
+    }
+  }
 
   @override
   void dispose() {

@@ -97,6 +97,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, s) => PasswordScreen(
           mode: s.uri.queryParameters['mode'] ?? 'register',
           phone: s.uri.queryParameters['phone'] ?? '',
+          country: s.uri.queryParameters['country'],
         ),
       ),
       GoRoute(path: '/auth/onboarding', builder: (_, _) => const OnboardingScreen()),

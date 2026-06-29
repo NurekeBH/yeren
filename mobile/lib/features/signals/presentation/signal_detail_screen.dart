@@ -9,7 +9,9 @@ import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/signal.dart';
 import '../../../shared/utils/formatters.dart';
+import '../../../shared/widgets/secure_screen.dart';
 import '../../alerts/presentation/create_alert_sheet.dart';
+import '../../tools/presentation/position_calculator_screen.dart';
 import '../application/my_signals_controller.dart';
 import '../application/signal_unlock_controller.dart';
 import '../application/signal_updates_controller.dart';
@@ -28,7 +30,9 @@ class SignalDetailScreen extends ConsumerWidget {
     final l = AppLocalizations.of(context);
     final async = ref.watch(signalByIdProvider(signalId));
 
-    return Scaffold(
+    // Идея деңгейлерін бөлісуден қорғау — скриншот/экран жазу бұғатталады.
+    return SecureScreen(
+      child: Scaffold(
       appBar: AppBar(),
       body: async.when(
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -37,6 +41,7 @@ class SignalDetailScreen extends ConsumerWidget {
           if (signal == null) return Center(child: Text(l.signals_empty));
           return _Body(signal: signal, l: l);
         },
+      ),
       ),
     );
   }
@@ -86,6 +91,25 @@ class _Body extends ConsumerWidget {
           // Сандық деңгейлер болса — кесте; жылдам идеяда деңгейлер мәтінде (analysis).
           if (signal.hasLevels) ...[
             _LevelsCard(signal: signal, l: l),
+            const SizedBox(height: 10),
+            // Осы идеяның деңгейлерінен лот есептеу — қолданушы тек тәуекел сомасын енгізеді.
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => PositionCalculatorScreen(
+                      entryFrom: signal.entryFrom,
+                      entryTo: signal.entryTo,
+                      slPrice: signal.sl,
+                      tpPrice: signal.tp1,
+                    ),
+                  ),
+                ),
+                icon: const Icon(Icons.calculate_outlined, size: 18),
+                label: Text(l.calc_from_idea),
+              ),
+            ),
             const SizedBox(height: 16),
           ],
           _AnalysisCard(signal: signal, l: l),

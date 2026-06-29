@@ -15,12 +15,14 @@ type Course = {
   sort_order: number;
   is_published: boolean;
   module_count: number;
+  lesson_count: number;
   kind: string | null; // 'video' | null (curriculum)
 };
 
 type VLesson = { title: string; video: string; text: string };
-type VModule = { title: string; lessons: VLesson[] };
-type VForm = {
+
+// Курс метадатасы (1-қадам: атау, subname опц., мұқаба, сипаттама опц.)
+type MetaForm = {
   id?: string;
   title: string;
   subtitle: string;
@@ -29,11 +31,13 @@ type VForm = {
   price_bonus: number;
   emoji: string;
   intro_video: string;
-  modules: VModule[];
   is_published: boolean;
 };
 
-const emptyForm = (): VForm => ({
+// Сабақтар панелі (2-қадам: тізімнен курсқа сабақ қосу)
+type LessonsPanel = { course: Course; lessons: VLesson[] };
+
+const emptyMeta = (): MetaForm => ({
   title: '',
   subtitle: '',
   description: '',
@@ -41,20 +45,30 @@ const emptyForm = (): VForm => ({
   price_bonus: 0,
   emoji: '🎬',
   intro_video: '',
-  modules: [{ title: '', lessons: [{ title: '', video: '', text: '' }] }],
   is_published: true,
 });
 
 const emptyLesson = (): VLesson => ({ title: '', video: '', text: '' });
-const emptyModule = (): VModule => ({ title: '', lessons: [emptyLesson()] });
-
 const LANGS: (keyof Loc)[] = ['ru', 'kk', 'en'];
+
+// content.modules → жалаң сабақ тізімі (модуль атаулары еленбейді — UI модульсіз).
+function flattenLessons(content: any): VLesson[] {
+  const mods = Array.isArray(content?.modules) ? content.modules : [];
+  const out: VLesson[] = [];
+  for (const m of mods) {
+    for (const ls of m?.lessons ?? []) {
+      out.push({ title: ls.title ?? '', video: ls.video ?? '', text: ls.text ?? '' });
+    }
+  }
+  return out;
+}
 
 export default function CoursesPage() {
   const [items, setItems] = useState<Course[]>([]);
   const [err, setErr] = useState('');
-  const [form, setForm] = useState<VForm | null>(null);
+  const [form, setForm] = useState<MetaForm | null>(null); // видео-курс метадатасы
   const [meta, setMeta] = useState<Course | null>(null); // curriculum курс метадатасы (3-тіл)
+  const [lessons, setLessons] = useState<LessonsPanel | null>(null); // сабақтар редакторы
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
 
@@ -86,9 +100,9 @@ export default function CoursesPage() {
     load();
   }, []);
 
+  // Курс метадатасын өңдеуге ашу (видео-курс). Curriculum болса — 3-тіл метадата панелі.
   async function editCourse(c: Course) {
     setErr('');
-    // Curriculum курс (КОД РЫНКА) — контентін бұзбау үшін тек метадата (3-тіл) өңделеді.
     if (c.kind !== 'video') {
       setMeta(c);
       return;
@@ -106,15 +120,6 @@ export default function CoursesPage() {
         price_bonus: co.price_bonus ?? 0,
         emoji: co.emoji ?? '🎬',
         intro_video: content.intro_video ?? '',
-        modules:
-          Array.isArray(content.modules) && content.kind === 'video'
-            ? content.modules.map((m: any) => ({
-                title: m.title ?? '',
-                lessons: Array.isArray(m.lessons)
-                  ? m.lessons.map((ls: any) => ({ title: ls.title ?? '', video: ls.video ?? '', text: ls.text ?? '' }))
-                  : [emptyLesson()],
-              }))
-            : [emptyModule()],
         is_published: co.is_published,
       });
     } catch (e: any) {
@@ -122,13 +127,46 @@ export default function CoursesPage() {
     }
   }
 
-  async function save() {
+  // 1-қадам: курс метадатасын сақтау. Жаңа курс болса → бірден сабақтар панелін ашамыз.
+  async function saveCourse() {
     if (!form) return;
     setBusy(true);
     setErr('');
+    const isNew = !form.id;
     try {
-      await api('/admin/courses', { method: 'POST', body: form });
+      const r = await api<{ id: string }>('/admin/courses', { method: 'POST', body: form });
       setForm(null);
+      await load();
+      if (isNew && r?.id) await openLessons(r.id);
+    } catch (e: any) {
+      setErr(e.message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  // 2-қадам: курстың сабақтарын ашу (id бойынша).
+  async function openLessons(id: string) {
+    setErr('');
+    try {
+      const r = await api<{ course: any }>(`/admin/courses/${id}`);
+      const co = r.course;
+      setLessons({
+        course: { ...co, title: co.title, kind: co.content?.kind ?? null } as Course,
+        lessons: flattenLessons(co.content),
+      });
+    } catch (e: any) {
+      setErr(e.message);
+    }
+  }
+
+  async function saveLessons() {
+    if (!lessons) return;
+    setBusy(true);
+    setErr('');
+    try {
+      await api(`/admin/courses/${lessons.course.id}/lessons`, { method: 'PUT', body: { lessons: lessons.lessons } });
+      setLessons(null);
       await load();
     } catch (e: any) {
       setErr(e.message);
@@ -170,62 +208,56 @@ export default function CoursesPage() {
     }
   }
 
-  const set = (patch: Partial<VForm>) => setForm((f) => (f ? { ...f, ...patch } : f));
-  const setModule = (i: number, patch: Partial<VModule>) =>
-    setForm((f) => (f ? { ...f, modules: f.modules.map((m, j) => (j === i ? { ...m, ...patch } : m)) } : f));
-  const setLesson = (mi: number, li: number, patch: Partial<VLesson>) =>
-    setForm((f) =>
-      f
-        ? {
-            ...f,
-            modules: f.modules.map((m, j) =>
-              j === mi ? { ...m, lessons: m.lessons.map((ls, k) => (k === li ? { ...ls, ...patch } : ls)) } : m,
-            ),
-          }
-        : f,
-    );
+  const set = (patch: Partial<MetaForm>) => setForm((f) => (f ? { ...f, ...patch } : f));
+  const setLesson = (li: number, patch: Partial<VLesson>) =>
+    setLessons((p) => (p ? { ...p, lessons: p.lessons.map((ls, k) => (k === li ? { ...ls, ...patch } : ls)) } : p));
 
   return (
     <div>
       <div className="row" style={{ alignItems: 'center', justifyContent: 'space-between' }}>
         <h1>Курсы</h1>
-        <button className="green" onClick={() => setForm(emptyForm())}>
+        <button className="green" onClick={() => setForm(emptyMeta())}>
           + Добавить курс
         </button>
       </div>
-      <p className="muted">Видео-курсы: обложка, модули с видео и текстом, бесплатное вступительное видео. Пользователи покупают/смотрят в приложении.</p>
+      <p className="muted">
+        Шаг 1 — создайте курс (название, обложка, описание). Шаг 2 — в списке нажмите «Уроки» и добавьте уроки. Один курс — много уроков.
+      </p>
       {err && <div className="err">{err}</div>}
 
+      {/* ── 1-ҚАДАМ: курс метадатасы ── */}
       {form && (
         <div className="card" style={{ borderColor: 'var(--accent)' }}>
-          <h2 style={{ marginTop: 0 }}>{form.id ? 'Редактировать курс' : 'Новый видео-курс'}</h2>
+          <h2 style={{ marginTop: 0 }}>{form.id ? 'Редактировать курс' : 'Новый курс'}</h2>
           <div className="grid2">
             <label>
               Название курса
-              <input value={form.title} onChange={(e) => set({ title: e.target.value })} />
+              <input value={form.title} onChange={(e) => set({ title: e.target.value })} placeholder="напр. Основы XAU/USD" />
             </label>
             <label>
-              Подзаголовок
-              <input value={form.subtitle} onChange={(e) => set({ subtitle: e.target.value })} />
+              Подзаголовок <span className="muted" style={{ fontSize: 12 }}>(необязательно)</span>
+              <input value={form.subtitle} onChange={(e) => set({ subtitle: e.target.value })} placeholder="короткий слоган" />
             </label>
           </div>
           <label>
-            Описание
+            Описание <span className="muted" style={{ fontSize: 12 }}>(необязательно)</span>
             <textarea rows={2} value={form.description} onChange={(e) => set({ description: e.target.value })} />
           </label>
           <div className="grid2">
             <label>
-              Обложка курса (фото, необяз.)
+              Обложка курса (фото)
               <input type="file" accept="image/*" onChange={onCoverFile} disabled={uploading} />
               {uploading && <span className="muted"> загрузка…</span>}
+              <span className="muted" style={{ fontSize: 12, display: 'block', marginTop: 4 }}>
+                Рекомендуемый размер: 1200×675 px (16:9), до 5 МБ. Пусто → превью intro-видео.
+              </span>
               {form.cover_url && (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={form.cover_url} alt="" style={{ display: 'block', maxWidth: 200, borderRadius: 8, marginTop: 8 }} />
+                <img src={form.cover_url} alt="" style={{ display: 'block', maxWidth: 240, borderRadius: 8, marginTop: 8 }} />
               )}
-              <span className="muted" style={{ fontSize: 12 }}>Пусто → превью intro-видео</span>
             </label>
             <label>
-              Бесплатное вступительное видео (URL)
+              Бесплатное вступительное видео (URL, необяз.)
               <input value={form.intro_video} onChange={(e) => set({ intro_video: e.target.value })} placeholder="https://youtube.com/watch?v=…" />
             </label>
             <label>
@@ -238,61 +270,14 @@ export default function CoursesPage() {
             </label>
           </div>
 
-          <h3>Модули и уроки</h3>
-          {form.modules.map((m, mi) => (
-            <div key={mi} className="card" style={{ background: 'var(--bg)' }}>
-              <div className="row" style={{ justifyContent: 'space-between', alignItems: 'center' }}>
-                <strong>📦 Модуль {mi + 1}</strong>
-                <button className="danger" style={{ padding: '4px 8px' }} onClick={() => set({ modules: form.modules.filter((_, j) => j !== mi) })}>
-                  ✕ модуль
-                </button>
-              </div>
-              <label>
-                Название модуля
-                <input value={m.title} onChange={(e) => setModule(mi, { title: e.target.value })} placeholder="Напр. Основы анализа" />
-              </label>
-
-              <div style={{ marginLeft: 10, borderLeft: '3px solid var(--accent)', paddingLeft: 12, marginTop: 8 }}>
-                {m.lessons.map((ls, li) => (
-                  <div key={li} className="card" style={{ background: '#fff' }}>
-                    <div className="row" style={{ justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span className="muted">▶️ Урок {li + 1}</span>
-                      <button className="danger" style={{ padding: '2px 8px' }} onClick={() => setModule(mi, { lessons: m.lessons.filter((_, k) => k !== li) })}>
-                        ✕
-                      </button>
-                    </div>
-                    <label>
-                      Название урока
-                      <input value={ls.title} onChange={(e) => setLesson(mi, li, { title: e.target.value })} />
-                    </label>
-                    <label>
-                      Ссылка на видео
-                      <input value={ls.video} onChange={(e) => setLesson(mi, li, { video: e.target.value })} placeholder="https://youtube.com/watch?v=…" />
-                    </label>
-                    <label>
-                      Текст урока
-                      <textarea rows={2} value={ls.text} onChange={(e) => setLesson(mi, li, { text: e.target.value })} />
-                    </label>
-                  </div>
-                ))}
-                <button className="ghost" style={{ padding: '4px 10px' }} onClick={() => setModule(mi, { lessons: [...m.lessons, emptyLesson()] })}>
-                  + Урок
-                </button>
-              </div>
-            </div>
-          ))}
-          <button className="ghost" onClick={() => set({ modules: [...form.modules, emptyModule()] })}>
-            + Добавить модуль
-          </button>
-
           <label className="row" style={{ alignItems: 'center', gap: 8, marginTop: 14 }}>
             <input type="checkbox" checked={form.is_published} onChange={(e) => set({ is_published: e.target.checked })} style={{ width: 'auto' }} />
             Опубликован (виден в приложении)
           </label>
 
           <div className="row" style={{ marginTop: 14 }}>
-            <button onClick={save} disabled={busy}>
-              {busy ? 'Сохраняю…' : 'Сохранить курс'}
+            <button onClick={saveCourse} disabled={busy}>
+              {busy ? 'Сохраняю…' : form.id ? 'Сохранить' : 'Создать курс и добавить уроки →'}
             </button>
             <button className="ghost" onClick={() => setForm(null)}>
               Отмена
@@ -301,6 +286,58 @@ export default function CoursesPage() {
         </div>
       )}
 
+      {/* ── 2-ҚАДАМ: сабақтар редакторы ── */}
+      {lessons && (
+        <div className="card" style={{ borderColor: 'var(--accent)' }}>
+          <h2 style={{ marginTop: 0 }}>
+            Уроки · {lessons.course.emoji} {lessons.course.title?.ru || lessons.course.id}
+          </h2>
+          <p className="muted" style={{ marginTop: 0 }}>Один курс — несколько уроков. Каждый урок: название, видео, текст.</p>
+
+          {lessons.lessons.map((ls, li) => (
+            <div key={li} className="card" style={{ background: 'var(--bg)' }}>
+              <div className="row" style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+                <span className="muted">▶️ Урок {li + 1}</span>
+                <button
+                  className="danger"
+                  style={{ padding: '2px 8px' }}
+                  onClick={() => setLessons((p) => (p ? { ...p, lessons: p.lessons.filter((_, k) => k !== li) } : p))}
+                >
+                  ✕
+                </button>
+              </div>
+              <label>
+                Название урока
+                <input value={ls.title} onChange={(e) => setLesson(li, { title: e.target.value })} />
+              </label>
+              <label>
+                Ссылка на видео
+                <input value={ls.video} onChange={(e) => setLesson(li, { video: e.target.value })} placeholder="https://youtube.com/watch?v=…" />
+              </label>
+              <label>
+                Текст урока
+                <textarea rows={2} value={ls.text} onChange={(e) => setLesson(li, { text: e.target.value })} />
+              </label>
+            </div>
+          ))}
+          {lessons.lessons.length === 0 && <p className="muted">Пока нет уроков. Нажмите «+ Добавить урок».</p>}
+
+          <button className="ghost" onClick={() => setLessons((p) => (p ? { ...p, lessons: [...p.lessons, emptyLesson()] } : p))}>
+            + Добавить урок
+          </button>
+
+          <div className="row" style={{ marginTop: 14 }}>
+            <button onClick={saveLessons} disabled={busy}>
+              {busy ? 'Сохраняю…' : 'Сохранить уроки'}
+            </button>
+            <button className="ghost" onClick={() => setLessons(null)}>
+              Закрыть
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ── Curriculum (КОД РЫНКА) метадатасы (3-тіл) ── */}
       {meta && (
         <div className="card" style={{ borderColor: 'var(--accent)' }}>
           <h2 style={{ marginTop: 0 }}>Курс (метаданные) · {meta.id}</h2>
@@ -346,7 +383,7 @@ export default function CoursesPage() {
               <th>#</th>
               <th>Курс</th>
               <th>Тип</th>
-              <th>Модулей</th>
+              <th>Уроков</th>
               <th>Цена</th>
               <th>Статус</th>
               <th></th>
@@ -360,7 +397,7 @@ export default function CoursesPage() {
                   {c.emoji} {c.title?.ru || c.id}
                 </td>
                 <td className="muted">{c.kind === 'video' ? '🎬 видео' : '📚 курс'}</td>
-                <td>{c.module_count}</td>
+                <td>{c.kind === 'video' ? c.lesson_count : c.module_count}</td>
                 <td>{c.price_bonus > 0 ? `${c.price_bonus} ₸` : 'free'}</td>
                 <td>
                   <button
@@ -372,9 +409,16 @@ export default function CoursesPage() {
                   </button>
                 </td>
                 <td>
-                  <button className="ghost" style={{ padding: '4px 10px' }} onClick={() => editCourse(c)}>
-                    ✎ Изменить
-                  </button>
+                  <div className="row" style={{ gap: 6 }}>
+                    {c.kind === 'video' && (
+                      <button className="ghost" style={{ padding: '4px 10px' }} onClick={() => openLessons(c.id)}>
+                        ▶️ Уроки
+                      </button>
+                    )}
+                    <button className="ghost" style={{ padding: '4px 10px' }} onClick={() => editCourse(c)}>
+                      ✎ Изменить
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

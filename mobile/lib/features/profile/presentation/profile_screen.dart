@@ -204,6 +204,13 @@ class ProfileScreen extends ConsumerWidget {
               if (context.mounted) context.go('/home');
             },
           ),
+          // Аккаунтты жою (Apple App Store талабы — қосымшаішілік жою).
+          _MenuItem(
+            icon: Icons.delete_forever_outlined,
+            label: l.profile_delete_account,
+            danger: true,
+            onTap: () => _confirmDeleteAccount(context, ref, l),
+          ),
         ],
         ),
       ),
@@ -212,22 +219,47 @@ class ProfileScreen extends ConsumerWidget {
 }
 
 class _MenuItem extends StatelessWidget {
-  const _MenuItem({required this.icon, required this.label, this.onTap});
+  const _MenuItem({required this.icon, required this.label, this.onTap, this.danger = false});
 
   final IconData icon;
   final String label;
   final VoidCallback? onTap;
+  final bool danger;
 
   @override
   Widget build(BuildContext context) {
+    final color = danger ? AppColors.lossRed : AppColors.gold;
     return Card(
       child: ListTile(
-        leading: Icon(icon, color: AppColors.gold),
-        title: Text(label, style: AppTypography.bodyMedium()),
+        leading: Icon(icon, color: color),
+        title: Text(label, style: danger ? AppTypography.bodyMedium(color: AppColors.lossRed) : AppTypography.bodyMedium()),
         trailing: const Icon(Icons.chevron_right, color: AppColors.textMuted),
         onTap: onTap,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
     );
   }
+}
+
+/// Аккаунтты жою растауы — қайтарымсыз әрекет.
+Future<void> _confirmDeleteAccount(BuildContext context, WidgetRef ref, AppLocalizations l) async {
+  final ok = await showDialog<bool>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: Text(l.profile_delete_account),
+      content: Text(l.profile_delete_account_warning),
+      actions: [
+        TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l.common_cancel)),
+        TextButton(
+          onPressed: () => Navigator.of(ctx).pop(true),
+          child: Text(l.profile_delete_account_confirm, style: const TextStyle(color: AppColors.lossRed)),
+        ),
+      ],
+    ),
+  );
+  if (ok != true) return;
+  try {
+    await ref.read(authControllerProvider.notifier).deleteAccount();
+  } catch (_) {/* best-effort — локалдан шығып кетеміз */}
+  if (context.mounted) context.go('/home');
 }

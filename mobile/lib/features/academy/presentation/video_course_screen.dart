@@ -7,6 +7,7 @@ import '../../../core/network/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
+import '../../../shared/widgets/secure_screen.dart';
 import '../../profile/application/profile_controller.dart';
 import '../../profile/presentation/top_up_bonus_sheet.dart';
 import '../data/courses_repository.dart';
@@ -62,11 +63,14 @@ class _VideoCourseScreenState extends ConsumerState<VideoCourseScreen> {
     final l = AppLocalizations.of(context);
     final async = ref.watch(videoCourseByIdProvider(widget.courseId));
     final course = async.valueOrNull;
-    return Scaffold(
-      appBar: AppBar(title: Text(course?.title ?? '')),
-      body: course == null
-          ? Center(child: async.isLoading ? const CircularProgressIndicator() : Text(l.common_error))
-          : _body(course, l),
+    // Ақылы курс мазмұнын экран жазудан/скриншоттан қорғау.
+    return SecureScreen(
+      child: Scaffold(
+        appBar: AppBar(title: Text(course?.title ?? '')),
+        body: course == null
+            ? Center(child: async.isLoading ? const CircularProgressIndicator() : Text(l.common_error))
+            : _body(course, l),
+      ),
     );
   }
 
@@ -122,40 +126,58 @@ class _VideoCourseScreenState extends ConsumerState<VideoCourseScreen> {
           ),
         const SizedBox(height: 16),
 
-        Text(l.course_modules_count(c.modules.length), style: AppTypography.h2()),
-        const SizedBox(height: 10),
-        for (var mi = 0; mi < c.modules.length; mi++) ...[
-          Padding(
-            padding: const EdgeInsets.only(top: 8, bottom: 8),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  decoration: BoxDecoration(color: AppColors.gold.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(6)),
-                  child: Text('M${mi + 1}',
-                      style: AppTypography.label(color: AppColors.gold).copyWith(fontWeight: FontWeight.w800)),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    c.modules[mi].title.isEmpty ? '—' : c.modules[mi].title,
-                    style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w800),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          for (final lesson in c.modules[mi].lessons)
+        // Жалаң курс (модульсіз): бір атаусыз модуль → модуль тақырыбын көрсетпей,
+        // тек сабақтарды тегіс тізіммен береміз. Әйтпесе модуль секциялары (M1, M2…).
+        if (_isFlat(c)) ...[
+          Text(l.course_lessons_count(c.lessonCount), style: AppTypography.h2()),
+          const SizedBox(height: 10),
+          for (final lesson in c.allLessons)
             _LessonTile(
               lesson: lesson,
               unlocked: unlocked,
               onPlay: () => _ensurePlayer(lesson.videoId),
               onBuy: () => _buy(c, l),
             ),
+        ] else ...[
+          Text(l.course_modules_count(c.modules.length), style: AppTypography.h2()),
+          const SizedBox(height: 10),
+          for (var mi = 0; mi < c.modules.length; mi++) ...[
+            Padding(
+              padding: const EdgeInsets.only(top: 8, bottom: 8),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(color: AppColors.gold.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(6)),
+                    child: Text('M${mi + 1}',
+                        style: AppTypography.label(color: AppColors.gold).copyWith(fontWeight: FontWeight.w800)),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      c.modules[mi].title.isEmpty ? '—' : c.modules[mi].title,
+                      style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w800),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            for (final lesson in c.modules[mi].lessons)
+              _LessonTile(
+                lesson: lesson,
+                unlocked: unlocked,
+                onPlay: () => _ensurePlayer(lesson.videoId),
+                onBuy: () => _buy(c, l),
+              ),
+          ],
         ],
       ],
     );
   }
+
+  /// Жалаң курс: модуль жоқ немесе жалғыз атаусыз модуль (90% курс осылай).
+  bool _isFlat(VideoCourse c) =>
+      c.modules.length <= 1 && (c.modules.isEmpty || c.modules.first.title.trim().isEmpty);
 }
 
 class _LessonTile extends StatelessWidget {

@@ -302,6 +302,27 @@ class AppLocalizationsEn extends AppLocalizations {
       'Trading events — masterclasses, webinars and live sessions — will appear here. Coming soon!';
 
   @override
+  String get events_none_match => 'No events match the filter';
+
+  @override
+  String get events_filter_all => 'All';
+
+  @override
+  String get events_filter_online => 'Online';
+
+  @override
+  String get events_filter_offline => 'Offline';
+
+  @override
+  String get events_filter_free => 'Free';
+
+  @override
+  String get events_filter_paid => 'Paid';
+
+  @override
+  String get events_filter_city => 'City';
+
+  @override
   String get event_free => 'Free';
 
   @override
@@ -870,6 +891,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profile_support => 'Support / Admin';
 
   @override
+  String get profile_delete_account => 'Delete account';
+
+  @override
+  String get profile_delete_account_warning =>
+      'Your account and all data will be permanently deleted. This action cannot be undone.';
+
+  @override
+  String get profile_delete_account_confirm => 'Delete';
+
+  @override
   String get support_title => 'Support';
 
   @override
@@ -1398,6 +1429,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get calc_calculate => 'Calculate';
 
   @override
+  String get calc_from_idea => 'Calculate lot from this idea';
+
+  @override
   String get calc_help_pip_xau => 'XAU/USD: 1 lot ≈ \$10/pip';
 
   @override
@@ -1572,6 +1606,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notif_events_desc => 'Push when a new event is added';
+
+  @override
+  String get notif_events_filter => 'Event filter (narrow if you wish)';
+
+  @override
+  String get notif_events_filter_hint => 'Empty — push for all new events';
+
+  @override
+  String get notif_events_type => 'Type';
 
   @override
   String get notif_intel => 'Market Intel';

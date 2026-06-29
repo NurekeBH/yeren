@@ -39,7 +39,9 @@ class _PhoneScreenState extends ConsumerState<PhoneScreen> {
     // Толық нөмір: +<елдік код><жергілікті нөмір> (алдыңғы 0 алынады).
     final local = _controller.text.replaceAll(RegExp(r'\D'), '').replaceFirst(RegExp(r'^0+'), '');
     final phone = '+${_country.dial}$local';
-    context.push('/auth/password?mode=${widget.mode}&phone=${Uri.encodeComponent(phone)}');
+    context.push(
+      '/auth/password?mode=${widget.mode}&phone=${Uri.encodeComponent(phone)}&country=${_country.iso}',
+    );
   }
 
   @override

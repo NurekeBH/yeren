@@ -32,13 +32,17 @@ export async function coursesRoutes(app: FastifyInstance) {
     return { courses: rows };
   });
 
-  // ── Админ: курстар тізімі (метадата + kind + модуль саны) ──
+  // ── Админ: курстар тізімі (метадата + kind + модуль/сабақ саны) ──
   app.get('/admin/courses', { onRequest: [app.requireAdmin] }, async () => {
     const { rows } = await query(
       `select id, title, subtitle, description, price_bonus, emoji, accent, cover_url, sort_order, is_published,
               content ->> 'kind' as kind,
               coalesce(jsonb_array_length(content -> 'ru' -> 'modules'),
                        jsonb_array_length(content -> 'modules'), 0) as module_count,
+              case when jsonb_typeof(content -> 'modules') = 'array'
+                   then coalesce((select sum(jsonb_array_length(m -> 'lessons'))::int
+                                    from jsonb_array_elements(content -> 'modules') m), 0)
+                   else 0 end as lesson_count,
               created_at, updated_at
          from course_catalog order by sort_order`,
     );
@@ -56,8 +60,10 @@ export async function coursesRoutes(app: FastifyInstance) {
     return { course: rows[0] };
   });
 
-  // ── Админ: видео-курс құру/жаңарту (upsert by id) ──
-  const VideoCourse = z.object({
+  // ── Админ: видео-курс МЕТАДАТАСЫ (құру/жаңарту). Сабақтар бөлек (PUT .../lessons). ──
+  // Екі қадам: (1) курс құру/өңдеу (атау, subname опц., мұқаба, сипаттама опц.),
+  //            (2) тізімнен сол курсқа сабақ қосу. Бір курс — көп сабақ (модульсіз).
+  const VideoMeta = z.object({
     id: z.string().optional(),
     title: z.string().min(1),
     subtitle: z.string().optional().default(''),
@@ -66,44 +72,73 @@ export async function coursesRoutes(app: FastifyInstance) {
     price_bonus: z.number().int().min(0).default(0),
     emoji: z.string().optional().default('🎬'),
     intro_video: z.string().nullish(),
-    // Модуль → сабақтар (әр сабақ: атау + видео + текст).
-    modules: z
-      .array(
-        z.object({
-          title: z.string().default(''),
-          lessons: z
-            .array(
-              z.object({
-                title: z.string().default(''),
-                video: z.string().optional().default(''),
-                text: z.string().optional().default(''),
-              }),
-            )
-            .default([]),
-        }),
-      )
-      .default([]),
     is_published: z.boolean().default(true),
   });
 
   app.post('/admin/courses', { onRequest: [app.requireAdmin] }, async (req, reply) => {
-    const parsed = VideoCourse.safeParse(req.body);
+    const parsed = VideoMeta.safeParse(req.body);
     if (!parsed.success) return reply.code(400).send({ error: 'bad_request', issues: parsed.error.issues });
     const d = parsed.data;
-    const id = d.id || `vc-${Date.now()}`;
     const wrap = (s?: string) => JSON.stringify(s ? { ru: s } : {});
-    const content = { kind: 'video', intro_video: d.intro_video ?? null, modules: d.modules };
+    const intro = JSON.stringify(d.intro_video ?? null);
+
+    if (d.id) {
+      // Бар курс — тек метадата жаңарту; сабақтар (content.modules) ӨЗГЕРМЕЙДІ, intro ғана мерж.
+      const { rows } = await query<{ id: string }>(
+        `update course_catalog set
+            title=$2, subtitle=$3, description=$4, price_bonus=$5, emoji=$6, cover_url=$7, is_published=$8,
+            content = jsonb_set(coalesce(content, '{"kind":"video","modules":[]}'::jsonb), '{intro_video}', $9::jsonb, true),
+            updated_at = now()
+          where id=$1 returning id`,
+        [d.id, wrap(d.title), wrap(d.subtitle), wrap(d.description), d.price_bonus, d.emoji, d.cover_url ?? null,
+         d.is_published, intro],
+      );
+      if (!rows[0]) return reply.code(404).send({ error: 'not_found' });
+      return { id: rows[0].id };
+    }
+
+    // Жаңа курс — бос сабақ тізімімен (сабақтар кейін қосылады).
+    const id = `vc-${Date.now()}`;
+    const content = { kind: 'video', intro_video: d.intro_video ?? null, modules: [{ title: '', lessons: [] }] };
     const { rows } = await query<{ id: string }>(
       `insert into course_catalog (id, title, subtitle, description, price_bonus, emoji, cover_url, content, is_published)
-       values ($1,$2,$3,$4,$5,$6,$7,$8,$9)
-       on conflict (id) do update set
-          title = excluded.title, subtitle = excluded.subtitle, description = excluded.description,
-          price_bonus = excluded.price_bonus, emoji = excluded.emoji, cover_url = excluded.cover_url,
-          content = excluded.content, is_published = excluded.is_published, updated_at = now()
-       returning id`,
+       values ($1,$2,$3,$4,$5,$6,$7,$8,$9) returning id`,
       [id, wrap(d.title), wrap(d.subtitle), wrap(d.description), d.price_bonus, d.emoji, d.cover_url ?? null,
        JSON.stringify(content), d.is_published],
     );
+    return { id: rows[0].id };
+  });
+
+  // ── Админ: курстың САБАҚТАРЫН орнату (жалаң тізім — бір атаусыз модульде сақталады) ──
+  const LessonsBody = z.object({
+    lessons: z
+      .array(
+        z.object({
+          title: z.string().default(''),
+          video: z.string().optional().default(''),
+          text: z.string().optional().default(''),
+        }),
+      )
+      .default([]),
+  });
+
+  app.put('/admin/courses/:id/lessons', { onRequest: [app.requireAdmin] }, async (req, reply) => {
+    const id = (req.params as { id: string }).id;
+    const parsed = LessonsBody.safeParse(req.body);
+    if (!parsed.success) return reply.code(400).send({ error: 'bad_request', issues: parsed.error.issues });
+    const modules = JSON.stringify([{ title: '', lessons: parsed.data.lessons }]);
+    // kind='video' + бар intro_video сақталады; modules ауыстырылады.
+    const { rows } = await query<{ id: string }>(
+      `update course_catalog set
+          content = jsonb_build_object(
+            'kind', 'video',
+            'intro_video', coalesce(content -> 'intro_video', 'null'::jsonb),
+            'modules', $2::jsonb),
+          updated_at = now()
+        where id=$1 returning id`,
+      [id, modules],
+    );
+    if (!rows[0]) return reply.code(404).send({ error: 'not_found' });
     return { id: rows[0].id };
   });
 
@@ -134,6 +169,88 @@ export async function coursesRoutes(app: FastifyInstance) {
   // ── Админ: курсты жою ──
   app.delete('/admin/courses/:id', { onRequest: [app.requireAdmin] }, async (req) => {
     await query('delete from course_catalog where id = $1', [(req.params as { id: string }).id]);
+    return { ok: true };
+  });
+
+  // ════════════ ПРОВАЙДЕР ПАНЕЛІ (расталған трейдер — тек ӨЗ курстары) ════════════
+  // Провайдер курс құрады → is_published=false (админ жариялағанша app-та көрінбейді).
+  const ownerGuard = async (id: string, userId: string): Promise<boolean> => {
+    const { rows } = await query<{ owner_id: string | null }>('select owner_id from course_catalog where id = $1', [id]);
+    return rows[0]?.owner_id === userId;
+  };
+
+  app.get('/provider/courses', { onRequest: [app.requireTrader] }, async (req) => {
+    const { rows } = await query(
+      `select c.id, c.title, c.subtitle, c.description, c.price_bonus, c.emoji, c.cover_url, c.is_published,
+              c.content ->> 'kind' as kind,
+              case when jsonb_typeof(c.content -> 'modules') = 'array'
+                   then coalesce((select sum(jsonb_array_length(m -> 'lessons'))::int
+                                    from jsonb_array_elements(c.content -> 'modules') m), 0)
+                   else 0 end as lesson_count,
+              (select count(*) from course_purchases p where p.course_id = c.id)::int as buyers,
+              (select coalesce(sum(p.bonus_used),0) from course_purchases p where p.course_id = c.id)::int as revenue
+         from course_catalog c where c.owner_id = $1 order by c.created_at desc`,
+      [req.userId],
+    );
+    return { courses: rows };
+  });
+
+  app.get('/provider/courses/:id', { onRequest: [app.requireTrader] }, async (req, reply) => {
+    const id = (req.params as { id: string }).id;
+    if (!(await ownerGuard(id, req.userId!))) return reply.code(403).send({ error: 'not_owner' });
+    const { rows } = await query(
+      'select id, title, subtitle, description, price_bonus, emoji, cover_url, is_published, content from course_catalog where id = $1',
+      [id],
+    );
+    return { course: rows[0] };
+  });
+
+  app.post('/provider/courses', { onRequest: [app.requireTrader] }, async (req, reply) => {
+    const parsed = VideoMeta.safeParse(req.body);
+    if (!parsed.success) return reply.code(400).send({ error: 'bad_request', issues: parsed.error.issues });
+    const d = parsed.data;
+    const wrap = (s?: string) => JSON.stringify(s ? { ru: s } : {});
+    const intro = JSON.stringify(d.intro_video ?? null);
+
+    if (d.id) {
+      if (!(await ownerGuard(d.id, req.userId!))) return reply.code(403).send({ error: 'not_owner' });
+      // Провайдер метадатаны жаңартады; жариялау (is_published) — АДМИН құзыреті, қозғамаймыз.
+      const { rows } = await query<{ id: string }>(
+        `update course_catalog set
+            title=$2, subtitle=$3, description=$4, price_bonus=$5, emoji=$6, cover_url=$7,
+            content = jsonb_set(coalesce(content, '{"kind":"video","modules":[]}'::jsonb), '{intro_video}', $8::jsonb, true),
+            updated_at = now()
+          where id=$1 and owner_id=$9 returning id`,
+        [d.id, wrap(d.title), wrap(d.subtitle), wrap(d.description), d.price_bonus, d.emoji, d.cover_url ?? null, intro, req.userId],
+      );
+      if (!rows[0]) return reply.code(404).send({ error: 'not_found' });
+      return { id: rows[0].id };
+    }
+
+    // Жаңа курс — иесі провайдер, is_published=false (админ растағанша app-та жоқ).
+    const id = `vc-${Date.now()}`;
+    const content = { kind: 'video', intro_video: d.intro_video ?? null, modules: [{ title: '', lessons: [] }] };
+    const { rows } = await query<{ id: string }>(
+      `insert into course_catalog (id, title, subtitle, description, price_bonus, emoji, cover_url, content, is_published, owner_id)
+       values ($1,$2,$3,$4,$5,$6,$7,$8,false,$9) returning id`,
+      [id, wrap(d.title), wrap(d.subtitle), wrap(d.description), d.price_bonus, d.emoji, d.cover_url ?? null, JSON.stringify(content), req.userId],
+    );
+    return { id: rows[0].id, pending: true };
+  });
+
+  app.put('/provider/courses/:id/lessons', { onRequest: [app.requireTrader] }, async (req, reply) => {
+    const id = (req.params as { id: string }).id;
+    if (!(await ownerGuard(id, req.userId!))) return reply.code(403).send({ error: 'not_owner' });
+    const parsed = LessonsBody.safeParse(req.body);
+    if (!parsed.success) return reply.code(400).send({ error: 'bad_request', issues: parsed.error.issues });
+    const modules = JSON.stringify([{ title: '', lessons: parsed.data.lessons }]);
+    await query(
+      `update course_catalog set
+          content = jsonb_build_object('kind','video','intro_video', coalesce(content -> 'intro_video','null'::jsonb), 'modules', $2::jsonb),
+          updated_at = now()
+        where id=$1 and owner_id=$3`,
+      [id, modules, req.userId],
+    );
     return { ok: true };
   });
 

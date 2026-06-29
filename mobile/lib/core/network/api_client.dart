@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../features/auth/application/auth_controller.dart';
 import '../config/app_config.dart';
 import '../storage/secure_storage.dart';
 
@@ -31,6 +32,14 @@ final apiClientProvider = Provider<Dio>((ref) {
           options.headers['Authorization'] = 'Bearer $token';
         }
         handler.next(options);
+      },
+      // 401 кез келген сұраудан келсе (токен жоқ/ескірген) — сессияны тазалап,
+      // login ағынына шығарамыз. validateStatus<500 болғандықтан 401 — onResponse-та.
+      onResponse: (response, handler) {
+        if (response.statusCode == 401) {
+          Future.microtask(() => ref.read(authControllerProvider.notifier).handleUnauthorized());
+        }
+        handler.next(response);
       },
     ),
   );

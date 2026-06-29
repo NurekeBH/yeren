@@ -1,11 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 
+import '../../../core/network/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/trading_event.dart';
+import '../../../shared/widgets/city_field.dart';
 import '../../profile/application/profile_controller.dart';
 import '../application/my_events_controller.dart';
 import 'events_screen.dart' show eventDate;
@@ -29,18 +34,18 @@ class _PublishEventSheet extends ConsumerStatefulWidget {
 
 class _PublishEventSheetState extends ConsumerState<_PublishEventSheet> {
   final _title = TextEditingController();
-  final _city = TextEditingController();
+  String _cityValue = ''; // CityField autocomplete мәні
   final _price = TextEditingController(text: '0');
   final _desc = TextEditingController();
   EventType _type = EventType.masterclass;
   bool _online = false;
   DateTime _date = DateTime.now().add(const Duration(days: 3));
+  String? _posterPath; // таңдалған мұқаба (жергілікті жол, кейін жүктеледі)
   bool _busy = false;
 
   @override
   void dispose() {
     _title.dispose();
-    _city.dispose();
     _price.dispose();
     _desc.dispose();
     super.dispose();
@@ -60,6 +65,11 @@ class _PublishEventSheetState extends ConsumerState<_PublishEventSheet> {
     setState(() => _date = DateTime(d.year, d.month, d.day, t?.hour ?? 19, t?.minute ?? 0));
   }
 
+  Future<void> _pickPhoto() async {
+    final file = await ImagePicker().pickImage(source: ImageSource.gallery, imageQuality: 85, maxWidth: 1280);
+    if (file != null) setState(() => _posterPath = file.path);
+  }
+
   Future<void> _publish(AppLocalizations l) async {
     final title = _title.text.trim();
     if (title.isEmpty) {
@@ -68,17 +78,24 @@ class _PublishEventSheetState extends ConsumerState<_PublishEventSheet> {
     }
     setState(() => _busy = true);
     final name = ref.read(profileControllerProvider).name;
+    // Мұқабаны серверге жүктейміз (сәтсіз болса — жергілікті жол, офлайн көрінеді).
+    var poster = _posterPath ?? '';
+    if (poster.isNotEmpty && !poster.startsWith('http')) {
+      final url = await ref.read(apiServiceProvider).uploadImage(poster);
+      if (url != null) poster = url;
+    }
     final now = DateTime.now();
     final event = TradingEvent(
       id: 'ev-${now.microsecondsSinceEpoch}',
       type: _type,
       title: title,
       speaker: name.isEmpty ? 'You' : name,
-      city: _online ? 'Online' : (_city.text.trim().isEmpty ? '—' : _city.text.trim()),
+      city: _online ? 'Online' : (_cityValue.trim().isEmpty ? '—' : _cityValue.trim()),
       dateIso: _date.toIso8601String(),
       price: double.tryParse(_price.text.replaceAll(',', '.')) ?? 0,
       isOnline: _online,
       description: _desc.text.trim(),
+      posterUrl: poster.isEmpty ? null : poster,
       isMine: true,
     );
     await ref.read(myEventsProvider.notifier).publish(event);
@@ -114,6 +131,9 @@ class _PublishEventSheetState extends ConsumerState<_PublishEventSheet> {
               showSelectedIcon: false,
             ),
             const SizedBox(height: 12),
+            // Мұқаба (афиша) — қалауыңша
+            _CoverPicker(path: _posterPath, onPick: _pickPhoto, onClear: () => setState(() => _posterPath = null)),
+            const SizedBox(height: 12),
             TextField(
               controller: _title,
               decoration: InputDecoration(labelText: l.event_field_title, border: const OutlineInputBorder()),
@@ -144,9 +164,10 @@ class _PublishEventSheetState extends ConsumerState<_PublishEventSheet> {
               onChanged: (v) => setState(() => _online = v),
             ),
             if (!_online) ...[
-              TextField(
-                controller: _city,
-                decoration: InputDecoration(labelText: l.event_field_city, border: const OutlineInputBorder()),
+              CityField(
+                initial: _cityValue,
+                label: l.event_field_city,
+                onChanged: (v) => _cityValue = v,
               ),
               const SizedBox(height: 12),
             ],
@@ -174,6 +195,72 @@ class _PublishEventSheetState extends ConsumerState<_PublishEventSheet> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Іс-шара мұқабасын (афиша) таңдау — таңдалса алдын ала көрсетеді.
+class _CoverPicker extends StatelessWidget {
+  const _CoverPicker({required this.path, required this.onPick, required this.onClear});
+  final String? path;
+  final VoidCallback onPick;
+  final VoidCallback onClear;
+
+  @override
+  Widget build(BuildContext context) {
+    if (path == null) {
+      return OutlinedButton.icon(
+        onPressed: onPick,
+        icon: const Icon(Icons.image_outlined, size: 18),
+        label: const Text('Добавить обложку (необязательно)'),
+        style: OutlinedButton.styleFrom(
+          minimumSize: const Size.fromHeight(48),
+          side: const BorderSide(color: AppColors.border),
+        ),
+      );
+    }
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: Stack(
+        children: [
+          AspectRatio(
+            aspectRatio: 16 / 9,
+            child: path!.startsWith('http')
+                ? Image.network(path!, fit: BoxFit.cover)
+                : Image.file(File(path!), fit: BoxFit.cover),
+          ),
+          Positioned(
+            top: 6,
+            right: 6,
+            child: Row(
+              children: [
+                _MiniBtn(icon: Icons.edit, onTap: onPick),
+                const SizedBox(width: 6),
+                _MiniBtn(icon: Icons.close, onTap: onClear),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MiniBtn extends StatelessWidget {
+  const _MiniBtn({required this.icon, required this.onTap});
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        padding: const EdgeInsets.all(6),
+        decoration: const BoxDecoration(color: Colors.black54, shape: BoxShape.circle),
+        child: Icon(icon, size: 16, color: Colors.white),
       ),
     );
   }

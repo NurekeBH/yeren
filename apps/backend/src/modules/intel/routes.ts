@@ -51,6 +51,7 @@ export async function intelRoutes(app: FastifyInstance) {
       if (post.is_urgent) {
         void sendIntelPush({ id: post.id, text: post.text, impact: post.impact });
       }
+      await pruneIntel(); // тек соңғы 15 жаңалық қалады — ескілерін сақтамаймыз
       return { post };
     } catch (err) {
       app.log.error(err);
@@ -62,6 +63,16 @@ export async function intelRoutes(app: FastifyInstance) {
   // FINNHUB_API_KEY керек. Cron/worker немесе админ қолмен шақыра алады.
   app.post('/intel/ingest', { onRequest: [app.requireAdmin] }, async () => {
     const result = await ingestNews();
+    await pruneIntel(); // тек соңғы 15 қалады
     return { ok: true, ...result };
   });
+}
+
+/// Тек ең соңғы 15 жаңалықты қалдырады — ескі жаңалықтарды сақтамаймыз.
+async function pruneIntel(keep = 15): Promise<void> {
+  await query(
+    `delete from intel_posts
+      where id not in (select id from intel_posts order by published_at desc limit $1)`,
+    [keep],
+  );
 }

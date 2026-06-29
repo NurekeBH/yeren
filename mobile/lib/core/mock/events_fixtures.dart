@@ -20,6 +20,7 @@ EventType _eventType(String s) {
 /// Backend JSON → TradingEvent.
 TradingEvent eventFromJson(Map<String, dynamic> j) {
   final yt = (j['youtube_id'] ?? '').toString();
+  final poster = (j['poster_url'] ?? '').toString();
   return TradingEvent(
     id: j['id'].toString(),
     type: _eventType((j['type'] ?? 'masterclass').toString()),
@@ -31,6 +32,7 @@ TradingEvent eventFromJson(Map<String, dynamic> j) {
     isOnline: j['is_online'] == true,
     description: (j['description'] ?? '').toString(),
     youtubeId: yt.isEmpty ? null : yt,
+    posterUrl: poster.isEmpty ? null : poster,
   );
 }
 

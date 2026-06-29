@@ -22,6 +22,11 @@ export async function notificationsRoutes(app: FastifyInstance) {
       broker_on: z.boolean().optional(),
       streak_on: z.boolean().optional(),
       events_on: z.boolean().optional(),
+      // Оқиға push детальді сүзгілері.
+      ev_city: z.string().max(60).optional(),
+      ev_free_only: z.boolean().optional(),
+      ev_online_only: z.boolean().optional(),
+      ev_type: z.enum(['', 'masterclass', 'live_trade', 'webinar']).optional(),
       dnd_until_morning: z.boolean().optional(),
       expo_push_token: z.string().optional(),
     });

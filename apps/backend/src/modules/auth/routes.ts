@@ -12,6 +12,7 @@ const Credentials = z.object({
 const RegisterBody = Credentials.extend({
   name: z.string().min(1).max(60).optional(),
   city: z.string().max(60).optional(),
+  country: z.string().length(2).optional(), // ISO-2 (тіркеуде таңдалған ел коды) — тіл шешімі үшін
   trading_styles: z.array(z.string()).optional(),
   preferred_sessions: z.array(z.string()).optional(),
   locale: z.enum(['kk', 'ru', 'en']).optional(),
@@ -69,7 +70,7 @@ export async function authRoutes(app: FastifyInstance) {
   app.post('/auth/register', async (req, reply) => {
     const parsed = RegisterBody.safeParse(req.body);
     if (!parsed.success) return reply.code(400).send({ error: 'bad_request', issues: parsed.error.issues });
-    const { password, name, city, trading_styles, preferred_sessions, locale, promo_code } = parsed.data;
+    const { password, name, city, country, trading_styles, preferred_sessions, locale, promo_code } = parsed.data;
     const phone = normalizePhone(parsed.data.phone);
 
     const exists = await query('select 1 from users where phone = $1', [phone]);
@@ -83,10 +84,10 @@ export async function authRoutes(app: FastifyInstance) {
       // Сервер бірегей промокод генерациялайды (клиентке сенбейміз — қайталанбау кепілі).
       const ownPromo = await genUniquePromoCode((sql, p) => c.query(sql, p as never[]));
       const u = await c.query<{ id: string; is_admin: boolean }>(
-        `insert into users (phone, password_hash, name, city, trading_styles, preferred_sessions, locale, promo_code)
-         values ($1,$2,$3,$4,$5,$6,$7,$8)
+        `insert into users (phone, password_hash, name, city, country, trading_styles, preferred_sessions, locale, promo_code)
+         values ($1,$2,$3,$4,$5,$6,$7,$8,$9)
          returning id, is_admin`,
-        [phone, hash, name ?? '', city ?? '', trading_styles ?? [], preferred_sessions ?? [], locale ?? 'kk', ownPromo],
+        [phone, hash, name ?? '', city ?? '', (country ?? '').toUpperCase(), trading_styles ?? [], preferred_sessions ?? [], locale ?? 'kk', ownPromo],
       );
       await c.query(
         `insert into notification_prefs (user_id) values ($1) on conflict do nothing`,
@@ -191,6 +192,13 @@ export async function authRoutes(app: FastifyInstance) {
     if (set.length === 0) return { ok: true };
     args.push(req.userId);
     await query(`update users set ${set.join(', ')} where id = $${args.length}`, args);
+    return { ok: true };
+  });
+
+  // Аккаунтты толық жою (Apple App Store 5.1.1(v) талабы — қосымшаішілік жою).
+  // Байланысты деректер FK on delete cascade арқылы өшеді; қалғаны set null.
+  app.delete('/auth/me', { onRequest: [app.authenticate] }, async (req) => {
+    await query('delete from users where id = $1', [req.userId]);
     return { ok: true };
   });
 

@@ -29,6 +29,7 @@ class TradingEvent extends Equatable {
     required this.isOnline,
     required this.description,
     this.youtubeId,
+    this.posterUrl,
     this.isMine = false,
   });
 
@@ -42,6 +43,7 @@ class TradingEvent extends Equatable {
   final bool isOnline;
   final String description;
   final String? youtubeId; // видео-түсіндірме (қалауыңша)
+  final String? posterUrl; // мұқаба/афиша суреті (қалауыңша)
 
   /// Осы пайдаланушы (расталған трейдер) жариялаған іс-шара.
   final bool isMine;
@@ -59,6 +61,7 @@ class TradingEvent extends Equatable {
         'isOnline': isOnline,
         'description': description,
         'youtubeId': youtubeId,
+        'posterUrl': posterUrl,
         'isMine': isMine,
       };
 
@@ -73,6 +76,7 @@ class TradingEvent extends Equatable {
         isOnline: j['isOnline'] == true,
         description: (j['description'] ?? '').toString(),
         youtubeId: j['youtubeId'] as String?,
+        posterUrl: j['posterUrl'] as String?,
         isMine: j['isMine'] == true,
       );
 

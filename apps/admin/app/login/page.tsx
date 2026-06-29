@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { api, setToken } from '@/lib/api';
+import { api, clearToken, setToken } from '@/lib/api';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -21,7 +21,16 @@ export default function LoginPage() {
         body: { phone, password },
       });
       setToken(res.token);
-      router.replace('/dashboard');
+      // Рөл бойынша бағыттау: админ → толық панель; расталған трейдер → провайдер панелі.
+      const me = await api<{ user: { is_admin?: boolean; is_verified_trader?: boolean } }>('/auth/me');
+      if (me.user?.is_admin) {
+        router.replace('/dashboard');
+      } else if (me.user?.is_verified_trader) {
+        router.replace('/provider/courses');
+      } else {
+        clearToken();
+        setErr('Нет доступа. Панель — для админов и провайдеров (верифицированных трейдеров).');
+      }
     } catch (e: any) {
       setErr(e.message ?? 'Ошибка входа');
     } finally {
@@ -42,7 +51,7 @@ export default function LoginPage() {
           {busy ? 'Вход…' : 'Войти'}
         </button>
         <p className="muted" style={{ fontSize: 12, marginTop: 12 }}>
-          Только для аккаунтов с правами администратора (is_admin).
+          Для админов (полный доступ) и провайдеров (свои курсы и события).
         </p>
       </form>
     </div>

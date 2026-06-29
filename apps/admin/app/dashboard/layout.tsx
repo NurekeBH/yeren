@@ -3,32 +3,48 @@
 import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { clearToken, getToken } from '@/lib/api';
+import { api, clearToken, getToken } from '@/lib/api';
 
+// badgeKey — /admin/pending-counts кілті (растау/қарау керек элементтер саны).
 const NAV = [
   { href: '/dashboard', label: 'Обзор', icon: '📊' },
+  { href: '/dashboard/finance', label: 'Финансы / Бонусы', icon: '💰' },
   { href: '/dashboard/users', label: 'Пользователи', icon: '👥' },
-  { href: '/dashboard/applications', label: 'Заявки провайдеров', icon: '📝' },
+  { href: '/dashboard/applications', label: 'Заявки провайдеров', icon: '📝', badgeKey: 'applications' },
   { href: '/dashboard/subscriptions', label: 'Подписки', icon: '💳' },
   { href: '/dashboard/signals', label: 'Сигналы / Идеи', icon: '📈' },
   { href: '/dashboard/providers', label: 'Провайдеры', icon: '🏆' },
   { href: '/dashboard/intel', label: 'Market Intel', icon: '📰' },
-  { href: '/dashboard/events', label: 'События', icon: '📅' },
+  { href: '/dashboard/events', label: 'События', icon: '📅', badgeKey: 'events' },
   { href: '/dashboard/library', label: 'Библиотека', icon: '📚' },
   { href: '/dashboard/courses', label: 'Курсы', icon: '🎬' },
-  { href: '/dashboard/reports', label: 'Жалобы на посты', icon: '🚩' },
-  { href: '/dashboard/support', label: 'Поддержка', icon: '🆘' },
+  { href: '/dashboard/reports', label: 'Жалобы на посты', icon: '🚩', badgeKey: 'reports' },
+  { href: '/dashboard/support', label: 'Поддержка', icon: '🆘', badgeKey: 'support' },
 ];
+
+type Counts = { applications: number; events: number; reports: number; support: number };
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const [ready, setReady] = useState(false);
+  const [counts, setCounts] = useState<Counts | null>(null);
 
   useEffect(() => {
     if (!getToken()) router.replace('/login');
     else setReady(true);
   }, [router]);
+
+  // Назар керек элементтер санын тарту (әр 60 сек жаңартылады) — pathname өзгергенде де.
+  useEffect(() => {
+    if (!ready) return;
+    let alive = true;
+    const fetchCounts = () =>
+      api<Counts>('/admin/pending-counts').then((c) => { if (alive) setCounts(c); }).catch(() => {});
+    fetchCounts();
+    const t = setInterval(fetchCounts, 60_000);
+    return () => { alive = false; clearInterval(t); };
+  }, [ready, pathname]);
 
   if (!ready) return null;
 
@@ -49,6 +65,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <nav style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
           {NAV.map((n) => {
             const active = pathname === n.href;
+            const badge = n.badgeKey && counts ? (counts as any)[n.badgeKey] as number : 0;
             return (
               <Link
                 key={n.href}
@@ -66,7 +83,27 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 }}
               >
                 <span style={{ fontSize: 18 }}>{n.icon}</span>
-                {n.label}
+                <span style={{ flex: 1 }}>{n.label}</span>
+                {badge > 0 && (
+                  <span
+                    title="Требует действия"
+                    style={{
+                      minWidth: 20,
+                      height: 20,
+                      padding: '0 6px',
+                      borderRadius: 10,
+                      background: '#DC2626',
+                      color: '#fff',
+                      fontSize: 12,
+                      fontWeight: 700,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    {badge}
+                  </span>
+                )}
               </Link>
             );
           })}

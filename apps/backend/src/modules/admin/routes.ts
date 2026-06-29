@@ -24,6 +24,9 @@ export async function adminRoutes(app: FastifyInstance) {
         (select count(*) from bonus_transactions where type = 'topup')::text as topup_count,
         (select coalesce(sum(amount),0) from bonus_transactions where type = 'topup' and created_at >= now() - interval '7 days')::text as topup_7d,
         (select coalesce(sum(amount),0) from bonus_transactions where amount > 0 and type in ('referral','signup'))::text as bonus_issued,
+        (select coalesce(sum(amount),0) from bonus_transactions where type = 'referral')::text as referral_total,
+        (select count(*) from bonus_transactions where type = 'referral')::text as referral_count,
+        (select coalesce(sum(amount),0) from bonus_transactions where type = 'signup')::text as signup_total,
         (select count(*) from course_purchases)::text as course_sales,
         (select coalesce(sum(bonus_used),0) from course_purchases)::text as course_bonus,
         (select coalesce(sum(bonus_used),0) from signal_purchases)::text as signal_bonus,
@@ -56,6 +59,41 @@ export async function adminRoutes(app: FastifyInstance) {
     return { transactions: rows };
   });
 
+  // ── Назар керек элементтер саны (nav белгілері) ──
+  // Әр категорияда қанша «әрекет күтуде» — растау/қарау керек.
+  app.get('/admin/pending-counts', { onRequest: [app.requireAdmin] }, async () => {
+    const { rows } = await query<Record<string, string>>(`
+      select
+        (select count(*) from trader_applications where status = 'pending')::text as applications,
+        (select count(*) from events where is_approved = false)::text as events,
+        (select count(*) from post_reports where status = 'open')::text as reports,
+        (select count(*) from support_messages where resolved = false)::text as support
+    `);
+    const r = rows[0] ?? {};
+    return {
+      applications: Number(r.applications ?? 0),
+      events: Number(r.events ?? 0),
+      reports: Number(r.reports ?? 0),
+      support: Number(r.support ?? 0),
+    };
+  });
+
+  // ── Ел бойынша бөлініс (жаңа тіл қосу шешімі үшін) ──
+  // ISO-2 коды + саны + үлесі. Бос (ескі тіркелулер) — 'unknown'.
+  app.get('/admin/stats/countries', { onRequest: [app.requireAdmin] }, async () => {
+    const { rows } = await query<{ country: string; count: string }>(`
+      select coalesce(nullif(country, ''), 'unknown') as country, count(*)::text as count
+        from users
+       group by 1
+       order by count(*) desc
+    `);
+    const total = rows.reduce((s, r) => s + Number(r.count), 0) || 1;
+    return {
+      total,
+      countries: rows.map((r) => ({ country: r.country, count: Number(r.count), pct: Math.round((Number(r.count) / total) * 100) })),
+    };
+  });
+
   // ── Қолданушылар тізімі (іздеу + бет) ──
   app.get('/admin/users', { onRequest: [app.requireAdmin] }, async (req) => {
     const q = (req.query as { search?: string; limit?: string }) ?? {};
@@ -69,7 +107,7 @@ export async function adminRoutes(app: FastifyInstance) {
     }
     args.push(limit);
     const { rows } = await query(
-      `select id, phone, name, city, is_admin, is_verified_trader, is_blocked,
+      `select id, phone, name, city, country, is_admin, is_verified_trader, is_blocked,
               promo_code, bonus_balance, referral_count, created_at
          from users ${where}
         order by created_at desc

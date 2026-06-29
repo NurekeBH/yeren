@@ -11,10 +11,11 @@ import '../application/auth_controller.dart';
 import 'user_agreement_screen.dart';
 
 class PasswordScreen extends ConsumerStatefulWidget {
-  const PasswordScreen({super.key, required this.mode, required this.phone});
+  const PasswordScreen({super.key, required this.mode, required this.phone, this.country});
 
   final String mode;
   final String phone;
+  final String? country; // тіркеуде таңдалған ел (ISO-2, мыс. KZ)
 
   @override
   ConsumerState<PasswordScreen> createState() => _PasswordScreenState();
@@ -52,7 +53,7 @@ class _PasswordScreenState extends ConsumerState<PasswordScreen> {
     try {
       final controller = ref.read(authControllerProvider.notifier);
       if (_isRegister) {
-        await controller.register(phone: widget.phone, password: _password.text);
+        await controller.register(phone: widget.phone, password: _password.text, country: widget.country);
         // Тіркелу кезінде промокод енгізілсе — бонус есептейміз.
         final code = _promo.text.trim();
         if (code.isNotEmpty) {

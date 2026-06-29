@@ -43,9 +43,9 @@ class AuthController extends StateNotifier<AuthState> {
 
   /// Тіркелу: телефон + пароль. SMS жоқ (TZ.rtf override).
   /// useRemoteApi=true болса — backend; әйтпесе мок (offline режим).
-  Future<void> register({required String phone, required String password}) async {
+  Future<void> register({required String phone, required String password, String? country}) async {
     final token = AppConfig.useRemoteApi
-        ? (await _ref.read(apiServiceProvider).register(phone, password))['token'] as String
+        ? (await _ref.read(apiServiceProvider).register(phone, password, country: country))['token'] as String
         : await _mockToken();
     await _persistAuth(token, phone);
     // Келісім checkbox тіркеу алдында расталады — серверге логқа жазамыз.
@@ -60,14 +60,25 @@ class AuthController extends StateNotifier<AuthState> {
     final token = AppConfig.useRemoteApi
         ? (await _ref.read(apiServiceProvider).login(phone, password))['token'] as String
         : await _mockToken();
-    await _persistAuth(token, phone);
-    // Қайта оралған пайдаланушы — профиль сұрақнамасын қайта сұрамаймыз.
-    // Remote режимде backend профилін жүктейміз; mock режимде onboarded деп белгілейміз.
+    // ВАЖНО: алдымен токенді сақтап, профильді ЖҮКТЕП аламыз, сосын ғана authenticated
+    // деп белгілейміз. Әйтпесе isOnboarded әлі false болып, router қысқа сәтке
+    // onboarding (edit-profile тәрізді) экранын жарқ еткізеді.
+    await _writeToken(token, phone);
     if (AppConfig.useRemoteApi) {
-      await _ref.read(profileControllerProvider.notifier).hydrateFromRemote();
+      try {
+        await _ref.read(profileControllerProvider.notifier).hydrateFromRemote();
+      } catch (_) {/* профиль жүктелмесе де кіруге рұқсат */}
     } else {
       _ref.read(profileControllerProvider.notifier).markReturningUser();
     }
+    state = AuthState(status: AuthStatus.authenticated, phone: phone);
+  }
+
+  /// 401 Unauthorized (токен жоқ/ескірген/жарамсыз) — кез келген сұраудан келсе,
+  /// сессияны тазалап, login ағынына шығарамыз (api_client интерцепторы шақырады).
+  Future<void> handleUnauthorized() async {
+    if (state.status != AuthStatus.authenticated) return;
+    await logout();
   }
 
   Future<String> _mockToken() async {
@@ -75,18 +86,18 @@ class AuthController extends StateNotifier<AuthState> {
     return 'mock-token-${DateTime.now().millisecondsSinceEpoch}';
   }
 
-  Future<void> _persistAuth(String token, String phone) async {
+  /// Токенді secure storage-қа жазу (күйді өзгертпейді — dio сұраныстарға қоса алады).
+  Future<void> _writeToken(String token, String phone) async {
     final storage = _ref.read(secureStorageProvider);
-    // Secure storage кейбір эмуляторларда баяу/қатеге ұшырауы мүмкін —
-    // ол авторизацияны бөгемеуі тиіс (timeout + try/catch).
+    // Secure storage кейбір эмуляторларда баяу/қатеге ұшырауы мүмкін — бөгемейді.
     try {
-      await storage
-          .write(key: _tokenKey, value: token)
-          .timeout(const Duration(seconds: 4));
-      await storage
-          .write(key: _phoneKey, value: phone)
-          .timeout(const Duration(seconds: 4));
+      await storage.write(key: _tokenKey, value: token).timeout(const Duration(seconds: 4));
+      await storage.write(key: _phoneKey, value: phone).timeout(const Duration(seconds: 4));
     } catch (_) {/* сақтау сәтсіз болса да авторизация жалғасады */}
+  }
+
+  Future<void> _persistAuth(String token, String phone) async {
+    await _writeToken(token, phone);
     state = AuthState(status: AuthStatus.authenticated, phone: phone);
   }
 
@@ -98,6 +109,14 @@ class AuthController extends StateNotifier<AuthState> {
     // келесі қолданушы ескі деректі көрмесін.
     await _ref.read(profileControllerProvider.notifier).clear();
     state = const AuthState(status: AuthStatus.unauthenticated);
+  }
+
+  /// Аккаунтты толық жою (Apple талабы). Серверден өшіреміз, сосын шығамыз.
+  Future<void> deleteAccount() async {
+    if (AppConfig.useRemoteApi) {
+      await _ref.read(apiServiceProvider).deleteAccount();
+    }
+    await logout();
   }
 }
 

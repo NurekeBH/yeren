@@ -39,17 +39,31 @@ class MyEventsController extends StateNotifier<List<TradingEvent>> {
     }
   }
 
+  // ЕСКЕРТУ: backend `starts_at` күтеді (бұрын `date` жіберіліп, үнсіз 400 болатын).
   Map<String, dynamic> _toApi(TradingEvent e) => {
-        'type': e.type.name,
+        'type': _apiType(e.type),
         'title': e.title,
         'speaker': e.speaker,
         'city': e.city,
-        'date': e.dateIso,
+        'starts_at': e.dateIso,
         'price': e.price,
         'is_online': e.isOnline,
         'description': e.description,
-        if (e.youtubeId != null) 'youtube_id': e.youtubeId,
+        if (e.youtubeId != null && e.youtubeId!.isNotEmpty) 'youtube_id': e.youtubeId,
+        if (e.posterUrl != null && e.posterUrl!.isNotEmpty) 'poster_url': e.posterUrl,
       };
+
+  // Mobile enum атауы → backend enum (liveTrade → live_trade).
+  static String _apiType(EventType t) {
+    switch (t) {
+      case EventType.liveTrade:
+        return 'live_trade';
+      case EventType.webinar:
+        return 'webinar';
+      case EventType.masterclass:
+        return 'masterclass';
+    }
+  }
 }
 
 final myEventsProvider = StateNotifierProvider<MyEventsController, List<TradingEvent>>(

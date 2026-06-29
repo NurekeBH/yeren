@@ -75,21 +75,43 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
         children: [
           Container(
-            height: 140,
+            height: e.posterUrl != null ? 200 : 140,
             width: double.infinity,
+            clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
               gradient: LinearGradient(colors: grad, begin: Alignment.topLeft, end: Alignment.bottomRight),
               borderRadius: BorderRadius.circular(16),
             ),
-            padding: const EdgeInsets.all(18),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Stack(
+              fit: StackFit.expand,
               children: [
-                Text('${e.type.emoji}  ${eventTypeLabel(e.type, l).toUpperCase()}',
-                    style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 0.5)),
-                Text(e.title,
-                    style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w800, height: 1.15)),
+                // Мұқаба суреті болса — фон ретінде (мәтін оқылуы үшін қара градиент scrim).
+                if (e.posterUrl != null) ...[
+                  Image.network(e.posterUrl!, fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) => const SizedBox.shrink()),
+                  const DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [Colors.transparent, Colors.black87],
+                      ),
+                    ),
+                  ),
+                ],
+                Padding(
+                  padding: const EdgeInsets.all(18),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('${e.type.emoji}  ${eventTypeLabel(e.type, l).toUpperCase()}',
+                          style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 0.5)),
+                      Text(e.title,
+                          style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w800, height: 1.15)),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),

@@ -652,6 +652,48 @@ abstract class AppLocalizations {
   /// **'Мұнда іс-шаралар пайда болады: мастер-класс, вебинар және трейдинг бойынша live-сессиялар. Жақында!'**
   String get events_empty;
 
+  /// No description provided for @events_none_match.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сүзгіге сай іс-шара жоқ'**
+  String get events_none_match;
+
+  /// No description provided for @events_filter_all.
+  ///
+  /// In kk, this message translates to:
+  /// **'Барлығы'**
+  String get events_filter_all;
+
+  /// No description provided for @events_filter_online.
+  ///
+  /// In kk, this message translates to:
+  /// **'Онлайн'**
+  String get events_filter_online;
+
+  /// No description provided for @events_filter_offline.
+  ///
+  /// In kk, this message translates to:
+  /// **'Оффлайн'**
+  String get events_filter_offline;
+
+  /// No description provided for @events_filter_free.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тегін'**
+  String get events_filter_free;
+
+  /// No description provided for @events_filter_paid.
+  ///
+  /// In kk, this message translates to:
+  /// **'Ақылы'**
+  String get events_filter_paid;
+
+  /// No description provided for @events_filter_city.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қала'**
+  String get events_filter_city;
+
   /// No description provided for @event_free.
   ///
   /// In kk, this message translates to:
@@ -1714,6 +1756,24 @@ abstract class AppLocalizations {
   /// **'Қолдау / Әкімшілік'**
   String get profile_support;
 
+  /// No description provided for @profile_delete_account.
+  ///
+  /// In kk, this message translates to:
+  /// **'Аккаунтты жою'**
+  String get profile_delete_account;
+
+  /// No description provided for @profile_delete_account_warning.
+  ///
+  /// In kk, this message translates to:
+  /// **'Аккаунтыңыз бен барлық деректеріңіз біржола жойылады. Бұл әрекетті қайтару мүмкін емес.'**
+  String get profile_delete_account_warning;
+
+  /// No description provided for @profile_delete_account_confirm.
+  ///
+  /// In kk, this message translates to:
+  /// **'Жою'**
+  String get profile_delete_account_confirm;
+
   /// No description provided for @support_title.
   ///
   /// In kk, this message translates to:
@@ -2728,6 +2788,12 @@ abstract class AppLocalizations {
   /// **'Есептеу'**
   String get calc_calculate;
 
+  /// No description provided for @calc_from_idea.
+  ///
+  /// In kk, this message translates to:
+  /// **'Осы идеядан лот есептеу'**
+  String get calc_from_idea;
+
   /// No description provided for @calc_help_pip_xau.
   ///
   /// In kk, this message translates to:
@@ -3051,6 +3117,24 @@ abstract class AppLocalizations {
   /// In kk, this message translates to:
   /// **'Жаңа іс-шара қосылғанда push'**
   String get notif_events_desc;
+
+  /// No description provided for @notif_events_filter.
+  ///
+  /// In kk, this message translates to:
+  /// **'Оқиға сүзгісі (қаласаңыз тарылтыңыз)'**
+  String get notif_events_filter;
+
+  /// No description provided for @notif_events_filter_hint.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бос болса — барлық жаңа оқиғаға push келеді'**
+  String get notif_events_filter_hint;
+
+  /// No description provided for @notif_events_type.
+  ///
+  /// In kk, this message translates to:
+  /// **'Түрі'**
+  String get notif_events_type;
 
   /// No description provided for @notif_intel.
   ///

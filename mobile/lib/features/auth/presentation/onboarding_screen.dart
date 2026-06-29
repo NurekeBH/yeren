@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
+import '../../../shared/widgets/city_field.dart';
 import '../../profile/application/profile_controller.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
@@ -15,7 +16,7 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final _name = TextEditingController();
-  final _city = TextEditingController();
+  String _cityValue = ''; // CityField autocomplete мәні
   final _bio = TextEditingController();
   final Set<TradingStyle> _styles = {TradingStyle.smc};
   final _formKey = GlobalKey<FormState>();
@@ -23,17 +24,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   @override
   void dispose() {
     _name.dispose();
-    _city.dispose();
     _bio.dispose();
     super.dispose();
   }
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
-    if (_styles.isEmpty) return;
+    // Сауда стилі ОПЦИОНАЛ — таңдалмаса да тіркелуді жалғастырамыз.
     ref.read(profileControllerProvider.notifier).completeOnboarding(
           name: _name.text.trim(),
-          city: _city.text.trim(),
+          city: _cityValue.trim(),
           styles: _styles,
           bio: _bio.text.trim(),
         );
@@ -86,7 +86,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 const SizedBox(height: 16),
                 Text(l.onboarding_city_label, style: AppTypography.label()),
                 const SizedBox(height: 6),
-                TextFormField(controller: _city, decoration: InputDecoration(hintText: l.onboarding_city_hint)),
+                CityField(initial: _cityValue, hint: l.onboarding_city_hint, onChanged: (v) => _cityValue = v),
                 const SizedBox(height: 16),
                 Text(l.onboarding_style_label, style: AppTypography.label()),
                 const SizedBox(height: 8),

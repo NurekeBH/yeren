@@ -14,6 +14,7 @@ create table if not exists users (
   password_hash text not null,
   name          text default '',
   city          text default '',                       -- TZ user override: страна → город
+  country       text default '',                       -- тіркеуде таңдалған ел (ISO-2: KZ/RU/UZ…) — тіл шешімі үшін
   bio           text default '',
   avatar_url    text,
   trading_styles text[] default array[]::text[],       -- multi-select: smc/price_action/breakout/news/scalping
@@ -37,7 +38,28 @@ alter table users add column if not exists referred_by text;
 alter table users add column if not exists bonus_balance integer not null default 0;
 alter table users add column if not exists referral_count integer not null default 0;
 alter table users add column if not exists is_blocked boolean not null default false;
+alter table users add column if not exists country text default '';
 create unique index if not exists users_promo_code_idx on users(promo_code) where promo_code is not null;
+
+-- ─────────────────── ҚАЛАЛАР (оқиға фильтрі/нотификациясы үшін тұрақты тізім) ───────────────────
+create table if not exists cities (
+  id      serial primary key,
+  name    text not null unique,
+  country text not null default 'KZ'
+);
+create index if not exists cities_name_idx on cities (lower(name));
+-- Негізгі ҚР қалалары + ТМД астаналары (autocomplete үшін). On conflict — қозғамайды.
+insert into cities (name, country) values
+  ('Алматы','KZ'),('Астана','KZ'),('Шымкент','KZ'),('Қарағанды','KZ'),('Ақтөбе','KZ'),
+  ('Тараз','KZ'),('Павлодар','KZ'),('Өскемен','KZ'),('Семей','KZ'),('Атырау','KZ'),
+  ('Қостанай','KZ'),('Қызылорда','KZ'),('Орал','KZ'),('Петропавл','KZ'),('Ақтау','KZ'),
+  ('Темиртау','KZ'),('Түркістан','KZ'),('Көкшетау','KZ'),('Талдықорған','KZ'),('Екібастұз','KZ'),
+  ('Жезқазған','KZ'),('Балқаш','KZ'),('Кентау','KZ'),('Рудный','KZ'),('Жанаөзен','KZ'),
+  ('Москва','RU'),('Санкт-Петербург','RU'),('Казань','RU'),('Новосибирск','RU'),('Екатеринбург','RU'),
+  ('Ташкент','UZ'),('Самарканд','UZ'),('Бишкек','KG'),('Ош','KG'),('Душанбе','TJ'),
+  ('Ашхабад','TM'),('Баку','AZ'),('Тбилиси','GE'),('Ереван','AM'),('Минск','BY'),
+  ('Киев','UA'),('Стамбул','TR'),('Дубай','AE')
+on conflict (name) do nothing;
 
 -- ─────────────────── SESSIONS / REFRESH TOKENS ───────────────────
 create table if not exists user_sessions (
@@ -347,10 +369,19 @@ create table if not exists notification_prefs (
   broker_on        boolean default true,
   streak_on        boolean default true,
   events_on        boolean default true,
+  -- Оқиға push детальді сүзгілері (events_on=жалпы қосқыш; бос/false = фильтрсіз).
+  ev_city          text default '',                          -- '' = кез келген қала
+  ev_free_only     boolean default false,                    -- тек тегін оқиғалар
+  ev_online_only   boolean default false,                    -- тек онлайн
+  ev_type          text default '',                          -- '' = кез келген; masterclass|live_trade|webinar
   dnd_until_morning boolean default true,                   -- 00:00–07:00
   expo_push_token  text,                                    -- Expo Push token (mobile-ден)
   updated_at       timestamptz default now()
 );
+alter table notification_prefs add column if not exists ev_city text default '';
+alter table notification_prefs add column if not exists ev_free_only boolean default false;
+alter table notification_prefs add column if not exists ev_online_only boolean default false;
+alter table notification_prefs add column if not exists ev_type text default '';
 alter table notification_prefs add column if not exists events_on boolean default true;
 
 -- ─────────────────── SIGNAL PROVIDERS (Ideas aggregator) ───────────────────
@@ -416,8 +447,13 @@ create table if not exists events (
   description  text not null,
   youtube_id   text,                                     -- видео-түсіндірме (қалауыңша)
   poster_url   text,
+  is_approved  boolean not null default true,            -- админ растады ма (провайдер қосқан → false, растағанша app-та көрінбейді)
+  created_by   uuid references users(id) on delete set null, -- кім қосты (провайдер модерациясы үшін)
   created_at   timestamptz default now()
 );
+-- Бар базаларға идемпотентті қосу (ескі оқиғалар көрінулі қалуы үшін default true)
+alter table events add column if not exists is_approved boolean not null default true;
+alter table events add column if not exists created_by uuid references users(id) on delete set null;
 create index if not exists events_starts_idx on events(starts_at);
 
 create table if not exists event_applications (
@@ -506,9 +542,11 @@ create table if not exists course_catalog (
   sort_order   int not null default 0,
   is_published boolean not null default true,
   content      jsonb not null default '{}'::jsonb,         -- curriculum: {modules→lessons}; video: {kind:'video',intro_video,modules:[{title,video,text}]}
+  owner_id     uuid references users(id) on delete set null, -- провайдер қосқан курс иесі (null = платформа курсы)
   created_at   timestamptz default now(),
   updated_at   timestamptz default now()
 );
+alter table course_catalog add column if not exists owner_id uuid references users(id) on delete set null;
 alter table course_catalog add column if not exists cover_url text;
 create index if not exists course_catalog_pub_idx on course_catalog(sort_order) where is_published = true;
 

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
+import '../../../shared/widgets/city_field.dart';
 import '../application/profile_controller.dart';
 
 /// Профильді өңдеу: аты, қаласы, bio, сауда стильдері.
@@ -17,7 +18,7 @@ class EditProfileScreen extends ConsumerStatefulWidget {
 
 class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   late final TextEditingController _name;
-  late final TextEditingController _city;
+  String _cityValue = ''; // CityField autocomplete мәні
   late final TextEditingController _bio;
   late Set<TradingStyle> _styles;
   final _formKey = GlobalKey<FormState>();
@@ -27,7 +28,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     super.initState();
     final p = ref.read(profileControllerProvider);
     _name = TextEditingController(text: p.name);
-    _city = TextEditingController(text: p.city);
+    _cityValue = p.city;
     _bio = TextEditingController(text: p.bio);
     _styles = Set<TradingStyle>.from(p.styles);
   }
@@ -35,20 +36,16 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   @override
   void dispose() {
     _name.dispose();
-    _city.dispose();
     _bio.dispose();
     super.dispose();
   }
 
   void _save(AppLocalizations l) {
     if (!_formKey.currentState!.validate()) return;
-    if (_styles.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.onboarding_style_label)));
-      return;
-    }
+    // Сауда стилі ОПЦИОНАЛ — бос болса да сақтаймыз.
     ref.read(profileControllerProvider.notifier).updateProfile(
           name: _name.text.trim(),
-          city: _city.text.trim(),
+          city: _cityValue.trim(),
           bio: _bio.text.trim(),
           styles: _styles,
         );
@@ -84,7 +81,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               const SizedBox(height: 16),
               Text(l.onboarding_city_label, style: AppTypography.label()),
               const SizedBox(height: 6),
-              TextFormField(controller: _city, decoration: InputDecoration(hintText: l.onboarding_city_hint)),
+              CityField(initial: _cityValue, hint: l.onboarding_city_hint, onChanged: (v) => _cityValue = v),
               const SizedBox(height: 16),
               Text(l.onboarding_style_label, style: AppTypography.label()),
               const SizedBox(height: 8),
