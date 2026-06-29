@@ -199,7 +199,7 @@ class _CredentialsState extends ConsumerState<_Credentials> {
             controller: _login,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(hintText: l.broker_account_number_hint, border: const OutlineInputBorder()),
-            validator: (v) => (v == null || v.trim().isEmpty) ? l.common_error : null,
+            validator: (v) => (v == null || v.trim().isEmpty) ? l.validation_required : null,
           ),
           const SizedBox(height: 14),
           Text(l.broker_server, style: AppTypography.label()),
@@ -207,7 +207,7 @@ class _CredentialsState extends ConsumerState<_Credentials> {
           TextFormField(
             controller: _server,
             decoration: InputDecoration(hintText: l.broker_server_hint, border: const OutlineInputBorder()),
-            validator: (v) => (v == null || v.trim().isEmpty) ? l.common_error : null,
+            validator: (v) => (v == null || v.trim().isEmpty) ? l.validation_required : null,
           ),
           const SizedBox(height: 14),
           Text(l.broker_investor_password, style: AppTypography.label()),

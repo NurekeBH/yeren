@@ -166,6 +166,42 @@ abstract class AppLocalizations {
   /// **'Бірдеңе дұрыс болмады. Кейінірек қайталаңыз'**
   String get error_generic;
 
+  /// No description provided for @error_server.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бізде ақаулық туындады. Жөндеп жатырмыз — кейінірек қайталаңыз'**
+  String get error_server;
+
+  /// No description provided for @validation_required.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бұл өрісті толтыру міндетті'**
+  String get validation_required;
+
+  /// No description provided for @validation_min_chars.
+  ///
+  /// In kk, this message translates to:
+  /// **'Кемінде {n} таңба'**
+  String validation_min_chars(int n);
+
+  /// No description provided for @upload_too_large.
+  ///
+  /// In kk, this message translates to:
+  /// **'Файл тым үлкен. Ең көбі 5 МБ'**
+  String get upload_too_large;
+
+  /// No description provided for @upload_bad_format.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қате формат. Сурет таңдаңыз (PNG, JPG)'**
+  String get upload_bad_format;
+
+  /// No description provided for @upload_failed.
+  ///
+  /// In kk, this message translates to:
+  /// **'Фотоны жүктеу мүмкін болмады. Байланысты тексеріп қайталаңыз'**
+  String get upload_failed;
+
   /// No description provided for @err_invalid_credentials.
   ///
   /// In kk, this message translates to:

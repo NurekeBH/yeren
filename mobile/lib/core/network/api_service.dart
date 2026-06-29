@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -45,18 +47,25 @@ class ApiService {
     }
   }
 
-  /// Суретті backend арқылы Supabase Storage-қа жүктеп, public URL қайтарады.
-  /// Сәтсіз болса (сторадж бапталмаған/офлайн) null — клиент жергілікті жолды қалдырады.
-  Future<String?> uploadImage(String filePath) async {
-    try {
-      final form = FormData.fromMap({'file': await MultipartFile.fromFile(filePath)});
-      final res = await _dio.post<dynamic>('/uploads', data: form);
-      _ensureOk(res);
-      final data = res.data;
-      return data is Map ? data['url'] as String? : null;
-    } catch (_) {
-      return null;
-    }
+  /// Суретті backend-ке жүктеп, public URL қайтарады.
+  /// ЕНДІ қатені ЖҰТПАЙДЫ — өлшем/формат тексеріледі, сәтсіздік жоғары лақтырылады
+  /// (клиент friendlyErrorText арқылы түсінікті хабар көрсетеді, «жалған сәттілік» жоқ).
+  static const int _maxUploadBytes = 5 * 1024 * 1024;
+  Future<String> uploadImage(String filePath) async {
+    final lower = filePath.toLowerCase();
+    final okExt = lower.endsWith('.jpg') || lower.endsWith('.jpeg') ||
+        lower.endsWith('.png') || lower.endsWith('.webp');
+    if (!okExt) throw ApiException(415, 'upload_bad_format');
+    final len = await File(filePath).length();
+    if (len > _maxUploadBytes) throw ApiException(413, 'upload_too_large');
+
+    final form = FormData.fromMap({'file': await MultipartFile.fromFile(filePath)});
+    final res = await _dio.post<dynamic>('/uploads', data: form);
+    _ensureOk(res);
+    final data = res.data;
+    final url = data is Map ? data['url'] as String? : null;
+    if (url == null || url.isEmpty) throw ApiException(null, 'upload_failed');
+    return url;
   }
 
   // ─────────────── Auth ───────────────

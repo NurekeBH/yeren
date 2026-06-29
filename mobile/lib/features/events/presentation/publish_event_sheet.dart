@@ -9,6 +9,7 @@ import '../../../core/network/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
+import '../../../shared/widgets/error_view.dart';
 import '../../../shared/models/trading_event.dart';
 import '../../../shared/widgets/city_field.dart';
 import '../../profile/application/profile_controller.dart';
@@ -71,37 +72,45 @@ class _PublishEventSheetState extends ConsumerState<_PublishEventSheet> {
   }
 
   Future<void> _publish(AppLocalizations l) async {
+    if (_busy) return; // қос-басудан қорғау
+    final messenger = ScaffoldMessenger.of(context);
     final title = _title.text.trim();
     if (title.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.event_need_title)));
+      messenger.showSnackBar(SnackBar(content: Text(l.event_need_title)));
       return;
     }
     setState(() => _busy = true);
-    final name = ref.read(profileControllerProvider).name;
-    // Мұқабаны серверге жүктейміз (сәтсіз болса — жергілікті жол, офлайн көрінеді).
-    var poster = _posterPath ?? '';
-    if (poster.isNotEmpty && !poster.startsWith('http')) {
-      final url = await ref.read(apiServiceProvider).uploadImage(poster);
-      if (url != null) poster = url;
+    try {
+      final name = ref.read(profileControllerProvider).name;
+      // Мұқабаны серверге жүктейміз; сәтсіз болса — қате көрсетіледі (жалған сәттілік жоқ).
+      var poster = _posterPath ?? '';
+      if (poster.isNotEmpty && !poster.startsWith('http')) {
+        poster = await ref.read(apiServiceProvider).uploadImage(poster);
+      }
+      final now = DateTime.now();
+      final event = TradingEvent(
+        id: 'ev-${now.microsecondsSinceEpoch}',
+        type: _type,
+        title: title,
+        speaker: name.isEmpty ? 'You' : name,
+        city: _online ? 'Online' : (_cityValue.trim().isEmpty ? '—' : _cityValue.trim()),
+        dateIso: _date.toIso8601String(),
+        price: double.tryParse(_price.text.replaceAll(',', '.')) ?? 0,
+        isOnline: _online,
+        description: _desc.text.trim(),
+        posterUrl: poster.isEmpty ? null : poster,
+        isMine: true,
+      );
+      await ref.read(myEventsProvider.notifier).publish(event);
+      if (!mounted) return;
+      Navigator.of(context).pop();
+      messenger.showSnackBar(SnackBar(content: Text(l.event_published)));
+    } catch (e) {
+      if (!mounted) return;
+      messenger.showSnackBar(SnackBar(content: Text(friendlyErrorText(e, l))));
+    } finally {
+      if (mounted) setState(() => _busy = false);
     }
-    final now = DateTime.now();
-    final event = TradingEvent(
-      id: 'ev-${now.microsecondsSinceEpoch}',
-      type: _type,
-      title: title,
-      speaker: name.isEmpty ? 'You' : name,
-      city: _online ? 'Online' : (_cityValue.trim().isEmpty ? '—' : _cityValue.trim()),
-      dateIso: _date.toIso8601String(),
-      price: double.tryParse(_price.text.replaceAll(',', '.')) ?? 0,
-      isOnline: _online,
-      description: _desc.text.trim(),
-      posterUrl: poster.isEmpty ? null : poster,
-      isMine: true,
-    );
-    await ref.read(myEventsProvider.notifier).publish(event);
-    if (!mounted) return;
-    Navigator.of(context).pop();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.event_published)));
   }
 
   @override

@@ -34,6 +34,14 @@ String? _messageForCode(String? code, AppLocalizations l) {
       return l.err_own_code;
     case 'not_owner':
       return l.err_not_owner;
+    case 'unsupported_type':
+    case 'bad_image':
+    case 'upload_bad_format':
+      return l.upload_bad_format;
+    case 'upload_too_large':
+      return l.upload_too_large;
+    case 'upload_failed':
+      return l.upload_failed;
     default:
       return null;
   }
@@ -45,6 +53,8 @@ String? _messageForCode(String? code, AppLocalizations l) {
 String friendlyErrorText(Object? error, AppLocalizations l) {
   if (isNetworkError(error)) return l.error_network;
   if (error is ApiException) {
+    // 5xx — сервер жағындағы ақаулық: «біздің жақта» деген жұмсақ хабар.
+    if ((error.statusCode ?? 0) >= 500) return l.error_server;
     final mapped = _messageForCode(error.message, l);
     if (mapped != null) return mapped;
   }

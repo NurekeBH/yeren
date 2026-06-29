@@ -55,12 +55,12 @@ class _IdeasTab extends ConsumerWidget {
     return RefreshIndicator(
       color: AppColors.gold,
       onRefresh: () async {
-        ref.invalidate(mySignalsProvider);
+        ref.invalidate(myPublishedSignalsProvider);
         await ref.read(provider.future);
       },
       child: async.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => ErrorRetryView(error: e, onRetry: () => ref.invalidate(mySignalsProvider)),
+        error: (e, _) => ErrorRetryView(error: e, onRetry: () => ref.invalidate(myPublishedSignalsProvider)),
         data: (ideas) => ideas.isEmpty
             ? _Empty(label: l.signals_empty)
             : ListView.builder(

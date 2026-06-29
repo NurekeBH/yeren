@@ -76,7 +76,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               TextFormField(
                 controller: _name,
                 decoration: InputDecoration(hintText: l.onboarding_name_hint),
-                validator: (v) => (v == null || v.trim().isEmpty) ? l.common_error : null,
+                validator: (v) => (v == null || v.trim().isEmpty) ? l.validation_required : null,
               ),
               const SizedBox(height: 16),
               Text(l.onboarding_city_label, style: AppTypography.label()),

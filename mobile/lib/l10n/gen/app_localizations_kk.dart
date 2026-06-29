@@ -42,6 +42,28 @@ class AppLocalizationsKk extends AppLocalizations {
   String get error_generic => 'Бірдеңе дұрыс болмады. Кейінірек қайталаңыз';
 
   @override
+  String get error_server =>
+      'Бізде ақаулық туындады. Жөндеп жатырмыз — кейінірек қайталаңыз';
+
+  @override
+  String get validation_required => 'Бұл өрісті толтыру міндетті';
+
+  @override
+  String validation_min_chars(int n) {
+    return 'Кемінде $n таңба';
+  }
+
+  @override
+  String get upload_too_large => 'Файл тым үлкен. Ең көбі 5 МБ';
+
+  @override
+  String get upload_bad_format => 'Қате формат. Сурет таңдаңыз (PNG, JPG)';
+
+  @override
+  String get upload_failed =>
+      'Фотоны жүктеу мүмкін болмады. Байланысты тексеріп қайталаңыз';
+
+  @override
   String get err_invalid_credentials => 'Қате телефон немесе құпиясөз';
 
   @override

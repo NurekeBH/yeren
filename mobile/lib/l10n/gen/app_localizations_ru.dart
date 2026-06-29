@@ -42,6 +42,30 @@ class AppLocalizationsRu extends AppLocalizations {
   String get error_generic => 'Что-то пошло не так. Попробуйте позже';
 
   @override
+  String get error_server =>
+      'Что-то пошло не так на нашей стороне. Мы уже работаем над этим — попробуйте позже';
+
+  @override
+  String get validation_required => 'Это поле обязательно для заполнения';
+
+  @override
+  String validation_min_chars(int n) {
+    return 'Минимум $n символов';
+  }
+
+  @override
+  String get upload_too_large =>
+      'Файл слишком большой. Максимальный размер — 5 МБ';
+
+  @override
+  String get upload_bad_format =>
+      'Неверный формат. Пожалуйста, выберите фото (PNG, JPG)';
+
+  @override
+  String get upload_failed =>
+      'Не удалось загрузить фото. Проверьте соединение и попробуйте снова';
+
+  @override
   String get err_invalid_credentials => 'Неверный телефон или пароль';
 
   @override

@@ -101,9 +101,11 @@ class _PhoneScreenState extends ConsumerState<PhoneScreen> {
                           prefixIcon: const Icon(Icons.phone, color: AppColors.textMuted),
                         ),
                         validator: (v) {
-                          if (v == null) return l.auth_phone_error;
-                          final digits = v.replaceAll(RegExp(r'\D'), '');
-                          if (digits.length < 7) return l.auth_phone_error;
+                          final raw = (v ?? '').trim();
+                          if (raw.isEmpty) return l.validation_required;
+                          // Жергілікті нөмір: 7–14 цифр (елдік код бөлек таңдалады).
+                          final digits = raw.replaceAll(RegExp(r'\D'), '');
+                          if (!RegExp(r'^\d{7,14}$').hasMatch(digits)) return l.auth_phone_error;
                           return null;
                         },
                       ),

@@ -12,7 +12,9 @@ import '../../profile/application/profile_controller.dart';
 import 'publish_event_sheet.dart';
 
 String eventDate(String iso) {
-  final d = DateTime.parse(iso).toLocal();
+  // tryParse — сервер бұзық/бос күн жіберсе бүкіл Events табы құламасын.
+  final d = DateTime.tryParse(iso)?.toLocal();
+  if (d == null) return '—';
   String two(int n) => n.toString().padLeft(2, '0');
   return '${two(d.day)}.${two(d.month)} · ${two(d.hour)}:${two(d.minute)}';
 }

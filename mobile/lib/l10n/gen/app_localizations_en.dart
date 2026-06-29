@@ -42,6 +42,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error_generic => 'Something went wrong. Please try again later';
 
   @override
+  String get error_server =>
+      'Something went wrong on our side. We\'re on it — try again later';
+
+  @override
+  String get validation_required => 'This field is required';
+
+  @override
+  String validation_min_chars(int n) {
+    return 'At least $n characters';
+  }
+
+  @override
+  String get upload_too_large => 'File too large. Max 5 MB';
+
+  @override
+  String get upload_bad_format =>
+      'Wrong format. Please choose an image (PNG, JPG)';
+
+  @override
+  String get upload_failed =>
+      'Couldn\'t upload the photo. Check your connection and retry';
+
+  @override
   String get err_invalid_credentials => 'Incorrect phone or password';
 
   @override

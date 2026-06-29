@@ -122,8 +122,13 @@ class _AccountTileState extends ConsumerState<_AccountTile> {
         ],
       ),
     );
-    if (ok != true) return;
-    await ref.read(journalControllerProvider).removeAccount(widget.account.id);
+    if (ok != true || !mounted) return;
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      await ref.read(journalControllerProvider).removeAccount(widget.account.id);
+    } catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text(friendlyErrorText(e, l))));
+    }
   }
 
   @override

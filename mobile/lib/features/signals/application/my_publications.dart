@@ -7,20 +7,20 @@ import '../data/signals_repository.dart';
 import 'trader_posts_controller.dart';
 
 /// Менің жарияланған идеяларым (белсенді + жабылған) — backend /me/signals.
-final mySignalsProvider = FutureProvider<List<Signal>>((ref) async {
+final myPublishedSignalsProvider = FutureProvider<List<Signal>>((ref) async {
   final list = await ref.watch(apiServiceProvider).mySignals();
   return list.map((e) => signalFromJson((e as Map).cast<String, dynamic>())).toList();
 });
 
 /// Тек белсенді идеяларым.
 final myActiveSignalsProvider = FutureProvider<List<Signal>>((ref) async {
-  final all = await ref.watch(mySignalsProvider.future);
+  final all = await ref.watch(myPublishedSignalsProvider.future);
   return all.where((s) => s.status == SignalStatus.active).toList();
 });
 
 /// Тек жабылған идеяларым (TP/SL).
 final myClosedSignalsProvider = FutureProvider<List<Signal>>((ref) async {
-  final all = await ref.watch(mySignalsProvider.future);
+  final all = await ref.watch(myPublishedSignalsProvider.future);
   return all.where((s) => s.status != SignalStatus.active).toList();
 });
 

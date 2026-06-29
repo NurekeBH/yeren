@@ -9,7 +9,9 @@ const EventCreate = z.object({
   speaker: z.string().min(1),
   city: z.string().default('Online'),
   is_online: z.boolean().default(true),
-  starts_at: z.string(), // ISO
+  // Парсталатын күн ғана (мусорды кесеміз), бірақ локаль ISO-ны да қабылдаймыз
+  // (мобайл toIso8601String() offset-сіз жібереді) — клиенттер парс кезінде құламасын.
+  starts_at: z.string().refine((s) => !Number.isNaN(Date.parse(s)), { message: 'invalid_date' }),
   price: z.number().min(0).default(0),
   description: z.string().min(1),
   youtube_id: z.string().optional(),

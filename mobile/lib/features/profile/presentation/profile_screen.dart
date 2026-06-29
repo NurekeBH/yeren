@@ -9,6 +9,7 @@ import '../../../core/network/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
+import '../../../shared/widgets/error_view.dart';
 import '../../../shared/widgets/language_switcher.dart';
 import '../../auth/application/auth_controller.dart';
 import '../application/profile_controller.dart';
@@ -26,16 +27,20 @@ class ProfileScreen extends ConsumerWidget {
   Future<void> _pickAvatar(BuildContext context, WidgetRef ref) async {
     // Контекст-тәуелді нысандарды кез келген await-қа дейін ұстап аламыз.
     final messenger = ScaffoldMessenger.of(context);
-    final msg = AppLocalizations.of(context).profile_avatar_updated;
+    final l = AppLocalizations.of(context);
     final picker = ImagePicker();
     final file = await picker.pickImage(source: ImageSource.gallery, imageQuality: 80, maxWidth: 600);
     if (file == null) return;
-    // Бірден жергілікті жолды көрсетеміз (тез әрі офлайн), сосын Supabase-ке
-    // жүктеп көреміз — сәтті болса тұрақты URL-ге ауыстырамыз.
+    // Бірден жергілікті жолды көрсетеміз (тез әрі офлайн), сосын серверге жүктейміз.
     ref.read(profileControllerProvider.notifier).setAvatar(file.path);
-    final url = await ref.read(apiServiceProvider).uploadImage(file.path);
-    if (url != null) ref.read(profileControllerProvider.notifier).setAvatar(url);
-    messenger.showSnackBar(SnackBar(content: Text(msg)));
+    try {
+      final url = await ref.read(apiServiceProvider).uploadImage(file.path);
+      ref.read(profileControllerProvider.notifier).setAvatar(url);
+      messenger.showSnackBar(SnackBar(content: Text(l.profile_avatar_updated)));
+    } catch (e) {
+      // Сәтсіз болса — шынайы қатені көрсетеміз (формат/өлшем/желі), «жалған сәттілік» жоқ.
+      messenger.showSnackBar(SnackBar(content: Text(friendlyErrorText(e, l))));
+    }
   }
 
   @override

@@ -38,12 +38,13 @@ class PriceAlert extends Equatable {
       };
 
   factory PriceAlert.fromJson(Map<String, dynamic> j) => PriceAlert(
-        id: j['id'] as String,
-        instrument: j['instrument'] as String,
-        targetPrice: (j['targetPrice'] as num).toDouble(),
-        text: j['text'] as String,
-        createdAtIso: j['createdAtIso'] as String,
-        pips: (j['pips'] as num?)?.toDouble(),
+        // Бұзық/ескі prefs деректері краш бермесін — қауіпсіз каст.
+        id: (j['id'] ?? '').toString(),
+        instrument: (j['instrument'] ?? 'XAU/USD').toString(),
+        targetPrice: (j['targetPrice'] is num) ? (j['targetPrice'] as num).toDouble() : double.tryParse('${j['targetPrice']}') ?? 0,
+        text: (j['text'] ?? '').toString(),
+        createdAtIso: (j['createdAtIso'] ?? '').toString(),
+        pips: (j['pips'] is num) ? (j['pips'] as num).toDouble() : double.tryParse('${j['pips']}'),
         ideaId: j['ideaId'] as String?,
       );
 

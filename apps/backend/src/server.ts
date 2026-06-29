@@ -133,6 +133,12 @@ const shutdown = async (signal: string) => {
 process.on('SIGINT', () => void shutdown('SIGINT'));
 process.on('SIGTERM', () => void shutdown('SIGTERM'));
 
+// ҚҰЛАУДЫ БОЛДЫРМАУ: fire-and-forget промис (мыс. push жіберу) қате берсе, Node 20
+// әдепкіде процесті өлтіреді. Логқа жазып, серверді тірі қалдырамыз.
+process.on('unhandledRejection', (reason) => {
+  app.log.error({ reason }, 'unhandled_rejection');
+});
+
 try {
   await app.listen({ port: env.PORT, host: env.HOST });
   app.log.info(`ALTYN API listening at http://${env.HOST}:${env.PORT}`);

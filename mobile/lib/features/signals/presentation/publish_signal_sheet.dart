@@ -8,6 +8,7 @@ import '../../../core/network/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
+import '../../../shared/widgets/error_view.dart';
 import '../../../shared/models/signal.dart';
 import '../../profile/application/profile_controller.dart';
 import '../application/my_signals_controller.dart';
@@ -97,41 +98,40 @@ class _PublishSheetState extends ConsumerState<_PublishSheet> {
       return;
     }
     setState(() => _busy = true);
-    final name = ref.read(profileControllerProvider).name;
-    // Скриншотты Supabase-ке жүктеп көреміз — сәтті болса тұрақты URL, әйтпесе
-    // жергілікті жол (офлайн көрінеді).
-    var shot = _photoPath ?? '';
-    if (shot.isNotEmpty && !shot.startsWith('http')) {
-      final url = await ref.read(apiServiceProvider).uploadImage(shot);
-      if (url != null) shot = url;
-    }
-    final now = DateTime.now();
-    final signal = Signal(
-      id: 'my-${now.microsecondsSinceEpoch}',
-      pair: 'XAU/USD',
-      direction: _direction,
-      entryFrom: entryFrom, entryTo: entryTo, tp1: tp1, tp2: _num(_tp2), tp3: _num(_tp3), sl: sl,
-      rr: _rr(), confidence: Signal.confidenceForRisk(_risk),
-      screenshotUrl: shot,
-      analysis: text,
-      status: SignalStatus.active,
-      publishedAt: now,
-      isFree: _price == 0,
-      isMine: true,
-      authorName: name.isEmpty ? 'You' : name,
-      priceOverride: _price == 0 ? null : _price,
-    );
+    final messenger = ScaffoldMessenger.of(context);
     try {
+      final name = ref.read(profileControllerProvider).name;
+      // Скриншотты серверге жүктейміз; сәтсіз болса — қате көрсетіледі (жалған сәттілік жоқ).
+      var shot = _photoPath ?? '';
+      if (shot.isNotEmpty && !shot.startsWith('http')) {
+        shot = await ref.read(apiServiceProvider).uploadImage(shot);
+      }
+      final now = DateTime.now();
+      final signal = Signal(
+        id: 'my-${now.microsecondsSinceEpoch}',
+        pair: 'XAU/USD',
+        direction: _direction,
+        entryFrom: entryFrom, entryTo: entryTo, tp1: tp1, tp2: _num(_tp2), tp3: _num(_tp3), sl: sl,
+        rr: _rr(), confidence: Signal.confidenceForRisk(_risk),
+        screenshotUrl: shot,
+        analysis: text,
+        status: SignalStatus.active,
+        publishedAt: now,
+        isFree: _price == 0,
+        isMine: true,
+        authorName: name.isEmpty ? 'You' : name,
+        priceOverride: _price == 0 ? null : _price,
+      );
       await ref.read(mySignalsProvider).publish(signal);
-    } catch (_) {
       if (!mounted) return;
-      setState(() => _busy = false);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.common_error)));
-      return;
+      Navigator.of(context).pop();
+      messenger.showSnackBar(SnackBar(content: Text(l.signals_published)));
+    } catch (e) {
+      if (!mounted) return;
+      messenger.showSnackBar(SnackBar(content: Text(friendlyErrorText(e, l))));
+    } finally {
+      if (mounted) setState(() => _busy = false);
     }
-    if (!mounted) return;
-    Navigator.of(context).pop();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.signals_published)));
   }
 
   @override

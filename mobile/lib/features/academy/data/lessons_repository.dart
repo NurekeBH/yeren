@@ -44,7 +44,10 @@ GallupQuestion gallupFromApi(Map<String, dynamic> j, String loc) {
     final scores = (o['scores'] as Map?)?.cast<String, dynamic>() ?? const {};
     return GallupOption(
       label: _libPick(o['label'], loc),
-      scores: {for (final e in scores.entries) _profileFromName(e.key): (e.value as num).toInt()},
+      scores: {
+        for (final e in scores.entries)
+          _profileFromName(e.key): e.value is num ? (e.value as num).toInt() : int.tryParse('${e.value}') ?? 0,
+      },
     );
   }).toList();
   return GallupQuestion(id: j['id'].toString(), text: _libPick(j['text'], loc), options: opts);

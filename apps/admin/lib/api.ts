@@ -26,6 +26,28 @@ export class ApiError extends Error {
   }
 }
 
+/** HTTP статус → понятное оператору сообщение (вместо «HTTP 500» / сырых кодов). */
+function friendlyHttp(status: number, raw?: string): string {
+  if (status === 401) return 'Сессия истекла. Войдите снова';
+  if (status === 403) return 'Недостаточно прав для этого действия';
+  if (status === 404) return 'Не найдено';
+  if (status === 409) return 'Конфликт данных. Обновите страницу';
+  if (status === 413 || status === 415) return 'Неверный формат или слишком большой файл';
+  if (status === 429) return 'Слишком много запросов. Подождите немного';
+  if (status >= 500) return 'Ошибка сервера. Попробуйте позже';
+  return raw || 'Не удалось выполнить действие';
+}
+
+/** Безопасный разбор JSON: при не-JSON ответе (например, HTML 502 от nginx) не падаем. */
+function safeJson(text: string): any {
+  if (!text) return null;
+  try {
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
+}
+
 /** Суретті backend арқылы Supabase Storage-қа жүктеп, public URL қайтарады. */
 export async function uploadImage(file: File): Promise<string> {
   const token = getToken();
@@ -37,13 +59,11 @@ export async function uploadImage(file: File): Promise<string> {
     body: form,
     cache: 'no-store',
   });
-  const text = await res.text();
-  const data = text ? JSON.parse(text) : null;
+  const data = safeJson(await res.text());
   if (!res.ok) {
-    const msg = data && (data.message || data.error) ? String(data.message || data.error) : `HTTP ${res.status}`;
-    throw new ApiError(res.status, msg);
+    throw new ApiError(res.status, friendlyHttp(res.status));
   }
-  return data.url as string;
+  return data?.url as string;
 }
 
 export async function api<T = any>(
@@ -62,16 +82,13 @@ export async function api<T = any>(
     cache: 'no-store',
   });
 
-  const text = await res.text();
-  const data = text ? JSON.parse(text) : null;
+  const data = safeJson(await res.text());
 
   if (!res.ok) {
-    const msg =
-      data && (data.message || data.error) ? String(data.message || data.error) : `HTTP ${res.status}`;
     if (res.status === 401 && typeof window !== 'undefined') {
-      clearToken();
+      clearToken(); // сессия истекла — страница-гард сама вернёт на /login
     }
-    throw new ApiError(res.status, msg);
+    throw new ApiError(res.status, friendlyHttp(res.status));
   }
   return data as T;
 }

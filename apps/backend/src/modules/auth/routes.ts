@@ -18,9 +18,10 @@ async function issueToken(
   req: FastifyRequest,
 ): Promise<string> {
   const jti = randomUUID();
+  // Сессия ~10 жыл (токенмен бірдей) — қолданушы өзі шықпайынша автоматты шықпайды.
   await query(
     `insert into user_sessions (user_id, jwt_jti, user_agent, ip, expires_at)
-     values ($1, $2, $3, $4, now() + interval '30 days')`,
+     values ($1, $2, $3, $4, now() + interval '3650 days')`,
     [userId, jti, String(req.headers['user-agent'] ?? '').slice(0, 200), req.ip ?? null],
   );
   return app.jwt.sign({ sub: userId, admin: isAdmin, jti });

@@ -250,9 +250,13 @@ class _SetResultCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     Future<void> set(SignalStatus s) async {
-      await ref.read(mySignalsProvider).setStatus(signal, s);
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.signals_result_set)));
+      final messenger = ScaffoldMessenger.of(context);
+      try {
+        await ref.read(mySignalsProvider).setStatus(signal, s);
+        messenger.showSnackBar(SnackBar(content: Text(l.signals_result_set)));
+      } catch (e) {
+        // Сервер қате берсе — қызыл экранға құламай, түсінікті хабар.
+        messenger.showSnackBar(SnackBar(content: Text(friendlyErrorText(e, l))));
       }
     }
 

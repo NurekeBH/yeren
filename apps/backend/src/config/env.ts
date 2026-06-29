@@ -11,7 +11,10 @@ const Env = z.object({
   DATABASE_URL: z.string().min(1),
 
   JWT_SECRET: z.string().min(32, 'JWT_SECRET must be at least 32 chars'),
-  JWT_EXPIRES_IN: z.string().default('30d'),
+  // Бизнес талабы: қолданушы ЕШҚАШАН автоматты шықпасын. Сондықтан токен ұзақ өмір
+  // сүреді (~10 жыл = практикалық шексіздік). Қауіпсіздік — logout/admin block арқылы
+  // сессияны сервер жағынан қайта шақыру (user_sessions.revoked_at).
+  JWT_EXPIRES_IN: z.string().default('3650d'),
   BCRYPT_ROUNDS: z.coerce.number().default(12),
 
   INVESTOR_PWD_KEY: z.string().length(64, 'INVESTOR_PWD_KEY must be 32 bytes (64 hex chars)'),
