@@ -42,6 +42,39 @@ class AppLocalizationsKk extends AppLocalizations {
   String get error_generic => 'Бірдеңе дұрыс болмады. Кейінірек қайталаңыз';
 
   @override
+  String get err_invalid_credentials => 'Қате телефон немесе құпиясөз';
+
+  @override
+  String get err_phone_already_registered => 'Бұл нөмір тіркелген. Кіріңіз.';
+
+  @override
+  String get err_account_blocked => 'Аккаунт бұғатталған';
+
+  @override
+  String get err_bad_request => 'Енгізілген деректерді тексеріңіз';
+
+  @override
+  String get err_not_found => 'Табылмады';
+
+  @override
+  String get err_locked => 'Қолжетімсіз — алдымен сатып алыңыз';
+
+  @override
+  String get err_insufficient_bonus => 'Бонус жеткіліксіз';
+
+  @override
+  String get err_invalid_code => 'Промокод қате';
+
+  @override
+  String get err_already_used => 'Промокод қолданылған';
+
+  @override
+  String get err_own_code => 'Өз промокодыңызды қолдана алмайсыз';
+
+  @override
+  String get err_not_owner => 'Рұқсат жоқ';
+
+  @override
   String get common_undo => 'Қайтару';
 
   @override

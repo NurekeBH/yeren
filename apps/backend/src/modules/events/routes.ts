@@ -28,8 +28,12 @@ export async function eventsRoutes(app: FastifyInstance) {
   app.get('/cities', async (req) => {
     const q = ((req.query as { q?: string }).q ?? '').trim();
     if (q) {
+      // name ЖӘНЕ aliases (латын/орыс транслитерация) бойынша іздейміз — мыс. «almaty»,
+      // «aktobe», «Актобе» де табады. Аты басынан сәйкеспен басталғандар жоғары шығады.
       const { rows } = await query<{ name: string; country: string }>(
-        `select name, country from cities where name ilike $1 order by (name ilike $2) desc, name limit 20`,
+        `select name, country from cities
+          where name ilike $1 or aliases ilike $1
+          order by (name ilike $2) desc, (aliases ilike $2) desc, name limit 20`,
         [`%${q}%`, `${q}%`],
       );
       return { cities: rows };

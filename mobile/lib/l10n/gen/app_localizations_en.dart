@@ -42,6 +42,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error_generic => 'Something went wrong. Please try again later';
 
   @override
+  String get err_invalid_credentials => 'Incorrect phone or password';
+
+  @override
+  String get err_phone_already_registered =>
+      'This number is already registered. Please sign in.';
+
+  @override
+  String get err_account_blocked => 'Account is blocked';
+
+  @override
+  String get err_bad_request => 'Please check the entered data';
+
+  @override
+  String get err_not_found => 'Not found';
+
+  @override
+  String get err_locked => 'Locked — purchase first';
+
+  @override
+  String get err_insufficient_bonus => 'Not enough bonuses';
+
+  @override
+  String get err_invalid_code => 'Invalid promo code';
+
+  @override
+  String get err_already_used => 'Promo code already used';
+
+  @override
+  String get err_own_code => 'You can\'t use your own promo code';
+
+  @override
+  String get err_not_owner => 'No access';
+
+  @override
   String get common_undo => 'Undo';
 
   @override

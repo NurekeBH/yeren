@@ -42,6 +42,40 @@ class AppLocalizationsRu extends AppLocalizations {
   String get error_generic => 'Что-то пошло не так. Попробуйте позже';
 
   @override
+  String get err_invalid_credentials => 'Неверный телефон или пароль';
+
+  @override
+  String get err_phone_already_registered =>
+      'Этот номер уже зарегистрирован. Войдите.';
+
+  @override
+  String get err_account_blocked => 'Аккаунт заблокирован';
+
+  @override
+  String get err_bad_request => 'Проверьте введённые данные';
+
+  @override
+  String get err_not_found => 'Не найдено';
+
+  @override
+  String get err_locked => 'Недоступно — сначала купите';
+
+  @override
+  String get err_insufficient_bonus => 'Недостаточно бонусов';
+
+  @override
+  String get err_invalid_code => 'Неверный промокод';
+
+  @override
+  String get err_already_used => 'Промокод уже использован';
+
+  @override
+  String get err_own_code => 'Нельзя использовать свой промокод';
+
+  @override
+  String get err_not_owner => 'Нет доступа';
+
+  @override
   String get common_undo => 'Отменить';
 
   @override

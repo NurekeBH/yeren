@@ -5,11 +5,51 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../l10n/gen/app_localizations.dart';
 
+/// Backend қате КОДЫН (мыс. 'invalid_credentials') қолданушы тіліндегі мәтінге аудару.
+/// Белгісіз код → null (жоғарыда жалпы хабарға түседі). Шикі ағылшын код ЕШҚАШАН көрінбейді.
+String? _messageForCode(String? code, AppLocalizations l) {
+  switch (code) {
+    case 'invalid_credentials':
+      return l.err_invalid_credentials;
+    case 'phone_already_registered':
+      return l.err_phone_already_registered;
+    case 'account_blocked':
+    case 'account_not_found': // қолданушыға: телефон/құпиясөз қате деп көрсету қауіпсіз
+      return code == 'account_blocked' ? l.err_account_blocked : l.err_invalid_credentials;
+    case 'bad_request':
+      return l.err_bad_request;
+    case 'not_found':
+    case 'not_found_or_reviewed':
+    case 'not_found_or_not_pending':
+      return l.err_not_found;
+    case 'locked':
+      return l.err_locked;
+    case 'insufficient_bonus':
+      return l.err_insufficient_bonus;
+    case 'invalid_code':
+      return l.err_invalid_code;
+    case 'already_used':
+      return l.err_already_used;
+    case 'own_code':
+      return l.err_own_code;
+    case 'not_owner':
+      return l.err_not_owner;
+    default:
+      return null;
+  }
+}
+
 /// Қатені қолданушыға түсінікті мәтінге айналдыру.
-/// Желі/таймаут → «Интернетті тексеріңіз»; басқасы → жалпы хабар.
-/// Шикі `ApiException(null): ...` мәтіні ЕШҚАШАН көрсетілмейді.
-String friendlyErrorText(Object? error, AppLocalizations l) =>
-    isNetworkError(error) ? l.error_network : l.error_generic;
+/// Желі/таймаут → «Интернетті тексеріңіз»; белгілі backend коды → тілдегі хабар;
+/// басқасы → жалпы хабар. Шикі `ApiException(null): ...` мәтіні ЕШҚАШАН көрсетілмейді.
+String friendlyErrorText(Object? error, AppLocalizations l) {
+  if (isNetworkError(error)) return l.error_network;
+  if (error is ApiException) {
+    final mapped = _messageForCode(error.message, l);
+    if (mapped != null) return mapped;
+  }
+  return l.error_generic;
+}
 
 /// Қате күйін біркелкі көрсететін виджет: белгіше + түсінікті мәтін + «Қайталау».
 /// [compact] — карточка ішіндегі шағын нұсқа (үй экранының модульдері үшін).

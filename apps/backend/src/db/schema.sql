@@ -61,6 +61,115 @@ insert into cities (name, country) values
   ('Киев','UA'),('Стамбул','TR'),('Дубай','AE')
 on conflict (name) do nothing;
 
+-- Латын/орыс транслитерация баламалары (теру кезінде табылу үшін — мыс. «almaty», «aktobe»,
+-- «Актобе» де Ақтөбені табады). aliases бағаны + іздеу name ЖӘНЕ aliases бойынша жүреді.
+alter table cities add column if not exists aliases text not null default '';
+create index if not exists cities_aliases_idx on cities (lower(aliases));
+update cities set aliases = v.aliases from (values
+  ('Алматы','almaty alma-ata алма-ата алмата'),
+  ('Астана','astana nur-sultan нурсултан нур-султан целиноград акмола'),
+  ('Шымкент','shymkent chimkent чимкент шымкент'),
+  ('Қарағанды','karaganda караганда qaragandy karagandy'),
+  ('Ақтөбе','aktobe актобе aktyubinsk актюбинск'),
+  ('Тараз','taraz джамбул jambyl jambul'),
+  ('Павлодар','pavlodar павлодар'),
+  ('Өскемен','oskemen ust-kamenogorsk усть-каменогорск ускемен'),
+  ('Семей','semey semei semipalatinsk семипалатинск'),
+  ('Атырау','atyrau guryev гурьев'),
+  ('Қостанай','kostanay костанай kustanai кустанай'),
+  ('Қызылорда','kyzylorda кызылорда qyzylorda'),
+  ('Орал','oral uralsk уральск'),
+  ('Петропавл','petropavl petropavlovsk петропавловск'),
+  ('Ақтау','aktau актау shevchenko шевченко'),
+  ('Темиртау','temirtau темиртау'),
+  ('Түркістан','turkistan turkestan туркестан'),
+  ('Көкшетау','kokshetau кокшетау'),
+  ('Талдықорған','taldykorgan талдыкорган taldyqorgan'),
+  ('Екібастұз','ekibastuz экибастуз'),
+  ('Жезқазған','zhezkazgan жезказган'),
+  ('Балқаш','balkhash балхаш'),
+  ('Кентау','kentau кентау'),
+  ('Рудный','rudny рудный rudniy'),
+  ('Жанаөзен','zhanaozen жанаозен'),
+  ('Москва','moscow moskva москва'),
+  ('Санкт-Петербург','saint petersburg spb питер санкт-петербург sankt-peterburg'),
+  ('Казань','kazan казань'),
+  ('Новосибирск','novosibirsk новосибирск'),
+  ('Екатеринбург','ekaterinburg yekaterinburg екатеринбург'),
+  ('Ташкент','tashkent toshkent ташкент'),
+  ('Самарканд','samarkand самарканд'),
+  ('Бишкек','bishkek бишкек frunze фрунзе'),
+  ('Ош','osh ош'),
+  ('Душанбе','dushanbe душанбе'),
+  ('Ашхабад','ashgabat ashkhabad ашхабад'),
+  ('Баку','baku baki баку'),
+  ('Тбилиси','tbilisi тбилиси'),
+  ('Ереван','yerevan erevan ереван'),
+  ('Минск','minsk минск'),
+  ('Киев','kyiv kiev киев'),
+  ('Стамбул','istanbul стамбул'),
+  ('Дубай','dubai дубай')
+) as v(name, aliases) where cities.name = v.name;
+
+-- ҚР / Өзбекстан / Қырғызстан қалаларын ТОЛЫҚ қосу (autocomplete). on conflict — қозғамайды.
+insert into cities (name, country) values
+  -- Қазақстан (облыс орталықтары + аумақтық маңызы бар қалалар)
+  ('Ақсу','KZ'),('Арқалық','KZ'),('Арыс','KZ'),('Атбасар','KZ'),('Аягөз','KZ'),
+  ('Байқоңыр','KZ'),('Қонаев','KZ'),('Қандыағаш','KZ'),('Қаражал','KZ'),('Қаратау','KZ'),
+  ('Қарқаралы','KZ'),('Қаскелең','KZ'),('Құлсары','KZ'),('Лисаковск','KZ'),('Макинск','KZ'),
+  ('Сарань','KZ'),('Сәтбаев','KZ'),('Степногорск','KZ'),('Тайынша','KZ'),('Текелі','KZ'),
+  ('Үшарал','KZ'),('Үштөбе','KZ'),('Хромтау','KZ'),('Шалқар','KZ'),('Шахтинск','KZ'),
+  ('Шемонаиха','KZ'),('Шу','KZ'),('Щучинск','KZ'),('Ерейментау','KZ'),('Абай','KZ'),
+  ('Алға','KZ'),('Арал','KZ'),('Шардара','KZ'),('Сарыағаш','KZ'),('Ленгір','KZ'),
+  ('Жаркент','KZ'),('Есік','KZ'),('Жітіқара','KZ'),('Зайсан','KZ'),('Жетісай','KZ'),
+  ('Жаңатас','KZ'),('Қазалы','KZ'),('Сарқан','KZ'),('Риддер','KZ'),('Курчатов','KZ'),
+  ('Приозерск','KZ'),('Темір','KZ'),('Шар','KZ'),('Степняк','KZ'),('Серебрянск','KZ'),
+  ('Форт-Шевченко','KZ'),('Шортанды','KZ'),('Мамлютка','KZ'),('Сергеевка','KZ'),('Есіл','KZ'),
+  -- Өзбекстан
+  ('Бухара','UZ'),('Наманган','UZ'),('Андижан','UZ'),('Нукус','UZ'),('Фергана','UZ'),
+  ('Карши','UZ'),('Коканд','UZ'),('Маргилан','UZ'),('Хива','UZ'),('Ургенч','UZ'),
+  ('Джизак','UZ'),('Навои','UZ'),('Термез','UZ'),('Гулистан','UZ'),('Чирчик','UZ'),
+  ('Ангрен','UZ'),('Алмалык','UZ'),('Шахрисабз','UZ'),
+  -- Қырғызстан
+  ('Джалал-Абад','KG'),('Каракол','KG'),('Токмок','KG'),('Кара-Балта','KG'),('Узген','KG'),
+  ('Балыкчы','KG'),('Нарын','KG'),('Талас','KG'),('Кызыл-Кия','KG'),('Баткен','KG'),
+  ('Кант','KG'),('Чолпон-Ата','KG'),('Майлуу-Суу','KG')
+on conflict (name) do nothing;
+
+-- Жаңа қалалардың латын/орыс баламалары (теру кезінде табылу үшін).
+update cities set aliases = v.aliases from (values
+  ('Ақсу','aksu аксу'),('Арқалық','arkalyk аркалык'),('Арыс','arys арысь'),
+  ('Атбасар','atbasar атбасар'),('Аягөз','ayagoz аягоз'),('Байқоңыр','baikonur байконур baikonyr'),
+  ('Қонаев','konaev konaev kapshagay капшагай қапшағай qonaev'),('Қандыағаш','kandyagash кандыагаш'),
+  ('Қаражал','karazhal каражал'),('Қаратау','karatau каратау'),('Қарқаралы','karkaralinsk каркаралинск karkaraly'),
+  ('Қаскелең','kaskelen каскелен'),('Құлсары','kulsary кульсары qulsary'),('Лисаковск','lisakovsk лисаковск'),
+  ('Макинск','makinsk макинск'),('Сарань','saran сарань'),('Сәтбаев','satbaev сатпаев satpaev nikoltsevka'),
+  ('Степногорск','stepnogorsk степногорск'),('Тайынша','tayynsha таинша'),('Текелі','tekeli текели'),
+  ('Үшарал','usharal ушарал'),('Үштөбе','ushtobe уштобе'),('Хромтау','khromtau хромтау'),
+  ('Шалқар','shalkar шалкар'),('Шахтинск','shakhtinsk шахтинск'),('Шемонаиха','shemonaikha шемонаиха'),
+  ('Шу','shu шу chu'),('Щучинск','shchuchinsk щучинск'),('Ерейментау','ereymentau ерейментау'),
+  ('Абай','abai абай'),('Алға','alga алга'),('Арал','aral арал аралы aralsk'),
+  ('Шардара','shardara шардара'),('Сарыағаш','saryagash сарыагаш'),('Ленгір','lenger ленгер lengir'),
+  ('Жаркент','zharkent жаркент'),('Есік','esik есик issyk иссык'),('Жітіқара','zhitikara житикара'),
+  ('Зайсан','zaisan зайсан'),('Жетісай','zhetysai жетысай'),('Жаңатас','zhanatas жанатас'),
+  ('Қазалы','kazaly казалинск qazaly'),('Сарқан','sarkand сарканд sarqan'),('Риддер','ridder риддер leninogorsk'),
+  ('Курчатов','kurchatov курчатов'),('Приозерск','priozersk приозерск'),('Темір','temir темир'),
+  ('Шар','shar шар'),('Степняк','stepnyak степняк'),('Серебрянск','serebryansk серебрянск'),
+  ('Форт-Шевченко','fort-shevchenko форт-шевченко'),('Шортанды','shortandy шортанды'),
+  ('Мамлютка','mamlyutka мамлютка'),('Сергеевка','sergeevka сергеевка'),('Есіл','esil есиль'),
+  ('Бухара','bukhara бухара buxoro'),('Наманган','namangan наманган'),('Андижан','andijan андижан andijon'),
+  ('Нукус','nukus нукус'),('Фергана','fergana фергана fargona'),('Карши','karshi карши qarshi'),
+  ('Коканд','kokand коканд qoqon'),('Маргилан','margilan маргилан margilon'),('Хива','khiva хива xiva'),
+  ('Ургенч','urgench ургенч urganch'),('Джизак','jizzakh джизак jizzax'),('Навои','navoi навои navoiy'),
+  ('Термез','termez термез termiz'),('Гулистан','gulistan гулистан guliston'),('Чирчик','chirchik чирчик chirchiq'),
+  ('Ангрен','angren ангрен'),('Алмалык','almalyk алмалык olmaliq'),('Шахрисабз','shakhrisabz шахрисабз shahrisabz'),
+  ('Джалал-Абад','jalal-abad джалал-абад jalalabad'),('Каракол','karakol каракол'),('Токмок','tokmok токмок tokmak'),
+  ('Кара-Балта','kara-balta кара-балта karabalta'),('Узген','uzgen узген ozgon'),('Балыкчы','balykchy балыкчы balykchi'),
+  ('Нарын','naryn нарын'),('Талас','talas талас'),('Кызыл-Кия','kyzyl-kiya кызыл-кия kyzylkiya'),
+  ('Баткен','batken баткен'),('Кант','kant кант'),('Чолпон-Ата','cholpon-ata чолпон-ата cholponata'),
+  ('Майлуу-Суу','mailuu-suu майлуу-суу mailuusuu')
+) as v(name, aliases) where cities.name = v.name;
+
 -- ─────────────────── SESSIONS / REFRESH TOKENS ───────────────────
 create table if not exists user_sessions (
   id         uuid primary key default uuid_generate_v4(),

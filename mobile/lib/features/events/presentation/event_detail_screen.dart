@@ -4,12 +4,12 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../../../core/config/app_config.dart';
 import '../../../core/mock/events_fixtures.dart';
-import '../../../core/network/api_client.dart';
 import '../../../core/network/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/trading_event.dart';
+import '../../../shared/widgets/error_view.dart';
 import '../../auth/application/auth_controller.dart';
 import '../../profile/application/profile_controller.dart';
 import 'events_screen.dart';
@@ -215,7 +215,7 @@ class _ApplySheetState extends ConsumerState<_ApplySheet> {
       } catch (e) {
         if (!mounted) return;
         setState(() => _busy = false);
-        final msg = e is ApiException ? e.message : l.common_error;
+        final msg = friendlyErrorText(e, l);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
         return;
       }

@@ -166,6 +166,72 @@ abstract class AppLocalizations {
   /// **'Бірдеңе дұрыс болмады. Кейінірек қайталаңыз'**
   String get error_generic;
 
+  /// No description provided for @err_invalid_credentials.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қате телефон немесе құпиясөз'**
+  String get err_invalid_credentials;
+
+  /// No description provided for @err_phone_already_registered.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бұл нөмір тіркелген. Кіріңіз.'**
+  String get err_phone_already_registered;
+
+  /// No description provided for @err_account_blocked.
+  ///
+  /// In kk, this message translates to:
+  /// **'Аккаунт бұғатталған'**
+  String get err_account_blocked;
+
+  /// No description provided for @err_bad_request.
+  ///
+  /// In kk, this message translates to:
+  /// **'Енгізілген деректерді тексеріңіз'**
+  String get err_bad_request;
+
+  /// No description provided for @err_not_found.
+  ///
+  /// In kk, this message translates to:
+  /// **'Табылмады'**
+  String get err_not_found;
+
+  /// No description provided for @err_locked.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қолжетімсіз — алдымен сатып алыңыз'**
+  String get err_locked;
+
+  /// No description provided for @err_insufficient_bonus.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бонус жеткіліксіз'**
+  String get err_insufficient_bonus;
+
+  /// No description provided for @err_invalid_code.
+  ///
+  /// In kk, this message translates to:
+  /// **'Промокод қате'**
+  String get err_invalid_code;
+
+  /// No description provided for @err_already_used.
+  ///
+  /// In kk, this message translates to:
+  /// **'Промокод қолданылған'**
+  String get err_already_used;
+
+  /// No description provided for @err_own_code.
+  ///
+  /// In kk, this message translates to:
+  /// **'Өз промокодыңызды қолдана алмайсыз'**
+  String get err_own_code;
+
+  /// No description provided for @err_not_owner.
+  ///
+  /// In kk, this message translates to:
+  /// **'Рұқсат жоқ'**
+  String get err_not_owner;
+
   /// No description provided for @common_undo.
   ///
   /// In kk, this message translates to:

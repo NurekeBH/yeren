@@ -9,7 +9,6 @@ import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/widgets/error_view.dart';
 import '../data/journal_controller.dart';
 import '../data/journal_models.dart';
-import 'add_trade_sheet.dart';
 import 'journal_analytics_tab.dart';
 import 'trade_detail_sheet.dart';
 
@@ -44,9 +43,9 @@ class JournalScreen extends ConsumerWidget {
           ),
         ),
         floatingActionButton: FloatingActionButton.extended(
-          onPressed: () => _showAddMenu(context, ref, l),
-          icon: const Icon(Icons.add),
-          label: Text(l.journal_add_trade),
+          onPressed: () => _import(context, ref, l),
+          icon: const Icon(Icons.upload_file),
+          label: Text(l.journal_import),
         ),
         body: Column(
           children: [
@@ -58,37 +57,6 @@ class JournalScreen extends ConsumerWidget {
                   JournalAnalyticsTab(),
                 ],
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _showAddMenu(BuildContext context, WidgetRef ref, AppLocalizations l) {
-    showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      builder: (_) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.edit_note, color: AppColors.gold),
-              title: Text(l.journal_add_trade),
-              onTap: () {
-                Navigator.pop(context);
-                showAddTradeSheet(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.upload_file, color: AppColors.dxyBlue),
-              title: Text(l.journal_import),
-              subtitle: Text(l.journal_import_hint, style: AppTypography.label(color: AppColors.textSecondary)),
-              onTap: () {
-                Navigator.pop(context);
-                _import(context, ref, l);
-              },
             ),
           ],
         ),
