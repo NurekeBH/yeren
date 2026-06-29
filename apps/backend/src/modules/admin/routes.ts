@@ -94,6 +94,39 @@ export async function adminRoutes(app: FastifyInstance) {
     };
   });
 
+  // ── Тіркелу аналитикасы (маркетинг/перформанс) ──
+  // Бүгін/кеше/7к/30к/барлығы + соңғы 30 күннің күнделікті сериясы (график үшін).
+  app.get('/admin/stats/registrations', { onRequest: [app.requireAdmin] }, async () => {
+    const summary = await query<Record<string, string>>(`
+      select
+        (select count(*) from users where created_at >= date_trunc('day', now()))::text as today,
+        (select count(*) from users where created_at >= date_trunc('day', now()) - interval '1 day'
+                                      and created_at <  date_trunc('day', now()))::text as yesterday,
+        (select count(*) from users where created_at >= date_trunc('day', now()) - interval '7 days')::text as last_7d,
+        (select count(*) from users where created_at >= date_trunc('day', now()) - interval '30 days')::text as last_30d,
+        (select count(*) from users)::text as total
+    `);
+    // Соңғы 30 күн: әр күн үшін тіркелу саны (бос күндер 0). generate_series → left join.
+    const series = await query<{ day: string; count: string }>(`
+      with days as (
+        select generate_series(date_trunc('day', now()) - interval '29 days', date_trunc('day', now()), interval '1 day') as d
+      )
+      select to_char(days.d, 'YYYY-MM-DD') as day, count(u.id)::text as count
+        from days
+        left join users u on date_trunc('day', u.created_at) = days.d
+       group by days.d order by days.d
+    `);
+    const r = summary.rows[0] ?? {};
+    return {
+      today: Number(r.today ?? 0),
+      yesterday: Number(r.yesterday ?? 0),
+      last_7d: Number(r.last_7d ?? 0),
+      last_30d: Number(r.last_30d ?? 0),
+      total: Number(r.total ?? 0),
+      daily: series.rows.map((s) => ({ day: s.day, count: Number(s.count) })),
+    };
+  });
+
   // ── Қолданушылар тізімі (іздеу + бет) ──
   app.get('/admin/users', { onRequest: [app.requireAdmin] }, async (req) => {
     const q = (req.query as { search?: string; limit?: string }) ?? {};
