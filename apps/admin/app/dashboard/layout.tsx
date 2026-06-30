@@ -9,6 +9,7 @@ import { api, clearToken, getToken } from '@/lib/api';
 const NAV = [
   { href: '/dashboard', label: 'Обзор', icon: '📊' },
   { href: '/dashboard/finance', label: 'Финансы / Бонусы', icon: '💰' },
+  { href: '/dashboard/signals-bi', label: 'Pay-per-Signal', icon: '💎' },
   { href: '/dashboard/users', label: 'Пользователи', icon: '👥' },
   { href: '/dashboard/applications', label: 'Заявки провайдеров', icon: '📝', badgeKey: 'applications' },
   { href: '/dashboard/subscriptions', label: 'Подписки', icon: '💳' },

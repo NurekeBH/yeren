@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../l10n/gen/app_localizations.dart';
+import '../network/api_service.dart';
 
-class MainShell extends StatelessWidget {
+// BI feature-audit: индекс вкладки → событие активности (DAU/MAU по разделам).
+const _tabEvents = ['view_home', 'view_academy', 'view_signals', 'view_journal', 'view_profile'];
+
+class MainShell extends ConsumerWidget {
   const MainShell({super.key, required this.navigationShell});
 
   final StatefulNavigationShell navigationShell;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     // Live ticker bar жоғарыдан алынды — басты бетте XAU/USD live баға (gold hero
     // card) бар, сондықтан үстіңгі таспа артық еді (user 2026-06-13).
@@ -17,7 +22,11 @@ class MainShell extends StatelessWidget {
       body: navigationShell,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: navigationShell.currentIndex,
-        onTap: (i) => navigationShell.goBranch(i, initialLocation: i == navigationShell.currentIndex),
+        onTap: (i) {
+          // BI: бөлімге кіру оқиғасы (feature DAU/MAU). Fire-and-forget.
+          if (i >= 0 && i < _tabEvents.length) ref.read(apiServiceProvider).track(_tabEvents[i]);
+          navigationShell.goBranch(i, initialLocation: i == navigationShell.currentIndex);
+        },
         items: [
           BottomNavigationBarItem(icon: const Icon(Icons.dashboard_outlined), activeIcon: const Icon(Icons.dashboard), label: l.nav_home),
           BottomNavigationBarItem(icon: const Icon(Icons.school_outlined), activeIcon: const Icon(Icons.school), label: l.academy_title),

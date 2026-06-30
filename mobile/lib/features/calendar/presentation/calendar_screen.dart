@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/network/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/utils/ticker_provider.dart';
@@ -26,6 +27,13 @@ class CalendarScreen extends ConsumerStatefulWidget {
 
 class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   ImpactLevel? _filter;
+
+  @override
+  void initState() {
+    super.initState();
+    // BI: экономкалендарь ашылды (feature adoption).
+    ref.read(apiServiceProvider).track('view_calendar');
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -288,6 +288,174 @@ export async function cohorts() {
   return { cohorts: Array.from(byCohort.values()) };
 }
 
+// ════════════ Pay-per-Signal аналитика (фокус-модель основателя) ════════════
+
+// Гранулярность серии (НЕ из пользовательского ввода — фиксированные строки,
+// period валидируется z.enum в роуте → безопасно от инъекций).
+const GRAN: Record<string, { window: string; trunc: string; step: string; span: string; fmt: string }> = {
+  day:   { window: '1 day',   trunc: 'day',   step: "interval '1 day'",   span: "interval '13 days'",  fmt: 'DD.MM' },
+  week:  { window: '7 days',  trunc: 'week',  step: "interval '1 week'",  span: "interval '7 weeks'",  fmt: 'DD.MM' },
+  month: { window: '30 days', trunc: 'month', step: "interval '1 month'", span: "interval '5 months'", fmt: 'MM.YYYY' },
+};
+
+// ── A. Сравнение моделей: подписки vs разовые сигналы (доход + ARPU) ──
+export async function revenueCompare(period: 'day' | 'week' | 'month') {
+  const g = GRAN[period] ?? GRAN.week;
+  const [sumRow, seriesRows] = await Promise.all([
+    query<Record<string, string>>(
+      `select
+         (select coalesce(sum(amount),0) from subscriptions where activated_at >= now() - $1::interval)      as sub_revenue,
+         (select count(distinct user_id) from subscriptions where activated_at >= now() - $1::interval)      as sub_payers,
+         (select coalesce(sum(price_tg),0) from signal_purchases where created_at >= now() - $1::interval)   as sig_revenue,
+         (select count(*) from signal_purchases where created_at >= now() - $1::interval)                    as sig_purchases,
+         (select count(distinct user_id) from signal_purchases where created_at >= now() - $1::interval)     as sig_buyers`,
+      [g.window],
+    ),
+    query<Record<string, string>>(`
+      with buckets as (
+        select generate_series(date_trunc('${g.trunc}', now()) - ${g.span},
+                               date_trunc('${g.trunc}', now()), ${g.step}) as b
+      ),
+      sub as (select date_trunc('${g.trunc}', activated_at) b, sum(amount) v from subscriptions
+               where activated_at >= date_trunc('${g.trunc}', now()) - ${g.span} group by 1),
+      sig as (select date_trunc('${g.trunc}', created_at) b, sum(price_tg) v from signal_purchases
+               where created_at >= date_trunc('${g.trunc}', now()) - ${g.span} group by 1)
+      select to_char(buckets.b, '${g.fmt}') as label,
+             coalesce(sub.v,0)::text as sub, coalesce(sig.v,0)::text as sig
+        from buckets
+        left join sub on sub.b = buckets.b
+        left join sig on sig.b = buckets.b
+       order by buckets.b
+    `),
+  ]);
+  const r = sumRow.rows[0] ?? {};
+  const subRev = num(r.sub_revenue);
+  const subPayers = num(r.sub_payers);
+  const sigRev = num(r.sig_revenue);
+  const sigBuyers = num(r.sig_buyers);
+  return {
+    period,
+    subscription: { revenue: subRev, payers: subPayers, arpu: subPayers > 0 ? Math.round(subRev / subPayers) : 0 },
+    signals: {
+      revenue: sigRev, purchases: num(r.sig_purchases), buyers: sigBuyers,
+      arpu: sigBuyers > 0 ? Math.round(sigRev / sigBuyers) : 0,
+    },
+    winner: sigRev > subRev ? 'signals' : subRev > sigRev ? 'subscription' : 'tie',
+    series: seriesRows.rows.map((s) => ({ label: s.label, sub: num(s.sub), sig: num(s.sig) })),
+  };
+}
+
+// ── B+C+D. Глубокая аналитика разовых покупок ──
+export async function signalsDeep() {
+  const [whales, traders, tiers] = await Promise.all([
+    query<Record<string, string>>(`
+      select sp.user_id, u.name, u.phone,
+             sum(sp.price_tg) as spent, count(*) as signals_bought, max(sp.created_at) as last_buy
+        from signal_purchases sp join users u on u.id = sp.user_id
+       group by sp.user_id, u.name, u.phone
+       order by spent desc limit 20
+    `),
+    query<Record<string, string>>(`
+      with sales as (
+        select s.provider_id, count(*) purchases, sum(sp.price_tg) revenue, count(distinct sp.user_id) buyers
+          from signal_purchases sp join signals s on s.id = sp.signal_id
+         group by s.provider_id
+      ), views as (
+        select s.provider_id, count(distinct a.user_id) viewers
+          from activity_events a join signals s on s.id::text = a.entity_id
+         where a.event = 'view_signal'
+         group by s.provider_id
+      )
+      select p.id, p.name, p.win_rate, p.avg_rr,
+             coalesce(sales.purchases,0) purchases, coalesce(sales.revenue,0) revenue,
+             coalesce(sales.buyers,0) buyers, coalesce(views.viewers,0) viewers
+        from signal_providers p
+        left join sales on sales.provider_id = p.id
+        left join views on views.provider_id = p.id
+       where coalesce(sales.purchases,0) > 0 or coalesce(views.viewers,0) > 0
+       order by revenue desc nulls last limit 20
+    `),
+    query<Record<string, string>>(`
+      select price_tg as tier, count(*) as purchases, sum(price_tg) as revenue, count(distinct user_id) as buyers
+        from signal_purchases group by price_tg order by price_tg
+    `),
+  ]);
+  const tierOf = (t: number) => tiers.rows.find((r) => num(r.tier) === t) ?? {} as Record<string, string>;
+  const t500 = tierOf(500);
+  const t1000 = tierOf(1000);
+  return {
+    whales: whales.rows.map((r) => ({
+      user_id: r.user_id, name: r.name || r.phone, phone: r.phone,
+      spent: num(r.spent), signals_bought: num(r.signals_bought), last_buy: r.last_buy,
+    })),
+    top_traders: traders.rows.map((r) => ({
+      id: r.id, name: r.name, win_rate: num(r.win_rate), avg_rr: num(r.avg_rr),
+      purchases: num(r.purchases), revenue: num(r.revenue), buyers: num(r.buyers), viewers: num(r.viewers),
+      conversion_pct: num(r.viewers) > 0 ? Math.round((num(r.buyers) / num(r.viewers)) * 1000) / 10 : null,
+    })),
+    value_tiers: {
+      t500: { purchases: num(t500.purchases), revenue: num(t500.revenue), buyers: num(t500.buyers) },
+      t1000: { purchases: num(t1000.purchases), revenue: num(t1000.revenue), buyers: num(t1000.buyers) },
+    },
+  };
+}
+
+// ── E+F. Adoption фич: будильник цены + DAU/MAU по разделам ──
+const FEATURE_LABELS: Record<string, string> = {
+  view_home: 'Главная', view_signals: 'Идеи (лента)', view_signal: 'Идея (детально)',
+  view_academy: 'Академия', view_course: 'Курс', view_journal: 'Журнал', view_profile: 'Профиль',
+  view_calendar: 'Календарь', use_lot_calculator: 'Калькулятор лота',
+  view_event: 'События', view_provider: 'Провайдеры', open_paywall: 'Paywall',
+  app_open: 'Запуск приложения',
+};
+
+export async function featureAdoption() {
+  const [alertRow, featRows, mauRow] = await Promise.all([
+    query<Record<string, string>>(`
+      with buyers as (select distinct user_id from signal_purchases),
+      adopters as (
+        select distinct pa.user_id from price_alerts pa
+          join signal_purchases sp on sp.user_id = pa.user_id and sp.signal_id = pa.idea_id
+      )
+      select (select count(*) from buyers)                              as buyers,
+             (select count(*) from adopters)                            as adopters,
+             (select count(*) from price_alerts)                        as total_alerts,
+             (select count(distinct user_id) from price_alerts)         as users_with_alerts,
+             (select count(*) from price_alerts where triggered_at is not null) as triggered
+    `),
+    query<Record<string, string>>(`
+      select event,
+             count(distinct user_id) filter (where created_at >= date_trunc('day', now())) as dau,
+             count(distinct user_id) filter (where created_at >= now()-interval '30 days')  as mau
+        from activity_events
+       group by event order by mau desc
+    `),
+    query<Record<string, string>>(`select count(distinct user_id) mau from activity_events where created_at >= now()-interval '30 days'`),
+  ]);
+  const a = alertRow.rows[0] ?? {};
+  const buyers = num(a.buyers);
+  const totalAlerts = num(a.total_alerts);
+  const usersWithAlerts = num(a.users_with_alerts);
+  const totalMau = num(mauRow.rows[0]?.mau);
+  return {
+    price_alerts: {
+      buyers, adopters: num(a.adopters),
+      adoption_pct: pct(num(a.adopters), buyers),
+      total_alerts: totalAlerts, users_with_alerts: usersWithAlerts,
+      avg_per_active_user: usersWithAlerts > 0 ? Math.round((totalAlerts / usersWithAlerts) * 10) / 10 : 0,
+      triggered_rate_pct: pct(num(a.triggered), totalAlerts),
+    },
+    features: featRows.rows.map((r) => {
+      const mau = num(r.mau);
+      return {
+        event: r.event, label: FEATURE_LABELS[r.event] ?? r.event,
+        dau: num(r.dau), mau,
+        health: totalMau > 0 && mau < totalMau * 0.05 ? 'low' : 'ok',
+      };
+    }),
+  };
+}
+
 // ── Overview: заголовочные KPI (engagement + finance headline) одним вызовом ──
 export async function overview() {
   const [eng, fin] = await Promise.all([engagement(), finance()]);

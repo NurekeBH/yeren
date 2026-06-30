@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/network/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
@@ -9,7 +11,7 @@ import '../../../shared/utils/formatters.dart';
 /// TZ §9.5 калькулятор + user 2026-05-27: бірнеше режим.
 /// Mode 1: SL pip арқылы (қарапайым)
 /// Mode 2: Кіру + SL бағасы арқылы (нақты структура)
-class PositionCalculatorScreen extends StatefulWidget {
+class PositionCalculatorScreen extends ConsumerStatefulWidget {
   const PositionCalculatorScreen({
     super.key,
     this.entryFrom,
@@ -26,12 +28,12 @@ class PositionCalculatorScreen extends StatefulWidget {
   final double? tpPrice;
 
   @override
-  State<PositionCalculatorScreen> createState() => _PositionCalculatorScreenState();
+  ConsumerState<PositionCalculatorScreen> createState() => _PositionCalculatorScreenState();
 }
 
 enum _Mode { byPrice, byPips }
 
-class _PositionCalculatorScreenState extends State<PositionCalculatorScreen> {
+class _PositionCalculatorScreenState extends ConsumerState<PositionCalculatorScreen> {
   // 1-таб (әдепкі): кіру + SL бағасы арқылы.
   _Mode _mode = _Mode.byPrice;
   final _riskAmount = TextEditingController(text: '50'); // тәуекел сомасы ($), пайыз емес
@@ -48,6 +50,8 @@ class _PositionCalculatorScreenState extends State<PositionCalculatorScreen> {
   @override
   void initState() {
     super.initState();
+    // BI: калькулятор лота ашылды (feature adoption).
+    ref.read(apiServiceProvider).track('use_lot_calculator');
     // Идеядан келген деңгейлерді толтыру (бар болса). Локаль-тәуелсіз сан форматы.
     String f(double? v) => (v == null || v <= 0) ? '' : v.toStringAsFixed(2);
     if (widget.entryFrom != null) _entry.text = f(widget.entryFrom);

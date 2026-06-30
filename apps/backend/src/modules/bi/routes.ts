@@ -2,11 +2,14 @@ import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { query } from '../../db/client.js';
 import { getOrSet } from '../../utils/cache.js';
-import { engagement, finance, geo, content, cohorts, overview } from './metrics.js';
+import { engagement, finance, geo, content, cohorts, overview, revenueCompare, signalsDeep, featureAdoption } from './metrics.js';
 
 // Белый список событий — клиент произвольные строки в лог не пишет.
 const TRACK_EVENTS = new Set([
   'app_open', 'view_course', 'view_signal', 'view_event', 'view_provider', 'open_paywall',
+  // Feature audit (DAU/MAU по разделам): вкладки нав-бара + ключевые фичи.
+  'view_home', 'view_academy', 'view_signals', 'view_journal', 'view_profile',
+  'view_calendar', 'use_lot_calculator',
 ]);
 const TrackBody = z.object({
   event: z.string().min(1).max(40),
@@ -57,6 +60,19 @@ export async function biRoutes(app: FastifyInstance) {
 
   app.get('/admin/bi/cohorts', { onRequest: [app.requireAdmin] }, async () =>
     getOrSet('bi:cohorts', 10 * 60_000, cohorts));
+
+  // ── Pay-per-Signal аналитика (фокус-модель) ──
+  app.get('/admin/bi/revenue-compare', { onRequest: [app.requireAdmin] }, async (req) => {
+    const p = (req.query as { period?: string }).period;
+    const period = p === 'day' || p === 'month' ? p : 'week';
+    return getOrSet(`bi:revcompare:${period}`, 2 * 60_000, () => revenueCompare(period));
+  });
+
+  app.get('/admin/bi/signals-deep', { onRequest: [app.requireAdmin] }, async () =>
+    getOrSet('bi:signals-deep', 2 * 60_000, signalsDeep));
+
+  app.get('/admin/bi/feature-adoption', { onRequest: [app.requireAdmin] }, async () =>
+    getOrSet('bi:feature-adoption', 5 * 60_000, featureAdoption));
 
   // ── Маркетинговые затраты (CAC) ──
   app.get('/admin/marketing-spend', { onRequest: [app.requireAdmin] }, async () => {

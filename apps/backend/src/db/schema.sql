@@ -940,3 +940,11 @@ create table if not exists admin_insights (
 create index if not exists admin_insights_open_idx on admin_insights(created_at desc) where dismissed_at is null;
 -- Дедуп: один и тот же детектор не плодит карточки чаще раза в окно.
 create index if not exists admin_insights_detector_idx on admin_insights(detector, created_at desc);
+
+-- ── Pay-per-Signal аналитика (фокус-модель): доход по периодам, тиры, adoption будильника ──
+-- Доход с сигналов по периодам (день/неделя/месяц) — диапазонные сканы по дате.
+create index if not exists signal_purchases_created_idx on signal_purchases(created_at desc);
+-- Анализ тиров 500/1000 + выручка по тиру.
+create index if not exists signal_purchases_tier_idx on signal_purchases(price_tg, created_at desc);
+-- Adoption будильника: join price_alerts ↔ signal_purchases по сигналу.
+create index if not exists price_alerts_idea_idx on price_alerts(idea_id) where idea_id is not null;
