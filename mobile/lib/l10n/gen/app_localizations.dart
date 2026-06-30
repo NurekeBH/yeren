@@ -487,44 +487,62 @@ abstract class AppLocalizations {
   /// No description provided for @intro_start.
   ///
   /// In kk, this message translates to:
-  /// **'Бастау'**
+  /// **'Тегін бастау'**
   String get intro_start;
+
+  /// No description provided for @intro_social_proof.
+  ///
+  /// In kk, this message translates to:
+  /// **'🔥 5 000+ трейдер бізбен бірге'**
+  String get intro_social_proof;
 
   /// No description provided for @intro_s1_title.
   ///
   /// In kk, this message translates to:
-  /// **'Алтын — нақты уақытта'**
+  /// **'Депозитіңді сақта'**
   String get intro_s1_title;
 
   /// No description provided for @intro_s1_text.
   ///
   /// In kk, this message translates to:
-  /// **'XAU/USD тірі бағасы, DXY және Economic Calendar — бәрі бір экранда.'**
+  /// **'Алтын бойынша нақты сигналдар — шынымен табыс табатын трейдерлерден.'**
   String get intro_s1_text;
 
   /// No description provided for @intro_s2_title.
   ///
   /// In kk, this message translates to:
-  /// **'Трейдерлердің идеялары'**
+  /// **'Сенімді сигналдар'**
   String get intro_s2_title;
 
   /// No description provided for @intro_s2_text.
   ///
   /// In kk, this message translates to:
-  /// **'Расталған трейдерлердің сигналдары: кіру, TP, SL, Win Rate және рейтинг.'**
+  /// **'Кіру, мақсат, стоп — винрейт пен автор рейтингімен. Бәрі ашық.'**
   String get intro_s2_text;
 
   /// No description provided for @intro_s3_title.
   ///
   /// In kk, this message translates to:
-  /// **'Оқу және журнал'**
+  /// **'Трейдер боп өс'**
   String get intro_s3_title;
 
   /// No description provided for @intro_s3_text.
   ///
   /// In kk, this message translates to:
-  /// **'Edge Academy, баға ескертулері және сауда журналы — өсуіңіз үшін.'**
+  /// **'Академия, сделкалар журналы және талдау — пайда әкелетін тәртіп.'**
   String get intro_s3_text;
+
+  /// No description provided for @intro_s4_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Үздіктермен бір командадасың'**
+  String get intro_s4_title;
+
+  /// No description provided for @intro_s4_text.
+  ///
+  /// In kk, this message translates to:
+  /// **'Мыңдаған трейдер Altyn-мен бірге табыс табуда. Тегін қосыл.'**
+  String get intro_s4_text;
 
   /// No description provided for @style_smc.
   ///
@@ -1635,6 +1653,12 @@ abstract class AppLocalizations {
   /// In kk, this message translates to:
   /// **'Толық идеяны көру · {price} бонус'**
   String signals_unlock_for(int price);
+
+  /// No description provided for @signals_unlock_scarcity.
+  ///
+  /// In kk, this message translates to:
+  /// **'🔒 Эксклюзив талдау · бір реттік қолжетім'**
+  String get signals_unlock_scarcity;
 
   /// No description provided for @signals_your_balance.
   ///

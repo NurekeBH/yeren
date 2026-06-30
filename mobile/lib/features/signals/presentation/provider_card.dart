@@ -32,11 +32,15 @@ class ProviderCard extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    Container(
-                      width: 46, height: 46,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(color: AppColors.purple.withValues(alpha: 0.10), shape: BoxShape.circle),
-                      child: Text(provider.avatar, style: const TextStyle(fontSize: 24)),
+                    // Hero: аватар плавно «перелетает» из списка в детальный экран.
+                    Hero(
+                      tag: 'provider-avatar-${provider.id}',
+                      child: Container(
+                        width: 46, height: 46,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(color: AppColors.purple.withValues(alpha: 0.10), shape: BoxShape.circle),
+                        child: Text(provider.avatar, style: const TextStyle(fontSize: 24)),
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(

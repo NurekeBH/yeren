@@ -207,28 +207,38 @@ class AppLocalizationsKk extends AppLocalizations {
   String get intro_next => 'Әрі қарай';
 
   @override
-  String get intro_start => 'Бастау';
+  String get intro_start => 'Тегін бастау';
 
   @override
-  String get intro_s1_title => 'Алтын — нақты уақытта';
+  String get intro_social_proof => '🔥 5 000+ трейдер бізбен бірге';
+
+  @override
+  String get intro_s1_title => 'Депозитіңді сақта';
 
   @override
   String get intro_s1_text =>
-      'XAU/USD тірі бағасы, DXY және Economic Calendar — бәрі бір экранда.';
+      'Алтын бойынша нақты сигналдар — шынымен табыс табатын трейдерлерден.';
 
   @override
-  String get intro_s2_title => 'Трейдерлердің идеялары';
+  String get intro_s2_title => 'Сенімді сигналдар';
 
   @override
   String get intro_s2_text =>
-      'Расталған трейдерлердің сигналдары: кіру, TP, SL, Win Rate және рейтинг.';
+      'Кіру, мақсат, стоп — винрейт пен автор рейтингімен. Бәрі ашық.';
 
   @override
-  String get intro_s3_title => 'Оқу және журнал';
+  String get intro_s3_title => 'Трейдер боп өс';
 
   @override
   String get intro_s3_text =>
-      'Edge Academy, баға ескертулері және сауда журналы — өсуіңіз үшін.';
+      'Академия, сделкалар журналы және талдау — пайда әкелетін тәртіп.';
+
+  @override
+  String get intro_s4_title => 'Үздіктермен бір командадасың';
+
+  @override
+  String get intro_s4_text =>
+      'Мыңдаған трейдер Altyn-мен бірге табыс табуда. Тегін қосыл.';
 
   @override
   String get style_smc => 'SMC (Smart Money Concepts)';
@@ -820,6 +830,10 @@ class AppLocalizationsKk extends AppLocalizations {
   String signals_unlock_for(int price) {
     return 'Толық идеяны көру · $price бонус';
   }
+
+  @override
+  String get signals_unlock_scarcity =>
+      '🔒 Эксклюзив талдау · бір реттік қолжетім';
 
   @override
   String get signals_your_balance => 'Сіздің балансыңыз';

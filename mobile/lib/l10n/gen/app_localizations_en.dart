@@ -209,28 +209,38 @@ class AppLocalizationsEn extends AppLocalizations {
   String get intro_next => 'Next';
 
   @override
-  String get intro_start => 'Get started';
+  String get intro_start => 'Start free';
 
   @override
-  String get intro_s1_title => 'Gold, in real time';
+  String get intro_social_proof => '🔥 5,000+ traders already with us';
+
+  @override
+  String get intro_s1_title => 'Stop blowing your account';
 
   @override
   String get intro_s1_text =>
-      'Live XAU/USD price, DXY and the economic calendar — all on one screen.';
+      'Precise gold signals from traders who actually make money.';
 
   @override
-  String get intro_s2_title => 'Ideas from traders';
+  String get intro_s2_title => 'Signals you can trust';
 
   @override
   String get intro_s2_text =>
-      'Signals from verified traders: entry, TP, SL, win rate and rating.';
+      'Entry, targets and stop — with win rate and author rating. Fully transparent.';
 
   @override
-  String get intro_s3_title => 'Learn & journal';
+  String get intro_s3_title => 'Grow as a trader';
 
   @override
   String get intro_s3_text =>
-      'Edge Academy, price alerts and a trading journal — built for your growth.';
+      'Academy, trade journal and breakdowns — the discipline that pays off.';
+
+  @override
+  String get intro_s4_title => 'You\'re on the team with the best';
+
+  @override
+  String get intro_s4_text =>
+      'Thousands of traders already earn with Altyn. Join free.';
 
   @override
   String get style_smc => 'SMC (Smart Money Concepts)';
@@ -823,6 +833,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String signals_unlock_for(int price) {
     return 'See the full idea · $price bonus';
   }
+
+  @override
+  String get signals_unlock_scarcity =>
+      '🔒 Exclusive breakdown · one-time access';
 
   @override
   String get signals_your_balance => 'Your balance';

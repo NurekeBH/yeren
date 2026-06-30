@@ -11,6 +11,7 @@ import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/signal.dart';
 import '../../../shared/utils/formatters.dart';
 import '../../../shared/widgets/error_view.dart';
+import '../../../shared/widgets/premium.dart';
 import '../../../shared/widgets/secure_screen.dart';
 import '../../alerts/presentation/create_alert_sheet.dart';
 import '../../tools/presentation/position_calculator_screen.dart';
@@ -625,17 +626,15 @@ class _Paywall extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  // BI: пайдаланушы paywall-ды ашты (сатып алу ниеті) — hot_segment детекторы.
-                  ref.read(apiServiceProvider).track('open_paywall', entityType: 'signal', entityId: signal.id);
-                  showUnlockSignalSheet(context, ref, signal);
-                },
-                icon: const Icon(Icons.lock_open, size: 18),
-                label: Text(l.signals_unlock_for(signal.priceTg), maxLines: 1, overflow: TextOverflow.ellipsis),
-              ),
+            PremiumButton(
+              label: l.signals_unlock_for(signal.priceTg),
+              icon: Icons.lock_open_rounded,
+              caption: l.signals_unlock_scarcity,
+              onPressed: () {
+                // BI: пайдаланушы paywall-ды ашты (сатып алу ниеті) — hot_segment детекторы.
+                ref.read(apiServiceProvider).track('open_paywall', entityType: 'signal', entityId: signal.id);
+                showUnlockSignalSheet(context, ref, signal);
+              },
             ),
           ],
         ),

@@ -7,6 +7,7 @@ import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../shared/models/signal.dart';
 import '../../../shared/widgets/error_view.dart';
+import '../../../shared/widgets/premium.dart';
 import '../../profile/application/profile_controller.dart';
 import '../data/signals_repository.dart';
 import 'provider_card.dart';
@@ -54,7 +55,7 @@ class SignalsScreen extends ConsumerWidget {
           ),
         ),
         body: async.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
+          loading: () => const _SignalsSkeleton(),
           error: (e, _) => ErrorRetryView(error: e, onRetry: () => ref.invalidate(signalsListProvider)),
           data: (all) {
             final active = all.where((s) => s.status == SignalStatus.active).toList();
@@ -173,6 +174,46 @@ class _PullableEmpty extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Shimmer-скелетон вместо спиннера при загрузке списка идей (премиум-ощущение).
+class _SignalsSkeleton extends StatelessWidget {
+  const _SignalsSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+      itemCount: 5,
+      itemBuilder: (_, _) => Container(
+        margin: const EdgeInsets.only(bottom: 14),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.cardSurface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: const [
+            Row(children: [
+              SkeletonBox(width: 44, height: 44, radius: 22),
+              SizedBox(width: 12),
+              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                SkeletonBox(width: 140, height: 14),
+                SizedBox(height: 8),
+                SkeletonBox(width: 90, height: 11),
+              ])),
+            ]),
+            SizedBox(height: 16),
+            SkeletonBox(height: 12),
+            SizedBox(height: 8),
+            SkeletonBox(width: 220, height: 12),
+          ],
+        ),
       ),
     );
   }

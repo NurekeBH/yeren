@@ -210,28 +210,38 @@ class AppLocalizationsRu extends AppLocalizations {
   String get intro_next => 'Далее';
 
   @override
-  String get intro_start => 'Начать';
+  String get intro_start => 'Начать бесплатно';
 
   @override
-  String get intro_s1_title => 'Золото — в реальном времени';
+  String get intro_social_proof => '🔥 5 000+ трейдеров уже с нами';
+
+  @override
+  String get intro_s1_title => 'Хватит сливать депозит';
 
   @override
   String get intro_s1_text =>
-      'Живая цена XAU/USD, DXY и экономический календарь — всё на одном экране.';
+      'Точные сигналы по золоту от трейдеров, которые реально зарабатывают.';
 
   @override
-  String get intro_s2_title => 'Идеи от трейдеров';
+  String get intro_s2_title => 'Сигналы, которым доверяют';
 
   @override
   String get intro_s2_text =>
-      'Сигналы проверенных трейдеров: вход, TP, SL, Win Rate и рейтинг.';
+      'Вход, цели и стоп — с винрейтом и рейтингом автора. Всё прозрачно.';
 
   @override
-  String get intro_s3_title => 'Обучение и журнал';
+  String get intro_s3_title => 'Расти как трейдер';
 
   @override
   String get intro_s3_text =>
-      'Edge Academy, ценовые уведомления и торговый журнал — для вашего роста.';
+      'Академия, журнал сделок и разборы — дисциплина, которая приносит прибыль.';
+
+  @override
+  String get intro_s4_title => 'Ты в команде с лучшими';
+
+  @override
+  String get intro_s4_text =>
+      'Тысячи трейдеров уже зарабатывают вместе с Altyn. Присоединяйся бесплатно.';
 
   @override
   String get style_smc => 'SMC (Smart Money Concepts)';
@@ -825,6 +835,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String signals_unlock_for(int price) {
     return 'Смотреть идею · $price бон.';
   }
+
+  @override
+  String get signals_unlock_scarcity =>
+      '🔒 Эксклюзивный разбор · разовый доступ';
 
   @override
   String get signals_your_balance => 'Ваш баланс';
