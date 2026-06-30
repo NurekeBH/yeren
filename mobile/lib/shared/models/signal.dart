@@ -38,6 +38,7 @@ class Signal extends Equatable {
     this.isMine = false,
     this.authorName,
     this.priceOverride,
+    this.buyers = 0,
   });
 
   final String id;
@@ -57,6 +58,9 @@ class Signal extends Equatable {
   final DateTime publishedAt;
   final int? resultPips;
   final String? providerId;
+
+  /// FOMO: сколько трейдеров уже открыли (купили) эту идею.
+  final int buyers;
 
   /// Тегін идея — paywall жоқ, толық көрінеді (баға 0).
   final bool isFree;

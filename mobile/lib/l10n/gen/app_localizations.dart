@@ -1660,6 +1660,24 @@ abstract class AppLocalizations {
   /// **'🔒 Эксклюзив талдау · бір реттік қолжетім'**
   String get signals_unlock_scarcity;
 
+  /// No description provided for @signals_fomo_opened.
+  ///
+  /// In kk, this message translates to:
+  /// **'{count} адам ашып қойды'**
+  String signals_fomo_opened(int count);
+
+  /// No description provided for @signals_fomo_fresh.
+  ///
+  /// In kk, this message translates to:
+  /// **'Жаңа кіру'**
+  String get signals_fomo_fresh;
+
+  /// No description provided for @signals_fomo_first.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бірінші бол'**
+  String get signals_fomo_first;
+
   /// No description provided for @signals_your_balance.
   ///
   /// In kk, this message translates to:

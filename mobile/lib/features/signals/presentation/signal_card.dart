@@ -125,6 +125,7 @@ class SignalCard extends ConsumerWidget {
                     _StatusChip(status: signal.status, l: l),
                   ],
                 ),
+                _FomoStrip(signal: signal, l: l),
                 const SizedBox(height: 12),
                 if (unlocked)
                   // Ашық: сандық деңгейлер болса — тизер; әйтпесе (жылдам идея) мәтін.
@@ -281,6 +282,54 @@ class _StatusChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(text, style: AppTypography.label(color: color)),
+    );
+  }
+}
+
+/// FOMO-полоска: соц-доказательство (сколько открыли) + актуальность (свежий вход).
+/// Точечно, без перегруза — максимум 2 чипа.
+class _FomoStrip extends StatelessWidget {
+  const _FomoStrip({required this.signal, required this.l});
+  final Signal signal;
+  final AppLocalizations l;
+
+  @override
+  Widget build(BuildContext context) {
+    final isActive = signal.status == SignalStatus.active;
+    final fresh = isActive && DateTime.now().difference(signal.publishedAt).inHours < 2;
+    final chips = <Widget>[];
+    if (signal.buyers > 0) {
+      chips.add(_FomoChip(icon: '🔥', text: l.signals_fomo_opened(signal.buyers), color: AppColors.lossRed));
+    }
+    if (fresh) {
+      chips.add(_FomoChip(icon: '🆕', text: l.signals_fomo_fresh, color: AppColors.profitGreen));
+    } else if (isActive && signal.isPaid && signal.buyers == 0) {
+      chips.add(_FomoChip(icon: '⚡', text: l.signals_fomo_first, color: AppColors.gold));
+    }
+    if (chips.isEmpty) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: Wrap(spacing: 6, runSpacing: 6, children: chips),
+    );
+  }
+}
+
+class _FomoChip extends StatelessWidget {
+  const _FomoChip({required this.icon, required this.text, required this.color});
+  final String icon;
+  final String text;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text('$icon $text',
+          style: AppTypography.label(color: color).copyWith(fontSize: 11, fontWeight: FontWeight.w700)),
     );
   }
 }

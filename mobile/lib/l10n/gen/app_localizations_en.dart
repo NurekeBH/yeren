@@ -839,6 +839,17 @@ class AppLocalizationsEn extends AppLocalizations {
       '🔒 Exclusive breakdown · one-time access';
 
   @override
+  String signals_fomo_opened(int count) {
+    return '$count already opened';
+  }
+
+  @override
+  String get signals_fomo_fresh => 'Fresh entry';
+
+  @override
+  String get signals_fomo_first => 'Be the first';
+
+  @override
   String get signals_your_balance => 'Your balance';
 
   @override

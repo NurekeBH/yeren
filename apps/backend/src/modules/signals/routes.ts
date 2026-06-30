@@ -57,6 +57,7 @@ export async function signalsRoutes(app: FastifyInstance) {
     const userId = await optionalUserId(req);
     const { rows } = await query(
       `select s.*, coalesce(s.created_by = $1, false) as is_mine,
+              (select count(*)::int from signal_purchases sp where sp.signal_id = s.id) as buyers,
               (select coalesce(jsonb_object_agg(outcome, n), '{}'::jsonb)
                  from (select outcome, count(*)::int as n from signal_votes
                         where signal_id = s.id group by outcome) v) as votes

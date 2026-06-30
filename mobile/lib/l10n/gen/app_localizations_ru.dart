@@ -841,6 +841,17 @@ class AppLocalizationsRu extends AppLocalizations {
       '🔒 Эксклюзивный разбор · разовый доступ';
 
   @override
+  String signals_fomo_opened(int count) {
+    return '$count уже открыли';
+  }
+
+  @override
+  String get signals_fomo_fresh => 'Свежий вход';
+
+  @override
+  String get signals_fomo_first => 'Будь первым';
+
+  @override
   String get signals_your_balance => 'Ваш баланс';
 
   @override

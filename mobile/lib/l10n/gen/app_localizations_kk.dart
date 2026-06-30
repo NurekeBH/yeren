@@ -836,6 +836,17 @@ class AppLocalizationsKk extends AppLocalizations {
       '🔒 Эксклюзив талдау · бір реттік қолжетім';
 
   @override
+  String signals_fomo_opened(int count) {
+    return '$count адам ашып қойды';
+  }
+
+  @override
+  String get signals_fomo_fresh => 'Жаңа кіру';
+
+  @override
+  String get signals_fomo_first => 'Бірінші бол';
+
+  @override
   String get signals_your_balance => 'Сіздің балансыңыз';
 
   @override

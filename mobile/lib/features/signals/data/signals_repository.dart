@@ -50,6 +50,7 @@ Signal signalFromJson(Map<String, dynamic> j) => Signal(
       isFree: j['is_free'] == true || j['is_free']?.toString() == 'true',
       // Автор өз идеясын әрқашан ашық көреді (платный болса да).
       isMine: j['is_mine'] == true,
+      buyers: _i(j['buyers']) ?? 0, // FOMO: сколько уже открыли
     );
 
 class ApiSignalsRepository implements SignalsRepository {
