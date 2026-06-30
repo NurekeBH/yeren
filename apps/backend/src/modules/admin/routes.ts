@@ -2,12 +2,15 @@ import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { query } from '../../db/client.js';
 import { ensureProviderProfile, removeProviderProfile } from '../../services/provider_profile.js';
+import { getOrSet } from '../../utils/cache.js';
 
 /// Админ-панель: статистика, қолданушыларды басқару (тізім, бұғаттау, рөл).
 export async function adminRoutes(app: FastifyInstance) {
   // ── Жалпы статистика (overview) ──
   app.get('/admin/stats', { onRequest: [app.requireAdmin] }, async () => {
-    const { rows } = await query<Record<string, string>>(`
+    // ПЕРФОРМАНС: ~22 субзапроса (толық сканер) — дашборд секунд-сайын жаңарудың қажеті жоқ. 60с кэш.
+    const stats = await getOrSet('admin_stats', 60_000, async () => {
+      const { rows } = await query<Record<string, string>>(`
       select
         (select count(*) from users)::text as users,
         (select count(*) from users where is_blocked)::text as blocked,
@@ -33,7 +36,9 @@ export async function adminRoutes(app: FastifyInstance) {
         (select count(*) from exam_results)::text as exams_taken,
         (select count(*) from exam_results where passed)::text as exams_passed
     `);
-    return { stats: rows[0] };
+      return rows[0];
+    });
+    return { stats };
   });
 
   // ── Бонус транзакциялар журналы (соңғылары) ──
@@ -97,25 +102,29 @@ export async function adminRoutes(app: FastifyInstance) {
   // ── Тіркелу аналитикасы (маркетинг/перформанс) ──
   // Бүгін/кеше/7к/30к/барлығы + соңғы 30 күннің күнделікті сериясы (график үшін).
   app.get('/admin/stats/registrations', { onRequest: [app.requireAdmin] }, async () => {
-    const summary = await query<Record<string, string>>(`
-      select
-        (select count(*) from users where created_at >= date_trunc('day', now()))::text as today,
-        (select count(*) from users where created_at >= date_trunc('day', now()) - interval '1 day'
-                                      and created_at <  date_trunc('day', now()))::text as yesterday,
-        (select count(*) from users where created_at >= date_trunc('day', now()) - interval '7 days')::text as last_7d,
-        (select count(*) from users where created_at >= date_trunc('day', now()) - interval '30 days')::text as last_30d,
-        (select count(*) from users)::text as total
-    `);
-    // Соңғы 30 күн: әр күн үшін тіркелу саны (бос күндер 0). generate_series → left join.
-    const series = await query<{ day: string; count: string }>(`
-      with days as (
-        select generate_series(date_trunc('day', now()) - interval '29 days', date_trunc('day', now()), interval '1 day') as d
-      )
-      select to_char(days.d, 'YYYY-MM-DD') as day, count(u.id)::text as count
-        from days
-        left join users u on date_trunc('day', u.created_at) = days.d
-       group by days.d order by days.d
-    `);
+    const data = await getOrSet('admin_registrations', 5 * 60_000, async () => {
+    // summary мен series ҚАТАР (тәуелсіз).
+    const [summary, series] = await Promise.all([
+      query<Record<string, string>>(`
+        select
+          (select count(*) from users where created_at >= date_trunc('day', now()))::text as today,
+          (select count(*) from users where created_at >= date_trunc('day', now()) - interval '1 day'
+                                        and created_at <  date_trunc('day', now()))::text as yesterday,
+          (select count(*) from users where created_at >= date_trunc('day', now()) - interval '7 days')::text as last_7d,
+          (select count(*) from users where created_at >= date_trunc('day', now()) - interval '30 days')::text as last_30d,
+          (select count(*) from users)::text as total
+      `),
+      // Range-join (date_trunc(column) ОРНЫНА) — users_created_at_idx индексін қолданады (sargable).
+      query<{ day: string; count: string }>(`
+        with days as (
+          select generate_series(date_trunc('day', now()) - interval '29 days', date_trunc('day', now()), interval '1 day') as d
+        )
+        select to_char(days.d, 'YYYY-MM-DD') as day, count(u.id)::text as count
+          from days
+          left join users u on u.created_at >= days.d and u.created_at < days.d + interval '1 day'
+         group by days.d order by days.d
+      `),
+    ]);
     const r = summary.rows[0] ?? {};
     return {
       today: Number(r.today ?? 0),
@@ -125,6 +134,8 @@ export async function adminRoutes(app: FastifyInstance) {
       total: Number(r.total ?? 0),
       daily: series.rows.map((s) => ({ day: s.day, count: Number(s.count) })),
     };
+    });
+    return data;
   });
 
   // ── Қолданушылар тізімі (іздеу + бет) ──

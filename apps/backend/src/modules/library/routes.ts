@@ -1,6 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { query } from '../../db/client.js';
+import { getOrSet, invalidatePrefix } from '../../utils/cache.js';
 
 // Кітапхана каталогы (Кітап/Фильм/Подкаст) енді DB-де (library_items), админ басқарады.
 // Серверде пайдаланушы деректері де бар: сақтау / рейтинг / отзыв (library_user_data).
@@ -90,13 +91,17 @@ export async function libraryRoutes(app: FastifyInstance) {
   // ── Каталог (қоғамдық): Кітап/Фильм/Подкаст. Мобайл app осыдан тартады. ──
   app.get('/library/catalog', async (req) => {
     const cat = (req.query as { category?: string }).category ?? null;
-    const { rows } = await query(
-      `select ${LIB_COLS} from library_items
-        where is_published = true and ($1::text is null or category = $1)
-        order by category, sort_order, title`,
-      [cat],
-    );
-    return { items: rows };
+    // ПЕРФОРМАНС: каталог тек админ өзгерткенде жаңарады — 5 мин кэш (әр ашылғанда DB-ні соқпайды).
+    const items = await getOrSet(`library:${cat ?? 'all'}`, 5 * 60_000, async () => {
+      const { rows } = await query(
+        `select ${LIB_COLS} from library_items
+          where is_published = true and ($1::text is null or category = $1)
+          order by category, sort_order, title`,
+        [cat],
+      );
+      return rows;
+    });
+    return { items };
   });
 
   // ── Админ: барлық элементтер (жарияланбағанды қоса) ──
@@ -167,6 +172,7 @@ export async function libraryRoutes(app: FastifyInstance) {
         d.conclusion ? JSON.stringify(d.conclusion) : null, d.sort_order ?? 0, d.is_published ?? true,
       ],
     );
+    invalidatePrefix('library:'); // кэшті жаңартамыз — өзгеріс бірден көрінеді
     return { item: rows[0] };
   });
 
@@ -187,12 +193,14 @@ export async function libraryRoutes(app: FastifyInstance) {
     set.push('updated_at = now()');
     const { rows } = await query(`update library_items set ${set.join(', ')} where id = $1 returning ${LIB_COLS}`, args);
     if (!rows[0]) return reply.code(404).send({ error: 'not_found' });
+    invalidatePrefix('library:'); // кэшті жаңартамыз — өзгеріс бірден көрінеді
     return { item: rows[0] };
   });
 
   // ── Админ: жою ──
   app.delete('/admin/library/:id', { onRequest: [app.requireAdmin] }, async (req) => {
     await query('delete from library_items where id = $1', [(req.params as { id: string }).id]);
+    invalidatePrefix('library:');
     return { ok: true };
   });
 }

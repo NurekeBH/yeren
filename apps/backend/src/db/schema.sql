@@ -536,6 +536,13 @@ create index if not exists signals_provider_idx on signals(provider_id);
 alter table signals add column if not exists created_by uuid references users(id) on delete set null;
 create index if not exists signals_created_by_idx on signals(created_by);
 
+-- ПЕРФОРМАНС: liveProviderStats агрегатын жылдамдатады (тек шешілген сигналдар).
+create index if not exists signals_provider_closed_idx on signals(provider_id)
+  where status in ('closed_tp1','closed_tp2','closed_tp3','closed_sl');
+-- Провайдер профиліндегі идеялар тізімі (жойылмаған, жаңа реттік).
+create index if not exists signals_provider_published_idx on signals(provider_id, published_at desc)
+  where deleted_at is null;
+
 -- ─────────────────── TRADER APPLICATIONS (расталған трейдер өтінімі) ───────────────────
 create table if not exists trader_applications (
   id           uuid primary key default uuid_generate_v4(),

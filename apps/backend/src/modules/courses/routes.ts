@@ -1,6 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { query, tx } from '../../db/client.js';
+import { getOrSet, invalidatePrefix } from '../../utils/cache.js';
 
 /// Академия курстары: сатып алу (бонуспен), прогресс (өтілген сабақтар),
 /// финалдық емтихан нәтижелері. Барлық бонус қозғалысы bonus_transactions-қа жазылады.
@@ -23,13 +24,17 @@ export async function coursesRoutes(app: FastifyInstance) {
   // (тіл кілті жоқ) → соңғы fallback бүкіл content-ті қайтарады.
   app.get('/courses/catalog', async (req) => {
     const lang = (req.query as { lang?: string }).lang || 'ru';
-    const { rows } = await query(
-      `select id, title, subtitle, description, price_bonus, emoji, accent, cover_url, sort_order,
-              coalesce(content -> $1, content -> 'ru', content) as content
-         from course_catalog where is_published = true order by sort_order`,
-      [lang],
-    );
-    return { courses: rows };
+    // ПЕРФОРМАНС: каталог тек админ өзгерткенде жаңарады — 5 мин кэш (content JSONB ауыр).
+    const courses = await getOrSet(`courses:${lang}`, 5 * 60_000, async () => {
+      const { rows } = await query(
+        `select id, title, subtitle, description, price_bonus, emoji, accent, cover_url, sort_order,
+                coalesce(content -> $1, content -> 'ru', content) as content
+           from course_catalog where is_published = true order by sort_order`,
+        [lang],
+      );
+      return rows;
+    });
+    return { courses };
   });
 
   // ── Админ: курстар тізімі (метадата + kind + модуль/сабақ саны) ──
@@ -169,6 +174,7 @@ export async function coursesRoutes(app: FastifyInstance) {
   // ── Админ: курсты жою ──
   app.delete('/admin/courses/:id', { onRequest: [app.requireAdmin] }, async (req) => {
     await query('delete from course_catalog where id = $1', [(req.params as { id: string }).id]);
+    invalidatePrefix('courses:');
     return { ok: true };
   });
 

@@ -1,6 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { query } from '../../db/client.js';
+import { getOrSet } from '../../utils/cache.js';
 
 const ProviderCreate = z.object({
   name: z.string().min(1),
@@ -35,6 +36,12 @@ async function liveProviderStats(): Promise<Record<string, { win_rate: number; a
   return map;
 }
 
+/// ПЕРФОРМАНС: статистика тек сигнал жабылғанда өзгереді (минут/сағат сайын), әр сұрауда емес.
+/// Барлық провайдерлерге GROUP BY-ды 60с кэштейміз — Ideas табы әр ашылғанда DB-ні соқпайды.
+function cachedProviderStats() {
+  return getOrSet('provider_stats', 60_000, liveProviderStats);
+}
+
 function applyStats(p: Record<string, unknown>, stat?: { win_rate: number; avg_rr: number; trades_count: number }) {
   return stat ? { ...p, win_rate: stat.win_rate, avg_rr: stat.avg_rr, trades_count: stat.trades_count } : p;
 }
@@ -42,25 +49,30 @@ function applyStats(p: Record<string, unknown>, stat?: { win_rate: number; avg_r
 export async function providersRoutes(app: FastifyInstance) {
   // Барлық провайдерлер (рейтинг бойынша) — статистика нақты жабылған сигналдардан.
   app.get('/providers', async () => {
-    const { rows } = await query<Record<string, unknown>>(
-      `select * from signal_providers order by verified desc, rating desc, subscribers desc`,
-    );
-    const stats = await liveProviderStats();
-    return { providers: rows.map((p) => applyStats(p, stats[p.id as string])) };
+    // Провайдерлер тізімі + статистика ҚАТАР (тәуелсіз).
+    const [providersRes, stats] = await Promise.all([
+      query<Record<string, unknown>>(
+        `select * from signal_providers order by verified desc, rating desc, subscribers desc`,
+      ),
+      cachedProviderStats(),
+    ]);
+    return { providers: providersRes.rows.map((p) => applyStats(p, stats[p.id as string])) };
   });
 
   app.get('/providers/:id', async (req, reply) => {
     const id = (req.params as { id: string }).id;
     const { rows } = await query<Record<string, unknown>>('select * from signal_providers where id = $1', [id]);
     if (rows.length === 0) return reply.code(404).send({ error: 'not_found' });
-    const stats = await liveProviderStats();
-    // Жойылмаған идеяларды ғана көрсетеміз (бірақ liveProviderStats жойылғанды да санайды —
-    // АНТИ-ФРОД: жоғалтқан идеяны өшіріп статистиканы бұрмалауға болмайды).
-    const ideas = await query(
-      `select * from signals where provider_id = $1 and deleted_at is null and status <> 'expired'
-        order by published_at desc limit 50`,
-      [id],
-    );
+    // Статистика (кэштелген) мен идеяларды ҚАТАР аламыз (тәуелсіз сұраулар).
+    const [stats, ideas] = await Promise.all([
+      cachedProviderStats(),
+      // Жойылмаған идеялар (liveProviderStats жойылғанды да санайды — анти-фрод).
+      query(
+        `select * from signals where provider_id = $1 and deleted_at is null and status <> 'expired'
+          order by published_at desc limit 50`,
+        [id],
+      ),
+    ]);
     return { provider: applyStats(rows[0], stats[id]), ideas: ideas.rows };
   });
 
