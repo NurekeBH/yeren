@@ -310,6 +310,13 @@ class ApiService {
   /// Расталған трейдер болуға өтінім жіберу (админ модерациясына түседі).
   Future<void> submitTraderApplication({required String about, String? years, String? proof}) =>
       _send('POST', '/trader-applications', body: {'about': about, 'years': years, 'proof': proof});
+
+  // ─────────────── BI / Admin Dashboard (тек админ JWT) ───────────────
+  Future<Map<String, dynamic>> biOverview() => _get('/admin/bi/overview');
+  Future<Map<String, dynamic>> biRevenueCompare(String period) =>
+      _get('/admin/bi/revenue-compare', query: {'period': period});
+  Future<Map<String, dynamic>> biSignalsDeep() => _get('/admin/bi/signals-deep');
+  Future<Map<String, dynamic>> biFeatureAdoption() => _get('/admin/bi/feature-adoption');
 }
 
 final apiServiceProvider = Provider<ApiService>((ref) => ApiService(ref.watch(apiClientProvider)));

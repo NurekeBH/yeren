@@ -318,10 +318,14 @@ export async function revenueCompare(period: 'day' | 'week' | 'month') {
       ),
       sub as (select date_trunc('${g.trunc}', activated_at) b, sum(amount) v from subscriptions
                where activated_at >= date_trunc('${g.trunc}', now()) - ${g.span} group by 1),
-      sig as (select date_trunc('${g.trunc}', created_at) b, sum(price_tg) v from signal_purchases
+      sig as (select date_trunc('${g.trunc}', created_at) b, sum(price_tg) v,
+                     count(*) filter (where price_tg = 500)  c500,
+                     count(*) filter (where price_tg = 1000) c1000
+                from signal_purchases
                where created_at >= date_trunc('${g.trunc}', now()) - ${g.span} group by 1)
       select to_char(buckets.b, '${g.fmt}') as label,
-             coalesce(sub.v,0)::text as sub, coalesce(sig.v,0)::text as sig
+             coalesce(sub.v,0)::text as sub, coalesce(sig.v,0)::text as sig,
+             coalesce(sig.c500,0)::text as sig500, coalesce(sig.c1000,0)::text as sig1000
         from buckets
         left join sub on sub.b = buckets.b
         left join sig on sig.b = buckets.b
@@ -341,7 +345,9 @@ export async function revenueCompare(period: 'day' | 'week' | 'month') {
       arpu: sigBuyers > 0 ? Math.round(sigRev / sigBuyers) : 0,
     },
     winner: sigRev > subRev ? 'signals' : subRev > sigRev ? 'subscription' : 'tie',
-    series: seriesRows.rows.map((s) => ({ label: s.label, sub: num(s.sub), sig: num(s.sig) })),
+    series: seriesRows.rows.map((s) => ({
+      label: s.label, sub: num(s.sub), sig: num(s.sig), sig500: num(s.sig500), sig1000: num(s.sig1000),
+    })),
   };
 }
 
