@@ -37,7 +37,7 @@ class LiveQuote extends Equatable {
 ///   Yahoo GC=F (фьючерс) ~10 минут кідіріспен берілетін — сол себепті ауыстырылды.
 /// DXY/XAG/USOIL — Yahoo Finance REST (қосымша тикерлер).
 class StooqLiveQuotesService {
-  StooqLiveQuotesService({Dio? dio, this.pollInterval = const Duration(seconds: 2)})
+  StooqLiveQuotesService({Dio? dio, this.pollInterval = const Duration(seconds: 5)})
       : _dio = dio ??
             Dio(BaseOptions(
               connectTimeout: const Duration(seconds: 10),

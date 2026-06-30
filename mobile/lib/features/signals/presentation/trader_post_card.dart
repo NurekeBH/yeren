@@ -146,6 +146,8 @@ class _TraderPostCardState extends ConsumerState<TraderPostCard> {
                 imageUrl: post.imageUrl!,
                 fit: BoxFit.cover,
                 width: double.infinity,
+                // Экран еніне дейін ғана декодтаймыз (үлкен фото жадыны жемесін).
+                memCacheWidth: (MediaQuery.sizeOf(context).width * MediaQuery.devicePixelRatioOf(context)).round(),
                 placeholder: (_, _) => Container(
                   height: 200,
                   color: AppColors.dxyBlue.withValues(alpha: 0.06),

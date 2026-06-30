@@ -224,10 +224,10 @@ class _EventCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(secondTickerProvider); // live countdown — әр секунд rebuild
+    // ПЕРФОРМАНС: ticker-ді бүкіл карточка ЕМЕС, тек countdown чипі қана watch етеді
+    // (төменгі Consumer). Әйтпесе ауыр _MiniBars painter де секунд-сайын rebuild болатын.
     final color = _impactColor(event.impact);
     final time = '${event.scheduledAt.hour.toString().padLeft(2, '0')}:${event.scheduledAt.minute.toString().padLeft(2, '0')}';
-    final imminent = !event.countdown.isNegative && event.countdown.inMinutes < 60;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 6, 12, 6),
@@ -251,22 +251,29 @@ class _EventCard extends ConsumerWidget {
                           children: [
                             Text(time, style: AppTypography.price(size: 16, weight: FontWeight.w700)),
                             const SizedBox(width: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                              decoration: BoxDecoration(
-                                color: imminent ? color.withValues(alpha: 0.14) : AppColors.surfaceMuted,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(Icons.schedule, size: 12, color: imminent ? color : AppColors.textMuted),
-                                  const SizedBox(width: 4),
-                                  Text(_fromNow(event.countdown, l),
-                                      style: AppTypography.label(color: imminent ? color : AppColors.textSecondary)
-                                          .copyWith(fontWeight: imminent ? FontWeight.w700 : FontWeight.w500)),
-                                ],
-                              ),
+                            // Тек осы чип секунд-сайын rebuild болады (қалған карточка тұрақты).
+                            Consumer(
+                              builder: (context, ref, _) {
+                                ref.watch(secondTickerProvider);
+                                final imminent = !event.countdown.isNegative && event.countdown.inMinutes < 60;
+                                return Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                  decoration: BoxDecoration(
+                                    color: imminent ? color.withValues(alpha: 0.14) : AppColors.surfaceMuted,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.schedule, size: 12, color: imminent ? color : AppColors.textMuted),
+                                      const SizedBox(width: 4),
+                                      Text(_fromNow(event.countdown, l),
+                                          style: AppTypography.label(color: imminent ? color : AppColors.textSecondary)
+                                              .copyWith(fontWeight: imminent ? FontWeight.w700 : FontWeight.w500)),
+                                    ],
+                                  ),
+                                );
+                              },
                             ),
                           ],
                         ),

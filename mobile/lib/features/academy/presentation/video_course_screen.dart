@@ -94,7 +94,13 @@ class _VideoCourseScreenState extends ConsumerState<VideoCourseScreen> {
         else if (c.coverImageUrl != null)
           ClipRRect(
             borderRadius: BorderRadius.circular(14),
-            child: CachedNetworkImage(imageUrl: c.coverImageUrl!, fit: BoxFit.cover, height: 200, width: double.infinity),
+            child: CachedNetworkImage(
+              imageUrl: c.coverImageUrl!,
+              fit: BoxFit.cover,
+              height: 200,
+              width: double.infinity,
+              memCacheWidth: (MediaQuery.sizeOf(context).width * MediaQuery.devicePixelRatioOf(context)).round(),
+            ),
           ),
         const SizedBox(height: 14),
         Text(c.title, style: AppTypography.h1()),

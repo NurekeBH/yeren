@@ -93,10 +93,9 @@ class _EventRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(secondTickerProvider); // әр секунд rebuild — countdown live болсын
+    // ПЕРФОРМАНС: ticker-ді тек countdown жолы (төменгі Consumer) watch етеді.
     final color = _impactColor(event.impact);
     final time = '${event.scheduledAt.hour.toString().padLeft(2, '0')}:${event.scheduledAt.minute.toString().padLeft(2, '0')}';
-    final imminent = !event.countdown.isNegative && event.countdown.inMinutes < 60;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -119,19 +118,26 @@ class _EventRow extends ConsumerWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis),
                 const SizedBox(height: 3),
-                Row(
-                  children: [
-                    Icon(Icons.schedule, size: 11, color: imminent ? color : AppColors.textMuted),
-                    const SizedBox(width: 3),
-                    Text(_fromNow(event.countdown, l),
-                        style: AppTypography.label(color: imminent ? color : AppColors.textMuted)
-                            .copyWith(fontWeight: imminent ? FontWeight.w700 : FontWeight.w500)),
-                    if (event.forecast != null) ...[
-                      const SizedBox(width: 8),
-                      Text('${l.calendar_forecast_short} ${event.forecast}',
-                          style: AppTypography.label(color: AppColors.dxyBlue).copyWith(fontWeight: FontWeight.w600)),
-                    ],
-                  ],
+                // Тек осы жол секунд-сайын rebuild болады (қалған _EventRow тұрақты).
+                Consumer(
+                  builder: (context, ref, _) {
+                    ref.watch(secondTickerProvider);
+                    final imminent = !event.countdown.isNegative && event.countdown.inMinutes < 60;
+                    return Row(
+                      children: [
+                        Icon(Icons.schedule, size: 11, color: imminent ? color : AppColors.textMuted),
+                        const SizedBox(width: 3),
+                        Text(_fromNow(event.countdown, l),
+                            style: AppTypography.label(color: imminent ? color : AppColors.textMuted)
+                                .copyWith(fontWeight: imminent ? FontWeight.w700 : FontWeight.w500)),
+                        if (event.forecast != null) ...[
+                          const SizedBox(width: 8),
+                          Text('${l.calendar_forecast_short} ${event.forecast}',
+                              style: AppTypography.label(color: AppColors.dxyBlue).copyWith(fontWeight: FontWeight.w600)),
+                        ],
+                      ],
+                    );
+                  },
                 ),
               ],
             ),

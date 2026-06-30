@@ -126,7 +126,12 @@ class _MyPostCard extends StatelessWidget {
             const SizedBox(height: 10),
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: CachedNetworkImage(imageUrl: post.imageUrl!, fit: BoxFit.cover, width: double.infinity),
+              child: CachedNetworkImage(
+                imageUrl: post.imageUrl!,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                memCacheWidth: (MediaQuery.sizeOf(context).width * MediaQuery.devicePixelRatioOf(context)).round(),
+              ),
             ),
           ],
           const SizedBox(height: 10),

@@ -185,6 +185,7 @@ class _Screenshot extends StatelessWidget {
                     height: 200,
                     width: double.infinity,
                     fit: BoxFit.cover,
+                    memCacheWidth: (MediaQuery.sizeOf(context).width * MediaQuery.devicePixelRatioOf(context)).round(),
                     placeholder: (_, _) => const _ChartPlaceholder(),
                     errorWidget: (_, _, _) => const _ChartPlaceholder(),
                   )

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -87,8 +88,12 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
               children: [
                 // Мұқаба суреті болса — фон ретінде (мәтін оқылуы үшін қара градиент scrim).
                 if (e.posterUrl != null) ...[
-                  Image.network(e.posterUrl!, fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) => const SizedBox.shrink()),
+                  CachedNetworkImage(
+                    imageUrl: e.posterUrl!,
+                    fit: BoxFit.cover,
+                    memCacheWidth: (MediaQuery.sizeOf(context).width * MediaQuery.devicePixelRatioOf(context)).round(),
+                    errorWidget: (_, _, _) => const SizedBox.shrink(),
+                  ),
                   const DecoratedBox(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(

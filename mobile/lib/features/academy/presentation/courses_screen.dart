@@ -95,7 +95,11 @@ class _VideoCourseCard extends ConsumerWidget {
                   ? Stack(
                       fit: StackFit.expand,
                       children: [
-                        CachedNetworkImage(imageUrl: cover, fit: BoxFit.cover),
+                        CachedNetworkImage(
+                          imageUrl: cover,
+                          fit: BoxFit.cover,
+                          memCacheWidth: (MediaQuery.sizeOf(context).width * MediaQuery.devicePixelRatioOf(context)).round(),
+                        ),
                         const Center(child: Icon(Icons.play_circle_fill, color: Colors.white, size: 52)),
                       ],
                     )

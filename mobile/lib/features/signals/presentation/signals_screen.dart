@@ -67,10 +67,11 @@ class SignalsScreen extends ConsumerWidget {
                   onRefresh: onRefresh,
                   child: providers.isEmpty
                       ? _PullableEmpty(icon: Icons.groups_outlined, label: l.signals_empty)
-                      : ListView(
+                      : ListView.builder(
                           physics: const AlwaysScrollableScrollPhysics(),
                           padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
-                          children: [for (final p in providers) ProviderCard(provider: p)],
+                          itemCount: providers.length,
+                          itemBuilder: (_, i) => ProviderCard(provider: providers[i]),
                         ),
                 ),
               ],
