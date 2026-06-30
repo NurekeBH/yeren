@@ -185,6 +185,13 @@ class ProfileScreen extends ConsumerWidget {
               label: l.my_publications,
               onTap: () => context.push('/profile/publications'),
             ),
+          // Админ: BI-дашборд (бизнес-аналитика). Тек админ қолданушыға көрінеді.
+          if (profile.isAdmin)
+            _MenuItem(
+              icon: Icons.insights_outlined,
+              label: 'BI Dashboard',
+              onTap: () => context.push('/admin/dashboard'),
+            ),
           _MenuItem(
             icon: Icons.bookmark_outline,
             label: l.profile_saved,

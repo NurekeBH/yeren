@@ -13,6 +13,7 @@ import '../../features/academy/presentation/lesson_detail_screen.dart';
 import '../../features/academy/presentation/library_detail_screen.dart';
 import '../../features/academy/presentation/library_screen.dart';
 import '../../features/academy/presentation/saved_library_screen.dart';
+import '../../features/admin/presentation/admin_dashboard_screen.dart';
 import '../../features/alerts/presentation/price_alerts_screen.dart';
 import '../../features/tools/presentation/position_calculator_screen.dart';
 import '../../features/auth/application/auth_controller.dart';
@@ -119,6 +120,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/profile/publications', builder: (_, _) => const AuthGuard(child: MyPublicationsScreen())),
       GoRoute(path: '/bonuses', builder: (_, _) => const AuthGuard(child: BonusesScreen())),
       GoRoute(path: '/alerts', builder: (_, _) => const AuthGuard(child: PriceAlertsScreen())),
+      // BI-дашборд — тек админ JWT эндпоинттерін шақырады; кіру пунктін Профильде
+      // тек isAdmin қолданушыға көрсетеміз (қосымша қорғаныс — серверде requireAdmin).
+      GoRoute(path: '/admin/dashboard', builder: (_, _) => const AuthGuard(child: AdminDashboardScreen())),
       GoRoute(path: '/legal/agreement', builder: (_, _) => const UserAgreementScreen(showAccept: false)),
       GoRoute(path: '/events', builder: (_, _) => const AuthGuard(child: EventsScreen())),
       GoRoute(

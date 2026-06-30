@@ -122,6 +122,7 @@ class UserProfile extends Equatable {
     this.weekProgress = const [false, false, false, false, false, false, false],
     this.onboardedFlag = false,
     this.isVerifiedTrader = false,
+    this.isAdmin = false,
     this.promoCode = '',
     this.bonusBalance = 0,
     this.referredBy,
@@ -163,6 +164,9 @@ class UserProfile extends Equatable {
   /// Расталған трейдер режимі — идея жариялау/басқару мүмкіндігін ашады.
   final bool isVerifiedTrader;
 
+  /// Админ режимі — BI-дашбордқа қол жеткізу (тек админ JWT эндпоинттері жұмыс істейді).
+  final bool isAdmin;
+
   bool get isOnboarded => onboardedFlag || (name.isNotEmpty && styles.isNotEmpty);
 
   UserProfile copyWith({
@@ -179,6 +183,7 @@ class UserProfile extends Equatable {
     List<bool>? weekProgress,
     bool? onboardedFlag,
     bool? isVerifiedTrader,
+    bool? isAdmin,
     String? promoCode,
     int? bonusBalance,
     String? referredBy,
@@ -199,6 +204,7 @@ class UserProfile extends Equatable {
         weekProgress: weekProgress ?? this.weekProgress,
         onboardedFlag: onboardedFlag ?? this.onboardedFlag,
         isVerifiedTrader: isVerifiedTrader ?? this.isVerifiedTrader,
+        isAdmin: isAdmin ?? this.isAdmin,
         promoCode: promoCode ?? this.promoCode,
         bonusBalance: bonusBalance ?? this.bonusBalance,
         referredBy: referredBy ?? this.referredBy,
@@ -221,6 +227,7 @@ class UserProfile extends Equatable {
         'weekProgress': weekProgress,
         'onboarded': onboardedFlag,
         'isVerifiedTrader': isVerifiedTrader,
+        'isAdmin': isAdmin,
         'promoCode': promoCode,
         'bonusBalance': bonusBalance,
         'referredBy': referredBy,
@@ -264,6 +271,7 @@ class UserProfile extends Equatable {
           const [false, false, false, false, false, false, false],
       onboardedFlag: (json['onboarded'] as bool?) ?? false,
       isVerifiedTrader: (json['isVerifiedTrader'] as bool?) ?? false,
+      isAdmin: (json['isAdmin'] as bool?) ?? false,
       promoCode: (json['promoCode'] as String?) ?? '',
       bonusBalance: (json['bonusBalance'] as num?)?.toInt() ?? 0,
       referredBy: json['referredBy'] as String?,
@@ -273,7 +281,7 @@ class UserProfile extends Equatable {
   }
 
   @override
-  List<Object?> get props => [name, city, styles, bio, avatarPath, preferredSessions, notifications, gallup, xp, streak, weekProgress, onboardedFlag, isVerifiedTrader, promoCode, bonusBalance, referredBy, referralCount, referralCreditedCount];
+  List<Object?> get props => [name, city, styles, bio, avatarPath, preferredSessions, notifications, gallup, xp, streak, weekProgress, onboardedFlag, isVerifiedTrader, isAdmin, promoCode, bonusBalance, referredBy, referralCount, referralCreditedCount];
 }
 
 const _profileKey = 'user_profile_v1';
@@ -446,6 +454,7 @@ class ProfileController extends StateNotifier<UserProfile> {
         styles: styles,
         onboardedFlag: true,
         isVerifiedTrader: (user['is_verified_trader'] as bool?) ?? state.isVerifiedTrader,
+        isAdmin: (user['is_admin'] as bool?) ?? state.isAdmin,
         promoCode: (user['promo_code'] as String?) ?? state.promoCode,
         bonusBalance: (user['bonus_balance'] as num?)?.toInt() ?? state.bonusBalance,
         referredBy: (user['referred_by'] as String?) ?? state.referredBy,
