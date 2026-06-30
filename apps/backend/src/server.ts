@@ -27,6 +27,7 @@ import { uploadsRoutes } from './modules/uploads/routes.js';
 import { pricesRoutes } from './modules/prices/routes.js';
 import { journalRoutes } from './modules/journal/routes.js';
 import { biRoutes } from './modules/bi/routes.js';
+import { payoutsRoutes } from './modules/payouts/routes.js';
 import { generateInsights } from './services/insights.js';
 import { ensureAdmin } from './services/bootstrap_admin.js';
 import { ingestNews } from './services/news.js';
@@ -120,6 +121,7 @@ await app.register(async (api) => {
   await pricesRoutes(api);
   await journalRoutes(api);
   await biRoutes(api);
+  await payoutsRoutes(api);
 }, { prefix: '/api/v1' });
 
 const shutdown = async (signal: string) => {

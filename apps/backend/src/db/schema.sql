@@ -941,6 +941,23 @@ create index if not exists admin_insights_open_idx on admin_insights(created_at 
 -- Дедуп: один и тот же детектор не плодит карточки чаще раза в окно.
 create index if not exists admin_insights_detector_idx on admin_insights(detector, created_at desc);
 
+-- ── Выплаты трейдерам (payout_history). Баланс ВЫЧИСЛЯЕМЫЙ: ──
+-- earned (сумма продаж сигналов+курсов) − paid (сумма выплат) = available.
+-- Отдельной таблицы балансов нет — единый источник правды (без рассинхрона).
+create table if not exists provider_payouts (
+  id          uuid primary key default uuid_generate_v4(),
+  provider_id uuid references signal_providers(id) on delete set null,
+  user_id     uuid not null references users(id) on delete cascade,  -- трейдер-получатель
+  amount      numeric(14,2) not null check (amount > 0),             -- сумма (₸, бонус 1:1)
+  currency    text not null default 'KZT',
+  method      text,                                                  -- card | crypto | cash
+  note        text,
+  paid_by     uuid references users(id) on delete set null,          -- админ, зафиксировавший выплату
+  created_at  timestamptz not null default now()
+);
+create index if not exists provider_payouts_user_idx on provider_payouts(user_id, created_at desc);
+create index if not exists provider_payouts_provider_idx on provider_payouts(provider_id, created_at desc);
+
 -- ── Pay-per-Signal аналитика (фокус-модель): доход по периодам, тиры, adoption будильника ──
 -- Доход с сигналов по периодам (день/неделя/месяц) — диапазонные сканы по дате.
 create index if not exists signal_purchases_created_idx on signal_purchases(created_at desc);

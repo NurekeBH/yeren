@@ -311,6 +311,10 @@ class ApiService {
   Future<void> submitTraderApplication({required String about, String? years, String? proof}) =>
       _send('POST', '/trader-applications', body: {'about': about, 'years': years, 'proof': proof});
 
+  // ─────────────── Provider dashboard (трейдер өзінің кабинеті) ───────────────
+  Future<Map<String, dynamic>> providerDashboard(String period) =>
+      _get('/provider/dashboard', query: {'period': period});
+
   // ─────────────── BI / Admin Dashboard (тек админ JWT) ───────────────
   Future<Map<String, dynamic>> biOverview() => _get('/admin/bi/overview');
   Future<Map<String, dynamic>> biRevenueCompare(String period) =>

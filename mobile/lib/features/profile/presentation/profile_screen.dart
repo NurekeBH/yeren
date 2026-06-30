@@ -178,6 +178,13 @@ class ProfileScreen extends ConsumerWidget {
               label: l.profile_become_trader,
               onTap: () => showTraderApplicationSheet(context),
             ),
+          // Трейдер: кабинет (доход, баланс, выплаты, рефералы).
+          if (profile.isVerifiedTrader)
+            _MenuItem(
+              icon: Icons.account_balance_wallet_outlined,
+              label: 'Кабинет трейдера',
+              onTap: () => context.push('/provider/dashboard'),
+            ),
           // Трейдер: өзі жариялаған идеялар (белсенді/жабық) мен жазбалар.
           if (profile.isVerifiedTrader)
             _MenuItem(
