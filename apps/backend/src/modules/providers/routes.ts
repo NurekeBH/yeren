@@ -99,6 +99,11 @@ export async function providersRoutes(app: FastifyInstance) {
     // Санақты тек ЖАҢА подписка қосылғанда ғана арттырамыз (қайталанбасын).
     if (ins.rows.length > 0) {
       await query('update signal_providers set subscribers = subscribers + 1 where id = $1', [id]);
+      // BI: retention/churn тарихы (provider_subscription_events).
+      await query(
+        `insert into provider_subscription_events (user_id, provider_id, action) values ($1, $2, 'subscribe')`,
+        [req.userId, id],
+      );
     }
     return { ok: true };
   });
@@ -111,6 +116,11 @@ export async function providersRoutes(app: FastifyInstance) {
     );
     if ((res.rowCount ?? 0) > 0) {
       await query('update signal_providers set subscribers = greatest(0, subscribers - 1) where id = $1', [id]);
+      // BI: отписка в историю (retention/churn).
+      await query(
+        `insert into provider_subscription_events (user_id, provider_id, action) values ($1, $2, 'unsubscribe')`,
+        [req.userId, id],
+      );
     }
     return { ok: true };
   });

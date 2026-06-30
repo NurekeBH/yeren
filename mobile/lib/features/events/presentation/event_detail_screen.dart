@@ -30,6 +30,8 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
   @override
   void initState() {
     super.initState();
+    // BI: оқиға қаралды (view_event).
+    ref.read(apiServiceProvider).track('view_event', entityType: 'event', entityId: widget.eventId);
     final events = ref.read(eventsProvider).valueOrNull ?? const [];
     final matches = events.where((e) => e.id == widget.eventId);
     final yid = matches.isEmpty ? null : matches.first.youtubeId;

@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/network/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
@@ -21,13 +22,26 @@ import '../data/signals_repository.dart';
 import 'risk_ui.dart';
 import 'unlock_signal_sheet.dart';
 
-class SignalDetailScreen extends ConsumerWidget {
+class SignalDetailScreen extends ConsumerStatefulWidget {
   const SignalDetailScreen({super.key, required this.signalId});
 
   final String signalId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SignalDetailScreen> createState() => _SignalDetailScreenState();
+}
+
+class _SignalDetailScreenState extends ConsumerState<SignalDetailScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // BI: идея ашылды (view_signal) — бір рет, экран ашылғанда.
+    ref.read(apiServiceProvider).track('view_signal', entityType: 'signal', entityId: widget.signalId);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final signalId = widget.signalId;
     final l = AppLocalizations.of(context);
     final async = ref.watch(signalByIdProvider(signalId));
 
@@ -614,7 +628,11 @@ class _Paywall extends ConsumerWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
-                onPressed: () => showUnlockSignalSheet(context, ref, signal),
+                onPressed: () {
+                  // BI: пайдаланушы paywall-ды ашты (сатып алу ниеті) — hot_segment детекторы.
+                  ref.read(apiServiceProvider).track('open_paywall', entityType: 'signal', entityId: signal.id);
+                  showUnlockSignalSheet(context, ref, signal);
+                },
                 icon: const Icon(Icons.lock_open, size: 18),
                 label: Text(l.signals_unlock_for(signal.priceTg), maxLines: 1, overflow: TextOverflow.ellipsis),
               ),

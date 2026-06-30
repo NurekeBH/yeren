@@ -867,3 +867,76 @@ create table if not exists uploads (
   data       bytea not null,
   created_at timestamptz default now()
 );
+
+-- ════════════════════════════════════════════════════════════════════════
+-- BI / ANALYTICS (Growth + CFO дашборд + AI Insights). TZ: админ-панель → BI.
+-- ════════════════════════════════════════════════════════════════════════
+
+-- ── Активность (фундамент DAU/MAU/конверсий) ──
+-- ВАЖНО: из-за бессрочной сессии (JWT ~10 лет) логины редки → user_sessions
+-- плохой сигнал активности. Поэтому меряем «последний раз онлайн» heartbeat'ом.
+alter table users add column if not exists last_seen_at timestamptz;
+create index if not exists users_last_seen_idx on users(last_seen_at desc);
+
+-- Лёгкий лог продуктовых событий (append-only) — источник DAU, воронок, view→buy.
+-- payload без PII; при росте — партиционирование по месяцам.
+create table if not exists activity_events (
+  id          bigserial primary key,
+  user_id     uuid references users(id) on delete set null,
+  event       text not null,              -- app_open | view_course | view_signal | view_event
+                                          -- | view_provider | open_paywall | purchase | subscribe
+  entity_type text,                       -- course | signal | event | provider | subscription
+  entity_id   text,                       -- course_id / signal_id::text / ...
+  city        text,                       -- snapshot users.city (гео-воронки)
+  country     text,
+  created_at  timestamptz not null default now()
+);
+create index if not exists activity_user_day_idx on activity_events(user_id, created_at desc);
+create index if not exists activity_event_idx     on activity_events(event, created_at desc);
+create index if not exists activity_entity_idx    on activity_events(entity_type, entity_id, event);
+
+-- ── Маркетинговые затраты (фундамент CAC) — вводятся админом вручную ──
+create table if not exists marketing_spend (
+  id          uuid primary key default uuid_generate_v4(),
+  channel     text not null,              -- instagram | google | tiktok | influencer | other
+  campaign    text,
+  amount_kzt  numeric(12,2) not null,
+  spent_on    date not null,
+  city        text,                       -- если таргет на город — для гео-CAC
+  note        text,
+  created_at  timestamptz default now()
+);
+create index if not exists marketing_spend_date_idx on marketing_spend(spent_on desc);
+
+-- ── История подписок провайдеров (фундамент Retention/Churn) ──
+-- Отписка теперь soft-delete (canceled_at), а не DELETE → история жива.
+alter table provider_subscriptions add column if not exists canceled_at timestamptz;
+create table if not exists provider_subscription_events (
+  id          bigserial primary key,
+  user_id     uuid not null references users(id) on delete cascade,
+  provider_id uuid not null references signal_providers(id) on delete cascade,
+  action      text not null,              -- subscribe | unsubscribe
+  created_at  timestamptz not null default now()
+);
+create index if not exists prov_sub_events_prov_idx on provider_subscription_events(provider_id, created_at desc);
+
+-- ── IP-гео обогащение сессий (опц., резолв асинхронно) ──
+alter table user_sessions add column if not exists ip_country text;
+alter table user_sessions add column if not exists ip_city text;
+
+-- ── AI-инсайты (детерминированные SQL-детекторы → Claude-копирайтер → лента) ──
+create table if not exists admin_insights (
+  id           uuid primary key default uuid_generate_v4(),
+  detector     text not null default '',       -- ключ детектора (для дедупа в окне)
+  severity     text not null default 'info',   -- critical | warning | opportunity | info
+  title        text not null,
+  body         text not null,
+  action       text,                            -- человекочитаемое предложение
+  action_kind  text,                            -- push_segment | promo | promote_provider | none
+  meta         jsonb not null default '{}'::jsonb,  -- {city, provider_id, delta_pct, segment...}
+  created_at   timestamptz not null default now(),
+  dismissed_at timestamptz
+);
+create index if not exists admin_insights_open_idx on admin_insights(created_at desc) where dismissed_at is null;
+-- Дедуп: один и тот же детектор не плодит карточки чаще раза в окно.
+create index if not exists admin_insights_detector_idx on admin_insights(detector, created_at desc);

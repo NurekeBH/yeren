@@ -26,6 +26,13 @@ class _VideoCourseScreenState extends ConsumerState<VideoCourseScreen> {
   YoutubePlayerController? _yt;
   bool _busy = false;
 
+  @override
+  void initState() {
+    super.initState();
+    // BI: курс қаралды (view_course) — конверсия view→purchase үшін.
+    ref.read(apiServiceProvider).track('view_course', entityType: 'course', entityId: widget.courseId);
+  }
+
   void _ensurePlayer(String? videoId) {
     if (videoId == null) return;
     if (_yt == null) {

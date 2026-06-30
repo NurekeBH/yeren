@@ -26,6 +26,8 @@ import { coursesRoutes } from './modules/courses/routes.js';
 import { uploadsRoutes } from './modules/uploads/routes.js';
 import { pricesRoutes } from './modules/prices/routes.js';
 import { journalRoutes } from './modules/journal/routes.js';
+import { biRoutes } from './modules/bi/routes.js';
+import { generateInsights } from './services/insights.js';
 import { ensureAdmin } from './services/bootstrap_admin.js';
 import { ingestNews } from './services/news.js';
 import { ingestCalendar } from './services/calendar.js';
@@ -117,6 +119,7 @@ await app.register(async (api) => {
   await uploadsRoutes(api);
   await pricesRoutes(api);
   await journalRoutes(api);
+  await biRoutes(api);
 }, { prefix: '/api/v1' });
 
 const shutdown = async (signal: string) => {
@@ -245,4 +248,30 @@ if (env.FINNHUB_API_KEY) {
   const calRemTimer = setInterval(() => void tick(), CAL_MS);
   calRemTimer.unref?.();
   app.log.info(`Calendar-reminder poller started (every ${CAL_MS / 60000}m)`);
+}
+
+// ─────────────── AI Marketing Insights генератор (раз в час) ───────────────
+// SQL-детекторы находят аномалии (гео-всплеск, отток, LTV/CAC, горячий сегмент…),
+// Claude формулирует совет → admin_insights → лента на «Обзоре». Работает и без
+// ANTHROPIC_API_KEY (тогда детерминированный текст).
+{
+  const INSIGHTS_MS = 60 * 60_000;
+  let busy = false;
+  const tick = async () => {
+    if (busy) return;
+    busy = true;
+    try {
+      await generateInsights(app.log);
+    } catch (err) {
+      app.log.warn(err, 'insights_generate_failed');
+    } finally {
+      busy = false;
+    }
+  };
+  // Старт через 30с после запуска (дать БД прогреться), затем каждый час.
+  const startTimer = setTimeout(() => void tick(), 30_000);
+  startTimer.unref?.();
+  const insightsTimer = setInterval(() => void tick(), INSIGHTS_MS);
+  insightsTimer.unref?.();
+  app.log.info('AI Insights generator started (every 60m)');
 }

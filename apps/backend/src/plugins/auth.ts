@@ -23,6 +23,24 @@ declare module '@fastify/jwt' {
   }
 }
 
+// BI: «последний раз онлайн» heartbeat. Бессрочная сессия → логины редки, поэтому
+// активность меряем здесь. Троттлинг в памяти (раз в 5 мин на юзера) — без UPDATE
+// на каждый запрос. Процесс-локально (single instance) — этого достаточно.
+const HEARTBEAT_MS = 5 * 60_000;
+const lastTouch = new Map<string, number>();
+function touchLastSeen(userId: string): void {
+  const now = Date.now();
+  const prev = lastTouch.get(userId) ?? 0;
+  if (now - prev < HEARTBEAT_MS) return;
+  lastTouch.set(userId, now);
+  // Fire-and-forget: ескі промис қате берсе де сұрауды бөгемейді/құлатпайды.
+  void query('update users set last_seen_at = now() where id = $1', [userId]).catch(() => {});
+  // Жадыны шектеу: Map шектен асса — ескілерін тазалаймыз.
+  if (lastTouch.size > 50_000) {
+    for (const [k, t] of lastTouch) if (now - t > HEARTBEAT_MS) lastTouch.delete(k);
+  }
+}
+
 export async function registerAuth(app: FastifyInstance) {
   await app.register(fastifyJwt, {
     secret: env.JWT_SECRET,
@@ -74,7 +92,8 @@ export async function registerAuth(app: FastifyInstance) {
   }
 
   app.decorate('authenticate', async (req: FastifyRequest, reply: FastifyReply) => {
-    await loadUser(req, reply);
+    const u = await loadUser(req, reply);
+    if (u) touchLastSeen(u.id); // BI: DAU/MAU heartbeat (троттлинг 5 мин)
   });
 
   app.decorate('requireAdmin', async (req: FastifyRequest, reply: FastifyReply) => {

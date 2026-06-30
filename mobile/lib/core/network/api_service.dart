@@ -81,6 +81,16 @@ class ApiService {
   Future<void> updateMe(Map<String, dynamic> patch) => _send('PATCH', '/auth/me', body: patch);
   Future<void> deleteAccount() => _send('DELETE', '/auth/me');
 
+  // ── BI-аналитика: оқиғаны тіркеу (fire-and-forget). Қатені ЕШҚАШАН лақтырмайды —
+  // аналитика UX-ті бұзбауы керек. Backend белгісіз оқиғаларды елемейді (whitelist).
+  void track(String event, {String? entityType, String? entityId}) {
+    _send('POST', '/track', body: {
+      'event': event,
+      'entity_type': ?entityType,
+      'entity_id': ?entityId,
+    }).ignore();
+  }
+
   /// Қалалар autocomplete (теру → DB ұсынысы).
   Future<List<String>> cities(String q) async {
     final res = await _get('/cities', query: {'q': q});
