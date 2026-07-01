@@ -927,6 +927,20 @@ create index if not exists prov_sub_events_prov_idx on provider_subscription_eve
 alter table user_sessions add column if not exists ip_country text;
 alter table user_sessions add column if not exists ip_city text;
 
+-- ── Детектор шэринга аккаунта (БЕЗ авто-разлогина — бессрочная сессия сохраняется) ──
+-- Фиксируем IP-хиты (троттлинг в памяти ~5 мин на пару user+ip). Фоновый воркер
+-- считает distinct IP за окно; при превышении порога — ФЛАГ + инсайт админу.
+create table if not exists session_ip_hits (
+  id       bigserial primary key,
+  user_id  uuid not null references users(id) on delete cascade,
+  jti      text,
+  ip       text not null,
+  seen_at  timestamptz not null default now()
+);
+create index if not exists session_ip_hits_user_idx on session_ip_hits(user_id, seen_at desc);
+-- Флаг подозрения на шэринг (для админ-списка/ручного решения; НЕ разлогинивает).
+alter table users add column if not exists sharing_flagged_at timestamptz;
+
 -- ── AI-инсайты (детерминированные SQL-детекторы → Claude-копирайтер → лента) ──
 create table if not exists admin_insights (
   id           uuid primary key default uuid_generate_v4(),

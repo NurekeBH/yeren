@@ -41,6 +41,23 @@ function touchLastSeen(userId: string): void {
   }
 }
 
+// Детектор шэринга: фиксируем IP-хиты (троттлинг ~5 мин на пару user+ip), чтобы
+// разные IP одного аккаунта попадали в лог. Воркер отдельно считает distinct IP.
+// НЕ разлогинивает — только детекция (бессрочная сессия сохраняется).
+const IP_HIT_MS = 5 * 60_000;
+const lastIpHit = new Map<string, number>();
+function recordIpHit(userId: string, jti: string | undefined, ip: string | undefined): void {
+  if (!ip) return;
+  const key = `${userId}:${ip}`;
+  const now = Date.now();
+  if (now - (lastIpHit.get(key) ?? 0) < IP_HIT_MS) return;
+  lastIpHit.set(key, now);
+  void query('insert into session_ip_hits (user_id, jti, ip) values ($1, $2, $3)', [userId, jti ?? null, ip]).catch(() => {});
+  if (lastIpHit.size > 100_000) {
+    for (const [k, t] of lastIpHit) if (now - t > IP_HIT_MS) lastIpHit.delete(k);
+  }
+}
+
 export async function registerAuth(app: FastifyInstance) {
   await app.register(fastifyJwt, {
     secret: env.JWT_SECRET,
@@ -93,7 +110,10 @@ export async function registerAuth(app: FastifyInstance) {
 
   app.decorate('authenticate', async (req: FastifyRequest, reply: FastifyReply) => {
     const u = await loadUser(req, reply);
-    if (u) touchLastSeen(u.id); // BI: DAU/MAU heartbeat (троттлинг 5 мин)
+    if (u) {
+      touchLastSeen(u.id); // BI: DAU/MAU heartbeat (троттлинг 5 мин)
+      recordIpHit(u.id, req.jti, req.ip); // детектор шэринга (без разлогина)
+    }
   });
 
   app.decorate('requireAdmin', async (req: FastifyRequest, reply: FastifyReply) => {

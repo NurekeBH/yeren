@@ -32,6 +32,7 @@ import { inviteRoutes } from './modules/invite/routes.js';
 import { retentionRoutes } from './modules/retention/routes.js';
 import { psycheRoutes } from './modules/psyche/routes.js';
 import { pokeDormantUsers } from './services/dormant.js';
+import { detectAccountSharing } from './services/session_anomaly.js';
 import { generateInsights } from './services/insights.js';
 import { ensureAdmin } from './services/bootstrap_admin.js';
 import { ingestNews } from './services/news.js';
@@ -308,4 +309,28 @@ if (env.FINNHUB_API_KEY) {
   const dormantTimer = setInterval(() => void tick(), DORMANT_MS);
   dormantTimer.unref?.();
   app.log.info('Dormant re-engagement pusher started (every 18h, weekdays only)');
+}
+
+// ─────────────── SECURITY: детектор шэринга аккаунта (каждые 20 мин) ───────────────
+// 3+ разных IP за 15 мин → флаг + инсайт админу. БЕЗ авто-разлогина.
+{
+  const SHARE_MS = 20 * 60_000;
+  let busy = false;
+  const tick = async () => {
+    if (busy) return;
+    busy = true;
+    try {
+      const r = await detectAccountSharing();
+      if (r.flagged > 0) app.log.info({ flagged: r.flagged }, 'account_sharing_flagged');
+    } catch (err) {
+      app.log.warn(err, 'account_sharing_detect_failed');
+    } finally {
+      busy = false;
+    }
+  };
+  const startTimer = setTimeout(() => void tick(), 120_000);
+  startTimer.unref?.();
+  const shareTimer = setInterval(() => void tick(), SHARE_MS);
+  shareTimer.unref?.();
+  app.log.info('Account-sharing detector started (every 20m, flag-only)');
 }
