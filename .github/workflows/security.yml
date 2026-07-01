@@ -1,0 +1,64 @@
+name: security
+
+# Гейт безопасности: на каждый PR и push в main. Падает (exit 1) при секретах,
+# SAST-находках или зависимостях с уязвимостями HIGH/CRITICAL.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  secrets-scan:
+    name: Secrets (Gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }   # полная история → сканируем и старые коммиты
+      - name: Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  sast:
+    name: SAST (Semgrep OWASP)
+    runs-on: ubuntu-latest
+    container: semgrep/semgrep
+    steps:
+      - uses: actions/checkout@v4
+      - name: Semgrep scan
+        run: semgrep ci --error
+        env:
+          # Наборы правил: OWASP Top-10 + JS/TS + secrets.
+          SEMGREP_RULES: >-
+            p/owasp-top-ten
+            p/javascript
+            p/typescript
+            p/secrets
+
+  sca:
+    name: SCA (OSV — CVE в зависимостях)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Сканируем lockfile'ы обоих экосистем: backend (package-lock.json) и Flutter (pubspec.lock).
+      - name: OSV-Scanner
+        uses: google/osv-scanner-action@v1
+        with:
+          scan-args: >-
+            --lockfile=apps/backend/package-lock.json
+            --lockfile=mobile/pubspec.lock
+      # Belt-and-suspenders: npm audit падает на HIGH/CRITICAL для бэкенда.
+      - name: npm audit (backend)
+        working-directory: apps/backend
+        run: npm audit --audit-level=high
+
+  # Итоговый гейт: любой упавший job блокирует merge в main (branch protection).
+  gate:
+    name: Security gate
+    needs: [secrets-scan, sast, sca]
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "✅ Все проверки безопасности пройдены"

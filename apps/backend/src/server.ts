@@ -58,9 +58,13 @@ const app = Fastify({
 // ҚАУІПСІЗДІК: өңделмеген қателер шикі error.message (кесте/драйвер атаулары) клиентке
 // кетпесін. Толық қате — серверлік логқа ғана; клиентке жалпы код.
 app.setErrorHandler((err, req, reply) => {
+  // Полная ошибка (stack, пути, PG-детали) — ТОЛЬКО в серверный лог.
   req.log.error({ err }, 'unhandled_error');
   const status = err.statusCode && err.statusCode < 500 ? err.statusCode : 500;
-  const body = status === 500 ? { error: 'internal_error' } : { error: err.code ?? 'bad_request' };
+  // FAIL SECURELY: 5xx клиенту — только generic + код. Никаких stack/paths/SQL наружу.
+  const body = status >= 500
+    ? { error: 'Internal Server Error', code: 'ERR_INTERNAL' }
+    : { error: err.code ?? 'bad_request' };
   reply.code(status).send(body);
 });
 
