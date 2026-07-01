@@ -18,7 +18,9 @@ CalendarEvent calendarFromJson(Map<String, dynamic> j) => CalendarEvent(
       name: (j['name'] ?? '').toString(),
       currency: (j['currency'] ?? '').toString(),
       impact: _level((j['impact'] ?? 'medium').toString()),
-      scheduledAt: DateTime.tryParse('${j['scheduled_at']}') ?? DateTime.now(),
+      // Бэкенд шлёт UTC (timestamptz → ISO с Z). Переводим в ЛОКАЛЬНОЕ время телефона,
+      // чтобы часы события совпадали с временем на устройстве пользователя.
+      scheduledAt: (DateTime.tryParse('${j['scheduled_at']}') ?? DateTime.now()).toLocal(),
       forecast: _s(j['forecast']),
       previous: _s(j['previous']),
       actual: _s(j['actual']),

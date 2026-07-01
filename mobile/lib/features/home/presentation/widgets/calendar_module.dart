@@ -49,10 +49,10 @@ class CalendarModule extends ConsumerWidget {
                 onRetry: () => ref.invalidate(calendarEventsProvider),
               ),
               data: (events) {
-                final upcoming = events
-                    .where((e) => e.scheduledAt.isAfter(DateTime.now()) || e.scheduledAt.difference(DateTime.now()).inMinutes > -60)
-                    .take(3)
-                    .toList();
+                // ТОЛЬКО предстоящие события (не «вышло»). Список уже отсортирован по
+                // возрастанию времени → take(3) = 3 ближайших будущих.
+                final now = DateTime.now();
+                final upcoming = events.where((e) => e.scheduledAt.isAfter(now)).take(3).toList();
                 if (upcoming.isEmpty) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12),
