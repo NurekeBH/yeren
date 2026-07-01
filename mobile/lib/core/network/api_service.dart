@@ -311,6 +311,19 @@ class ApiService {
   Future<void> submitTraderApplication({required String about, String? years, String? proof}) =>
       _send('POST', '/trader-applications', body: {'about': about, 'years': years, 'proof': proof});
 
+  // ─────────────── Deferred deep link рефералы ───────────────
+  // Первый запуск: сервер по IP-фингерпринту находит отложенный промокод (клик по
+  // реферальной ссылке перед установкой). Ошибка НЕ ломает запуск — возвращаем null.
+  Future<String?> resolveInvite() async {
+    try {
+      final r = await _send('POST', '/invite/resolve');
+      final code = r['code'];
+      return code is String && code.isNotEmpty ? code : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
   // ─────────────── Provider dashboard (трейдер өзінің кабинеті) ───────────────
   Future<Map<String, dynamic>> providerDashboard(String period) =>
       _get('/provider/dashboard', query: {'period': period});

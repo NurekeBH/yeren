@@ -49,9 +49,10 @@ cd /home/ubuntu/altyn/admin
 npm install --no-audit --no-fund >/dev/null
 npm run build
 
-# publish static landing
+# publish static landing (+ invite.html — deferred deep link реферал-страница)
 sudo -n mkdir -p /var/www/altyn
 sudo -n cp /home/ubuntu/altyn/landing/index.html /var/www/altyn/index.html
+sudo -n cp /home/ubuntu/altyn/landing/invite.html /var/www/altyn/invite.html
 sudo -n chown -R www-data:www-data /var/www/altyn
 
 sudo -n systemctl restart altyn-backend altyn-admin

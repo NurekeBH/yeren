@@ -941,6 +941,20 @@ create index if not exists admin_insights_open_idx on admin_insights(created_at 
 -- Дедуп: один и тот же детектор не плодит карточки чаще раза в окно.
 create index if not exists admin_insights_detector_idx on admin_insights(detector, created_at desc);
 
+-- ── Deferred deep link рефералы (вирусная петля без ручного ввода кода) ──
+-- Лендинг altyn.social/invite?code= пишет клик (code + IP + UA). Приложение при
+-- ПЕРВОМ запуске (в т.ч. установка с нуля) резолвит по IP-фингерпринту в окне
+-- времени → авто-подставляет промокод. consumed_at: один клик = один инсталл (anti-fraud).
+create table if not exists referral_clicks (
+  id          bigserial primary key,
+  code        text not null,
+  ip          text,
+  user_agent  text,
+  created_at  timestamptz not null default now(),
+  consumed_at timestamptz
+);
+create index if not exists referral_clicks_match_idx on referral_clicks(ip, created_at desc) where consumed_at is null;
+
 -- ── Выплаты трейдерам (payout_history). Баланс ВЫЧИСЛЯЕМЫЙ: ──
 -- earned (сумма продаж сигналов+курсов) − paid (сумма выплат) = available.
 -- Отдельной таблицы балансов нет — единый источник правды (без рассинхрона).

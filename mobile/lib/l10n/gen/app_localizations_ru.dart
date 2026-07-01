@@ -1778,6 +1778,15 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String referral_auto_bonus(int bonus) {
+    return '🎁 Вам начислено $bonus бонусов по приглашению!';
+  }
+
+  @override
+  String get referral_auto_sub =>
+      'Промокод подставлен автоматически — бонусы придут после регистрации.';
+
+  @override
   String get promo_already_used => 'Промокод уже использован';
 
   @override

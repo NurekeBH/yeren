@@ -1775,6 +1775,15 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
+  String referral_auto_bonus(int bonus) {
+    return '🎁 Шақыру бойынша сізге $bonus бонус есептеледі!';
+  }
+
+  @override
+  String get referral_auto_sub =>
+      'Промокод автоматты қойылды — бонус тіркелгеннен кейін түседі.';
+
+  @override
   String get promo_already_used => 'Промокод бұрын қолданылған';
 
   @override

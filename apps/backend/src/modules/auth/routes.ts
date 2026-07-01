@@ -133,15 +133,27 @@ export async function authRoutes(app: FastifyInstance) {
           [code],
         );
         if (ref.rowCount && ref.rows[0]!.id !== u.rows[0]!.id) {
+          const referrerId = ref.rows[0]!.id;
+          const newUserId = u.rows[0]!.id;
           // Жаңа қолданушыға +500; реферерге +500 және реферал саны +1 (тең).
           await c.query('update users set bonus_balance = $1, referred_by = $2 where id = $3', [
             PROMO_BONUS_TG,
             code,
-            u.rows[0]!.id,
+            newUserId,
           ]);
           await c.query(
             'update users set bonus_balance = bonus_balance + $1, referral_count = referral_count + 1 where id = $2',
-            [REFERRER_BONUS_TG, ref.rows[0]!.id],
+            [REFERRER_BONUS_TG, referrerId],
+          );
+          // ЛЕДЖЕР (BI/анти-фрод аудит): екеуіне де транзакция жазамыз (бұрын жоқ болатын).
+          // Атомды (сол tx ішінде) — реферал ағашы мен қаржы есебі толық сәйкес.
+          await c.query(
+            "insert into bonus_transactions (user_id, type, amount, ref) values ($1,'signup',$2,$3)",
+            [newUserId, PROMO_BONUS_TG, `promo:${code}`],
+          );
+          await c.query(
+            "insert into bonus_transactions (user_id, type, amount, ref) values ($1,'referral',$2,$3)",
+            [referrerId, REFERRER_BONUS_TG, `ref:${newUserId}`],
           );
         }
       }

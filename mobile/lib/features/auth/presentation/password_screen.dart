@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/referral/referral_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
@@ -29,8 +30,20 @@ class _PasswordScreenState extends ConsumerState<PasswordScreen> {
   bool _busy = false;
   bool _obscure = true;
   bool _agreed = false;
+  bool _autoPromo = false; // промокод перехвачен из реферальной ссылки (deferred deep link)
 
   bool get _isRegister => widget.mode == 'register';
+
+  @override
+  void initState() {
+    super.initState();
+    // Deferred deep link: если код перехвачен из приглашения — авто-подставляем и скрываем поле.
+    final pending = ref.read(referralServiceProvider).pendingReferral();
+    if (_isRegister && pending != null && pending.isNotEmpty) {
+      _promo.text = pending;
+      _autoPromo = true;
+    }
+  }
 
   Future<void> _openAgreement() async {
     final accepted = await Navigator.of(context).push<bool>(
@@ -64,6 +77,8 @@ class _PasswordScreenState extends ConsumerState<PasswordScreen> {
             );
           }
         }
+        // Deferred referral использован — очищаем кэш (не подставится повторно).
+        await ref.read(referralServiceProvider).clearPendingReferral();
       } else {
         await controller.login(phone: widget.phone, password: _password.text);
       }
@@ -127,15 +142,44 @@ class _PasswordScreenState extends ConsumerState<PasswordScreen> {
                     },
                   ),
                   const SizedBox(height: 12),
-                  TextFormField(
-                    controller: _promo,
-                    textCapitalization: TextCapitalization.characters,
-                    decoration: InputDecoration(
-                      hintText: l.promo_field_hint,
-                      prefixIcon: const Icon(Icons.card_giftcard, size: 18),
-                      helperText: l.promo_field_help(kPromoBonusTg),
+                  // Deferred deep link: если код перехвачен из приглашения — вместо поля
+                  // показываем аккуратный инфо-блок (код скрыт в _promo, редактировать нельзя).
+                  if (_autoPromo)
+                    Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: AppColors.profitGreen.withValues(alpha: 0.10),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: AppColors.profitGreen.withValues(alpha: 0.30)),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.card_giftcard, color: AppColors.profitGreen, size: 22),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(l.referral_auto_bonus(kPromoBonusTg),
+                                    style: AppTypography.bodyMedium().copyWith(fontWeight: FontWeight.w700, color: AppColors.profitGreen)),
+                                const SizedBox(height: 2),
+                                Text(l.referral_auto_sub, style: AppTypography.label(color: AppColors.textSecondary)),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  else
+                    TextFormField(
+                      controller: _promo,
+                      textCapitalization: TextCapitalization.characters,
+                      decoration: InputDecoration(
+                        hintText: l.promo_field_hint,
+                        prefixIcon: const Icon(Icons.card_giftcard, size: 18),
+                        helperText: l.promo_field_help(kPromoBonusTg),
+                      ),
                     ),
-                  ),
                   const SizedBox(height: 12),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,

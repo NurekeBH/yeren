@@ -1775,6 +1775,15 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String referral_auto_bonus(int bonus) {
+    return '🎁 You\'ve earned $bonus bonus from an invite!';
+  }
+
+  @override
+  String get referral_auto_sub =>
+      'Promo code applied automatically — bonus arrives after you register.';
+
+  @override
   String get promo_already_used => 'Promo code already used';
 
   @override

@@ -3424,6 +3424,18 @@ abstract class AppLocalizations {
   /// **'Промокод қолданылды! +{bonus} бонус'**
   String promo_applied(int bonus);
 
+  /// No description provided for @referral_auto_bonus.
+  ///
+  /// In kk, this message translates to:
+  /// **'🎁 Шақыру бойынша сізге {bonus} бонус есептеледі!'**
+  String referral_auto_bonus(int bonus);
+
+  /// No description provided for @referral_auto_sub.
+  ///
+  /// In kk, this message translates to:
+  /// **'Промокод автоматты қойылды — бонус тіркелгеннен кейін түседі.'**
+  String get referral_auto_sub;
+
   /// No description provided for @promo_already_used.
   ///
   /// In kk, this message translates to:

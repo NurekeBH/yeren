@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../core/referral/referral_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
@@ -160,7 +161,12 @@ class _PromoSectionState extends ConsumerState<PromoSection> {
             SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
-                onPressed: () => Share.share(l.promo_share_message(p.promoCode, kPromoBonusTg)),
+                onPressed: () {
+                  // Deferred deep link: к сообщению добавляем реф-ссылку — друг устанавливает
+                  // приложение, и промокод подставляется АВТОМАТИЧЕСКИ (без ручного ввода).
+                  final link = ref.read(referralServiceProvider).inviteLink(p.promoCode);
+                  Share.share('${l.promo_share_message(p.promoCode, kPromoBonusTg)}\n\n$link');
+                },
                 icon: const Icon(Icons.ios_share, size: 18),
                 label: Text(l.promo_share, maxLines: 1, overflow: TextOverflow.ellipsis),
               ),

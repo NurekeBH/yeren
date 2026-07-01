@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Приглашение в ALTYN — 500 бонусов на старте</title>
+<meta name="robots" content="noindex" />
+<meta property="og:title" content="Тебя пригласили в ALTYN 🎁" />
+<meta property="og:description" content="Установи приложение и получи 500 бонусов на старте. Сигналы по золоту XAU/USD, академия и журнал MT5." />
+<meta property="og:image" content="https://altyn.social/altyn.png" />
+<meta name="theme-color" content="#08080A" />
+<link rel="icon" href="altyn.png" />
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#08080A;color:#F4F1E8;
+    min-height:100vh;display:grid;place-items:center;text-align:center;padding:24px;overflow-x:hidden}
+  body::before{content:"";position:fixed;inset:0;z-index:-1;background:
+    radial-gradient(700px 420px at 50% -10%,rgba(227,190,114,.18),transparent 60%),#08080A}
+  .card{max-width:440px;width:100%}
+  .logo{width:88px;height:88px;border-radius:24px;box-shadow:0 16px 44px rgba(227,190,114,.4);margin-bottom:22px}
+  .gift{font-size:34px;margin-bottom:8px}
+  h1{font-size:clamp(26px,7vw,34px);font-weight:800;letter-spacing:-.01em;line-height:1.15;margin-bottom:12px}
+  .gold{background:linear-gradient(135deg,#FBEFC0,#E3BE72 45%,#B8860B);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  p.lead{color:#CFC9BA;font-size:16px;font-weight:300;line-height:1.6;margin-bottom:26px}
+  .code{display:inline-block;font-family:ui-monospace,monospace;letter-spacing:4px;font-size:20px;font-weight:700;color:#E3BE72;
+    border:1px dashed rgba(227,190,114,.4);border-radius:12px;padding:10px 20px;margin-bottom:26px}
+  .btn{display:block;width:100%;background:linear-gradient(135deg,#FBEFC0,#E3BE72 44%,#B8860B);color:#1A1404;
+    font-weight:700;font-size:17px;padding:17px;border-radius:15px;text-decoration:none;box-shadow:0 14px 34px rgba(227,190,114,.32);
+    transition:transform .15s,filter .15s}
+  .btn:active{transform:scale(.98);filter:brightness(1.05)}
+  .ghost{display:inline-block;margin-top:16px;color:#928D80;font-size:14px;text-decoration:none}
+  .ghost:hover{color:#E3BE72}
+  .bonus{color:#46DD95;font-weight:700}
+  .disc{margin-top:30px;color:#6c695f;font-size:12px;line-height:1.5}
+</style>
+</head>
+<body>
+  <div class="card">
+    <img class="logo" src="altyn.png" alt="ALTYN" />
+    <div class="gift">🎁</div>
+    <h1>Тебя пригласили в <span class="gold">ALTYN</span></h1>
+    <p class="lead">Установи приложение — и получи <span class="bonus">500 бонусов</span> на старте.<br/>Сигналы по золоту XAU/USD, академия и журнал MT5.</p>
+    <div class="code" id="codeBox" style="display:none"></div>
+    <a class="btn" id="installBtn" href="https://altyn.social/#download">Установить приложение →</a>
+    <a class="ghost" href="https://altyn.social/">Сначала посмотреть, что это →</a>
+    <p class="disc">Промокод подставится автоматически при первом запуске приложения. Торговля сопряжена с риском · 18+</p>
+  </div>
+
+<script>
+  (function(){
+    var params = new URLSearchParams(location.search);
+    var code = (params.get('code') || '').trim().toUpperCase();
+    // Нет кода — просто ведём на лендинг.
+    if(!/^[A-Z0-9]{4,24}$/.test(code)){ location.replace('https://altyn.social/'); return; }
+
+    // Показываем код (соц-доказательство «по приглашению»).
+    var box = document.getElementById('codeBox');
+    box.textContent = code; box.style.display = 'inline-block';
+
+    // Фиксируем клик на бэкенде (IP + code) — основа deferred deep link.
+    try{
+      fetch('https://altyn.social/api/v1/invite/click', {
+        method:'POST', headers:{'content-type':'application/json'}, keepalive:true,
+        body: JSON.stringify({ code: code })
+      }).catch(function(){});
+    }catch(e){}
+
+    // Android: когда приложение появится в Google Play, referrer прокидывается в
+    // Play Install Referrer API (официальный deferred deep link). До публикации —
+    // ведём в блок загрузки лендинга; клик уже записан (резолв по IP-фингерпринту).
+    var ua = navigator.userAgent || '';
+    var isAndroid = /Android/i.test(ua);
+    var PLAY_ID = ''; // напр. 'com.traderos.traderos' — включить после публикации в Play
+    if(isAndroid && PLAY_ID){
+      document.getElementById('installBtn').href =
+        'https://play.google.com/store/apps/details?id=' + PLAY_ID + '&referrer=' + encodeURIComponent('code=' + code);
+    }
+  })();
+</script>
+</body>
+</html>

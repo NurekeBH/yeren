@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/referral/referral_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
@@ -29,6 +30,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
   void initState() {
     super.initState();
     _c.forward();
+    // Deferred deep link: первый запуск — тихо резолвим отложенный промокод по
+    // IP-фингерпринту (клик по реферальной ссылке перед установкой). Не блокирует UI.
+    ref.read(referralServiceProvider).captureDeferredReferral();
     // Анимация + қысқа брендинг паузасынан кейін негізгі ағынға өтеміз.
     Future<void>.delayed(const Duration(milliseconds: 1900), () {
       if (mounted) context.go('/home');
