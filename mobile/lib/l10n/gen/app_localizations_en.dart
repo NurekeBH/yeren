@@ -1834,6 +1834,63 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get tilt_title => 'The market is choppy right now';
+
+  @override
+  String get tilt_body =>
+      'You\'ve had 2 losses in a row — that\'s normal. Take a 2-hour break and protect your capital. We\'ll push you when things stabilize.';
+
+  @override
+  String get tilt_break => 'Take a break';
+
+  @override
+  String get celebrate_title => 'Great trade! 🎉';
+
+  @override
+  String celebrate_body(int points) {
+    return '+$points points to your discipline jar. Today\'s plan is done.';
+  }
+
+  @override
+  String get celebrate_stop => 'Call it for today';
+
+  @override
+  String get celebrate_more => 'See one more promo signal';
+
+  @override
+  String get psyche_title => 'How do you like to work?';
+
+  @override
+  String get psyche_freq => 'Frequency';
+
+  @override
+  String get psyche_freq_every => 'Every signal';
+
+  @override
+  String get psyche_freq_summary => 'Daily summary only';
+
+  @override
+  String get psyche_style => 'Style';
+
+  @override
+  String get psyche_style_direct => 'Direct instructions';
+
+  @override
+  String get psyche_style_gamified => 'Gamified with bonuses';
+
+  @override
+  String get psyche_focus => 'Do not disturb at night (22:00–08:00)';
+
+  @override
+  String get psyche_saved => 'Preferences saved';
+
+  @override
+  String get signal_of_hour => 'Best signal right now';
+
+  @override
+  String get signal_of_hour_cta => 'View in 5 minutes';
+
+  @override
   String get promo_already_used => 'Promo code already used';
 
   @override

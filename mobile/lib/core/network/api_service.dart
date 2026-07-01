@@ -311,6 +311,11 @@ class ApiService {
   Future<void> submitTraderApplication({required String about, String? years, String? proof}) =>
       _send('POST', '/trader-applications', body: {'about': about, 'years': years, 'proof': proof});
 
+  // ─────────────── Behavioral Nudge Engine: психо-предпочтения + анти-тильт ───────────────
+  Future<Map<String, dynamic>> psychePrefs() => _get('/me/psyche');
+  Future<void> updatePsyche(Map<String, dynamic> patch) => _send('PUT', '/me/psyche', body: patch);
+  Future<Map<String, dynamic>> tiltStatus() => _get('/me/tilt');
+
   // ─────────────── Retention: daily streak + удержание при отмене ───────────────
   // Чек-ин при открытии приложения. Возвращает {streak, longest, awarded}.
   Future<Map<String, dynamic>> streakCheckin() => _send('POST', '/streak/checkin');

@@ -942,6 +942,31 @@ create index if not exists admin_insights_open_idx on admin_insights(created_at 
 create index if not exists admin_insights_detector_idx on admin_insights(detector, created_at desc);
 
 -- ════════════════════════════════════════════════════════════════════════
+-- BEHAVIORAL NUDGE ENGINE (умный тренер: дозирование, фокус-часы, анти-тильт)
+-- ════════════════════════════════════════════════════════════════════════
+
+-- ── Психо-предпочтения: как пользователю комфортно работать ──
+-- frequency: каждый сигнал / только итоги дня. style: прямые инструкции / игровой.
+-- focus_hours: тишина 22:00–08:00 (кроме критич. алертов, что юзер сам включил).
+create table if not exists user_psyche_preferences (
+  user_id       uuid primary key references users(id) on delete cascade,
+  frequency     text not null default 'every',    -- every | summary
+  style         text not null default 'direct',    -- direct | gamified
+  focus_hours   boolean not null default true,     -- не беспокоить ночью
+  tz_offset_min int not null default 300,           -- смещение от UTC, мин (KZ +5ч = 300)
+  updated_at    timestamptz not null default now()
+);
+
+-- ── Состояние пользователя (анти-тильт кулдаун) ──
+-- 2 минуса подряд (journal_trades.profit) → tilt_until = now()+2ч: новые сигналы не предлагаем.
+create table if not exists user_states (
+  user_id    uuid primary key references users(id) on delete cascade,
+  state      text not null default 'active',        -- active | tilt | overloaded
+  tilt_until timestamptz,
+  updated_at timestamptz not null default now()
+);
+
+-- ════════════════════════════════════════════════════════════════════════
 -- RETENTION / ANTI-CHURN (стрейки, спящие пуши, удержание при отмене)
 -- ════════════════════════════════════════════════════════════════════════
 

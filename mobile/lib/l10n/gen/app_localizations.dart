@@ -3520,6 +3520,114 @@ abstract class AppLocalizations {
   /// **'Қалғаныңызға рахмет! +{bonus} бонус'**
   String retention_thanks(int bonus);
 
+  /// No description provided for @tilt_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Нарық қазір дауылда'**
+  String get tilt_title;
+
+  /// No description provided for @tilt_body.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қатарынан 2 минус алдыңыз — бұл қалыпты жағдай. 2 сағат үзіліс жасап, капиталды сақтаңыз. Нарық тұрақтанғанда push жібереміз.'**
+  String get tilt_body;
+
+  /// No description provided for @tilt_break.
+  ///
+  /// In kk, this message translates to:
+  /// **'Үзіліс жасау'**
+  String get tilt_break;
+
+  /// No description provided for @celebrate_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Керемет мәміле! 🎉'**
+  String get celebrate_title;
+
+  /// No description provided for @celebrate_body.
+  ///
+  /// In kk, this message translates to:
+  /// **'+{points} ұпай тәртіп қоржынына. Бүгінгі жоспар орындалды.'**
+  String celebrate_body(int points);
+
+  /// No description provided for @celebrate_stop.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бүгінге нарықтан шығу'**
+  String get celebrate_stop;
+
+  /// No description provided for @celebrate_more.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тағы промо-сигнал көру'**
+  String get celebrate_more;
+
+  /// No description provided for @psyche_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Саған қалай ыңғайлы?'**
+  String get psyche_title;
+
+  /// No description provided for @psyche_freq.
+  ///
+  /// In kk, this message translates to:
+  /// **'Жиілік'**
+  String get psyche_freq;
+
+  /// No description provided for @psyche_freq_every.
+  ///
+  /// In kk, this message translates to:
+  /// **'Әр сигнал'**
+  String get psyche_freq_every;
+
+  /// No description provided for @psyche_freq_summary.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тек күн қорытындысы'**
+  String get psyche_freq_summary;
+
+  /// No description provided for @psyche_style.
+  ///
+  /// In kk, this message translates to:
+  /// **'Стиль'**
+  String get psyche_style;
+
+  /// No description provided for @psyche_style_direct.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тікелей нұсқаулар'**
+  String get psyche_style_direct;
+
+  /// No description provided for @psyche_style_gamified.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бонусты ойын форматы'**
+  String get psyche_style_gamified;
+
+  /// No description provided for @psyche_focus.
+  ///
+  /// In kk, this message translates to:
+  /// **'Түнде мазаламау (22:00–08:00)'**
+  String get psyche_focus;
+
+  /// No description provided for @psyche_saved.
+  ///
+  /// In kk, this message translates to:
+  /// **'Баптаулар сақталды'**
+  String get psyche_saved;
+
+  /// No description provided for @signal_of_hour.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қазіргі үздік сигнал'**
+  String get signal_of_hour;
+
+  /// No description provided for @signal_of_hour_cta.
+  ///
+  /// In kk, this message translates to:
+  /// **'5 минутта көру'**
+  String get signal_of_hour_cta;
+
   /// No description provided for @promo_already_used.
   ///
   /// In kk, this message translates to:

@@ -1834,6 +1834,63 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
+  String get tilt_title => 'Нарық қазір дауылда';
+
+  @override
+  String get tilt_body =>
+      'Қатарынан 2 минус алдыңыз — бұл қалыпты жағдай. 2 сағат үзіліс жасап, капиталды сақтаңыз. Нарық тұрақтанғанда push жібереміз.';
+
+  @override
+  String get tilt_break => 'Үзіліс жасау';
+
+  @override
+  String get celebrate_title => 'Керемет мәміле! 🎉';
+
+  @override
+  String celebrate_body(int points) {
+    return '+$points ұпай тәртіп қоржынына. Бүгінгі жоспар орындалды.';
+  }
+
+  @override
+  String get celebrate_stop => 'Бүгінге нарықтан шығу';
+
+  @override
+  String get celebrate_more => 'Тағы промо-сигнал көру';
+
+  @override
+  String get psyche_title => 'Саған қалай ыңғайлы?';
+
+  @override
+  String get psyche_freq => 'Жиілік';
+
+  @override
+  String get psyche_freq_every => 'Әр сигнал';
+
+  @override
+  String get psyche_freq_summary => 'Тек күн қорытындысы';
+
+  @override
+  String get psyche_style => 'Стиль';
+
+  @override
+  String get psyche_style_direct => 'Тікелей нұсқаулар';
+
+  @override
+  String get psyche_style_gamified => 'Бонусты ойын форматы';
+
+  @override
+  String get psyche_focus => 'Түнде мазаламау (22:00–08:00)';
+
+  @override
+  String get psyche_saved => 'Баптаулар сақталды';
+
+  @override
+  String get signal_of_hour => 'Қазіргі үздік сигнал';
+
+  @override
+  String get signal_of_hour_cta => '5 минутта көру';
+
+  @override
   String get promo_already_used => 'Промокод бұрын қолданылған';
 
   @override

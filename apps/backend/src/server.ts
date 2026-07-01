@@ -30,6 +30,7 @@ import { biRoutes } from './modules/bi/routes.js';
 import { payoutsRoutes } from './modules/payouts/routes.js';
 import { inviteRoutes } from './modules/invite/routes.js';
 import { retentionRoutes } from './modules/retention/routes.js';
+import { psycheRoutes } from './modules/psyche/routes.js';
 import { pokeDormantUsers } from './services/dormant.js';
 import { generateInsights } from './services/insights.js';
 import { ensureAdmin } from './services/bootstrap_admin.js';
@@ -127,6 +128,7 @@ await app.register(async (api) => {
   await payoutsRoutes(api);
   await inviteRoutes(api);
   await retentionRoutes(api);
+  await psycheRoutes(api);
 }, { prefix: '/api/v1' });
 
 const shutdown = async (signal: string) => {

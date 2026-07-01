@@ -9,10 +9,12 @@ import '../../../shared/models/signal.dart';
 import '../../../shared/widgets/error_view.dart';
 import '../../../shared/widgets/premium.dart';
 import '../../profile/application/profile_controller.dart';
+import '../application/tilt_controller.dart';
 import '../data/signals_repository.dart';
 import 'provider_card.dart';
 import 'publish_signal_sheet.dart';
 import 'signal_card.dart';
+import 'tilt_pause_view.dart';
 
 /// Ideas — сигнал провайдерлерінің агрегаторы.
 /// Бірнеше трейдер идея береді; әрқайсының статистикасы (Win Rate, RR, рейтинг) бар.
@@ -25,6 +27,10 @@ class SignalsScreen extends ConsumerWidget {
     final async = ref.watch(signalsListProvider);
     final providers = ref.watch(signalProvidersProvider).valueOrNull ?? const [];
     final isTrader = ref.watch(profileControllerProvider).isVerifiedTrader;
+    // Анти-тильт: после 2 минусов подряд не предлагаем новые сигналы (защита капитала).
+    final tiltData = ref.watch(tiltStatusProvider).valueOrNull;
+    final inTilt = tiltData?['tilt'] == true;
+    final tiltUntil = DateTime.tryParse('${tiltData?['until'] ?? ''}');
 
     Future<void> onRefresh() async {
       ref.invalidate(signalProvidersProvider);
@@ -62,7 +68,10 @@ class SignalsScreen extends ConsumerWidget {
             final closed = all.where((s) => s.status != SignalStatus.active).toList();
             return TabBarView(
               children: [
-                _SignalsList(items: active, l: l, icon: Icons.bolt_outlined, onRefresh: onRefresh),
+                // В тильте — вместо ленты сигналов бережный экран паузы.
+                inTilt
+                    ? TiltPauseView(until: tiltUntil, onBreak: () => ref.invalidate(tiltStatusProvider))
+                    : _SignalsList(items: active, l: l, icon: Icons.bolt_outlined, onRefresh: onRefresh),
                 _SignalsList(items: closed, l: l, icon: Icons.history, onRefresh: onRefresh),
                 RefreshIndicator(
                   onRefresh: onRefresh,

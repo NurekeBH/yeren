@@ -1837,7 +1837,64 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get promo_already_used => 'Промокод уже использован';
+  String get tilt_title => 'Рынок сейчас штормит';
+
+  @override
+  String get tilt_body =>
+      'Вы получили 2 минуса подряд — это нормально. Сделайте перерыв на 2 часа и сохраните капитал. Мы пришлём пуш, когда рынок стабилизируется.';
+
+  @override
+  String get tilt_break => 'Сделать перерыв';
+
+  @override
+  String get celebrate_title => 'Отличная сделка! 🎉';
+
+  @override
+  String celebrate_body(int points) {
+    return '+$points пунктов в копилку дисциплины. На сегодня план выполнен.';
+  }
+
+  @override
+  String get celebrate_stop => 'Выйти из рынка на сегодня';
+
+  @override
+  String get celebrate_more => 'Посмотреть ещё промо-сигнал';
+
+  @override
+  String get psyche_title => 'Как тебе комфортно работать?';
+
+  @override
+  String get psyche_freq => 'Частота';
+
+  @override
+  String get psyche_freq_every => 'Каждый сигнал';
+
+  @override
+  String get psyche_freq_summary => 'Только итоги дня';
+
+  @override
+  String get psyche_style => 'Стиль';
+
+  @override
+  String get psyche_style_direct => 'Прямые инструкции';
+
+  @override
+  String get psyche_style_gamified => 'Игровой формат с бонусами';
+
+  @override
+  String get psyche_focus => 'Не беспокоить ночью (22:00–08:00)';
+
+  @override
+  String get psyche_saved => 'Настройки сохранены';
+
+  @override
+  String get signal_of_hour => 'Лучший сигнал сейчас';
+
+  @override
+  String get signal_of_hour_cta => 'Посмотреть за 5 минут';
+
+  @override
+  String get promo_already_used => 'Промокод бұрын қолданылған';
 
   @override
   String get promo_invalid => 'Неверный промокод';

@@ -13,6 +13,7 @@ import '../../../shared/utils/formatters.dart';
 import '../../../shared/widgets/error_view.dart';
 import '../../../shared/widgets/premium.dart';
 import '../../../shared/widgets/secure_screen.dart';
+import 'celebration_popup.dart';
 import '../../alerts/presentation/create_alert_sheet.dart';
 import '../../tools/presentation/position_calculator_screen.dart';
 import '../application/my_signals_controller.dart';
@@ -63,6 +64,9 @@ class _SignalDetailScreenState extends ConsumerState<SignalDetailScreen> {
   }
 }
 
+// Сигналы, по которым уже показали celebration в этой сессии (не спамим при ребилдах).
+final _celebrated = <String>{};
+
 class _Body extends ConsumerWidget {
   const _Body({required this.signal, required this.l});
 
@@ -75,10 +79,17 @@ class _Body extends ConsumerWidget {
     final dirColor = isBuy ? AppColors.profitGreen : AppColors.lossRed;
     // Paywall тек белсенді ақылы идеяларға; жабылғандар (track record), тегін және
     // өз идеяларым толық ашық.
-    final unlocked = signal.isFree ||
-        signal.isMine ||
-        signal.status != SignalStatus.active ||
-        ref.watch(signalUnlockProvider).contains(signal.id);
+    final purchased = ref.watch(signalUnlockProvider).contains(signal.id);
+    final unlocked = signal.isFree || signal.isMine || signal.status != SignalStatus.active || purchased;
+
+    // CELEBRATION: купленный сигнал закрылся в плюс (TP) → поздравляем один раз.
+    if (signal.status.isWin && (purchased || signal.isMine) && !_celebrated.contains(signal.id)) {
+      _celebrated.add(signal.id);
+      final points = (signal.resultPips ?? 0) > 0 ? signal.resultPips! : 100;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (context.mounted) showTakeProfitCelebration(context, points: points);
+      });
+    }
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
