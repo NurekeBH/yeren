@@ -959,6 +959,79 @@ create index if not exists admin_insights_open_idx on admin_insights(created_at 
 create index if not exists admin_insights_detector_idx on admin_insights(detector, created_at desc);
 
 -- ════════════════════════════════════════════════════════════════════════
+-- MEDALLION DATA PIPELINE (Bronze → Silver → Gold): сквозная аналитика.
+-- Bronze — сырые события «как есть» (append-only). Silver — чистые/дедуп.
+-- Gold — витрины для админки/BI. ETL: services/etl.ts (ежечасно, идемпотентно).
+-- ════════════════════════════════════════════════════════════════════════
+
+-- ── BRONZE: сырые логи из Flutter (без трансформации) ──
+create table if not exists bronze_events (
+  id             bigserial primary key,
+  event_id       text,                             -- клиентский UUID (дедуп в Silver)
+  event          text not null,
+  payload        jsonb not null default '{}'::jsonb,
+  _user_id       uuid references users(id) on delete set null,
+  _source_device text,                             -- android | ios | web
+  _app_version   text,
+  _client_ts     timestamptz,                      -- время на клиенте
+  _ingested_at   timestamptz not null default now()
+);
+create index if not exists bronze_ingest_idx on bronze_events(_ingested_at);
+create index if not exists bronze_event_idx  on bronze_events(event, _ingested_at);
+create index if not exists bronze_eid_idx    on bronze_events(event_id) where event_id is not null;
+
+-- ── SILVER: очищенные, дедуплицированные (PK event_id → идемпотентность) ──
+create table if not exists silver_user_activity (
+  event_id      text primary key,
+  user_id       uuid,
+  event         text not null,
+  activity_date date not null,
+  occurred_at   timestamptz not null,
+  device        text,
+  processed_at  timestamptz not null default now()
+);
+create index if not exists silver_activity_user_date_idx on silver_user_activity(user_id, activity_date);
+create index if not exists silver_activity_date_idx on silver_user_activity(activity_date);
+
+create table if not exists silver_referral_clicks (
+  event_id     text primary key,
+  code         text,
+  user_id      uuid,
+  registered   boolean not null default false,
+  clicked_at   timestamptz not null,
+  processed_at timestamptz not null default now()
+);
+create index if not exists silver_ref_code_idx on silver_referral_clicks(code, clicked_at);
+
+-- ── GOLD: витрины (PK = ключ периода → идемпотентный upsert) ──
+create table if not exists gold_growth_funnel (
+  date                               date primary key,
+  total_clicks                       int not null default 0,
+  successful_registrations_via_promo int not null default 0,
+  conversion_rate                    numeric(6,2) not null default 0,   -- %
+  k_factor                           numeric(6,3) not null default 0,    -- вирусный коэффициент
+  refreshed_at                       timestamptz not null default now()
+);
+
+create table if not exists gold_trader_performance (
+  trader_id           uuid primary key references users(id) on delete cascade,
+  total_signals_sent  int not null default 0,
+  win_rate_percentage numeric(5,2) not null default 0,
+  total_bonus_earned  bigint not null default 0,
+  refreshed_at        timestamptz not null default now()
+);
+
+create table if not exists gold_retention_cohorts (
+  cohort_date  date primary key,
+  cohort_size  int not null default 0,
+  day1_pct     numeric(5,2) not null default 0,
+  day3_pct     numeric(5,2) not null default 0,
+  day7_pct     numeric(5,2) not null default 0,
+  day30_pct    numeric(5,2) not null default 0,
+  refreshed_at timestamptz not null default now()
+);
+
+-- ════════════════════════════════════════════════════════════════════════
 -- BEHAVIORAL NUDGE ENGINE (умный тренер: дозирование, фокус-часы, анти-тильт)
 -- ════════════════════════════════════════════════════════════════════════
 

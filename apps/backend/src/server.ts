@@ -33,6 +33,8 @@ import { retentionRoutes } from './modules/retention/routes.js';
 import { psycheRoutes } from './modules/psyche/routes.js';
 import { pokeDormantUsers } from './services/dormant.js';
 import { detectAccountSharing } from './services/session_anomaly.js';
+import { analyticsRoutes } from './modules/analytics/routes.js';
+import { runEtl } from './services/etl.js';
 import { generateInsights } from './services/insights.js';
 import { ensureAdmin } from './services/bootstrap_admin.js';
 import { ingestNews } from './services/news.js';
@@ -130,6 +132,7 @@ await app.register(async (api) => {
   await inviteRoutes(api);
   await retentionRoutes(api);
   await psycheRoutes(api);
+  await analyticsRoutes(api);
 }, { prefix: '/api/v1' });
 
 const shutdown = async (signal: string) => {
@@ -333,4 +336,26 @@ if (env.FINNHUB_API_KEY) {
   const shareTimer = setInterval(() => void tick(), SHARE_MS);
   shareTimer.unref?.();
   app.log.info('Account-sharing detector started (every 20m, flag-only)');
+}
+
+// ─────────────── MEDALLION ETL: Bronze → Silver → Gold (ежечасно) ───────────────
+{
+  const ETL_MS = 60 * 60_000;
+  let busy = false;
+  const tick = async () => {
+    if (busy) return;
+    busy = true;
+    try {
+      await runEtl(app.log);
+    } catch (err) {
+      app.log.warn(err, 'etl_failed');
+    } finally {
+      busy = false;
+    }
+  };
+  const startTimer = setTimeout(() => void tick(), 150_000); // через 2.5 мин после старта
+  startTimer.unref?.();
+  const etlTimer = setInterval(() => void tick(), ETL_MS);
+  etlTimer.unref?.();
+  app.log.info('Medallion ETL started (Bronze→Silver→Gold, every 60m)');
 }
