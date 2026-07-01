@@ -151,13 +151,31 @@ export async function signalsRoutes(app: FastifyInstance) {
         req.userId],
     );
     const sig = rows[0] as { id: string; pair: string; direction: string; is_free: boolean };
-    // Жаңа идея туралы push (signals_on қосулы құрылғыларға).
     const dir = sig.direction === 'buy' ? 'BUY' : 'SELL';
-    void sendToCategory('signals_on', {
-      title: 'Жаңа идея · New idea',
-      body: `${dir} ${sig.pair}${sig.is_free ? ' · Free' : ''}`,
-      data: { type: 'signal', id: sig.id },
-    }).catch((err) => req.log.error({ err }, 'push_failed'));
+    // FREEMIUM HOOK: бесплатный промо-сигнал подаём как супер-ценность (обычно от 500
+    // бонусов, сейчас автор открыл БЕСПЛАТНО). Платный — обычный анонс.
+    void (async () => {
+      let providerName = '';
+      if (providerId) {
+        const p = await query<{ name: string }>('select name from signal_providers where id = $1', [providerId]);
+        providerName = p.rows[0]?.name ?? '';
+      }
+      const who = providerName ? `Топовый трейдер ${providerName}` : 'Трейдер';
+      const data: Record<string, string> = { type: 'signal', id: sig.id };
+      if (sig.is_free) data.promo = '1';
+      const payload = sig.is_free
+        ? {
+            title: `🎁 ${who} открыл эксклюзивный сигнал!`,
+            body: `${dir} ${sig.pair} по XAUUSD. Обычно от 500 бонусов — сейчас автор дал БЕСПЛАТНЫЙ доступ. Успей!`,
+            data,
+          }
+        : {
+            title: `📈 Новый сигнал · ${sig.pair}`,
+            body: `${who}: ${dir} ${sig.pair}`,
+            data,
+          };
+      await sendToCategory('signals_on', payload);
+    })().catch((err) => req.log.error({ err }, 'push_failed'));
     return { signal: rows[0] };
   });
 
@@ -241,6 +259,14 @@ export async function signalsRoutes(app: FastifyInstance) {
       );
       return { price_tg: payable, bonus_used: bonusUsed, already: false };
     });
+    // Аналитика (серверная, надёжная): фиксируем покупку для churn/когорт/A-B.
+    if (!result.already) {
+      void query(
+        `insert into activity_events (user_id, event, entity_type, entity_id, city, country)
+         select $1,'signal_purchased','signal',$2,u.city,u.country from users u where u.id=$1`,
+        [req.userId, id],
+      ).catch(() => {});
+    }
     return { ok: true, ...result };
   });
 

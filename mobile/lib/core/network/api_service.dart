@@ -311,6 +311,13 @@ class ApiService {
   Future<void> submitTraderApplication({required String about, String? years, String? proof}) =>
       _send('POST', '/trader-applications', body: {'about': about, 'years': years, 'proof': proof});
 
+  // ─────────────── Retention: daily streak + удержание при отмене ───────────────
+  // Чек-ин при открытии приложения. Возвращает {streak, longest, awarded}.
+  Future<Map<String, dynamic>> streakCheckin() => _send('POST', '/streak/checkin');
+  // Оффер удержания при отмене (одноразовый). reason: too_expensive|not_useful|no_time|other.
+  Future<Map<String, dynamic>> retentionOffer(String reason) =>
+      _send('POST', '/retention/offer', body: {'reason': reason});
+
   // ─────────────── Deferred deep link рефералы ───────────────
   // Первый запуск: сервер по IP-фингерпринту находит отложенный промокод (клик по
   // реферальной ссылке перед установкой). Ошибка НЕ ломает запуск — возвращаем null.

@@ -1784,6 +1784,56 @@ class AppLocalizationsEn extends AppLocalizations {
       'Promo code applied automatically — bonus arrives after you register.';
 
   @override
+  String streak_reward(int bonus) {
+    return '🔥 Streak! +$bonus bonus for daily check-ins';
+  }
+
+  @override
+  String streak_days(int days) {
+    return '$days-day streak';
+  }
+
+  @override
+  String get promo_signal_badge => '🎁 Promo access from a top trader';
+
+  @override
+  String get promo_signal_free => 'Free';
+
+  @override
+  String get retention_title => 'Before you go…';
+
+  @override
+  String get retention_q => 'Why are you leaving?';
+
+  @override
+  String get retention_r_expensive => 'Too expensive';
+
+  @override
+  String get retention_r_useless => 'Not useful';
+
+  @override
+  String get retention_r_notime => 'No time';
+
+  @override
+  String get retention_r_other => 'Other';
+
+  @override
+  String retention_offer(int bonus) {
+    return '🎁 Stay — grab $bonus bonus for free!';
+  }
+
+  @override
+  String get retention_stay => 'Grab bonus & stay';
+
+  @override
+  String get retention_leave => 'Leave anyway';
+
+  @override
+  String retention_thanks(int bonus) {
+    return 'Thanks for staying! +$bonus bonus';
+  }
+
+  @override
   String get promo_already_used => 'Promo code already used';
 
   @override

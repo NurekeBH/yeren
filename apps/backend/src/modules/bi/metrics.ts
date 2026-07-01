@@ -8,6 +8,62 @@ import { query } from '../../db/client.js';
 const num = (v: unknown): number => Number(v ?? 0);
 const pct = (a: number, b: number): number => (b > 0 ? Math.round((a / b) * 1000) / 10 : 0);
 
+// ── Purchase Churn: покупатели прошлого месяца, не купившие в этом (отток по покупкам) ──
+// Плюс 6-месячный тренд оттока для графика в админке.
+export async function churn() {
+  const [summary, trend] = await Promise.all([
+    query<Record<string, string>>(`
+      with buyers as (
+        select user_id, date_trunc('month', created_at) m from (
+          select user_id, created_at from signal_purchases
+          union all select user_id, created_at from course_purchases
+        ) p
+      ),
+      prev as (select distinct user_id from buyers where m = date_trunc('month', now()) - interval '1 month'),
+      cur  as (select distinct user_id from buyers where m = date_trunc('month', now()))
+      select (select count(*) from prev)                                                    as prev_buyers,
+             (select count(*) from prev p where not exists (select 1 from cur c where c.user_id = p.user_id)) as churned,
+             (select count(*) from cur)                                                     as cur_buyers,
+             (select count(*) from cur c where not exists
+                (select 1 from buyers b where b.user_id = c.user_id and b.m < date_trunc('month', now()))) as new_buyers
+    `),
+    // Помесячный отток за 6 мес: ушедшие из покупателей месяца M относительно M.
+    query<Record<string, string>>(`
+      with months as (
+        select generate_series(date_trunc('month', now()) - interval '6 months',
+                               date_trunc('month', now()) - interval '1 month', interval '1 month') as m
+      ),
+      buyers as (
+        select distinct user_id, date_trunc('month', created_at) m from (
+          select user_id, created_at from signal_purchases
+          union all select user_id, created_at from course_purchases
+        ) p
+      )
+      select to_char(months.m, 'YYYY-MM') as month,
+             count(distinct b.user_id) as base,
+             count(distinct b.user_id) filter (
+               where not exists (select 1 from buyers n where n.user_id = b.user_id and n.m = months.m + interval '1 month')
+             ) as churned
+        from months
+        left join buyers b on b.m = months.m
+       group by months.m order by months.m
+    `),
+  ]);
+  const s = summary.rows[0] ?? {};
+  const prevBuyers = num(s.prev_buyers);
+  const churned = num(s.churned);
+  return {
+    prev_buyers: prevBuyers,
+    cur_buyers: num(s.cur_buyers),
+    churned,
+    new_buyers: num(s.new_buyers),
+    retained: prevBuyers - churned,
+    churn_pct: pct(churned, prevBuyers),
+    retention_pct: prevBuyers > 0 ? Math.round((1 - churned / prevBuyers) * 1000) / 10 : 0,
+    trend: trend.rows.map((r) => ({ month: r.month, base: num(r.base), churned: num(r.churned), churn_pct: pct(num(r.churned), num(r.base)) })),
+  };
+}
+
 // ── Engagement: DAU / WAU / MAU / Stickiness ──
 // Источник — users.last_seen_at (heartbeat в authenticate). Работает сразу после
 // деплоя бэкенда, не дожидаясь мобильного трекинга.

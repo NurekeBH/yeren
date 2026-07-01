@@ -1787,6 +1787,56 @@ class AppLocalizationsRu extends AppLocalizations {
       'Промокод подставлен автоматически — бонусы придут после регистрации.';
 
   @override
+  String streak_reward(int bonus) {
+    return '🔥 Стрейк! +$bonus бонусов за заходы подряд';
+  }
+
+  @override
+  String streak_days(int days) {
+    return '$days дн. подряд';
+  }
+
+  @override
+  String get promo_signal_badge => '🎁 Промо-доступ от топ-трейдера';
+
+  @override
+  String get promo_signal_free => 'Бесплатно';
+
+  @override
+  String get retention_title => 'Прежде чем уйти…';
+
+  @override
+  String get retention_q => 'Почему вы уходите?';
+
+  @override
+  String get retention_r_expensive => 'Дорого';
+
+  @override
+  String get retention_r_useless => 'Не пригодилось';
+
+  @override
+  String get retention_r_notime => 'Нет времени';
+
+  @override
+  String get retention_r_other => 'Другое';
+
+  @override
+  String retention_offer(int bonus) {
+    return '🎁 Останьтесь — заберите $bonus бонусов бесплатно!';
+  }
+
+  @override
+  String get retention_stay => 'Забрать бонусы и остаться';
+
+  @override
+  String get retention_leave => 'Всё равно уйти';
+
+  @override
+  String retention_thanks(int bonus) {
+    return 'Спасибо, что остались! +$bonus бонусов';
+  }
+
+  @override
   String get promo_already_used => 'Промокод уже использован';
 
   @override

@@ -941,6 +941,32 @@ create index if not exists admin_insights_open_idx on admin_insights(created_at 
 -- Дедуп: один и тот же детектор не плодит карточки чаще раза в окно.
 create index if not exists admin_insights_detector_idx on admin_insights(detector, created_at desc);
 
+-- ════════════════════════════════════════════════════════════════════════
+-- RETENTION / ANTI-CHURN (стрейки, спящие пуши, удержание при отмене)
+-- ════════════════════════════════════════════════════════════════════════
+
+-- ── Daily streak (эффект привычки): дни подряд захода в приложение ──
+-- last_check — дата последнего чек-ина (UTC-день). streak+1 если вчера, reset если пропуск.
+-- Каждые 5 дней подряд → +50 бонусов (в checkin-транзакции).
+create table if not exists app_streaks (
+  user_id     uuid primary key references users(id) on delete cascade,
+  streak      int not null default 0,
+  longest     int not null default 0,
+  last_check  date,
+  updated_at  timestamptz not null default now()
+);
+
+-- ── Спящие пуши: троттлинг, чтобы не спамить неактивного юзера ──
+alter table users add column if not exists last_dormant_push_at timestamptz;
+
+-- ── Удержание при отмене (один оффер на пользователя) ──
+create table if not exists retention_offers (
+  user_id    uuid primary key references users(id) on delete cascade,
+  reason     text,                                   -- too_expensive | not_useful | no_time | other
+  bonus      int not null default 0,
+  created_at timestamptz not null default now()
+);
+
 -- ── Deferred deep link рефералы (вирусная петля без ручного ввода кода) ──
 -- Лендинг altyn.social/invite?code= пишет клик (code + IP + UA). Приложение при
 -- ПЕРВОМ запуске (в т.ч. установка с нуля) резолвит по IP-фингерпринту в окне

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/mock/signal_providers_fixtures.dart';
+import '../../../core/network/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../l10n/gen/app_localizations.dart';
@@ -37,7 +38,13 @@ class SignalCard extends ConsumerWidget {
       child: Card(
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
-          onTap: () => context.push('/signals/${signal.id}'),
+          onTap: () {
+            // Аналитика: открытие бесплатного промо-сигнала (прогрев к покупкам).
+            if (signal.isFree) {
+              ref.read(apiServiceProvider).track('promo_signal_opened', entityType: 'signal', entityId: signal.id);
+            }
+            context.push('/signals/${signal.id}');
+          },
           child: Padding(
             padding: const EdgeInsets.all(14),
             child: Column(
@@ -126,6 +133,9 @@ class SignalCard extends ConsumerWidget {
                   ],
                 ),
                 _FomoStrip(signal: signal, l: l),
+                // FREEMIUM HOOK: бесплатный сигнал подаём как ценность — плашка «промо-доступ
+                // от автора» + перечёркнутая обычная цена → «Бесплатно» (прогрев к покупкам).
+                if (signal.isFree && isActive) _PromoBanner(signal: signal, l: l),
                 const SizedBox(height: 12),
                 if (unlocked)
                   // Ашық: сандық деңгейлер болса — тизер; әйтпесе (жылдам идея) мәтін.
@@ -330,6 +340,46 @@ class _FomoChip extends StatelessWidget {
       ),
       child: Text('$icon $text',
           style: AppTypography.label(color: color).copyWith(fontSize: 11, fontWeight: FontWeight.w700)),
+    );
+  }
+}
+
+/// Премиальная промо-плашка на бесплатном сигнале: «промо-доступ от автора» +
+/// перечёркнутая обычная цена → «Бесплатно». Показывает ценность бесплатного.
+class _PromoBanner extends StatelessWidget {
+  const _PromoBanner({required this.signal, required this.l});
+  final Signal signal;
+  final AppLocalizations l;
+
+  @override
+  Widget build(BuildContext context) {
+    final usual = signal.tpPips > 200 ? 1000 : 500; // обычная цена платного сигнала
+    return Container(
+      margin: const EdgeInsets.only(top: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [AppColors.gold.withValues(alpha: 0.18), AppColors.goldBright.withValues(alpha: 0.06)],
+        ),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.gold.withValues(alpha: 0.35)),
+      ),
+      child: Row(
+        children: [
+          const Text('🎁', style: TextStyle(fontSize: 16)),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(l.promo_signal_badge,
+                style: AppTypography.label(color: AppColors.gold).copyWith(fontWeight: FontWeight.w800, fontSize: 12)),
+          ),
+          Text('$usual',
+              style: AppTypography.label(color: AppColors.textMuted)
+                  .copyWith(decoration: TextDecoration.lineThrough, fontSize: 13)),
+          const SizedBox(width: 6),
+          Text(l.promo_signal_free,
+              style: AppTypography.label(color: AppColors.profitGreen).copyWith(fontWeight: FontWeight.w800, fontSize: 13)),
+        ],
+      ),
     );
   }
 }

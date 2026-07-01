@@ -1784,6 +1784,56 @@ class AppLocalizationsKk extends AppLocalizations {
       'Промокод автоматты қойылды — бонус тіркелгеннен кейін түседі.';
 
   @override
+  String streak_reward(int bonus) {
+    return '🔥 Стрейк! Қатарынан кіргеніңіз үшін +$bonus бонус';
+  }
+
+  @override
+  String streak_days(int days) {
+    return '$days күн қатарынан';
+  }
+
+  @override
+  String get promo_signal_badge => '🎁 Топ-трейдерден промо-қолжетім';
+
+  @override
+  String get promo_signal_free => 'Тегін';
+
+  @override
+  String get retention_title => 'Кетер алдында…';
+
+  @override
+  String get retention_q => 'Неге кетіп барасыз?';
+
+  @override
+  String get retention_r_expensive => 'Қымбат';
+
+  @override
+  String get retention_r_useless => 'Пайдасы болмады';
+
+  @override
+  String get retention_r_notime => 'Уақыт жоқ';
+
+  @override
+  String get retention_r_other => 'Басқа';
+
+  @override
+  String retention_offer(int bonus) {
+    return '🎁 Қалыңыз — $bonus бонусты тегін алыңыз!';
+  }
+
+  @override
+  String get retention_stay => 'Бонусты алып қалу';
+
+  @override
+  String get retention_leave => 'Сонда да кету';
+
+  @override
+  String retention_thanks(int bonus) {
+    return 'Қалғаныңызға рахмет! +$bonus бонус';
+  }
+
+  @override
   String get promo_already_used => 'Промокод бұрын қолданылған';
 
   @override

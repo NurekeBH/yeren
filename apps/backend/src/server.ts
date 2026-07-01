@@ -29,6 +29,8 @@ import { journalRoutes } from './modules/journal/routes.js';
 import { biRoutes } from './modules/bi/routes.js';
 import { payoutsRoutes } from './modules/payouts/routes.js';
 import { inviteRoutes } from './modules/invite/routes.js';
+import { retentionRoutes } from './modules/retention/routes.js';
+import { pokeDormantUsers } from './services/dormant.js';
 import { generateInsights } from './services/insights.js';
 import { ensureAdmin } from './services/bootstrap_admin.js';
 import { ingestNews } from './services/news.js';
@@ -124,6 +126,7 @@ await app.register(async (api) => {
   await biRoutes(api);
   await payoutsRoutes(api);
   await inviteRoutes(api);
+  await retentionRoutes(api);
 }, { prefix: '/api/v1' });
 
 const shutdown = async (signal: string) => {
@@ -278,4 +281,28 @@ if (env.FINNHUB_API_KEY) {
   const insightsTimer = setInterval(() => void tick(), INSIGHTS_MS);
   insightsTimer.unref?.();
   app.log.info('AI Insights generator started (every 60m)');
+}
+
+// ─────────────── RETENTION: возвратные пуши «спящим» (каждые 6ч) ───────────────
+// Не заходил 3–30 дней → персонализированный пуш от топ-трейдера (deep link на сигнал).
+{
+  const DORMANT_MS = 6 * 60 * 60_000;
+  let busy = false;
+  const tick = async () => {
+    if (busy) return;
+    busy = true;
+    try {
+      const r = await pokeDormantUsers();
+      if (r.pushed > 0) app.log.info({ pushed: r.pushed }, 'dormant_pushes_sent');
+    } catch (err) {
+      app.log.warn(err, 'dormant_push_failed');
+    } finally {
+      busy = false;
+    }
+  };
+  const startTimer = setTimeout(() => void tick(), 90_000); // через 1.5 мин после старта
+  startTimer.unref?.();
+  const dormantTimer = setInterval(() => void tick(), DORMANT_MS);
+  dormantTimer.unref?.();
+  app.log.info('Dormant re-engagement pusher started (every 6h)');
 }

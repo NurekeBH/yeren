@@ -14,6 +14,7 @@ import '../../../shared/widgets/language_switcher.dart';
 import '../../auth/application/auth_controller.dart';
 import '../application/profile_controller.dart';
 import 'promo_section.dart';
+import 'retention_sheet.dart';
 import 'support_sheet.dart';
 import 'trader_application_sheet.dart';
 
@@ -280,6 +281,10 @@ class _MenuItem extends StatelessWidget {
 
 /// Аккаунтты жою растауы — қайтарымсыз әрекет.
 Future<void> _confirmDeleteAccount(BuildContext context, WidgetRef ref, AppLocalizations l) async {
+  // CHURN PREVENTION: сначала экран удержания (опрос + динамический оффер).
+  // Если пользователь принял оффер / передумал — не удаляем.
+  final wantsLeave = await showRetentionSheet(context, ref);
+  if (!wantsLeave || !context.mounted) return;
   final ok = await showDialog<bool>(
     context: context,
     builder: (ctx) => AlertDialog(

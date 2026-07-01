@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/network/api_service.dart';
 import '../../../core/network/live_quotes_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
@@ -91,6 +92,8 @@ class _CreateAlertSheetState extends ConsumerState<_CreateAlertSheet> {
       createdAtIso: DateTime.now().toIso8601String(),
     );
     ref.read(priceAlertControllerProvider.notifier).add(alert);
+    // Аналитика: будильник цены поставлен (воронка вовлечения / DAU-триггер).
+    ref.read(apiServiceProvider).track('price_alert_set', entityType: 'instrument', entityId: widget.instrument);
     Navigator.of(context).pop();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(l.alerts_created)),

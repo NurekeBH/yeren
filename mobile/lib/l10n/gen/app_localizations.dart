@@ -3436,6 +3436,90 @@ abstract class AppLocalizations {
   /// **'Промокод автоматты қойылды — бонус тіркелгеннен кейін түседі.'**
   String get referral_auto_sub;
 
+  /// No description provided for @streak_reward.
+  ///
+  /// In kk, this message translates to:
+  /// **'🔥 Стрейк! Қатарынан кіргеніңіз үшін +{bonus} бонус'**
+  String streak_reward(int bonus);
+
+  /// No description provided for @streak_days.
+  ///
+  /// In kk, this message translates to:
+  /// **'{days} күн қатарынан'**
+  String streak_days(int days);
+
+  /// No description provided for @promo_signal_badge.
+  ///
+  /// In kk, this message translates to:
+  /// **'🎁 Топ-трейдерден промо-қолжетім'**
+  String get promo_signal_badge;
+
+  /// No description provided for @promo_signal_free.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тегін'**
+  String get promo_signal_free;
+
+  /// No description provided for @retention_title.
+  ///
+  /// In kk, this message translates to:
+  /// **'Кетер алдында…'**
+  String get retention_title;
+
+  /// No description provided for @retention_q.
+  ///
+  /// In kk, this message translates to:
+  /// **'Неге кетіп барасыз?'**
+  String get retention_q;
+
+  /// No description provided for @retention_r_expensive.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қымбат'**
+  String get retention_r_expensive;
+
+  /// No description provided for @retention_r_useless.
+  ///
+  /// In kk, this message translates to:
+  /// **'Пайдасы болмады'**
+  String get retention_r_useless;
+
+  /// No description provided for @retention_r_notime.
+  ///
+  /// In kk, this message translates to:
+  /// **'Уақыт жоқ'**
+  String get retention_r_notime;
+
+  /// No description provided for @retention_r_other.
+  ///
+  /// In kk, this message translates to:
+  /// **'Басқа'**
+  String get retention_r_other;
+
+  /// No description provided for @retention_offer.
+  ///
+  /// In kk, this message translates to:
+  /// **'🎁 Қалыңыз — {bonus} бонусты тегін алыңыз!'**
+  String retention_offer(int bonus);
+
+  /// No description provided for @retention_stay.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бонусты алып қалу'**
+  String get retention_stay;
+
+  /// No description provided for @retention_leave.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сонда да кету'**
+  String get retention_leave;
+
+  /// No description provided for @retention_thanks.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қалғаныңызға рахмет! +{bonus} бонус'**
+  String retention_thanks(int bonus);
+
   /// No description provided for @promo_already_used.
   ///
   /// In kk, this message translates to:

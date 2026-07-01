@@ -2,7 +2,7 @@ import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { query } from '../../db/client.js';
 import { getOrSet } from '../../utils/cache.js';
-import { engagement, finance, geo, content, cohorts, overview, revenueCompare, signalsDeep, featureAdoption } from './metrics.js';
+import { engagement, finance, geo, content, cohorts, overview, revenueCompare, signalsDeep, featureAdoption, churn } from './metrics.js';
 
 // Белый список событий — клиент произвольные строки в лог не пишет.
 const TRACK_EVENTS = new Set([
@@ -10,6 +10,8 @@ const TRACK_EVENTS = new Set([
   // Feature audit (DAU/MAU по разделам): вкладки нав-бара + ключевые фичи.
   'view_home', 'view_academy', 'view_signals', 'view_journal', 'view_profile',
   'view_calendar', 'use_lot_calculator',
+  // Retention/конверсия (A/B, воронки, когорты).
+  'signal_purchased', 'price_alert_set', 'course_started', 'streak_milestone_reached', 'promo_signal_opened',
 ]);
 const TrackBody = z.object({
   event: z.string().min(1).max(40),
@@ -73,6 +75,10 @@ export async function biRoutes(app: FastifyInstance) {
 
   app.get('/admin/bi/feature-adoption', { onRequest: [app.requireAdmin] }, async () =>
     getOrSet('bi:feature-adoption', 5 * 60_000, featureAdoption));
+
+  // ── Churn Rate (отток по покупкам): график оттока в реальном времени ──
+  app.get('/admin/bi/churn', { onRequest: [app.requireAdmin] }, async () =>
+    getOrSet('bi:churn', 5 * 60_000, churn));
 
   // ── Маркетинговые затраты (CAC) ──
   app.get('/admin/marketing-spend', { onRequest: [app.requireAdmin] }, async () => {

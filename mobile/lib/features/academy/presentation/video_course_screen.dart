@@ -29,8 +29,10 @@ class _VideoCourseScreenState extends ConsumerState<VideoCourseScreen> {
   @override
   void initState() {
     super.initState();
-    // BI: курс қаралды (view_course) — конверсия view→purchase үшін.
-    ref.read(apiServiceProvider).track('view_course', entityType: 'course', entityId: widget.courseId);
+    // BI: курс қаралды (view_course) + начат (course_started) — воронка/ретеншн.
+    final api = ref.read(apiServiceProvider);
+    api.track('view_course', entityType: 'course', entityId: widget.courseId);
+    api.track('course_started', entityType: 'course', entityId: widget.courseId);
   }
 
   void _ensurePlayer(String? videoId) {

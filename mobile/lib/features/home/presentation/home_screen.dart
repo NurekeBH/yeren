@@ -10,6 +10,7 @@ import '../../../shared/utils/formatters.dart';
 import '../../../shared/widgets/language_switcher.dart';
 import '../../alerts/presentation/create_alert_sheet.dart';
 import '../../auth/application/auth_controller.dart';
+import '../application/streak_controller.dart';
 import '../data/dashboard_repository.dart';
 import 'widgets/calendar_module.dart';
 import 'widgets/gold_hero_card.dart';
@@ -27,6 +28,16 @@ class HomeScreen extends ConsumerWidget {
     final isAuthed = auth.status == AuthStatus.authenticated;
     final session = MarketSession.current();
     final sessionColor = Fmt.sessionColor(session);
+
+    // Retention: при достижении награды за стрейк показываем «+50 бонусов».
+    ref.listen(streakProvider, (prev, next) {
+      final awarded = (next.valueOrNull?['awarded'] as num?)?.toInt() ?? 0;
+      if (awarded > 0) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l.streak_reward(awarded)), backgroundColor: AppColors.profitGreen),
+        );
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -67,6 +78,7 @@ class HomeScreen extends ConsumerWidget {
             ),
             const SizedBox(width: 4),
           ],
+          if (isAuthed) const _StreakChip(),
           const LanguageSwitcher(),
           const SizedBox(width: 8),
         ],
@@ -180,6 +192,41 @@ class _CardSkeleton extends StatelessWidget {
       child: SizedBox(
         height: height,
         child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+      ),
+    );
+  }
+}
+
+/// Огонёк-счётчик дней подряд (эффект привычки). Тап по нему запускает чек-ин
+/// (провайдер), поэтому просто присутствие в appbar фиксирует заход за день.
+class _StreakChip extends ConsumerWidget {
+  const _StreakChip();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final streak = (ref.watch(streakProvider).valueOrNull?['streak'] as num?)?.toInt() ?? 0;
+    if (streak <= 0) return const SizedBox.shrink();
+    final l = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Tooltip(
+        message: l.streak_days(streak),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            color: AppColors.gold.withValues(alpha: 0.14),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('🔥', style: TextStyle(fontSize: 14)),
+              const SizedBox(width: 4),
+              Text('$streak',
+                  style: AppTypography.label(color: AppColors.gold).copyWith(fontWeight: FontWeight.w800, fontSize: 13)),
+            ],
+          ),
+        ),
       ),
     );
   }
