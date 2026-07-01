@@ -27,6 +27,20 @@ const SignalClose = z.object({
   result_pips: z.number().int(),
 });
 
+// АНТИ-СЛИВ: премиум-контент (разбор + скриншот графика) НЕ отдаём в API, пока идея
+// заблокирована (платная, активная, не куплена, не своя). Клиент их и так не
+// показывает — но раньше API их ЛИКАЛ, и бот мог спарсить всё без оплаты.
+function redactLocked<T extends Record<string, unknown>>(row: T, purchasedIds: Set<string>): T {
+  const isFree = row.is_free === true;
+  const isMine = row.is_mine === true;
+  const active = row.status === 'active';
+  const purchased = purchasedIds.has(String(row.id));
+  const locked = !isFree && active && !isMine && !purchased;
+  if (!locked) return row;
+  // Оставляем метаданные (для цены/тизера/пипсов), убираем IP-ценность.
+  return { ...row, analysis: '', screenshot_url: null };
+}
+
 /// Сигнал меншігін тексеру: 'ok' (админ немесе автор), 'not_found', 'forbidden'.
 /// created_by = null (ескі/админ жариялаған) сигналдарды тек админ басқарады.
 async function ownsSignal(
@@ -53,7 +67,8 @@ export async function signalsRoutes(app: FastifyInstance) {
     }
   };
 
-  app.get('/signals', async (req) => {
+  // Rate-limit: анти-скрейпинг (бот не спарсит всю ленту пачками). 40/мин на аккаунт/IP.
+  app.get('/signals', { config: { rateLimit: { max: 40, timeWindow: '1 minute' } } }, async (req) => {
     const userId = await optionalUserId(req);
     const { rows } = await query(
       `select s.*, coalesce(s.created_by = $1, false) as is_mine,
@@ -66,7 +81,13 @@ export async function signalsRoutes(app: FastifyInstance) {
         order by s.published_at desc limit 200`,
       [userId],
     );
-    return { signals: rows };
+    // Купленные идеи этого юзера — чтобы не редактировать оплаченный контент.
+    let purchased = new Set<string>();
+    if (userId) {
+      const p = await query<{ signal_id: string }>('select signal_id from signal_purchases where user_id = $1', [userId]);
+      purchased = new Set(p.rows.map((r) => r.signal_id));
+    }
+    return { signals: rows.map((r) => redactLocked(r as Record<string, unknown>, purchased)) };
   });
 
   // ── Менің идеяларым (кірген трейдер жариялаған — белсенді + жабылған) ──
@@ -116,7 +137,7 @@ export async function signalsRoutes(app: FastifyInstance) {
     return { ok: true };
   });
 
-  app.get('/signals/:id', async (req, reply) => {
+  app.get('/signals/:id', { config: { rateLimit: { max: 60, timeWindow: '1 minute' } } }, async (req, reply) => {
     const id = (req.params as { id: string }).id;
     const userId = await optionalUserId(req);
     const { rows } = await query(
@@ -124,7 +145,13 @@ export async function signalsRoutes(app: FastifyInstance) {
       [userId, id],
     );
     if (rows.length === 0) return reply.code(404).send({ error: 'not_found' });
-    return { signal: rows[0] };
+    // АНТИ-СЛИВ: если идея заблокирована для этого юзера — не отдаём разбор/скриншот.
+    let purchased = new Set<string>();
+    if (userId) {
+      const p = await query('select 1 from signal_purchases where user_id = $1 and signal_id = $2', [userId, id]);
+      if (p.rowCount) purchased = new Set([id]);
+    }
+    return { signal: redactLocked(rows[0] as Record<string, unknown>, purchased) };
   });
 
   // Admin: жариялау (TZ §10.3)

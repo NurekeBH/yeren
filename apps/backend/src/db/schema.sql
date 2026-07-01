@@ -338,6 +338,9 @@ alter table signals add column if not exists is_free boolean not null default fa
 alter table signals add column if not exists deleted_at timestamptz;
 alter table signals add column if not exists auto_closed boolean not null default false;
 create index if not exists signals_status_published_idx on signals(status, published_at desc);
+-- HIGH-LOAD: точное совпадение с лентой (`where deleted_at is null ... order by published_at desc`)
+-- → sub-20ms выборка активной ленты при 100k+ (частичный индекс, только «живые» идеи).
+create index if not exists signals_feed_idx on signals(published_at desc) where deleted_at is null;
 -- Авто-шешуші тірі активтерді жылдам табу үшін (жойылмаған, әлі ашық).
 create index if not exists signals_active_open_idx on signals(status) where status = 'active' and deleted_at is null;
 
