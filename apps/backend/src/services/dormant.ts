@@ -4,7 +4,12 @@ import { sendToUser } from './push.js';
 // RETENTION HOOK: «спящие» пользователи (не заходили 3–30 дней) → персонализированный
 // возвратный пуш от топ-трейдера. Троттлинг last_dormant_push_at (не чаще раза в 3 дня).
 // Батч на прогон — чтобы не залить FCM разом (на масштабе → очередь, см. DevOps-заметку).
-export async function pokeDormantUsers(): Promise<{ pushed: number }> {
+export async function pokeDormantUsers(): Promise<{ pushed: number; skipped?: string }> {
+  // Рынок XAU/USD не работает в выходные → не будим (пуш о «новом сигнале» бессмыслен
+  // и раздражает). В понедельник догоняем всех, кто был неактивен с пятницы — рынок открыт.
+  const day = new Date().getUTCDay(); // 0=вс, 6=сб
+  if (day === 0 || day === 6) return { pushed: 0, skipped: 'weekend' };
+
   // Топовый верифицированный провайдер — для персонализации («трейдер X, винрейт Y%»).
   const topRow = await query<{ name: string; win_rate: string }>(
     `select name, win_rate from signal_providers where verified = true order by win_rate desc nulls last limit 1`,
@@ -21,12 +26,13 @@ export async function pokeDormantUsers(): Promise<{ pushed: number }> {
   );
   const signalId = fresh.rows[0]?.id;
 
-  // Спящие: last_seen 3–30 дней назад, signals_on, есть токен, не пушили 3 дня. Батч 200.
+  // Спящие: неактивны 18ч–30д (порог поднят с 3д до 18ч, временно), signals_on, есть
+  // токен, не пушили 3 дня. Батч 200.
   const { rows } = await query<{ id: string }>(
     `select u.id from users u
        join notification_prefs np on np.user_id = u.id
       where u.is_blocked = false
-        and u.last_seen_at < now() - interval '3 days'
+        and u.last_seen_at < now() - interval '18 hours'
         and u.last_seen_at > now() - interval '30 days'
         and (u.last_dormant_push_at is null or u.last_dormant_push_at < now() - interval '3 days')
         and np.signals_on = true and np.expo_push_token is not null and np.expo_push_token <> ''

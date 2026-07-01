@@ -283,10 +283,11 @@ if (env.FINNHUB_API_KEY) {
   app.log.info('AI Insights generator started (every 60m)');
 }
 
-// ─────────────── RETENTION: возвратные пуши «спящим» (каждые 6ч) ───────────────
-// Не заходил 3–30 дней → персонализированный пуш от топ-трейдера (deep link на сигнал).
+// ─────────────── RETENTION: возвратные пуши «спящим» (каждые 18ч, будни) ───────────────
+// Неактивен 18ч–30д → персонализированный пуш от топ-трейдера (deep link на сигнал).
+// Выходные пропускаем (рынок XAU/USD закрыт) — логика в pokeDormantUsers().
 {
-  const DORMANT_MS = 6 * 60 * 60_000;
+  const DORMANT_MS = 18 * 60 * 60_000;
   let busy = false;
   const tick = async () => {
     if (busy) return;
@@ -304,5 +305,5 @@ if (env.FINNHUB_API_KEY) {
   startTimer.unref?.();
   const dormantTimer = setInterval(() => void tick(), DORMANT_MS);
   dormantTimer.unref?.();
-  app.log.info('Dormant re-engagement pusher started (every 6h)');
+  app.log.info('Dormant re-engagement pusher started (every 18h, weekdays only)');
 }
