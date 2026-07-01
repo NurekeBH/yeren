@@ -281,12 +281,15 @@ export async function authRoutes(app: FastifyInstance) {
       return reply.code(404).send({ error: 'invalid_code' });
     }
 
-    await tx(async (c) => {
-      await c.query('update users set bonus_balance = bonus_balance + $1, referred_by = $2 where id = $3', [
-        PROMO_BONUS_TG,
-        code,
-        req.userId,
-      ]);
+    // АНТИ-ФРОД (race condition): проверку referred_by делаем АТОМАРНО внутри tx —
+    // условный UPDATE «занимает» referred_by только если он ещё null. Параллельный
+    // двойной тап → второй UPDATE вернёт rowCount=0 → откат, без двойного бонуса.
+    const claimed = await tx(async (c) => {
+      const claim = await c.query(
+        'update users set bonus_balance = bonus_balance + $1, referred_by = $2 where id = $3 and referred_by is null',
+        [PROMO_BONUS_TG, code, req.userId],
+      );
+      if ((claim.rowCount ?? 0) === 0) return false; // уже использован (гонка/повтор)
       // Реферерге +500 және реферал саны +1.
       await c.query(
         'update users set bonus_balance = bonus_balance + $1, referral_count = referral_count + 1 where id = $2',
@@ -301,7 +304,9 @@ export async function authRoutes(app: FastifyInstance) {
         "insert into bonus_transactions (user_id, type, amount, ref) values ($1, 'referral', $2, $3)",
         [ref.rows[0]!.id, REFERRER_BONUS_TG, `invite:${req.userId}`],
       );
+      return true;
     });
+    if (!claimed) return reply.code(409).send({ error: 'already_used' });
     return { ok: true, bonus: PROMO_BONUS_TG };
   });
 
