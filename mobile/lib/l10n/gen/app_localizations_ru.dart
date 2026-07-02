@@ -1861,10 +1861,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get celebrate_more => 'Посмотреть ещё промо-сигнал';
 
   @override
-  String get psyche_title => 'Как тебе комфортно работать?';
+  String get psyche_title => 'Как часто вам писать';
 
   @override
-  String get psyche_freq => 'Частота';
+  String get psyche_freq => 'Частота уведомлений';
 
   @override
   String get psyche_freq_every => 'Каждый сигнал';
@@ -1873,13 +1873,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get psyche_freq_summary => 'Только итоги дня';
 
   @override
-  String get psyche_style => 'Стиль';
+  String get psyche_style => 'Тон сообщений';
 
   @override
   String get psyche_style_direct => 'Прямые инструкции';
 
   @override
-  String get psyche_style_gamified => 'Игровой формат с бонусами';
+  String get psyche_style_gamified => 'Игровой формат';
 
   @override
   String get psyche_focus => 'Не беспокоить ночью (22:00–08:00)';
